@@ -3,12 +3,46 @@
 
 A judging system for the ACM Debugging Competition
 
-#### To run:
+#### To Run:
 
-1. Install Maven
-2. ```$ mvn exec:java -Dexec.mainClass="acmcsus.DebugJudgeMain"```
+1. Clone this project
+```bash
+$ git clone https://github.com/ACMCSUS/DebugJudge.git
+```
+
+2. Install Maven
+```bash
+$ sudo apt-get install maven
+```
+
+3. Run with Maven
+```bash
+$ mvn exec:java -Dexec.mainClass="acmcsus.DebugJudgeMain"
+```
+
+An HTTP server will be hosted on ```localhost:4567```.
 
 #### To Contribute:
 
-1. Find a project card you wish to work on
-2. Turn the project card into an "issue" card.
+1. _**Read the code style section below**_
+2. Find a project card you wish to work on
+3. Turn the project card into an "issue" card.
+4. Assign yourself to the issue
+5. Do your work [on a new branch](https://www.digitalocean.com/community/tutorials/how-to-use-git-branches)
+    - **Note**: Please name your branch with your username then a short name for the ticket.
+    For example, if Matt is working on the ebean model issue, he may call his branch "matthewmerrill_ebeanmodels"
+6. On GitHub, create a pull request to merge your working branch into master.
+7. Unless it's urgent and you're 1,000% confident, don't merge your own branch!
+Somebody else will give you a code review and perform the merge.
+
+#### Code style:
+
+ - Java 8 ( ͡° ͜ʖ ͡°)
+ - Spaces > Tabs. Use four spaces per level.
+ - Java/Oracle naming conventions
+ - To declare a route/filter:
+    - Declare a static method with the correct signature in a Controller class (acmcsus.ctrl.SomeNameForController)
+        - ```public static Object myRouteMethod(Request req, Response res)```
+    - Add in DebugJudgeMain using a method reference
+        - ```get("/myRoute", MyController::myRouteMethod);```
+ - Lambdas and Streams are great, but they are a tool with a purpose.
