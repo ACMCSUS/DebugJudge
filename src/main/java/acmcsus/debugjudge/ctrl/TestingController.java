@@ -1,4 +1,4 @@
-package acmcsus.ctrl;
+package acmcsus.debugjudge.ctrl;
 
 import spark.Request;
 import spark.Response;
