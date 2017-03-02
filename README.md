@@ -20,6 +20,13 @@ $ sudo apt-get install maven
 $ mvn compile exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMainugJudgeMain"
 ```
 
+###### 4. Changed frontend?
+```bash
+$ npm run-script build
+    OR
+$ mvn compile
+```
+
 An HTTP server will be hosted on ```localhost:4567```.
 
 ### To Contribute:
