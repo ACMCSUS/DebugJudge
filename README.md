@@ -17,7 +17,7 @@ $ sudo apt-get install maven
 
 3. Run with Maven
 ```bash
-$ mvn exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMainugJudgeMain"
+$ mvn compile exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMainugJudgeMain"
 ```
 
 An HTTP server will be hosted on ```localhost:4567```.
