@@ -17,7 +17,7 @@ $ sudo apt-get install maven
 
 ###### 3. Run with Maven
 ```bash
-$ mvn compile exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMainugJudgeMain"
+$ mvn compile exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMain"
 ```
 
 ###### 4. Changed frontend?
