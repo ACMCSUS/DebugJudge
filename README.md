@@ -19,7 +19,6 @@ $ sudo apt-get install maven
 ```bash
 $ mvn compile exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMainugJudgeMain"
 ```
-...or just use an IDE (highly recommended.)
 
 An HTTP server will be hosted on ```localhost:4567```.
 
