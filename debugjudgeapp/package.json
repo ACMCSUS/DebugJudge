@@ -8,7 +8,7 @@
     "start": "ng serve",
     "lint": "tslint \"src/**/*.ts\" --project src/tsconfig.json --type-check && tslint \"e2e/**/*.ts\" --project e2e/tsconfig.json --type-check",
     "test": "ng test",
-    "build": "ng build -o ../target/classes/ngapp",
+    "build": "ng build -op ../target/classes/ngapp",
     "pree2e": "webdriver-manager update --standalone false --gecko false",
     "e2e": "protractor"
   },

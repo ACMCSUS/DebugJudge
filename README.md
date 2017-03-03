@@ -36,8 +36,8 @@ An HTTP server will be hosted on ```localhost:4567```.
 ###### 3. Turn the project card into an "issue" card.
 ###### 4. Assign yourself to the issue
 ###### 5. Do your work [on a new branch](https://www.digitalocean.com/community/tutorials/how-to-use-git-branches)
-    - **Note**: Please name your branch with your username then a short name for the ticket.
-    For example, if Matt is working on the ebean model issue, he may call his branch "matthewmerrill_ebeanmodels"
+  - **Note**: Please name your branch with your username then a short name for the ticket.
+    For example, if Matt is working on the ebean model issue, he might call his branch "matthewmerrill_ebeanmodels"
 ###### 6. **Test your work using JUnit!**
 ```bash
 $ mvn test
