@@ -1,6 +1,7 @@
 package acmcsus.debugjudge.model;
 
-import com.avaje.ebean.Model;
+import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,12 +18,13 @@ public class Competition extends Model {
     @Id
     public Long id;
     
-    @Column(nullable = false, unique = true)
-    public String key;
+    @Column(name = "ref_id", nullable = false, unique = true)
+    public String refId;
     
     @Column(nullable = false)
     public String name;
     
+    @Column(columnDefinition = "datetime")
     public Date date;
     
 }
