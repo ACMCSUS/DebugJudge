@@ -1,3 +1,20 @@
-<h1>
-  {{title}}
-</h1>
+<md-sidenav-container>
+  <md-sidenav mode="over" #sidenav>
+    <nav>
+      <h3>ACMDC</h3>
+      <hr/>
+      <button md-button routerLink="/team" (click)="sidenav.close()">Team View</button>
+      <button md-button routerLink="/scoreboard" (click)="sidenav.close()">Scoreboard</button>
+      <button md-button routerLink="/judge" (click)="sidenav.close()">Judge Queue</button>
+    </nav>
+  </md-sidenav>
+
+  <md-toolbar color="primary">
+    <button md-button class="menu-button" (click)="sidenav.open()">
+      <md-icon>menu</md-icon>
+    </button>
+    <span>ACM Debugging Competition</span>
+  </md-toolbar>
+
+  <router-outlet></router-outlet>
+</md-sidenav-container>
