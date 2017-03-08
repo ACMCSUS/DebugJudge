@@ -1,12 +1,13 @@
 package acmcsus.debugjudge.model;
 
-import com.avaje.ebean.Model;
+import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "problems", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"problemId", "competition"})
+        @UniqueConstraint(columnNames = {"problem_name", "competition_id"})
 })
 public class Problem extends Model {
     
@@ -15,10 +16,13 @@ public class Problem extends Model {
     @Id
     public Long id;
     
-    @Column(name = "problem_id", nullable = false)
-    public String problemId;
+    @Column(name = "ref_id", nullable = false)
+    public String refId;
     
-    @Column(nullable = false)
+    @Column(name = "problem_name", nullable = false)
+    public String problemName;
+    
+    @ManyToOne(optional = false)
     public Competition competition;
     
 }
