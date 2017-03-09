@@ -122,13 +122,18 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>6.0.5</version>
+      <version>5.1.39</version>
+      <!--<scope>test</scope>-->
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.avaje.ebeanorm/avaje-ebeanorm -->
     <dependency>
-      <groupId>org.avaje.ebeanorm</groupId>
-      <artifactId>avaje-ebeanorm</artifactId>
-      <version>8.1.1</version>
+      <groupId>io.ebean</groupId>
+      <artifactId>ebean</artifactId>
+      <version>10.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>1.0.0.GA</version>
     </dependency>
   
     <!--

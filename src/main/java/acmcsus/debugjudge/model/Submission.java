@@ -1,13 +1,14 @@
 package acmcsus.debugjudge.model;
 
-import com.avaje.ebean.Model;
+import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "submissions", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"team_id", "problem", "submitted_at"})
+        @UniqueConstraint(columnNames = {"team_id", "problem_id", "submitted_at"})
 })
 public class Submission extends Model {
     
@@ -16,15 +17,13 @@ public class Submission extends Model {
     @Id
     public Long id;
     
-    @ManyToOne()
-    @Column(name = "team_id", nullable = false)
+    @ManyToOne(optional = false)
     public Team team;
     
-    @OneToOne
-    @Column(nullable = false)
+    @ManyToOne(optional = false)
     public Problem problem;
     
-    @Column(name = "submitted_at", nullable = false)
+    @Column(name = "submitted_at", nullable = false, columnDefinition = "datetime")
     public Date submittedAt;
     
     public Boolean approved;
