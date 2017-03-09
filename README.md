@@ -3,6 +3,14 @@
 
 A judging system for the ACM Debugging Competition
 
+### You'll need to install:
+
+ - Git
+ - NPM
+ - NodeJS
+ - Java 8
+ - Maven
+
 ### To Run:
 
 ###### 1. Clone this project
@@ -17,7 +25,7 @@ $ sudo apt-get install maven
 
 ###### 3. Run with Maven
 ```bash
-$ mvn compile exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMain"
+$ mvn process-classes exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMain"
 ```
 
 ###### 4. Changed frontend?
