@@ -30,12 +30,12 @@ $ export DB_PASS=password
 $ export DB_URL=jdbc:mysql://your.mysqlhost.url:3306/dbgjdg
 ```
 
-###### 3. Run with Maven
+###### 4. Run with Maven
 ```bash
 $ mvn process-classes exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMain"
 ```
 
-###### 4. Changed frontend?
+###### 5. Changed frontend?
 ```bash
 $ npm run-script build
     OR
