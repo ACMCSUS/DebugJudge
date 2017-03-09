@@ -23,6 +23,13 @@ $ git clone https://github.com/ACMCSUS/DebugJudge.git
 $ sudo apt-get install maven
 ```
 
+###### 3. Set ENV Variables
+```bash
+$ export DB_USER=dbgjdg
+$ export DB_PASS=password
+$ export DB_URL=jdbc:mysql://your.mysqlhost.url:3306/dbgjdg
+```
+
 ###### 3. Run with Maven
 ```bash
 $ mvn process-classes exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMain"
@@ -44,8 +51,10 @@ An HTTP server will be hosted on ```localhost:4567```.
 ###### 3. Turn the project card into an "issue" card.
 ###### 4. Assign yourself to the issue
 ###### 5. Do your work [on a new branch](https://www.digitalocean.com/community/tutorials/how-to-use-git-branches)
+
   - **Note**: Please name your branch with your username then a short name for the ticket.
     For example, if Matt is working on the ebean model issue, he might call his branch "matthewmerrill_ebeanmodels"
+    
 ###### 6. **Test your work using JUnit!**
 ```bash
 $ mvn test
@@ -53,6 +62,7 @@ $ mvn test
 Test a variety of good and bad inputs.
 This will be exceedingly important in making sure our code will work during the competition.
 Don't test in prod!
+
 ###### 7. On GitHub, create a pull request to merge your working branch into master.
 ###### 8. Unless it's urgent and you're 1,000% confident, don't merge your own branch!
 Somebody else will give you a code review and perform the merge.
