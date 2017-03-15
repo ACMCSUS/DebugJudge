@@ -9,6 +9,10 @@ import { AppComponent } from './app.component';
 import { TeamComponent } from './team.component';
 import { JudgeComponent } from "./judge.component";
 import { ScoreboardComponent } from "./scoreboard.component";
+import { CodeEditorComponent } from "./codeeditor.component";
+
+import {Autosize} from 'angular2-autosize/src/autosize.directive';
+import {ProblemCardComponent} from "./problemcard.component";
 
 const appRoutes: Routes = [
   { path: 'team', component: TeamComponent },
@@ -18,10 +22,14 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [
+    Autosize,
+
     AppComponent,
     TeamComponent,
     JudgeComponent,
-    ScoreboardComponent
+    ScoreboardComponent,
+    ProblemCardComponent,
+    CodeEditorComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,24 @@
+* {
+  font-size: .9em;
+  font-family: "Monospaced",monospace;
+}
+.codepane {
+  border: inset 2px white;
+  padding: 0;
+}
+textarea {
+  background-color: #ffffff;
+  border: none;
+  outline: none;
+  white-space: pre;
+
+  width: 100%;
+  height: auto;
+  margin: 0;
+  resize: none;
+}
+pre {
+  background-color: #bbb;
+  margin: 0;
+}
+
