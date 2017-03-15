@@ -1,0 +1,10 @@
+.problemcardWrapper, .submissioncard {
+  margin: 20px;
+}
+#problemCards {
+  display: block;
+  min-width: 300px;
+  width: 800px;
+  max-width: 95%;
+  margin: 0 auto;
+}

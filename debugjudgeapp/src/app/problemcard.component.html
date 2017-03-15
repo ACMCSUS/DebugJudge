@@ -1,0 +1,32 @@
+<md-card class="problemcard">
+  <md-card-title>{{problem.title}}</md-card-title>
+  <md-card-subtitle>Something should go here</md-card-subtitle>
+
+  <md-card-content>
+    {{problem.description}}
+  </md-card-content>
+
+  <md-menu></md-menu>
+
+  <code-editor precode="{{problem.precode}}"
+               code="{{problem.code}}"
+               postcode="{{problem.postcode}}"></code-editor>
+
+  <md-card-actions layout="row" layout-align="end center">
+    <button md-raised-button>Submit</button>
+  </md-card-actions>
+</md-card>
+
+<div class="submissionList">
+  <md-card>
+    <div class="toggle-container" [@openClose]="stateExpression">
+      <md-list>
+        <md-list-item *ngFor="let submission of submissions">{{submission.id}}</md-list-item>
+      </md-list>
+    </div>
+    <md-card-actions>
+      <button md-raised-button (click)="expand()">View Submissions</button>
+      <button md-raised-button (click)="collapse()">Hide</button>
+    </md-card-actions>
+  </md-card>
+</div>
