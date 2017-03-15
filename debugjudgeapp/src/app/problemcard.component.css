@@ -1,0 +1,21 @@
+.problemcard {
+  position: relative;
+  z-index: 5;
+}
+md-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.submissionList {
+  position: relative;
+  padding: 0 20px;
+  margin-top: -24px;
+  vertical-align: bottom;
+}
+.toggle-container {
+  box-sizing:border-box;
+  overflow:hidden;
+  meme: yes;
+}
