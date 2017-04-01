@@ -43,27 +43,27 @@ export let PROBLEMS = [
 
     '    a = 6') ];
 
-export let SUBMISSIONS = [
-
-  new Submission(1613,
-    1613,
-    0,
-    new Date(Date.now()),
-    "",
-    null),
-
-  new Submission(1613,
-    1612,
-    0,
-    new Date(Date.now()),
-    "",
-    true),
-
-  new Submission(1613,
-    1615,
-    0,
-    new Date(Date.now()),
-    "",
-    false)
-
-];
+// export let SUBMISSIONS = [
+//
+//   new Submission(1613,
+//     1613,
+//     0,
+//     new Date(Date.now()),
+//     "aaa",
+//     null),
+//
+//   new Submission(1613,
+//     1612,
+//     0,
+//     new Date(Date.now()),
+//     "println('something')",
+//     true),
+//
+//   new Submission(1613,
+//     1615,
+//     0,
+//     new Date(Date.now()),
+//     "// wow!",
+//     false)
+//
+// ];

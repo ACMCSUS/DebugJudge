@@ -4,6 +4,9 @@
              autocorrect="off"
              autocapitalize="off"
              spellcheck="false"
-             autosize>{{code}}</textarea>
+             [readonly]="readonly"
+             [(ngModel)]="code"
+             [ngClass]="{'red':red, 'green':green}"
+             autosize></textarea>
   <pre>{{postcode}}</pre>
 </div>

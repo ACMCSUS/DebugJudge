@@ -1,4 +1,4 @@
-import {Component, animate, transition, style, state, trigger} from "@angular/core";
+import {Component, animate, transition, style, state, trigger, ViewChild, OnInit} from "@angular/core";
 import {CodeEditorComponent} from "./codeeditor.component";
 import {Problem} from "./models/problem";
 import {Submission} from "./models/submission";
@@ -20,12 +20,14 @@ import {ApiService} from "./api";
     ])
   ]
 })
-export class ProblemCardComponent {
+export class ProblemCardComponent implements OnInit {
 
   stateExpression: string;
 
   problem : Problem;
   submissions: Submission[] = [];
+  problemSolved: boolean;
+  @ViewChild(CodeEditorComponent) editor :CodeEditorComponent;
 
   constructor(private apiService: ApiService){
     this.collapse();
@@ -35,11 +37,20 @@ export class ProblemCardComponent {
   collapse() { this.stateExpression = 'collapsed'; }
 
   ngOnInit() {
-    this.getSubmissions()
+    this.getSubmissions();
   }
 
   getSubmissions() {
-    this.apiService.getSubmissions().then(submissions => { this.submissions = submissions});
+    this.apiService.getSubmissions().forEach(submissions => {
+      console.log("WOW!", submissions);
+      this.submissions = submissions.filter(s => s.problem.id === this.problem.id);
+      this.problemSolved = this.submissions.filter(s => s.accepted).length > 0;
+    });
+  }
+
+  submit() {
+    console.log("Submitting");
+    this.apiService.submit(this.problem, this.editor.code);
   }
 
 }

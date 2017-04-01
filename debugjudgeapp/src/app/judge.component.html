@@ -1,1 +1,41 @@
-<h2>Judge View</h2>
+<md-sidenav-container>
+  <md-card class="headerCard">
+    <md-card-title>Judging Queue</md-card-title>
+    <!--<md-card-content>-->
+      <!--Click the "Review Highest Priority" button to review the oldest submission in the queue.-->
+      <!--You <em>can</em> pick a submission itself, but using the button will prevent any two judges-->
+      <!--from looking at the same submission.-->
+    <!--</md-card-content>-->
+    <md-card-content>
+      For each submission, click Accept or Reject.
+    </md-card-content>
+    <!--<md-card-actions>-->
+      <!--<button md-raised-button color="accent">Review Highest Priority</button>-->
+    <!--</md-card-actions>-->
+  </md-card>
+
+  <div id="submissionCards">
+    <div *ngFor="let submission of submissions">
+      <md-card>
+        <md-card-title>{{submission.problem.title}}</md-card-title>
+        <md-card-subtitle>{{submission.submissionTime.getHours()}}:{{('0'+submission.submissionTime.getMinutes()).slice(-2)}}:{{('0'+submission.submissionTime.getSeconds()).slice(-2)}}</md-card-subtitle>
+
+        <md-card-content>
+          <code-editor [code]="submission.code" [readonly]="true"></code-editor>
+        </md-card-content>
+
+        <md-card-actions>
+          <!--<button md-button>Review</button>-->
+          <button md-button
+                  (click)="accept(submission)"
+                  [disabled]="submission.accepted!=undefined">Accept</button>
+          <button md-button
+                  (click)="reject(submission)"
+                  [disabled]="submission.accepted!=undefined">Reject</button>
+        </md-card-actions>
+      </md-card>
+    </div>
+  </div>
+
+  <div id=""></div>
+</md-sidenav-container>

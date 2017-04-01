@@ -9,7 +9,6 @@ import {ProblemCardComponent} from "./problemcard.component";
   selector: 'team-view',
   styleUrls: ['./team.component.css'],
   entryComponents: [ ProblemCardComponent ],
-  providers: [ ApiService ],
 
   template: `<div id="problemCards">
   <div class="problemcardWrapper" *ngFor="let problem of problems">
@@ -22,7 +21,7 @@ export class TeamComponent implements OnInit {
   problems: Problem[] = [];
   submissions: Submission[] = [];
 
-  constructor(private apiService: ApiService){}
+  constructor(private apiService: ApiService){}jj
 
   ngOnInit() {
     this.getProblems();
@@ -30,10 +29,10 @@ export class TeamComponent implements OnInit {
   }
 
   getProblems() {
-    this.apiService.getProblems().then(problems => { this.problems = problems});
+    this.apiService.getProblems().forEach(problems => { this.problems = problems});
   }
   getSubmissions() {
-    this.apiService.getSubmissions().then(submissions => { this.submissions = submissions});
+    this.apiService.getSubmissions().forEach(submissions => { this.submissions = submissions});
   }
 
 }

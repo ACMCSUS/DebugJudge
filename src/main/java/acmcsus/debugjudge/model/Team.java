@@ -1,9 +1,12 @@
 package acmcsus.debugjudge.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.ebean.Finder;
 import io.ebean.Model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "teams", uniqueConstraints = {
@@ -22,7 +25,14 @@ public class Team extends Model {
     @Column(name = "member_names", nullable = false)
     public String memberNames;
     
+    @JsonIgnore
+    public String loginSecret;
+    
     @ManyToOne(optional = false)
     public Competition competition;
 
+    @JsonManagedReference
+    @OneToMany
+    public List<Submission> submissions;
+    
 }

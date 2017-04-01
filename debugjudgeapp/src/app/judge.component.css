@@ -1,0 +1,13 @@
+.headerCard {
+  min-width: 300px;
+  width: 700px;
+  max-width: 85%;
+  margin: 10px auto;
+}
+
+#submissionCards md-card {
+  min-width: 275px;
+  width: 650px;
+  max-width: 80%;
+  margin: 10px auto;
+}

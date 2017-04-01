@@ -17,6 +17,12 @@ textarea {
   margin: 0;
   resize: none;
 }
+textarea.green {
+  background-color: #99ddaa;
+}
+textarea.red {
+  background-color: #dd9999;
+}
 pre {
   background-color: #bbb;
   margin: 0;
