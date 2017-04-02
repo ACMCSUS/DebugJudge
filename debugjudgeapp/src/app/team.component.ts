@@ -39,4 +39,17 @@ export class TeamComponent implements OnInit, OnDestroy {
     this.problemSubscription.unsubscribe();
     this.submissionSubscription.unsubscribe();
   }
+  constructor(private apiService: ApiService){}
+
+  ngOnInit() {
+    this.getProblems();
+    this.getSubmissions()
+  }
+
+  getProblems() {
+    this.apiService.getProblems().then(problems => { this.problems = problems});
+  }
+  getSubmissions() {
+    this.apiService.getSubmissions().then(submissions => { this.submissions = submissions});
+  }
 }
