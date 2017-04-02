@@ -15,18 +15,25 @@ import io.ebean.text.json.JsonContext;
 import spark.Request;
 import spark.Response;
 
+import java.beans.XMLEncoder;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
+import java.util.logging.XMLFormatter;
 
 import static acmcsus.debugjudge.ctrl.SecurityApi.getCompetition;
 import static acmcsus.debugjudge.ctrl.SecurityApi.getJudge;
+import static java.lang.String.format;
 import static spark.Spark.*;
 
 public class ApiController {
     private ApiController(){ /* Static */ }
+    
+    private static final ObjectMapper errorMapper = new ObjectMapper();
     
     public static void routeAPI() {
         path("/api", () -> {
@@ -168,7 +175,13 @@ public class ApiController {
             
             return Long.toString(submission.id);
         } catch (Exception e) {
-            throw halt(400);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            
+            throw halt(400, format("{\"error\":\"%s\"}",
+                    sw.toString()
+                            .replaceAll("\"", "\\\"")
+                            .replaceAll("\\\\", "\\\\")));
         }
     }
     private static String acceptSubmission(Request req, Response res) {

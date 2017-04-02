@@ -6,34 +6,59 @@ import * as Rx from '@reactivex/rxjs';
 import {Problem} from "./models/problem";
 import {Submission} from "./models/submission";
 import {Observable} from "@reactivex/rxjs";
+import {WebSocketSubject} from "@reactivex/rxjs/dist/cjs/observable/dom/WebSocketSubject";
 
 @Injectable()
 export class ApiService {
 
   private nonceUrl = '/ws/teamNonce';
+  private wsUrl = 'ws://'+window.location.host+'/ws/team';
+
+  public problems: Rx.BehaviorSubject<Problem[]>;
+  public submissions: Rx.BehaviorSubject<Submission[]>;
+
+  private socket: WebSocketSubject<string>;
 
   constructor(private http: Http) {
-    this.connectWS('ws://'+window.location.host+'/ws/team');
+    this.problems = new Rx.BehaviorSubject<Problem[]>([]);
+    this.submissions = new Rx.BehaviorSubject<Submission[]>([]);
+
+    this.http.get(this.nonceUrl).forEach((response) => {
+      console.debug(response.toString());
+      this.socket = WebSocketSubject.create(this.wsUrl);
+      this.socket.next("login:"+response.text());
+    }).then(() => {
+
+      this.socket.asObservable()
+        .forEach(data => console.debug("WS:", data));
+
+      this.socket.asObservable()
+        .filter(data => data.startsWith("dbg:"))
+        .forEach(data => console.debug("WS DBG:", data));
+
+      this.socket.asObservable()
+        .filter(data => data === "rld:submissions")
+        .forEach((msg) => {
+          console.log("I should reload my submissions:", msg)
+          this.getSubmissions();
+        });
+      this.getSubmissions();
+
+      this.socket.asObservable()
+        .filter(data => data === "rld:problems")
+        .forEach((msg) => {
+          console.log("I should reload my problems:", msg)
+          this.getSubmissions();
+        });
+      this.getProblems();
+    });
   }
 
-  getProblems(): Observable<Problem[]> {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+  private getProblems():void {
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
 
-    // return this.http.get("/api/problems", options)
-    //   .map(this.extractData)
-    //   .map((data) => data.map(p => new Problem(
-    //     p.id,
-    //     p.title,
-    //     p.description,
-    //     p.precode,
-    //     p.code,
-    //     p.postcode,
-    //     p.answer)))
-    //   .catch(this.handleError);
-    let cachedProblems : Problem[] = undefined;
-    return Observable.interval(500)
-      .switchMap(() => this.http.get("/api/problems", options))
+    this.http.get("/api/problems", options)
       .map(this.extractData)
       .map((data) => data.map(p => new Problem(
         p.id,
@@ -44,23 +69,21 @@ export class ApiService {
         p.postcode,
         p.answer)))
       .filter(problems => {
-        if (!this.arraysEqual(cachedProblems, problems)) {
-          console.log("New problems!", cachedProblems, problems);
-          cachedProblems = problems;
+        if (!this.arraysEqual(this.problems.getValue(), problems)) {
+          console.log("New problems!");
           return true;
         }
+        console.log("Steady Freddie");
         return false;
       })
-      .catch(this.handleError);
+      .catch(this.handleError)
+      .subscribe((problems) => this.problems.next(problems));
   }
+  private getSubmissions():void {
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
 
-  getSubmissions(): Observable<Submission[]> {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
-
-    let cachedSubmissions : Submission[] = undefined;
-    return Observable.interval(500)
-      .switchMap(() => this.http.get("/api/submissions", options))
+    this.http.get("/api/submissions", options)
       .map(this.extractData)
       .map((data) => data.map(s => new Submission(
         s.id,
@@ -70,15 +93,15 @@ export class ApiService {
         s.code,
         s.accepted)))
       .filter(submissions => {
-        if (!this.arraysEqual(cachedSubmissions, submissions)) {
-          console.log("New submissions!", cachedSubmissions, submissions);
-          cachedSubmissions = submissions;
+        if (!this.arraysEqual(this.submissions.getValue(), submissions)) {
+          console.log("New submissions!");
           return true;
         }
         console.log("Steady Freddie");
         return false;
       })
-      .catch(this.handleError);
+      .catch(this.handleError)
+      .subscribe((submissions) => this.submissions.next(submissions));
   }
 
   submit(problem: Problem, code: String) {
@@ -131,53 +154,6 @@ export class ApiService {
     }
   }
 
-  private socket: Rx.Subject<MessageEvent>;
-  public connectWS(url) {
-    if (!this.socket) {
-      this.http.get(this.nonceUrl).forEach((response) => {
-        console.log(response);
-        if (!this.socket) {
-          this.socket = this.createWS(url, response.text());
-
-          this.socket.forEach((message: MessageEvent) => {
-            console.log("Debug Message:", message.data);
-            if (message.data.startsWith("dbg:"))
-              console.debug("Debug Message:", message.data.substring(4));
-            else if (message.data.startsWith("rld:")) {
-            }
-          });
-          this.socket.subscribe();
-        }
-      });
-    }
-  }
-  private createWS(url, nonce): Rx.Subject<MessageEvent> {
-    let ws = new WebSocket(url);
-    ws.onopen = () => ws.send("login:"+nonce);
-
-    let observable = Rx.Observable.create(
-      (obs: Rx.Observer<MessageEvent>) => {
-        ws.onmessage = obs.next.bind(obs);
-        ws.onerror = obs.error.bind(obs);
-        ws.onclose = obs.complete.bind(obs);
-        return ws.close.bind(ws);
-      }
-    );
-    let observer = {
-      next: (data: Object) => {
-        if (ws.readyState === WebSocket.OPEN) {
-          console.log("Sending: " + JSON.stringify(data));
-          ws.send(JSON.stringify(data));
-        } else {
-          console.log(ws.readyState, "!=", WebSocket.OPEN, "...feelsbadman")
-        }
-      },
-    };
-
-    return Rx.Subject.create(observer, observable);
-  }
-
-
   private extractData(res: Response) : any[] {
     let body = res.json();
     return body || [];
@@ -186,6 +162,7 @@ export class ApiService {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;
     if (error instanceof Response) {
+      console.error(error.text());
       const body = error.json() || '';
       const err = body.error || JSON.stringify(body);
       errMsg = `${error.status} - ${error.statusText || ''} ${err}`;

@@ -16,7 +16,9 @@
                postcode="{{problem.postcode}}"></code-editor>
 
   <md-card-actions layout="row" layout-align="end center">
-    <button md-raised-button (click)="submit()">Submit</button>
+    <button md-raised-button
+            [disabled]="problemSolved"
+            (click)="submit()">Submit</button>
   </md-card-actions>
 </md-card>
 
@@ -30,8 +32,12 @@
       </div>
     </div>
     <md-card-actions>
-      <button md-raised-button (click)="expand()">View Submissions</button>
-      <button md-raised-button (click)="collapse()">Hide</button>
+      <button md-raised-button
+              [disabled]="submissions.length == 0"
+              (click)="expand()">View Submissions</button>
+      <button md-raised-button
+              [disabled]="submissions.length == 0"
+              (click)="collapse()">Hide</button>
     </md-card-actions>
   </md-card>
 </div>

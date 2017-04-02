@@ -1,5 +1,6 @@
 package acmcsus.debugjudge;
 
+import acmcsus.debugjudge.ctrl.TestingController;
 import acmcsus.debugjudge.ws.TeamSocketHandler;
 
 import static acmcsus.debugjudge.ctrl.ApiController.routeAPI;
@@ -15,7 +16,9 @@ public class DebugJudgeMain {
         routeAPI();
         get("/ws/teamNonce", TeamSocketHandler::nonceRoute);
         
-        angularRoutes("/team", "/judge");
+        angularRoutes("/team", "/judge", "/scoreboard");
+        
+        get("/testws", TestingController::wsBroadcast);
         
         init();
     }

@@ -1,6 +1,4 @@
 import {Problem} from "./problem";
-import {ApiService} from "../api";
-import {PROBLEMS} from "../api-mock";
 import {isNull} from "util";
 export class Submission {
   constructor(public id: number,

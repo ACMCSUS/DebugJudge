@@ -16,7 +16,9 @@ import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +32,7 @@ public class TeamSocketHandler {
     
     private static Logger logger = LoggerFactory.getLogger(TeamSocketHandler.class);
     
-    private static Map<Team, Session> teamSessionMap = new ConcurrentHashMap<>();
+    private static Map<Team, Set<Session>> teamSessionMap = new ConcurrentHashMap<>();
     private static Map<Session, Team> sessionTeamMap = new ConcurrentHashMap<>();
     private static Map<String, Team> nonceTeamMap = new ConcurrentHashMap<>();
     
@@ -70,18 +72,21 @@ public class TeamSocketHandler {
                 
                 if (nonce.isEmpty()) {
                     logger.warn("Empty Login Request");
-                    user.getRemote().sendString("dbg:Empty Login Request");
+                    user.getRemote().sendString("\"dbg:Empty Login Request\"");
                 }
                 
                 Team team = nonceTeamMap.remove(nonce);
                 
                 if (team != null) {
-                    teamSessionMap.put(team, user);
+                    if (!teamSessionMap.containsKey(team))
+                        teamSessionMap.put(team, new HashSet<>());
+                    
+                    teamSessionMap.get(team).add(user);
                     sessionTeamMap.put(user, team);
-                    user.getRemote().sendString("dbg:Login Successful");
+                    user.getRemote().sendString("\"dbg:Login Successful\"");
                     System.out.println("Sent dbg.");
                 } else {
-                    user.getRemote().sendString("dbg:Bad Nonce");
+                    user.getRemote().sendString("\"dbg:Bad Nonce\"");
                 }
             } catch (Exception ignored) { /* Oh well lol */ }
         }
@@ -89,10 +94,24 @@ public class TeamSocketHandler {
     
     public static void notifyTeam(Team team, Event event) {
         try {
-            Session session = teamSessionMap.get(team);
+            Set<Session> sessions = teamSessionMap.get(team);
             
-            if (session != null) {
-                session.getRemote().sendString(event.toString());
+            for (Session session : sessions) {
+                logger.info("Telling team to reload.");
+//                session.getRemote().sendString(event.toString());
+                session.getRemote().sendString("\"rld:submissions\"");
+            }
+        } catch (IOException e) {
+            logger.warn("Error while notifying team "+team.teamName+": ", e);
+        }
+    }
+    public static void debugTeam(Team team, String message) {
+        try {
+            Set<Session> sessions = teamSessionMap.get(team);
+    
+            for (Session session : sessions) {
+                logger.info("Telling team to reload.");
+                session.getRemote().sendString("\"dbg:" + message + "\"");
             }
         } catch (IOException e) {
             logger.warn("Error while notifying team "+team.teamName+": ", e);

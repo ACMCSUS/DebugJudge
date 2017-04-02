@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 
 import {ApiService} from './api';
 import {Submission} from "./models/submission";
 import {Problem} from "./models/problem";
 import {ProblemCardComponent} from "./problemcard.component";
+import {Subscription} from "@reactivex/rxjs";
 
 @Component({
   selector: 'team-view',
@@ -16,23 +17,26 @@ import {ProblemCardComponent} from "./problemcard.component";
   </div>
 </div>`,
 })
-export class TeamComponent implements OnInit {
+export class TeamComponent implements OnInit, OnDestroy {
 
   problems: Problem[] = [];
   submissions: Submission[] = [];
 
-  constructor(private apiService: ApiService){}jj
+  problemSubscription : Subscription;
+  submissionSubscription : Subscription;
+
+  constructor(private apiService: ApiService) {
+    this.problemSubscription = this.apiService.problems.asObservable()
+      .subscribe(problems => this.problems = problems);
+
+    this.submissionSubscription = this.apiService.submissions.asObservable()
+      .subscribe(submissions => this.submissions = submissions);
+  }
 
   ngOnInit() {
-    this.getProblems();
-    this.getSubmissions()
   }
-
-  getProblems() {
-    this.apiService.getProblems().forEach(problems => { this.problems = problems});
+  ngOnDestroy() {
+    this.problemSubscription.unsubscribe();
+    this.submissionSubscription.unsubscribe();
   }
-  getSubmissions() {
-    this.apiService.getSubmissions().forEach(submissions => { this.submissions = submissions});
-  }
-
 }
