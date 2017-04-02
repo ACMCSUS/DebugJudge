@@ -1,11 +1,8 @@
 package acmcsus.debugjudge.model;
 
-<<<<<<< HEAD
 import acmcsus.debugjudge.Views;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonView;
-=======
->>>>>>> master
 import io.ebean.Finder;
 import io.ebean.Model;
 
@@ -23,23 +20,17 @@ public class Submission extends Model {
     @Id
     public Long id;
     
-<<<<<<< HEAD
     @JsonBackReference
-=======
->>>>>>> master
     @ManyToOne(optional = false)
     public Team team;
     
     @ManyToOne(optional = false)
     public Problem problem;
     
-<<<<<<< HEAD
     @JsonView(Views.TeamView.class)
     @Column(nullable = false, length = 20_000)
     public String code;
     
-=======
->>>>>>> master
     @Column(name = "submitted_at", nullable = false, columnDefinition = "datetime")
     public Date submittedAt;
     

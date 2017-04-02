@@ -101,7 +101,7 @@ public class TeamSocketHandler {
 //                session.getRemote().sendString(event.toString());
                 session.getRemote().sendString("\"rld:submissions\"");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.warn("Error while notifying team "+team.teamName+": ", e);
         }
     }
@@ -113,7 +113,7 @@ public class TeamSocketHandler {
                 logger.info("Telling team to reload.");
                 session.getRemote().sendString("\"dbg:" + message + "\"");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.warn("Error while notifying team "+team.teamName+": ", e);
         }
     }
