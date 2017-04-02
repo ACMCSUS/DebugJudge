@@ -34,5 +34,4 @@ public class Team extends Model {
     @JsonManagedReference
     @OneToMany
     public List<Submission> submissions;
-    
 }
