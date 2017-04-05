@@ -19,3 +19,7 @@ md-menu {
   overflow:hidden;
   meme: yes;
 }
+
+.submissionListing span {
+  display: block;
+}

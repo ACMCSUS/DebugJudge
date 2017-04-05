@@ -1,8 +1,8 @@
 package acmcsus.debugjudge.test;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.EbeanServer;
-import com.avaje.ebeaninternal.server.core.DefaultServer;
+import io.ebean.Ebean;
+import io.ebean.EbeanServer;
+import io.ebeaninternal.server.core.DefaultServer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

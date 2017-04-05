@@ -1,8 +1,9 @@
-import {Component, animate, transition, style, state, trigger} from "@angular/core";
+import {Component, animate, transition, style, state, trigger, ViewChild, OnInit, OnDestroy} from "@angular/core";
 import {CodeEditorComponent} from "./codeeditor.component";
 import {Problem} from "./models/problem";
 import {Submission} from "./models/submission";
 import {ApiService} from "./api";
+import {Subscription} from "@reactivex/rxjs";
 
 @Component({
   selector: 'problem-card',
@@ -20,12 +21,16 @@ import {ApiService} from "./api";
     ])
   ]
 })
-export class ProblemCardComponent {
+export class ProblemCardComponent implements OnInit, OnDestroy {
 
   stateExpression: string;
 
   problem : Problem;
   submissions: Submission[] = [];
+  problemSolved: boolean;
+  @ViewChild(CodeEditorComponent) editor :CodeEditorComponent;
+
+  submissionSubscription : Subscription;
 
   constructor(private apiService: ApiService){
     this.collapse();
@@ -35,11 +40,21 @@ export class ProblemCardComponent {
   collapse() { this.stateExpression = 'collapsed'; }
 
   ngOnInit() {
-    this.getSubmissions()
+    this.submissionSubscription = this.apiService.submissions.asObservable()
+      .map(submissions => submissions.filter(
+        submission => submission.problem.id == this.problem.id))
+      .subscribe(submissions => {
+        this.submissions = submissions;
+        this.problemSolved = this.submissions.some(submission => submission.accepted);
+      });
+  }
+  ngOnDestroy() {
+    this.submissionSubscription.unsubscribe();
   }
 
-  getSubmissions() {
-    this.apiService.getSubmissions().then(submissions => { this.submissions = submissions});
+  submit() {
+    console.log("Submitting");
+    this.apiService.submit(this.problem, this.editor.code);
   }
 
 }
