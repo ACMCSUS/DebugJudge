@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "teams", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"team_name", "competition_id"})
 })
-public class Team extends Model {
+public class Team extends Model implements Profile {
     
     public static final Finder<Long, Team> find = new Finder<>(Team.class);
     
@@ -26,6 +26,7 @@ public class Team extends Model {
     public String memberNames;
     
     @JsonIgnore
+    @Column(nullable = false)
     public String loginSecret;
     
     @ManyToOne(optional = false)
@@ -34,4 +35,21 @@ public class Team extends Model {
     @JsonManagedReference
     @OneToMany
     public List<Submission> submissions;
+    
+    @Override
+    public Long getId() {
+        return this.id;
+    }
+    @Override
+    public String getName() {
+        return this.teamName;
+    }
+    @Override
+    public Profile.ProfileType getType() {
+        return Profile.ProfileType.JUDGE;
+    }
+    @Override
+    public Competition getCompetition() {
+        return competition;
+    }
 }

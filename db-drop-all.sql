@@ -1,4 +1,3 @@
-
 alter table judges drop foreign key fk_judges_competition_id;
 drop index ix_judges_competition_id on judges;
 

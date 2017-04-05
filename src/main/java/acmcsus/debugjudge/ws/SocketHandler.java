@@ -2,6 +2,7 @@ package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.ctrl.SecurityApi;
 import acmcsus.debugjudge.model.Event;
+import acmcsus.debugjudge.model.Profile;
 import acmcsus.debugjudge.model.Team;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,23 +25,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @WebSocket
-public class TeamSocketHandler {
+public class SocketHandler {
     
-    private TeamSocketHandler(){}
-    private static final TeamSocketHandler theInstance = new TeamSocketHandler();
-    public static TeamSocketHandler getInstance() { return theInstance; }
+    private SocketHandler(){}
+    private static final SocketHandler theInstance = new SocketHandler();
+    public static SocketHandler getInstance() { return theInstance; }
     
-    private static Logger logger = LoggerFactory.getLogger(TeamSocketHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(SocketHandler.class);
     
-    private static Map<Team, Set<Session>> teamSessionMap = new ConcurrentHashMap<>();
-    private static Map<Session, Team> sessionTeamMap = new ConcurrentHashMap<>();
-    private static Map<String, Team> nonceTeamMap = new ConcurrentHashMap<>();
+    private static Map<Profile, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
+    private static Map<Session, Profile> sessionTeamMap = new ConcurrentHashMap<>();
+    private static Map<String, Profile> nonceProfileMap = new ConcurrentHashMap<>();
     
     public static String nonceRoute(Request req, Response res) {
-        SecurityApi.teamFilter(req, res);
+        SecurityApi.loggedInFilter(req, res);
         
         String nonce = UUID.randomUUID().toString();
-        nonceTeamMap.put(nonce, SecurityApi.getTeam(req));
+        nonceProfileMap.put(nonce, SecurityApi.getProfile(req));
         return nonce;
     }
     
@@ -54,9 +55,9 @@ public class TeamSocketHandler {
     public void onClose(Session user, int statusCode, String reason) {
         logger.info("WebSocket closed");
         
-        Team team = sessionTeamMap.remove(user);
-        if (team != null) {
-            teamSessionMap.remove(team);
+        Profile profile = sessionTeamMap.remove(user);
+        if (profile != null) {
+            profileSessionMap.remove(profile);
         }
     }
 
@@ -75,14 +76,14 @@ public class TeamSocketHandler {
                     user.getRemote().sendString("\"dbg:Empty Login Request\"");
                 }
                 
-                Team team = nonceTeamMap.remove(nonce);
+                Profile profile = nonceProfileMap.remove(nonce);
                 
-                if (team != null) {
-                    if (!teamSessionMap.containsKey(team))
-                        teamSessionMap.put(team, new HashSet<>());
+                if (profile != null) {
+                    if (!profileSessionMap.containsKey(profile))
+                        profileSessionMap.put(profile, new HashSet<>());
                     
-                    teamSessionMap.get(team).add(user);
-                    sessionTeamMap.put(user, team);
+                    profileSessionMap.get(profile).add(user);
+                    sessionTeamMap.put(user, profile);
                     user.getRemote().sendString("\"dbg:Login Successful\"");
                     System.out.println("Sent dbg.");
                 } else {
@@ -91,10 +92,9 @@ public class TeamSocketHandler {
             } catch (Exception ignored) { /* Oh well lol */ }
         }
     }
-    
-    public static void notifyTeam(Team team, Event event) {
+    public static void notify(Profile profile, Event event) {
         try {
-            Set<Session> sessions = teamSessionMap.get(team);
+            Set<Session> sessions = profileSessionMap.get(profile);
             
             for (Session session : sessions) {
                 logger.info("Telling team to reload.");
@@ -102,19 +102,19 @@ public class TeamSocketHandler {
                 session.getRemote().sendString("\"rld:submissions\"");
             }
         } catch (Exception e) {
-            logger.warn("Error while notifying team "+team.teamName+": ", e);
+            logger.warn("Error while notifying "+profile.getName()+": ", e);
         }
     }
-    public static void debugTeam(Team team, String message) {
+    public static void debug(Profile profile, String message) {
         try {
-            Set<Session> sessions = teamSessionMap.get(team);
+            Set<Session> sessions = profileSessionMap.get(profile);
     
             for (Session session : sessions) {
                 logger.info("Telling team to reload.");
                 session.getRemote().sendString("\"dbg:" + message + "\"");
             }
         } catch (Exception e) {
-            logger.warn("Error while notifying team "+team.teamName+": ", e);
+            logger.warn("Error while debugging "+profile.getName()+": ", e);
         }
     }
 
