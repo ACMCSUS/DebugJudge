@@ -1,7 +1,39 @@
+md-card {
+  min-width: 300px;
+  width: 900px;
+  max-width: 100%;
+  margin: 10px auto;
+}
+
 table {
   background-color: white;
+  width: 100%;
 }
 
 td {
-  border: dashed 1px;
+  border-left: dotted 1px;
+  border-bottom: dotted 1px;
+}
+td:nth-of-type(3) {
+  border-right: dotted 1px;
+}
+td:first-of-type {
+  border-left: none;
+}
+tbody tr:last-of-type td {
+  border-bottom: none;
+}
+thead tr td {
+  border-bottom: double 3px;
+}
+
+.green {
+  background-color: #99ddaa;
+}
+.red {
+  background-color: #dd9999;
+}
+
+.problemName {
+  font-style: italic;
 }

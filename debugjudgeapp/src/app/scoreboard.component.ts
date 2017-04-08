@@ -1,12 +1,15 @@
-import {Component} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Http} from "@angular/http";
+import {Router} from "@angular/router";
+import {Observable, Subscription} from "@reactivex/rxjs";
 
 @Component({
   selector: 'app-root',
   templateUrl: './scoreboard.component.html',
   styleUrls: ['./scoreboard.component.css']
 })
-export class ScoreboardComponent {
+export class ScoreboardComponent implements OnInit, OnDestroy {
+  constructor(private http: Http, private router: Router) {}
 
   problems: {}[];
 
@@ -14,8 +17,16 @@ export class ScoreboardComponent {
   teamSubmissionCounts: {};
   teamAcceptances: {};
 
-  constructor(private http: Http) {
+  refreshSubscription: Subscription;
+
+  ngOnInit() {
     this.refresh();
+    this.refreshSubscription = Observable.interval(10000)
+      .subscribe(() => this.refresh());
+  }
+
+  ngOnDestroy() {
+    this.refreshSubscription.unsubscribe();
   }
 
   refresh():void {
