@@ -5,9 +5,15 @@
   margin: 10px auto;
 }
 
-#submissionCards md-card {
-  min-width: 275px;
-  width: 650px;
+md-sidenav-container {
+  height: 100%;
+}
+md-list md-sidenav {
+}
+
+.currentCard {
+  min-width: 400px;
+  width: 800px;
   max-width: 80%;
   margin: 10px auto;
 }

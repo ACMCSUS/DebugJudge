@@ -2,9 +2,8 @@ package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.ctrl.SecurityApi;
 import acmcsus.debugjudge.model.Event;
+import acmcsus.debugjudge.model.Judge;
 import acmcsus.debugjudge.model.Profile;
-import acmcsus.debugjudge.model.Team;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +32,7 @@ public class SocketHandler {
     private static Logger logger = LoggerFactory.getLogger(SocketHandler.class);
     
     private static Map<Profile, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
-    private static Map<Session, Profile> sessionTeamMap = new ConcurrentHashMap<>();
+    private static Map<Session, Profile> sessionProfileMap = new ConcurrentHashMap<>();
     private static Map<String, Profile> nonceProfileMap = new ConcurrentHashMap<>();
     
     public static String nonceRoute(Request req, Response res) {
@@ -55,8 +53,12 @@ public class SocketHandler {
     public void onClose(Session user, int statusCode, String reason) {
         logger.info("WebSocket closed");
         
-        Profile profile = sessionTeamMap.remove(user);
+        Profile profile = sessionProfileMap.remove(user);
         if (profile != null) {
+            if (profile instanceof Judge) {
+                JudgeQueueHandler.getInstance().disconnected((Judge) profile);
+            }
+            
             profileSessionMap.remove(profile);
         }
     }
@@ -73,7 +75,7 @@ public class SocketHandler {
                 
                 if (nonce.isEmpty()) {
                     logger.warn("Empty Login Request");
-                    user.getRemote().sendString("\"dbg:Empty Login Request\"");
+                    user.getRemote().sendString("{\"who\":\"dbg\",\"data\":\"Empty Login Request\"}");
                 }
                 
                 Profile profile = nonceProfileMap.remove(nonce);
@@ -83,13 +85,44 @@ public class SocketHandler {
                         profileSessionMap.put(profile, new HashSet<>());
                     
                     profileSessionMap.get(profile).add(user);
-                    sessionTeamMap.put(user, profile);
-                    user.getRemote().sendString("\"dbg:Login Successful\"");
+                    sessionProfileMap.put(user, profile);
+                    user.getRemote().sendString("{" +
+                            "\"who\":\"dbg\"," +
+                            "\"data\":\"Login Successful\"" +
+                            "}");
                     System.out.println("Sent dbg.");
                 } else {
-                    user.getRemote().sendString("\"dbg:Bad Nonce\"");
+                    user.getRemote().sendString("{" +
+                            "\"who\":\"dbg\"," +
+                            "\"data\":\"Bad Nonce\"" +
+                            "}");
                 }
-            } catch (Exception ignored) { /* Oh well lol */ }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Profile profile = sessionProfileMap.get(user);
+            
+            if (profile == null) {
+                System.err.println("Someone tried using a WebSocket from " +
+                        user.getRemoteAddress().getAddress() +
+                        " without being logged in!");
+                return;
+            }
+            
+            if (message.startsWith("jdg:")) {
+                
+                if (profile.getType() != Profile.ProfileType.JUDGE) {
+                    System.err.println("Non-judge user " + profile.getName() + " tried using the judger!");
+                    return;
+                }
+        
+                if (message.equals("jdg:start")) {
+                    JudgeQueueHandler.getInstance().connected((Judge) profile, user);
+                } else if (message.equals("jdg:stop")) {
+                    JudgeQueueHandler.getInstance().disconnected((Judge) profile);
+                }
+            }
         }
     }
     public static void notify(Profile profile, Event event) {
@@ -97,9 +130,7 @@ public class SocketHandler {
             Set<Session> sessions = profileSessionMap.get(profile);
             
             for (Session session : sessions) {
-                logger.info("Telling team to reload.");
-//                session.getRemote().sendString(event.toString());
-                session.getRemote().sendString("\"rld:submissions\"");
+                session.getRemote().sendString("{\"who\":\"api\",\"what\":\"rld-submissions\"}");
             }
         } catch (Exception e) {
             logger.warn("Error while notifying "+profile.getName()+": ", e);
@@ -110,8 +141,7 @@ public class SocketHandler {
             Set<Session> sessions = profileSessionMap.get(profile);
     
             for (Session session : sessions) {
-                logger.info("Telling team to reload.");
-                session.getRemote().sendString("\"dbg:" + message + "\"");
+                session.getRemote().sendString("{\"who\":\"dbg\",\"data\":\"" + message.replaceAll("\"", "\\\"")+ "\"}");
             }
         } catch (Exception e) {
             logger.warn("Error while debugging "+profile.getName()+": ", e);

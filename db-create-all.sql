@@ -21,6 +21,7 @@ create table problems (
   order_index                   bigint not null,
   title                         varchar(50) not null,
   description                   longblob not null,
+  language                      longblob not null,
   precode                       longblob,
   code                          longblob not null,
   postcode                      longblob,

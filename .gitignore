@@ -142,4 +142,5 @@ jspm_packages
 # Yarn Integrity file
 .yarn-integrity
 
-
+### COMPETITION DATA
+problems.csv

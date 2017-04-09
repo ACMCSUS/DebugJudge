@@ -1,6 +1,13 @@
 package acmcsus.debugjudge;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Created by merrillm on 4/4/17.
@@ -11,7 +18,7 @@ public class PasswordGenerator {
     private static SecureRandom random = new SecureRandom();
     
     private static String[] adjectives = new String[]{
-            "ace", "amazing", "amber", "artificial", "awful",
+            "ace", "amazing", "amber", "artificial", "awesome", "awful",
             "basic", "bendy", "bent", "blue", "burnt", "bright",
             "clear", "clueless", "computerized", "copper",
             "daring", "deadly", "delightful", "dynamic",
@@ -38,6 +45,35 @@ public class PasswordGenerator {
             "Machine", "Marathon", "Mouse",
             "Shell", "Software",
     };
+    
+    static {
+        Map<String, String> env = System.getenv();
+        
+        if (env.containsKey("PASSWORD_ADJECTIVES")) {
+            try {
+                adjectives = read(env.get("PASSWORD_ADJECTIVES"));
+            } catch (Exception e) {
+                System.err.println("Could not read password adjectives at " + env.get("PASSWORD_ADJECTIVES"));
+            }
+        }
+    
+        if (env.containsKey("PASSWORD_NOUNS")) {
+            try {
+                adjectives = read(env.get("PASSWORD_NOUNS"));
+            } catch (Exception e) {
+                System.err.println("Could not read password nouns at " + env.get("PASSWORD_NOUNS"));
+            }
+        }
+    }
+    private static String[] read(String path) throws IOException {
+        Scanner scn = new Scanner(new File(path));
+        ArrayList<String> tokens = new ArrayList<>();
+        
+        while (scn.hasNext())
+            tokens.add(scn.next());
+        
+        return (String[]) tokens.toArray();
+    }
     
     public static String randomPassword() {
         return adjectives[random.nextInt(adjectives.length)] +

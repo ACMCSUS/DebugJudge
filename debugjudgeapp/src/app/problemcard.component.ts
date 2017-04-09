@@ -25,7 +25,7 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
 
   stateExpression: string;
 
-  problem : Problem;
+  problem: Problem;
   submissions: Submission[] = [];
   problemSolved: boolean;
   @ViewChild(CodeEditorComponent) editor :CodeEditorComponent;
@@ -41,6 +41,7 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.submissionSubscription = this.apiService.submissions.asObservable()
+      .filter(submissions => submissions !== undefined)
       .map(submissions => submissions.filter(
         submission => submission.problem.id == this.problem.id))
       .subscribe(submissions => {

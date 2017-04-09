@@ -3,6 +3,7 @@ package acmcsus.debugjudge.ctrl;
 import acmcsus.debugjudge.ProcessBody;
 import acmcsus.debugjudge.Views;
 import acmcsus.debugjudge.model.*;
+import acmcsus.debugjudge.ws.JudgeQueueHandler;
 import acmcsus.debugjudge.ws.SocketHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -213,6 +214,8 @@ public class ApiController {
             event.submission = submission;
             event.eventType = Event.EventType.SUBMISSION;
             SocketHandler.notify(submission.team, event);
+    
+            JudgeQueueHandler.getInstance().submitted(submission);
             
             return Long.toString(submission.id);
         } catch (Exception e) {
@@ -241,6 +244,8 @@ public class ApiController {
             event.eventType = Event.EventType.ACCEPTANCE;
             SocketHandler.notify(submission.team, event);
             
+            JudgeQueueHandler.getInstance().accepted(submission);
+            
             return "200";
         } catch (Exception e) {
             e.printStackTrace();
@@ -262,6 +267,8 @@ public class ApiController {
             event.submission = submission;
             event.eventType = Event.EventType.REJECTION;
             SocketHandler.notify(submission.team, event);
+            
+            JudgeQueueHandler.getInstance().rejected(submission);
             
             return "200";
         } catch (Exception e) {
