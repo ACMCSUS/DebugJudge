@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component} from "@angular/core";
+import {Http} from "@angular/http";
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,25 @@ import { Component } from '@angular/core';
   styleUrls: ['./scoreboard.component.css']
 })
 export class ScoreboardComponent {
-  title = 'app works!';
+
+  problems: {}[];
+
+  teams: {}[];
+  teamSubmissionCounts: {};
+  teamAcceptances: {};
+
+  constructor(private http: Http) {
+    this.refresh();
+  }
+
+  refresh():void {
+    this.http.get("/api/scoreboard").subscribe((res) => {
+      let data = res.json();
+      this.problems = data.problems;
+      this.teams = data.teams;
+      this.teamSubmissionCounts = data.teamSubmissionCounts;
+      this.teamAcceptances = data.teamAcceptances;
+    });
+  }
+
 }

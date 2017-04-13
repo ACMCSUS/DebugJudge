@@ -7,21 +7,24 @@ import {Problem} from "./models/problem";
 import {Submission} from "./models/submission";
 import {Observable} from "@reactivex/rxjs";
 import {WebSocketSubject} from "@reactivex/rxjs/dist/cjs/observable/dom/WebSocketSubject";
+import {Profile} from "./models/profile";
 
 @Injectable()
 export class ApiService {
 
-  private nonceUrl = '/ws/teamNonce';
-  private wsUrl = 'ws://'+window.location.host+'/ws/team';
+  private nonceUrl = '/ws/nonce';
+  private wsUrl = 'ws://'+window.location.host+'/ws/connect';
 
   public problems: Rx.BehaviorSubject<Problem[]>;
   public submissions: Rx.BehaviorSubject<Submission[]>;
+  public profile: Rx.BehaviorSubject<Profile>;
 
   private socket: WebSocketSubject<string>;
 
   constructor(private http: Http) {
     this.problems = new Rx.BehaviorSubject<Problem[]>([]);
     this.submissions = new Rx.BehaviorSubject<Submission[]>([]);
+    this.profile = new Rx.BehaviorSubject<Profile>(undefined);
 
     this.http.get(this.nonceUrl).forEach((response) => {
       console.debug(response.toString());
@@ -34,7 +37,7 @@ export class ApiService {
 
       this.socket.asObservable()
         .filter(data => data.startsWith("dbg:"))
-        .forEach(data => console.debug("WS DBG:", data));
+        .forEach(data => console.debug("WS DBG:", data.substring(4)));
 
       this.socket.asObservable()
         .filter(data => data === "rld:submissions")
@@ -48,9 +51,16 @@ export class ApiService {
         .filter(data => data === "rld:problems")
         .forEach((msg) => {
           console.log("I should reload my problems:", msg)
-          this.getSubmissions();
+          this.getProblems();
         });
       this.getProblems();
+
+      this.socket.asObservable()
+        .filter(data => data === "rld:profile")
+        .forEach((msg) => {
+          this.getProfile();
+        });
+      this.getProfile();
     });
   }
 
@@ -59,7 +69,7 @@ export class ApiService {
     let options = new RequestOptions({headers: headers});
 
     this.http.get("/api/problems", options)
-      .map(this.extractData)
+      .map(this.extractDataArray)
       .map((data) => data.map(p => new Problem(
         p.id,
         p.title,
@@ -84,7 +94,7 @@ export class ApiService {
     let options = new RequestOptions({headers: headers});
 
     this.http.get("/api/submissions", options)
-      .map(this.extractData)
+      .map(this.extractDataArray)
       .map((data) => data.map(s => new Submission(
         s.id,
         s.problem,
@@ -102,6 +112,21 @@ export class ApiService {
       })
       .catch(this.handleError)
       .subscribe((submissions) => this.submissions.next(submissions));
+  }
+  private getProfile():void {
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+
+    this.http.get("/api/profile", options)
+      .map(this.extractData)
+      .map(p => new Profile(
+        p.id,
+        p.type,
+        p.name,
+        p.members))
+      .filter(profile => JSON.stringify(this.profile.getValue()) != JSON.stringify(profile))
+      .catch(this.handleError)
+      .subscribe((profile) => this.profile.next(profile));
   }
 
   submit(problem: Problem, code: String) {
@@ -154,9 +179,13 @@ export class ApiService {
     }
   }
 
-  private extractData(res: Response) : any[] {
+  private extractDataArray(res: Response) : any[] {
     let body = res.json();
     return body || [];
+  }
+  private extractData(res: Response) : any {
+    let body = res.json();
+    return body || {};
   }
   private handleError (error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
@@ -170,6 +199,7 @@ export class ApiService {
       errMsg = error.message ? error.message : error.toString();
     }
     console.error(errMsg);
+    console.log(error);
     return Observable.throw(errMsg);
   }
 

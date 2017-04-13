@@ -3,9 +3,12 @@
     <nav>
       <h3>ACMDC</h3>
       <hr/>
-      <button md-button routerLink="/team" (click)="sidenav.close()">Team View</button>
+      <button *ngIf="isTeam" md-button routerLink="/team" (click)="sidenav.close()">Team View</button>
+      <button *ngIf="isJudge" md-button routerLink="/judge" (click)="sidenav.close()">Judge Queue</button>
       <button md-button routerLink="/scoreboard" (click)="sidenav.close()">Scoreboard</button>
-      <button md-button routerLink="/judge" (click)="sidenav.close()">Judge Queue</button>
+      <hr/>
+      <a md-button *ngIf="isJudge" href="/register" (click)="sidenav.close()">Register Team</a>
+      <a md-button href="/logout" (click)="sidenav.close()">Log Out</a>
     </nav>
   </md-sidenav>
 

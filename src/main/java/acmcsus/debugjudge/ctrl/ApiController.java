@@ -3,27 +3,22 @@ package acmcsus.debugjudge.ctrl;
 import acmcsus.debugjudge.ProcessBody;
 import acmcsus.debugjudge.Views;
 import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.ws.TeamSocketHandler;
-import com.fasterxml.jackson.core.JsonGenerator;
+import acmcsus.debugjudge.ws.SocketHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.json.JsonWriteContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.ebean.Ebean;
-import io.ebean.text.json.JsonContext;
 import spark.Request;
 import spark.Response;
 
-import java.beans.XMLEncoder;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
-import java.util.logging.XMLFormatter;
 
 import static acmcsus.debugjudge.ctrl.SecurityApi.getCompetition;
 import static acmcsus.debugjudge.ctrl.SecurityApi.getJudge;
@@ -37,6 +32,9 @@ public class ApiController {
     
     public static void routeAPI() {
         path("/api", () -> {
+            
+            before("/profile", SecurityApi::loggedInFilter);
+            get("/profile", ApiController::getProfile);
             
             before("/teams", SecurityApi::loggedInFilter);
             get("/teams", ApiController::getTeams);
@@ -56,10 +54,10 @@ public class ApiController {
                 before("/:id", SecurityApi::loggedInFilter);
                 get("/:id", ApiController::getSubmission);
                 
-//                before("/:id/accept", SecurityApi::judgeFilter);
+                before("/:id/accept", SecurityApi::judgeFilter);
                 post("/:id/accept", ApiController::acceptSubmission);
     
-//                before("/:id/reject", SecurityApi::judgeFilter);
+                before("/:id/reject", SecurityApi::judgeFilter);
                 post("/:id/reject", ApiController::rejectSubmission);
             });
             
@@ -73,13 +71,40 @@ public class ApiController {
             });
             
             
+            get("/scoreboard", ScoreboardController::getScoreboard);
+            
+            
             after("/*", (req, res) -> res.type("application/json"));
         });
     }
     
+    private static String getProfile(Request req, Response res) throws JsonProcessingException {
+        ObjectNode jsonNode = new ObjectNode(JsonNodeFactory.instance);
+        
+        Team team = SecurityApi.getTeam(req);
+        if (team != null) {
+            jsonNode.put("type", "team");
+            jsonNode.put("id", team.id);
+            jsonNode.put("name", team.teamName);
+            jsonNode.put("members", team.memberNames);
+        } else {
+            Judge judge = SecurityApi.getJudge(req);
+            
+            if (judge == null)
+                throw halt("LOGIC NO LONGER EXISTS");
+            
+            jsonNode.put("type", "judge");
+            jsonNode.put("id", judge.id);
+            jsonNode.put("name", judge.name);
+        }
+    
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(jsonNode);
+    }
+    
     public static String getTeams(Request req, Response res) throws JsonProcessingException {
         Competition competition = getCompetition(req);
-        List<Competition> result = Competition.find.query().where()
+        List<Team> result = Team.find.query().where()
                 .eq("competition_id", competition.id)
                 .findList();
         
@@ -129,14 +154,30 @@ public class ApiController {
     
     public static String getSubmissions(Request req, Response res) throws JsonProcessingException {
         Team team = SecurityApi.getTeam(req);
-        List<Submission> result = Submission.find.query()
-                .fetch("problem", "*")
-                .where()
-                .eq("team_id", team.id)
-                .findList();
+        if (team != null) {
+            List<Submission> result = Submission.find.query()
+                    .fetch("problem", "*")
+                    .where()
+                    .eq("team_id", team.id)
+                    .findList();
     
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(result);
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(result);
+        }
+        
+        Judge judge = SecurityApi.getJudge(req);
+        if (judge != null) {
+            List<Submission> result = Submission.find.query()
+                    .fetch("problem", "*")
+                    .where()
+                    .eq("competition_id", judge.competition.id)
+                    .findList();
+    
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(result);
+        }
+        
+        throw halt(401);
     }
     public static String getSubmission(Request req, Response res) throws JsonProcessingException {
         Team team = SecurityApi.getTeam(req);
@@ -171,7 +212,7 @@ public class ApiController {
             Event event = new Event();
             event.submission = submission;
             event.eventType = Event.EventType.SUBMISSION;
-            TeamSocketHandler.notifyTeam(submission.team, event);
+            SocketHandler.notify(submission.team, event);
             
             return Long.toString(submission.id);
         } catch (Exception e) {
@@ -198,7 +239,7 @@ public class ApiController {
             Event event = new Event();
             event.submission = submission;
             event.eventType = Event.EventType.ACCEPTANCE;
-            TeamSocketHandler.notifyTeam(submission.team, event);
+            SocketHandler.notify(submission.team, event);
             
             return "200";
         } catch (Exception e) {
@@ -220,7 +261,7 @@ public class ApiController {
             Event event = new Event();
             event.submission = submission;
             event.eventType = Event.EventType.REJECTION;
-            TeamSocketHandler.notifyTeam(submission.team, event);
+            SocketHandler.notify(submission.team, event);
             
             return "200";
         } catch (Exception e) {

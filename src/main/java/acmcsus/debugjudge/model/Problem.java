@@ -9,7 +9,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "problems", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"ref_id", "competition_id"})
+        @UniqueConstraint(columnNames = {"ref_id", "competition_id"}),
+        @UniqueConstraint(columnNames = {"order_index", "competition_id"})
 })
 public class Problem extends Model {
     
@@ -21,19 +22,22 @@ public class Problem extends Model {
     @Column(name = "ref_id", nullable = false)
     public String refId;
     
+    @Column(name="order_index", nullable = false)
+    public Long orderIndex;
+    
     @Column(name = "title", nullable = false, length = 50)
     public String title;
     
     @Column(name = "description", nullable = false, columnDefinition = "BLOB")
     public String description;
     
-    @Column(name = "precode", nullable = false, columnDefinition = "BLOB")
+    @Column(name = "precode", columnDefinition = "BLOB")
     public String precode;
     
     @Column(name = "code", nullable = false, columnDefinition = "BLOB")
     public String code;
     
-    @Column(name = "postcode", nullable = false, columnDefinition = "BLOB")
+    @Column(name = "postcode", columnDefinition = "BLOB")
     public String postcode;
     
     @JsonView(Views.JudgeView.class)

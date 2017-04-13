@@ -10,6 +10,7 @@ create table competitions (
 create table judges (
   id                            bigint auto_increment not null,
   name                          varchar(255),
+  login_secret                  varchar(255) not null,
   competition_id                bigint not null,
   constraint pk_judges primary key (id)
 );
@@ -17,14 +18,16 @@ create table judges (
 create table problems (
   id                            bigint auto_increment not null,
   ref_id                        varchar(255) not null,
+  order_index                   bigint not null,
   title                         varchar(50) not null,
   description                   longblob not null,
-  precode                       longblob not null,
+  precode                       longblob,
   code                          longblob not null,
-  postcode                      longblob not null,
+  postcode                      longblob,
   answer                        longblob not null,
   competition_id                bigint not null,
   constraint uq_problems_ref_id_competition_id unique (ref_id,competition_id),
+  constraint uq_problems_order_index_competition_id unique (order_index,competition_id),
   constraint pk_problems primary key (id)
 );
 
@@ -45,7 +48,7 @@ create table teams (
   id                            bigint auto_increment not null,
   team_name                     varchar(255) not null,
   member_names                  varchar(255) not null,
-  login_secret                  varchar(255),
+  login_secret                  varchar(255) not null,
   competition_id                bigint not null,
   constraint uq_teams_team_name_competition_id unique (team_name,competition_id),
   constraint pk_teams primary key (id)
