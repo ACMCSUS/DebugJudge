@@ -3,6 +3,4 @@ jdk:
   - oraclejdk8
 env:
   - NODE_VERSION=6.9.4
-script:
-  - nvm use $NODE_VERSION
-before_install: if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
+before_install: nvm use $NODE_VERSION && if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
