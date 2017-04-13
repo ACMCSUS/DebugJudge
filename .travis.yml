@@ -1,8 +1,8 @@
 language: java
-
 jdk:
   - oraclejdk8
-node_js:
-  - "6"
-
+env:
+  - NODE_VERSION=6.9.4
+script:
+  - nvm use $NODE_VERSION
 before_install: if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
