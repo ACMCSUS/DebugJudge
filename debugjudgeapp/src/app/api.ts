@@ -2,12 +2,15 @@ import {Injectable, EventEmitter} from "@angular/core";
 import {Http, Response, RequestOptions, Headers} from '@angular/http';
 
 import * as Rx from '@reactivex/rxjs';
+import 'rxjs/add/operator/toPromise';
 
 import {Problem} from "./models/problem";
 import {Submission} from "./models/submission";
 import {Observable} from "@reactivex/rxjs";
-import {WebSocketSubject} from "@reactivex/rxjs/dist/cjs/observable/dom/WebSocketSubject";
 import {Profile} from "./models/profile";
+import {JudgingApi} from "./api/jdg.api";
+import {RxWebSocketSubject} from "./api/RxWebSocketSubject";
+import {BehaviorSubject} from "@reactivex/rxjs";
 
 @Injectable()
 export class ApiService {
@@ -19,81 +22,100 @@ export class ApiService {
   public submissions: Rx.BehaviorSubject<Submission[]>;
   public profile: Rx.BehaviorSubject<Profile>;
 
-  private socket: WebSocketSubject<string>;
+  private socket: RxWebSocketSubject<any>;
+
+  public judgingApi: JudgingApi;
+  public loggedInStatus: BehaviorSubject<boolean>;
 
   constructor(private http: Http) {
     this.problems = new Rx.BehaviorSubject<Problem[]>([]);
     this.submissions = new Rx.BehaviorSubject<Submission[]>([]);
     this.profile = new Rx.BehaviorSubject<Profile>(undefined);
 
-    this.http.get(this.nonceUrl).forEach((response) => {
-      console.debug(response.toString());
-      this.socket = WebSocketSubject.create(this.wsUrl);
-      this.socket.next("login:"+response.text());
-    }).then(() => {
+    this.socket = new RxWebSocketSubject<any>(this.wsUrl);
+    this.loggedInStatus = new BehaviorSubject<boolean>(false);
+    this.setUpSocket();
 
-      this.socket.asObservable()
-        .forEach(data => console.debug("WS:", data));
+    this.judgingApi = new JudgingApi(this, this.socket);
 
-      this.socket.asObservable()
-        .filter(data => data.startsWith("dbg:"))
-        .forEach(data => console.debug("WS DBG:", data.substring(4)));
-
-      this.socket.asObservable()
-        .filter(data => data === "rld:submissions")
-        .forEach((msg) => {
-          console.log("I should reload my submissions:", msg)
-          this.getSubmissions();
+    this.socket.connectionStatus.subscribe((connectionStatus) => {
+      if (connectionStatus == true) {
+        this.http.get(this.nonceUrl).forEach((response) => {
+          console.log(response);
+          this.socket.send({who: 'login', data: response.text()});
+          this.loggedInStatus.next(true);
         });
-      this.getSubmissions();
-
-      this.socket.asObservable()
-        .filter(data => data === "rld:problems")
-        .forEach((msg) => {
-          console.log("I should reload my problems:", msg)
-          this.getProblems();
-        });
-      this.getProblems();
-
-      this.socket.asObservable()
-        .filter(data => data === "rld:profile")
-        .forEach((msg) => {
-          this.getProfile();
-        });
-      this.getProfile();
+      }
+      else {
+        this.loggedInStatus.next(false);
+      }
     });
   }
 
-  private getProblems():void {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
+  private setUpSocket() {
+    this.socket.asObservable()
+      .subscribe(msg => console.debug("WS:", msg));
 
-    this.http.get("/api/problems", options)
-      .map(this.extractDataArray)
-      .map((data) => data.map(p => new Problem(
-        p.id,
-        p.title,
-        p.description,
-        p.precode,
-        p.code,
-        p.postcode,
-        p.answer)))
-      .filter(problems => {
-        if (!this.arraysEqual(this.problems.getValue(), problems)) {
-          console.log("New problems!");
-          return true;
-        }
-        console.log("Steady Freddie");
-        return false;
-      })
-      .catch(this.handleError)
-      .subscribe((problems) => this.problems.next(problems));
+    this.socket.asObservable()
+      .filter(msg => msg.who === 'dbg')
+      .subscribe(msg => console.debug("WS DBG:", msg.data));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === 'alert')
+      .subscribe(msg => alert(msg.data));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === "api" && msg.what === 'rld-submissions')
+      .subscribe((msg) => {
+        console.log("I should reload my submissions:", msg);
+        this.getSubmissions()
+          .then((submissions) => this.submissions.next(submissions));
+      });
+    this.getSubmissions()
+      .then((submissions) => this.submissions.next(submissions));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === "api" && msg.what === 'rld-problems')
+      .subscribe((msg) => {
+        console.log("I should reload my problems:", msg);
+        this.getProblems()
+          .then((problems) => this.problems.next(problems));
+      });
+    this.getProblems()
+      .then((problems) => this.problems.next(problems));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === "api" && msg.what === 'rld-profile')
+      .subscribe((msg) => {
+        this.getProfile()
+          .then((profile) => this.profile.next(profile));
+      });
+    this.getProfile()
+      .then((profile) => this.profile.next(profile));
   }
-  private getSubmissions():void {
+
+
+  public getSubmission(id: number): Promise<Submission> {
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 
-    this.http.get("/api/submissions", options)
+    return this.http.get("/api/submission/"+id, options)
+      .map(this.extractData)
+      .map((s) => new Submission(
+        s.id,
+        s.problem,
+        s.team_id,
+        new Date(s.submittedAt),
+        s.code,
+        s.accepted))
+      .catch(this.handleError)
+      .toPromise()
+  }
+  public getSubmissions(): Promise<Submission[]> {
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+
+    return this.http.get("/api/submissions", options)
       .map(this.extractDataArray)
       .map((data) => data.map(s => new Submission(
         s.id,
@@ -102,22 +124,48 @@ export class ApiService {
         new Date(s.submittedAt),
         s.code,
         s.accepted)))
-      .filter(submissions => {
-        if (!this.arraysEqual(this.submissions.getValue(), submissions)) {
-          console.log("New submissions!");
-          return true;
-        }
-        console.log("Steady Freddie");
-        return false;
-      })
+      // .filter(submissions => {
+      //   if (!this.arraysEqual(this.submissions.getValue(), submissions)) {
+      //     console.log("New submissions!");
+      //     return true;
+      //   }
+      //   console.log("Steady Freddie");
+      //   return false;
+      // })
       .catch(this.handleError)
-      .subscribe((submissions) => this.submissions.next(submissions));
+      .toPromise();
   }
-  private getProfile():void {
+  public getProblems(): Promise<Problem[]> {
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 
-    this.http.get("/api/profile", options)
+    return this.http.get("/api/problems", options)
+      .map(this.extractDataArray)
+      .map((data) => data.map(p => new Problem(
+        p.id,
+        p.title,
+        p.description,
+        p.language,
+        p.precode,
+        p.code,
+        p.postcode,
+        p.answer)))
+      // .filter(problems => {
+      //   if (!this.arraysEqual(this.problems.getValue(), problems)) {
+      //     console.log("New problems!");
+      //     return true;
+      //   }
+      //   console.log("Steady Freddie");
+      //   return false;
+      // })
+      .catch(this.handleError)
+      .toPromise();
+  }
+  public getProfile(): Promise<Profile> {
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+
+    return this.http.get("/api/profile", options)
       .map(this.extractData)
       .map(p => new Profile(
         p.id,
@@ -126,10 +174,10 @@ export class ApiService {
         p.members))
       .filter(profile => JSON.stringify(this.profile.getValue()) != JSON.stringify(profile))
       .catch(this.handleError)
-      .subscribe((profile) => this.profile.next(profile));
+      .toPromise();
   }
 
-  submit(problem: Problem, code: String) {
+  public submit(problem: Problem, code: String) {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
@@ -145,7 +193,7 @@ export class ApiService {
       console.log(err);
     }
   }
-  accept(submission: Submission) {
+  public accept(submission: Submission) {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
@@ -161,7 +209,7 @@ export class ApiService {
       return undefined;
     }
   }
-  reject(submission: Submission) {
+  public reject(submission: Submission) {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
@@ -203,7 +251,7 @@ export class ApiService {
     return Observable.throw(errMsg);
   }
 
-  private arraysEqual(a: any[], b: any[]) : boolean {
+  public static arraysEqual(a: any[], b: any[]) : boolean {
     if (a === b) return true;
     if (a == null || b == null) return false;
     if (a.length != b.length) return false;

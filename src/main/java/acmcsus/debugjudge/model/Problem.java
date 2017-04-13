@@ -31,6 +31,9 @@ public class Problem extends Model {
     @Column(name = "description", nullable = false, columnDefinition = "BLOB")
     public String description;
     
+    @Column(name = "language", nullable = false, columnDefinition = "BLOB")
+    public String language;
+    
     @Column(name = "precode", columnDefinition = "BLOB")
     public String precode;
     

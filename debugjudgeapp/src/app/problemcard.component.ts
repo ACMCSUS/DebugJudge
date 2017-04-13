@@ -24,8 +24,9 @@ import {Subscription} from "@reactivex/rxjs";
 export class ProblemCardComponent implements OnInit, OnDestroy {
 
   stateExpression: string;
+  notify: boolean;
 
-  problem : Problem;
+  problem: Problem;
   submissions: Submission[] = [];
   problemSolved: boolean;
   @ViewChild(CodeEditorComponent) editor :CodeEditorComponent;
@@ -34,16 +35,22 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
 
   constructor(private apiService: ApiService){
     this.collapse();
+    this.notify = false;
   }
 
-  expand() { this.stateExpression = 'expanded'; }
+  expand() { this.stateExpression = 'expanded'; this.notify = false; }
   collapse() { this.stateExpression = 'collapsed'; }
 
   ngOnInit() {
     this.submissionSubscription = this.apiService.submissions.asObservable()
+      .filter(submissions => submissions !== undefined)
       .map(submissions => submissions.filter(
         submission => submission.problem.id == this.problem.id))
       .subscribe(submissions => {
+        if (this.submissions && this.submissions.length == submissions.length) {
+          if (!ApiService.arraysEqual(this.submissions, submissions))
+            this.notify = true;
+        }
         this.submissions = submissions;
         this.problemSolved = this.submissions.some(submission => submission.accepted);
       });
@@ -53,8 +60,11 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    console.log("Submitting");
     this.apiService.submit(this.problem, this.editor.code);
+  }
+
+  reset() {
+    this.editor.code = this.problem.code;
   }
 
 }

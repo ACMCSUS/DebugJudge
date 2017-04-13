@@ -1,6 +1,5 @@
 package acmcsus.debugjudge;
 
-import acmcsus.debugjudge.ctrl.ApiController;
 import acmcsus.debugjudge.ctrl.SecurityApi;
 import acmcsus.debugjudge.ws.SocketHandler;
 import spark.Request;

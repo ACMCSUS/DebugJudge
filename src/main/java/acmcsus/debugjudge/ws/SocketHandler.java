@@ -2,8 +2,8 @@ package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.ctrl.SecurityApi;
 import acmcsus.debugjudge.model.Event;
+import acmcsus.debugjudge.model.Judge;
 import acmcsus.debugjudge.model.Profile;
-import acmcsus.debugjudge.model.Team;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.websocket.api.Session;
@@ -34,7 +34,7 @@ public class SocketHandler {
     private static Logger logger = LoggerFactory.getLogger(SocketHandler.class);
     
     private static Map<Profile, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
-    private static Map<Session, Profile> sessionTeamMap = new ConcurrentHashMap<>();
+    private static Map<Session, Profile> sessionProfileMap = new ConcurrentHashMap<>();
     private static Map<String, Profile> nonceProfileMap = new ConcurrentHashMap<>();
     
     public static String nonceRoute(Request req, Response res) {
@@ -55,25 +55,37 @@ public class SocketHandler {
     public void onClose(Session user, int statusCode, String reason) {
         logger.info("WebSocket closed");
         
-        Profile profile = sessionTeamMap.remove(user);
+        Profile profile = sessionProfileMap.remove(user);
         if (profile != null) {
+            if (profile instanceof Judge) {
+                JudgeQueueHandler.getInstance().disconnected((Judge) profile);
+            }
+            
             profileSessionMap.remove(profile);
         }
     }
 
     @OnWebSocketMessage
     public void onMessage(Session user, String message) {
-        logger.info("Received Message: " + message);
+        ObjectMapper mapper = new ObjectMapper();
+        WebSocketMessage msg;
         
-        if (message.startsWith("login:")) {
-            ObjectMapper mapper = new ObjectMapper();
+        try {
+            msg = mapper.readValue(message, WebSocketMessage.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        
+        logger.info("Received Message: " + message);
+        if ("login".equals(msg.who)) {
             
             try {
-                String nonce = message.substring(6);
+                String nonce = msg.data;
                 
-                if (nonce.isEmpty()) {
+                if (nonce == null || nonce.isEmpty()) {
                     logger.warn("Empty Login Request");
-                    user.getRemote().sendString("\"dbg:Empty Login Request\"");
+                    user.getRemote().sendString(WebSocketMessage.who("dbg").data("Empty Login Request").toString());
                 }
                 
                 Profile profile = nonceProfileMap.remove(nonce);
@@ -83,23 +95,51 @@ public class SocketHandler {
                         profileSessionMap.put(profile, new HashSet<>());
                     
                     profileSessionMap.get(profile).add(user);
-                    sessionTeamMap.put(user, profile);
-                    user.getRemote().sendString("\"dbg:Login Successful\"");
-                    System.out.println("Sent dbg.");
+                    sessionProfileMap.put(user, profile);
+                    debug(profile, "Login Successful!");
                 } else {
-                    user.getRemote().sendString("\"dbg:Bad Nonce\"");
+                    user.getRemote().sendString(WebSocketMessage.who("dbg").data("Bad Nonce.").toString());
                 }
-            } catch (Exception ignored) { /* Oh well lol */ }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Profile profile = sessionProfileMap.get(user);
+            
+            if (profile == null) {
+                System.err.println("Someone tried using a WebSocket from " +
+                        user.getRemoteAddress().getAddress() +
+                        " without being logged in: " + message);
+                return;
+            }
+            
+            if ("jdg".equals(msg.who)) {
+                
+                if (profile.getType() != Profile.ProfileType.JUDGE) {
+                    System.err.println("Non-judge user " + profile.getName() + " tried using the judger!");
+                    return;
+                }
+        
+                if ("start".equals(msg.what)) {
+                    JudgeQueueHandler.getInstance().connected((Judge) profile, user);
+                } else if ("stop".equals(msg.what)) {
+                    JudgeQueueHandler.getInstance().disconnected((Judge) profile);
+                } else {
+                    System.out.println("I don't understand: " + message);
+                }
+            } else {
+                System.out.println("I don't understand: " + message);
+            }
         }
     }
     public static void notify(Profile profile, Event event) {
         try {
             Set<Session> sessions = profileSessionMap.get(profile);
             
-            for (Session session : sessions) {
-                logger.info("Telling team to reload.");
-//                session.getRemote().sendString(event.toString());
-                session.getRemote().sendString("\"rld:submissions\"");
+            if (sessions != null) {
+                for (Session session : sessions) {
+                    session.getRemote().sendString(WebSocketMessage.who("api").what("rld-submissions").toString());
+                }
             }
         } catch (Exception e) {
             logger.warn("Error while notifying "+profile.getName()+": ", e);
@@ -108,10 +148,11 @@ public class SocketHandler {
     public static void debug(Profile profile, String message) {
         try {
             Set<Session> sessions = profileSessionMap.get(profile);
-    
-            for (Session session : sessions) {
-                logger.info("Telling team to reload.");
-                session.getRemote().sendString("\"dbg:" + message + "\"");
+            
+            if (sessions != null) {
+                for (Session session : sessions) {
+                    session.getRemote().sendString(WebSocketMessage.who("dbg").data(message).toString());
+                }
             }
         } catch (Exception e) {
             logger.warn("Error while debugging "+profile.getName()+": ", e);
