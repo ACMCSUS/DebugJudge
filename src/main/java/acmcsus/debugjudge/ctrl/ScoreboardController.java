@@ -7,6 +7,7 @@ import acmcsus.debugjudge.model.Submission;
 import acmcsus.debugjudge.model.Team;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.jetbrains.annotations.NotNull;
 import spark.Request;
 import spark.Response;
 
@@ -14,6 +15,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static spark.Spark.halt;
 
@@ -29,9 +31,27 @@ public class ScoreboardController {
     private static class TeamBarebones {
         public String name;
         public Long id;
-        TeamBarebones(Team team) {
+        public Score score;
+        public int place;
+        
+        TeamBarebones(Team team, Score score) {
             this.name = team.teamName;
             this.id = team.id;
+            this.score = score;
+        }
+    }
+    
+    private static class Score implements Comparable<Score> {
+        public int correct = 0;
+//        public int penalty = 0;
+
+        @Override
+        public int compareTo(Score o) {
+            if (o == null)
+                return 1;
+//            if (correct != o.correct)
+                return -Integer.compare(correct, o.correct);
+//            return Integer.compare(penalty, o.penalty);
         }
     }
     
@@ -64,12 +84,16 @@ public class ScoreboardController {
                     .where()
                     .eq("competition_id", competition.id)
                     .findList();
-    
-            scoreboardMap.put("teams", teams.stream().map(TeamBarebones::new).toArray());
             
+            Map<Long, Score> teamScores = new HashMap<>();
             Map<Long, Map<Long, Long>> teamProblemSubmissionCount = new HashMap<>();
             Map<Long, Map<Long, Boolean>> teamProblemAcceptance = new HashMap<>();
-    
+            
+            for (Team team : teams) {
+                teamProblemSubmissionCount.put(team.id, new HashMap<>());
+                teamScores.put(team.id, new Score());
+            }
+            
             List<Submission> submissions = Submission.find.query()
                     .fetch("team", "*")
                     .where()
@@ -82,8 +106,7 @@ public class ScoreboardController {
 //                        || submission.team.competition.id != competition.id)
 //                    continue;
                 
-                if (!teamProblemSubmissionCount.containsKey(submission.team.id))
-                    teamProblemSubmissionCount.put(submission.team.id, new HashMap<>());
+                Score score = teamScores.get(submission.team.id);
                 
                 Map<Long, Long> problemCounts = teamProblemSubmissionCount.get(submission.team.id);
                 problemCounts.put(submission.problem.id, problemCounts.getOrDefault(submission.problem.id, 0L) + 1);
@@ -93,10 +116,36 @@ public class ScoreboardController {
                         teamProblemAcceptance.put(submission.team.id, new HashMap<>());
                     
                     Map<Long, Boolean> problemAcceptances = teamProblemAcceptance.get(submission.team.id);
-                    problemAcceptances.put(submission.problem.id, true);
+                    Boolean prev = problemAcceptances.put(submission.problem.id, true);
+                    
+                    if (prev == null || !prev) {
+                        score.correct += 1;
+                    }
+                }
+            }
+    
+            List<TeamBarebones> teamBarebones = teams.stream()
+                    .map(team -> new TeamBarebones(team, teamScores.get(team.id)))
+                    .collect(Collectors.toList());
+            teamBarebones.sort(Comparator.comparing(t -> t.score));
+            
+            
+            int place = 1;
+            if (!teamBarebones.isEmpty()) {
+                teamBarebones.get(0).place = 1;
+                for (int i = 1; i < teamBarebones.size(); i += 1) {
+                    TeamBarebones prev = teamBarebones.get(i - 1);
+                    TeamBarebones cur = teamBarebones.get(i);
+        
+                    if (cur.score.compareTo(prev.score) != 0) {
+                        place = i+1;
+                    }
+        
+                    cur.place = place;
                 }
             }
             
+            scoreboardMap.put("teams", teamBarebones);
             scoreboardMap.put("teamSubmissionCounts", teamProblemSubmissionCount);
             scoreboardMap.put("teamAcceptances", teamProblemAcceptance);
             
