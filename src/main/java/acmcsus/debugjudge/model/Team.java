@@ -46,7 +46,7 @@ public class Team extends Model implements Profile {
     }
     @Override
     public Profile.ProfileType getType() {
-        return Profile.ProfileType.JUDGE;
+        return ProfileType.TEAM;
     }
     @Override
     public Competition getCompetition() {

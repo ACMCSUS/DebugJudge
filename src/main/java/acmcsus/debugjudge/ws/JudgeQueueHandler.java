@@ -72,7 +72,7 @@ public class JudgeQueueHandler {
                 judgeSession.socketSession.getRemote().sendString("{" +
                         "\"who\":\"jdg\"," +
                         "\"what\":\"kick\"," +
-                        "\"why\":\"" + reason + "\"" +
+                        "\"data\":\"" + reason + "\"" +
                         "}");
             } catch (IOException e) {
                 e.printStackTrace();

@@ -4,6 +4,7 @@ import acmcsus.debugjudge.ctrl.SecurityApi;
 import acmcsus.debugjudge.model.Event;
 import acmcsus.debugjudge.model.Judge;
 import acmcsus.debugjudge.model.Profile;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -65,17 +67,25 @@ public class SocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session user, String message) {
-        logger.info("Received Message: " + message);
+        ObjectMapper mapper = new ObjectMapper();
+        WebSocketMessage msg;
         
-        if (message.startsWith("login:")) {
-            ObjectMapper mapper = new ObjectMapper();
+        try {
+            msg = mapper.readValue(message, WebSocketMessage.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        
+        logger.info("Received Message: " + message);
+        if ("login".equals(msg.who)) {
             
             try {
-                String nonce = message.substring(6);
+                String nonce = msg.data;
                 
-                if (nonce.isEmpty()) {
+                if (nonce == null || nonce.isEmpty()) {
                     logger.warn("Empty Login Request");
-                    user.getRemote().sendString("{\"who\":\"dbg\",\"data\":\"Empty Login Request\"}");
+                    user.getRemote().sendString(WebSocketMessage.who("dbg").data("Empty Login Request").toString());
                 }
                 
                 Profile profile = nonceProfileMap.remove(nonce);
@@ -86,16 +96,9 @@ public class SocketHandler {
                     
                     profileSessionMap.get(profile).add(user);
                     sessionProfileMap.put(user, profile);
-                    user.getRemote().sendString("{" +
-                            "\"who\":\"dbg\"," +
-                            "\"data\":\"Login Successful\"" +
-                            "}");
-                    System.out.println("Sent dbg.");
+                    debug(profile, "Login Successful!");
                 } else {
-                    user.getRemote().sendString("{" +
-                            "\"who\":\"dbg\"," +
-                            "\"data\":\"Bad Nonce\"" +
-                            "}");
+                    user.getRemote().sendString(WebSocketMessage.who("dbg").data("Bad Nonce.").toString());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -106,22 +109,26 @@ public class SocketHandler {
             if (profile == null) {
                 System.err.println("Someone tried using a WebSocket from " +
                         user.getRemoteAddress().getAddress() +
-                        " without being logged in!");
+                        " without being logged in: " + message);
                 return;
             }
             
-            if (message.startsWith("jdg:")) {
+            if ("jdg".equals(msg.who)) {
                 
                 if (profile.getType() != Profile.ProfileType.JUDGE) {
                     System.err.println("Non-judge user " + profile.getName() + " tried using the judger!");
                     return;
                 }
         
-                if (message.equals("jdg:start")) {
+                if ("start".equals(msg.what)) {
                     JudgeQueueHandler.getInstance().connected((Judge) profile, user);
-                } else if (message.equals("jdg:stop")) {
+                } else if ("stop".equals(msg.what)) {
                     JudgeQueueHandler.getInstance().disconnected((Judge) profile);
+                } else {
+                    System.out.println("I don't understand: " + message);
                 }
+            } else {
+                System.out.println("I don't understand: " + message);
             }
         }
     }
@@ -129,8 +136,10 @@ public class SocketHandler {
         try {
             Set<Session> sessions = profileSessionMap.get(profile);
             
-            for (Session session : sessions) {
-                session.getRemote().sendString("{\"who\":\"api\",\"what\":\"rld-submissions\"}");
+            if (sessions != null) {
+                for (Session session : sessions) {
+                    session.getRemote().sendString(WebSocketMessage.who("api").what("rld-submissions").toString());
+                }
             }
         } catch (Exception e) {
             logger.warn("Error while notifying "+profile.getName()+": ", e);
@@ -139,9 +148,11 @@ public class SocketHandler {
     public static void debug(Profile profile, String message) {
         try {
             Set<Session> sessions = profileSessionMap.get(profile);
-    
-            for (Session session : sessions) {
-                session.getRemote().sendString("{\"who\":\"dbg\",\"data\":\"" + message.replaceAll("\"", "\\\"")+ "\"}");
+            
+            if (sessions != null) {
+                for (Session session : sessions) {
+                    session.getRemote().sendString(WebSocketMessage.who("dbg").data(message).toString());
+                }
             }
         } catch (Exception e) {
             logger.warn("Error while debugging "+profile.getName()+": ", e);

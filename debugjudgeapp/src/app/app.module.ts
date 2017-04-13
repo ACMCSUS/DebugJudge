@@ -13,10 +13,10 @@ import { CodeEditorComponent } from "./codeeditor.component";
 
 import {Autosize} from 'angular2-autosize/src/autosize.directive';
 import {ProblemCardComponent} from "./problemcard.component";
+import {IndexComponent} from "./index.component";
 
 const appRoutes: Routes = [
-  { path: 'team', component: TeamComponent },
-  { path: 'judge', component: JudgeComponent },
+  { path: '', component: IndexComponent },
   { path: 'scoreboard', component: ScoreboardComponent },
 ];
 
@@ -25,6 +25,7 @@ const appRoutes: Routes = [
     Autosize,
 
     AppComponent,
+    IndexComponent,
     TeamComponent,
     JudgeComponent,
     ScoreboardComponent,

@@ -7,9 +7,10 @@ import 'rxjs/add/operator/toPromise';
 import {Problem} from "./models/problem";
 import {Submission} from "./models/submission";
 import {Observable} from "@reactivex/rxjs";
-import {WebSocketSubject} from "@reactivex/rxjs/dist/cjs/observable/dom/WebSocketSubject";
 import {Profile} from "./models/profile";
 import {JudgingApi} from "./api/jdg.api";
+import {RxWebSocketSubject} from "./api/RxWebSocketSubject";
+import {BehaviorSubject} from "@reactivex/rxjs";
 
 @Injectable()
 export class ApiService {
@@ -21,58 +22,76 @@ export class ApiService {
   public submissions: Rx.BehaviorSubject<Submission[]>;
   public profile: Rx.BehaviorSubject<Profile>;
 
-  private socket: WebSocketSubject<any>;
+  private socket: RxWebSocketSubject<any>;
 
   public judgingApi: JudgingApi;
+  public loggedInStatus: BehaviorSubject<boolean>;
 
   constructor(private http: Http) {
     this.problems = new Rx.BehaviorSubject<Problem[]>([]);
     this.submissions = new Rx.BehaviorSubject<Submission[]>([]);
     this.profile = new Rx.BehaviorSubject<Profile>(undefined);
 
-    this.http.get(this.nonceUrl).forEach((response) => {
-      console.debug(response.toString());
-      this.socket = WebSocketSubject.create(this.wsUrl);
-      this.socket.next("login:"+response.text());
-      this.judgingApi = new JudgingApi(this, this.socket);
-    }).then(() => {
+    this.socket = new RxWebSocketSubject<any>(this.wsUrl);
+    this.loggedInStatus = new BehaviorSubject<boolean>(false);
+    this.setUpSocket();
 
-      this.socket.asObservable()
-        .subscribe(msg => console.debug("WS:", msg));
+    this.judgingApi = new JudgingApi(this, this.socket);
 
-      this.socket.asObservable()
-        .filter(msg => msg.who === 'dbg:')
-        .subscribe(msg => console.debug("WS DBG:", msg.data));
-
-      this.socket.asObservable()
-        .filter(msg => msg.who === "api" && msg.what === 'rld-submissions')
-        .subscribe((msg) => {
-          console.log("I should reload my submissions:", msg);
-          this.getSubmissions()
-            .then((submissions) => this.submissions.next(submissions));
+    this.socket.connectionStatus.subscribe((connectionStatus) => {
+      if (connectionStatus == true) {
+        this.http.get(this.nonceUrl).forEach((response) => {
+          console.log(response);
+          this.socket.send({who: 'login', data: response.text()});
+          this.loggedInStatus.next(true);
         });
-      this.getSubmissions()
-        .then((submissions) => this.submissions.next(submissions));
-
-      this.socket.asObservable()
-        .filter(msg => msg.who === "api" && msg.what === 'rld-problems')
-        .subscribe((msg) => {
-          console.log("I should reload my problems:", msg);
-          this.getProblems()
-            .then((problems) => this.problems.next(problems));
-        });
-      this.getProblems()
-        .then((problems) => this.problems.next(problems));
-
-      this.socket.asObservable()
-        .filter(msg => msg.who === "api" && msg.what === 'rld-profile')
-        .subscribe((msg) => {
-          this.getProfile()
-            .then((profile) => this.profile.next(profile));
-        });
-      this.getProfile()
-        .then((profile) => this.profile.next(profile));
+      }
+      else {
+        this.loggedInStatus.next(false);
+      }
     });
+  }
+
+  private setUpSocket() {
+    this.socket.asObservable()
+      .subscribe(msg => console.debug("WS:", msg));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === 'dbg')
+      .subscribe(msg => console.debug("WS DBG:", msg.data));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === 'alert')
+      .subscribe(msg => alert(msg.data));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === "api" && msg.what === 'rld-submissions')
+      .subscribe((msg) => {
+        console.log("I should reload my submissions:", msg);
+        this.getSubmissions()
+          .then((submissions) => this.submissions.next(submissions));
+      });
+    this.getSubmissions()
+      .then((submissions) => this.submissions.next(submissions));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === "api" && msg.what === 'rld-problems')
+      .subscribe((msg) => {
+        console.log("I should reload my problems:", msg);
+        this.getProblems()
+          .then((problems) => this.problems.next(problems));
+      });
+    this.getProblems()
+      .then((problems) => this.problems.next(problems));
+
+    this.socket.asObservable()
+      .filter(msg => msg.who === "api" && msg.what === 'rld-profile')
+      .subscribe((msg) => {
+        this.getProfile()
+          .then((profile) => this.profile.next(profile));
+      });
+    this.getProfile()
+      .then((profile) => this.profile.next(profile));
   }
 
 
@@ -80,7 +99,7 @@ export class ApiService {
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 
-    return this.http.get("/api/submission/"+id)
+    return this.http.get("/api/submission/"+id, options)
       .map(this.extractData)
       .map((s) => new Submission(
         s.id,
@@ -232,7 +251,7 @@ export class ApiService {
     return Observable.throw(errMsg);
   }
 
-  private arraysEqual(a: any[], b: any[]) : boolean {
+  public static arraysEqual(a: any[], b: any[]) : boolean {
     if (a === b) return true;
     if (a == null || b == null) return false;
     if (a.length != b.length) return false;

@@ -2,16 +2,16 @@
  * https://gearheart.io/blog/auto-websocket-reconnection-with-rxjs/ *
  ********************************************************************/
 
-import { Subject, Observer, Observable } from 'rxjs';
-import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/observable/dom/WebSocketSubject';
+import {Subject, Observer, Observable, BehaviorSubject} from '@reactivex/rxjs';
+import {WebSocketSubjectConfig, WebSocketSubject} from "@reactivex/rxjs/dist/cjs/observable/dom/WebSocketSubject";
 
 /// we inherit from the ordinary Subject
 export class RxWebSocketSubject<T> extends Subject<T> {
   private reconnectionObservable: Observable<number>;
   private wsSubjectConfig: WebSocketSubjectConfig;
   private socket: WebSocketSubject<any>;
-  private connectionObserver: Observer<boolean>;
-  public connectionStatus: Observable<boolean>;
+  // private connectionObserver: Observer<boolean>;
+  public connectionStatus: BehaviorSubject<boolean>;
 
   /// by default, when a message is received from the server, we are trying to decode it as JSON
   /// we can override it in the constructor
@@ -36,9 +36,8 @@ export class RxWebSocketSubject<T> extends Subject<T> {
     super();
 
     /// connection status
-    this.connectionStatus = new Observable((observer) => {
-      this.connectionObserver = observer;
-    }).share().distinctUntilChanged();
+    this.connectionStatus = new BehaviorSubject<boolean>(false);
+    // this.connectionStatus.subscribe((value) => this.connectionObserver.next(value));
 
     if (!resultSelector) {
       this.resultSelector = this.defaultResultSelector;
@@ -54,12 +53,12 @@ export class RxWebSocketSubject<T> extends Subject<T> {
       closeObserver: {
         next: (e: CloseEvent) => {
           this.socket = null;
-          this.connectionObserver.next(false);
+          this.connectionStatus.next(false);
         }
       },
       openObserver: {
         next: (e: Event) => {
-          this.connectionObserver.next(true);
+          this.connectionStatus.next(true);
         }
       }
     };
@@ -103,7 +102,7 @@ export class RxWebSocketSubject<T> extends Subject<T> {
         this.reconnectionObservable = null;
         if (!this.socket) {
           this.complete();
-          this.connectionObserver.complete();
+          this.connectionStatus.complete();
         }
       });
   }

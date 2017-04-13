@@ -4,6 +4,10 @@ insert into judges (id, name, login_secret, competition_id)
   values (1, 'Judge Judy', 'pass', 1);
 insert into judges (id, name, login_secret, competition_id)
   values (2, 'Judge Ingyu', 'pass', 1);
+insert into judges (id, name, login_secret, competition_id)
+  values (3, 'Judge Q', 'pass', 1);
+insert into judges (id, name, login_secret, competition_id)
+  values (4, 'Judge Nelsen', 'pass', 1);
 
 insert into teams (id, team_name, login_secret, member_names, competition_id)
   values (1, 'PaddysPub', 'pass', 'Dennis, Mac, Charlie, Frank, Dee', 1);

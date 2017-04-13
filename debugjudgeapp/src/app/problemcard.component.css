@@ -23,3 +23,16 @@ md-menu {
 .submissionListing span {
   display: block;
 }
+
+.notify {
+  animation: notify-animation 2s infinite;
+}
+
+@keyframes notify-animation {
+  0%, 20%, 40%, 100% {
+    background-color: #ee9999;
+  }
+  10%, 30% {
+    background-color: #ffcccc;
+  }
+}

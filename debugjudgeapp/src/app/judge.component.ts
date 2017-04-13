@@ -4,7 +4,7 @@ import {Submission} from "./models/submission";
 import {Subscription} from "@reactivex/rxjs";
 
 @Component({
-  selector: 'app-root',
+  selector: 'judge-view',
   templateUrl: './judge.component.html',
   styleUrls: ['./judge.component.css']
 })

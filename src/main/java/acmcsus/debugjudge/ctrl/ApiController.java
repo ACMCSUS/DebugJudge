@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.ebean.Ebean;
+import io.ebean.ExpressionList;
 import spark.Request;
 import spark.Response;
 
@@ -81,22 +82,22 @@ public class ApiController {
     
     private static String getProfile(Request req, Response res) throws JsonProcessingException {
         ObjectNode jsonNode = new ObjectNode(JsonNodeFactory.instance);
+        Profile profile = SecurityApi.getProfile(req);
+        if (profile == null) throw halt(401);
         
-        Team team = SecurityApi.getTeam(req);
-        if (team != null) {
+        if (profile.getType() == Profile.ProfileType.TEAM) {
             jsonNode.put("type", "team");
-            jsonNode.put("id", team.id);
-            jsonNode.put("name", team.teamName);
-            jsonNode.put("members", team.memberNames);
-        } else {
-            Judge judge = SecurityApi.getJudge(req);
+            jsonNode.put("id", profile.getId());
+            jsonNode.put("name", profile.getName());
+            jsonNode.put("members", ((Team)profile).memberNames);
             
-            if (judge == null)
-                throw halt("LOGIC NO LONGER EXISTS");
-            
+        } else if (profile.getType() == Profile.ProfileType.JUDGE) {
             jsonNode.put("type", "judge");
-            jsonNode.put("id", judge.id);
-            jsonNode.put("name", judge.name);
+            jsonNode.put("id", profile.getId());
+            jsonNode.put("name", profile.getName());
+            
+        } else {
+            throw halt(401);
         }
     
         ObjectMapper mapper = new ObjectMapper();
@@ -109,76 +110,33 @@ public class ApiController {
                 .eq("competition_id", competition.id)
                 .findList();
         
-        return Ebean.json().toJson(result);
+        return writeForView(result, Views.PublicView.class);
     }
     public static String getTeam(Request req, Response res) throws JsonProcessingException {
-        Team team = SecurityApi.getTeam(req);
-        Judge judge = getJudge(req);
-        
         Team result = Team.find.query().where()
                 .eq("id", req.params("id"))
                 .findUnique();
         
         if (result == null) throw halt(404);
         
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectWriter writer;
-        
-        if (judge != null)
-            writer = mapper.writerWithView(Views.JudgeView.class);
-        else if (team != null && team.id.equals(result.id))
-            writer = mapper.writerWithView(Views.TeamView.class);
-        else
-            writer = mapper.writerWithView(Views.PublicView.class);
-        
-        return writer.writeValueAsString(result);
+        return writeForProfile(result, SecurityApi.getProfile(req));
     }
-//    private static String newTeam(Request req, Response res) {
-//        SecurityApi.teamFilter(req, res);
-//        try {
-//            JsonNode json = ProcessBody.asJson(req);
-//
-//            Submission submission = new Submission();
-//            submission.team = SecurityApi.getTeam(req);
-//            submission.problem = Problem.find.byId(json.get("problem_id").asLong());
-//            submission.submittedAt = Date.from(Instant.now());
-//            submission.text = json.get("text").asText();
-//
-//            submission.save();
-//            submission.refresh();
-//
-//            return Long.toString(submission.id);
-//        } catch (IOException e) {
-//            throw halt(400);
-//        }
-//    }
     
     public static String getSubmissions(Request req, Response res) throws JsonProcessingException {
-        Team team = SecurityApi.getTeam(req);
-        if (team != null) {
-            List<Submission> result = Submission.find.query()
-                    .fetch("problem", "*")
-                    .where()
-                    .eq("team_id", team.id)
-                    .findList();
-    
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(result);
+        Profile profile = SecurityApi.getProfile(req);
+        if (profile == null) throw halt(401);
+        
+        ExpressionList<Submission> expr = Submission.find.query()
+                .fetch("problem", "*")
+                .where()
+                .eq("competition_id", profile.getCompetition().id);
+        
+        
+        if (profile.getType() == Profile.ProfileType.TEAM) {
+            expr = expr.eq("team_id", profile.getId());
         }
         
-        Judge judge = SecurityApi.getJudge(req);
-        if (judge != null) {
-            List<Submission> result = Submission.find.query()
-                    .fetch("problem", "*")
-                    .where()
-                    .eq("competition_id", judge.competition.id)
-                    .findList();
-    
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(result);
-        }
-        
-        throw halt(401);
+        return writeForProfile(expr.findList(), profile);
     }
     public static String getSubmission(Request req, Response res) throws JsonProcessingException {
         Team team = SecurityApi.getTeam(req);
@@ -230,7 +188,7 @@ public class ApiController {
     }
     private static String acceptSubmission(Request req, Response res) {
         Judge judge = SecurityApi.getJudge(req);
-//TODO:        if (judge == null) throw halt(403);
+        if (judge == null) throw halt(403);
     
         try {
             Submission submission = Submission.find.byId(Long.valueOf(req.params("id")));
@@ -254,7 +212,7 @@ public class ApiController {
     }
     private static String rejectSubmission(Request req, Response res) {
         Judge judge = SecurityApi.getJudge(req);
-//TODO:        if (judge == null) throw halt(403);
+        if (judge == null) throw halt(403);
         
         try {
             Submission submission = Submission.find.byId(Long.valueOf(req.params("id")));
@@ -284,7 +242,7 @@ public class ApiController {
                 .eq("competition_id", competition.id)
                 .findList();
         
-        return Ebean.json().toJson(result);
+        return writeForProfile(result, SecurityApi.getProfile(req));
     }
     public static String getProblem(Request req, Response res) throws JsonProcessingException {
         Competition competition = getCompetition(req);
@@ -294,10 +252,27 @@ public class ApiController {
                 .eq("id", req.params("id"))
                 .findUnique();
         
-        if (result == null)
-            throw halt(404);
+        if (result == null) throw halt(404);
         
-        return Ebean.json().toJson(result);
+        return writeForProfile(result, SecurityApi.getProfile(req));
+    }
+    
+    private static String writeForProfile(Object result, Profile profile) throws JsonProcessingException {
+        Class clazz;
+        
+        if (profile != null && profile.getType() == Profile.ProfileType.TEAM)
+            clazz = Views.TeamView.class;
+        else if (profile != null && profile.getType() == Profile.ProfileType.JUDGE)
+            clazz = Views.JudgeView.class;
+        else
+            clazz = Views.PublicView.class;
+    
+        return writeForView(result, clazz);
+    }
+    private static String writeForView(Object result, Class clazz) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectWriter writer = mapper.writerWithView(clazz);
+        return writer.writeValueAsString(result);
     }
     
     
