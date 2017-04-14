@@ -11,10 +11,24 @@
   <md-card-actions>
     <button md-button (click)="accept(submission)">Accept</button>
     <button md-button (click)="reject(submission)">Reject</button>
+    <button md-button (click)="defer(submission)">Defer</button>
   </md-card-actions>
 </md-card>
 
 <md-card *ngIf="!submission" class="currentCard">
   <md-card-title>No Submission Available:</md-card-title>
   <md-card-content>{{statusMessage}}</md-card-content>
+</md-card>
+
+<md-card class="preferenceCard">
+  <md-card-title>Problem Preferences</md-card-title>
+  <md-card-subtitle>Check all problems which you would like to judge.</md-card-subtitle>
+  <md-list>
+    <div *ngFor="let problem of problems">
+      <md-checkbox [(ngModel)]="problemPreferences[problem.id]">{{problem.title}}</md-checkbox>
+    </div>
+  </md-list>
+  <md-card-actions>
+    <button md-button (click)="updatePreferences()">Submit</button>
+  </md-card-actions>
 </md-card>

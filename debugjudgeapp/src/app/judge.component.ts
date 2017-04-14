@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from "@angular/core";
 import {ApiService} from "./api";
 import {Submission} from "./models/submission";
 import {Subscription} from "@reactivex/rxjs";
+import {Problem} from "./models/problem";
 
 @Component({
   selector: 'judge-view',
@@ -16,11 +17,22 @@ export class JudgeComponent implements OnInit, OnDestroy {
   statusMessage: string;
   statusMessageSubscription: Subscription;
 
+  problems: Problem[] = [];
+  problemPreferences: {} = {};
+
   constructor(private apiService: ApiService) {
   }
 
   ngOnInit() {
     this.apiService.judgingApi.startSession();
+
+    this.apiService.getProblems()
+      .then((problems) => {
+        this.problems = problems;
+        for (let problem of problems)
+          this.problemPreferences[problem.id] = true;
+        console.log(this.problems);
+    });
 
     this.submissionSubscription = this.apiService.judgingApi.submission
       .subscribe((submission) => this.submission = submission);
@@ -39,5 +51,12 @@ export class JudgeComponent implements OnInit, OnDestroy {
   }
   public reject(submission: Submission) {
     this.apiService.reject(submission).subscribe();
+  }
+  public defer(submission: Submission) {
+    this.apiService.judgingApi.defer(submission);
+  }
+
+  public updatePreferences() {
+    this.apiService.judgingApi.preferences(this.problemPreferences);
   }
 }

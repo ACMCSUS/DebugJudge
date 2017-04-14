@@ -76,4 +76,11 @@ export class JudgingApi {
       .then((submission: Submission) => this.submission.next(submission));
   }
 
+  public defer(submission: Submission) {
+    this.socket.send({who:'jdg', what:'defer', data:submission.id})
+  }
+
+  preferences(problemPreferences: {}) {
+    this.socket.send({who:'jdg', what:'pref', data: problemPreferences})
+  }
 }
