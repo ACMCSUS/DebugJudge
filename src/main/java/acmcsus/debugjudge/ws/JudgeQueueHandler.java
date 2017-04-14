@@ -171,6 +171,7 @@ public class JudgeQueueHandler implements ISocketEventHandler {
         if (judgeSession == null) {
             waitingSubmissions.removeIf(sub -> sub.id.equals(submission.id));
         } else {
+            judgeSession.currentSubmission = null;
             match(judgeSession);
         }
     }
