@@ -17,17 +17,21 @@ import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @WebSocket
 public class SocketHandler {
     
-    private SocketHandler(){}
+    private final Map<String, ISocketEventHandler> handlers;
+    
+    private SocketHandler(){
+        this.handlers = new HashMap<>();
+        
+        handlers.put("jdg", JudgeQueueHandler.getInstance());
+        handlers.put("echo", System.out::println);
+    }
     private static final SocketHandler theInstance = new SocketHandler();
     public static SocketHandler getInstance() { return theInstance; }
     
@@ -68,20 +72,23 @@ public class SocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session user, String message) {
         ObjectMapper mapper = new ObjectMapper();
-        WebSocketMessage msg;
+        IncomingWebSocketMessage msg;
         
         try {
-            msg = mapper.readValue(message, WebSocketMessage.class);
+            msg = mapper.readValue(message, IncomingWebSocketMessage.class);
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
         
+        msg.profile = sessionProfileMap.get(user);
+        msg.session = user;
+        
         logger.info("Received Message: " + message);
         if ("login".equals(msg.who)) {
             
             try {
-                String nonce = msg.data;
+                String nonce = msg.data.asText("");
                 
                 if (nonce == null || nonce.isEmpty()) {
                     logger.warn("Empty Login Request");
@@ -104,31 +111,26 @@ public class SocketHandler {
                 e.printStackTrace();
             }
         } else {
-            Profile profile = sessionProfileMap.get(user);
+            ISocketEventHandler who = handlers.get(msg.who);
             
-            if (profile == null) {
-                System.err.println("Someone tried using a WebSocket from " +
-                        user.getRemoteAddress().getAddress() +
-                        " without being logged in: " + message);
+            if (who == null) {
+                System.out.println("I don't understand: " + message);
                 return;
             }
             
-            if ("jdg".equals(msg.who)) {
-                
-                if (profile.getType() != Profile.ProfileType.JUDGE) {
-                    System.err.println("Non-judge user " + profile.getName() + " tried using the judger!");
-                    return;
-                }
-        
-                if ("start".equals(msg.what)) {
-                    JudgeQueueHandler.getInstance().connected((Judge) profile, user);
-                } else if ("stop".equals(msg.what)) {
-                    JudgeQueueHandler.getInstance().disconnected((Judge) profile);
-                } else {
-                    System.out.println("I don't understand: " + message);
-                }
+            if ((msg.profile != null && who.allowUse(msg.profile.getType()))
+                    || (msg.profile == null && who.allowUse(null))) {
+                who.handle(msg);
             } else {
-                System.out.println("I don't understand: " + message);
+                if (msg.profile == null) {
+                    System.err.println("Someone tried using a WebSocket from " +
+                            msg.session.getRemoteAddress().getAddress() +
+                            " without being logged in: " + msg);
+                } else {
+                    if (msg.profile.getType() != Profile.ProfileType.JUDGE) {
+                        logger.warn("User " + msg.profile.getName() + " tried using the "+msg.who+" WS Handler!");
+                    }
+                }
             }
         }
     }
@@ -158,5 +160,10 @@ public class SocketHandler {
             logger.warn("Error while debugging "+profile.getName()+": ", e);
         }
     }
-
+    
+    public static void alert(Session socketSession, String message) {
+        try {
+            socketSession.getRemote().sendString(WebSocketMessage.who("alert").data(message).toString());
+        } catch (Exception ignored) {}
+    }
 }

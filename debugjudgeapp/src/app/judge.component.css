@@ -17,3 +17,10 @@ md-list md-sidenav {
   max-width: 80%;
   margin: 10px auto;
 }
+
+.preferenceCard {
+  min-width: 300px;
+  width: 600px;
+  max-width: 85%;
+  margin: 10px auto;
+}
