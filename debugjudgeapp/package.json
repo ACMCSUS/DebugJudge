@@ -30,6 +30,7 @@
     "ace-builds": "^1.2.8",
     "angular2-autosize": "^1.0.1",
     "core-js": "^2.4.1",
+    "ng2-ace-editor": "^0.2.3",
     "ts-helpers": "^1.1.1",
     "typescript": "^2.1.5",
     "webpack": "^2.2.1",

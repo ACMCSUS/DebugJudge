@@ -47,10 +47,10 @@ export class JudgeComponent implements OnInit, OnDestroy {
   }
 
   public accept(submission: Submission) {
-    this.apiService.accept(submission).subscribe();
+    this.apiService.accept(submission);
   }
   public reject(submission: Submission) {
-    this.apiService.reject(submission).subscribe();
+    this.apiService.reject(submission);
   }
   public defer(submission: Submission) {
     this.apiService.judgingApi.defer(submission);
