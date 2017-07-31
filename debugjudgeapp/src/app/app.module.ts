@@ -15,6 +15,7 @@ import { CodeEditorComponent } from "./codeeditor.component";
 import {Autosize} from 'angular2-autosize/src/autosize.directive';
 import {ProblemCardComponent} from "./problemcard.component";
 import {IndexComponent} from "./index.component";
+import { AceEditorComponent } from 'ng2-ace-editor';
 
 const appRoutes: Routes = [
   { path: '', component: IndexComponent },
@@ -24,6 +25,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     Autosize,
+    AceEditorComponent,
 
     AppComponent,
     IndexComponent,

@@ -1,5 +1,6 @@
 export class Problem {
   constructor(public id: number,
+              public orderIndex: number,
               public title: string,
               public description: string,
               public language: string,

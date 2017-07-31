@@ -34,7 +34,29 @@ public class ApiController {
     
     public static void routeAPI() {
         path("/api", () -> {
+    
+            before("/reset", SecurityApi::judgeFilter);
+            get("/reset", (req, res) -> {
+                competitionStarted = 0;
+                SocketHandler.teamReloadProblems();
+                SocketHandler.teamReloadStatus();
+                return "okay";
+            });
             
+            before("/start", SecurityApi::judgeFilter);
+            get("/start", (req, res) -> {
+                competitionStarted = 1;
+                SocketHandler.teamReloadProblems();
+                return "okay";
+            });
+            
+            before("/stop", SecurityApi::judgeFilter);
+            get("/stop", (req, res) -> {
+                competitionStarted = 2;
+                SocketHandler.teamReloadStatus();
+                return "okay";
+            });
+                    
             before("/profile", SecurityApi::loggedInFilter);
             get("/profile", ApiController::getProfile);
             
@@ -80,6 +102,8 @@ public class ApiController {
         });
     }
     
+    public static int competitionStarted = 0;
+    
     private static String getProfile(Request req, Response res) throws JsonProcessingException {
         ObjectNode jsonNode = new ObjectNode(JsonNodeFactory.instance);
         Profile profile = SecurityApi.getProfile(req);
@@ -119,7 +143,7 @@ public class ApiController {
         
         if (result == null) throw halt(404);
         
-        return writeForProfile(result, SecurityApi.getProfile(req));
+        return writeForView(result, Views.PublicView.class);
     }
     
     public static String getSubmissions(Request req, Response res) throws JsonProcessingException {
@@ -156,6 +180,12 @@ public class ApiController {
     }
     private static String newSubmission(Request req, Response res) {
         SecurityApi.teamFilter(req, res);
+        
+        if (competitionStarted != 1) {
+            SocketHandler.alert(SecurityApi.getProfile(req), "Can't submit right now!");
+            throw halt(400);
+        }
+        
         try {
             JsonNode json = ProcessBody.asJson(req);
             
@@ -237,24 +267,39 @@ public class ApiController {
     
     public static String getProblems(Request req, Response res) throws JsonProcessingException {
         Competition competition = getCompetition(req);
+        Profile profile = SecurityApi.getProfile(req);
+        
+        if (competitionStarted==0 && profile.getType() != Profile.ProfileType.JUDGE) {
+            return "[]";
+        }
         
         List<Problem> result = Problem.find.query().where()
                 .eq("competition_id", competition.id)
                 .findList();
         
-        return writeForProfile(result, SecurityApi.getProfile(req));
+        return writeForProfile(result, profile);
     }
     public static String getProblem(Request req, Response res) throws JsonProcessingException {
         Competition competition = getCompetition(req);
+        Profile profile = SecurityApi.getProfile(req);
         
-        Problem result = Problem.find.query().where()
-                .eq("competition", competition.id)
-                .eq("id", req.params("id"))
-                .findUnique();
+        if (competitionStarted==0 && profile.getType() != Profile.ProfileType.JUDGE) {
+            throw halt(404);
+        }
         
-        if (result == null) throw halt(404);
-        
-        return writeForProfile(result, SecurityApi.getProfile(req));
+        try {
+            Problem result = Problem.find.query().where()
+                    .eq("competition", competition.id)
+                    .eq("id", Long.parseLong(req.params("id")))
+                    .findUnique();
+    
+            if (result == null) throw halt(404);
+    
+            return writeForProfile(result, profile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw halt(400);
+        }
     }
     
     private static String writeForProfile(Object result, Profile profile) throws JsonProcessingException {

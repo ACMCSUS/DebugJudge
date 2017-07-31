@@ -11,7 +11,19 @@ import {Subscription} from "@reactivex/rxjs";
   styleUrls: ['./team.component.css'],
   entryComponents: [ ProblemCardComponent ],
 
-  template: `<div id="problemCards">
+  template: `
+
+<div id="problemCards">
+  <div *ngIf="problems.length == 0">
+    <md-card>
+      <md-card-title>Problems will appear here.</md-card-title>
+      <md-card-subtitle>Problem language will appear here</md-card-subtitle>
+      <code-editor
+        [precode]="'// Uneditable code section'"
+        [postcode]="'// Uneditable code section'"
+        [code]="'// This is where the broken code appears'"></code-editor>
+    </md-card>
+  </div>
   <div class="problemcardWrapper" *ngFor="let problem of problems">
     <problem-card [problem]="problem"></problem-card>
   </div>

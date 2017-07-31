@@ -2,23 +2,35 @@
   <md-card-title>Team Standings</md-card-title>
 
   <md-card-content>
-    <table>
+    <table *ngIf="problems">
       <thead>
+        <tr>
+          <td colspan="4"></td>
+          <td colSpan="{{problems.length}}">Problems (hover)</td>
+        </tr>
         <tr>
           <td>Place</td>
           <td>Correct</td>
+          <td>Penalty</td>
           <td>Team</td>
-          <td class="problemName" *ngFor="let problem of problems">{{problem.title}}</td>
+          <td class="problemName"
+              *ngFor="let problem of problems"
+              [title]="problem.title">
+              {{problem.orderIndex}}</td>
         </tr>
       </thead>
       <tr *ngFor="let team of teams">
         <td>{{team.place}}</td>
         <td>{{team.score.correct}}</td>
+        <td>{{team.score.penalty}}</td>
         <td>{{team.name}}</td>
         <td [ngClass]="{'green':(teamAcceptances[team.id]||{})[problem.id]}" *ngFor="let problem of problems">
           {{(teamSubmissionCounts[team.id]||{})[problem.id] || 0}}</td>
       </tr>
     </table>
+
+    <span *ngIf="!problems">Team standings will be visible here when the competition begins.</span>
+
   </md-card-content>
 
   <md-card-actions>

@@ -1,5 +1,6 @@
 <md-card class="problemcard">
-  <md-card-title>{{problem.title}}</md-card-title>
+  <md-card-title>{{problem.title}}
+    <span *ngIf="problemSolved" class="solvedSpan">SOLVED</span></md-card-title>
   <md-card-subtitle>Language: {{problem.language}}</md-card-subtitle>
 
   <md-card-content>
