@@ -27,6 +27,7 @@
     "@angular/platform-browser-dynamic": "~4.0.0",
     "@angular/router": "~4.0.0",
     "@reactivex/rxjs": "^5.2.0",
+    "ace-builds": "^1.2.8",
     "angular2-autosize": "^1.0.1",
     "core-js": "^2.4.1",
     "ts-helpers": "^1.1.1",
