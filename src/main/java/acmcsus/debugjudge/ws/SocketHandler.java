@@ -147,6 +147,32 @@ public class SocketHandler {
             logger.warn("Error while notifying "+profile.getName()+": ", e);
         }
     }
+    public static void teamReloadProblems() {
+        for (Map.Entry<Session, Profile> entry : sessionProfileMap.entrySet()) {
+            try {
+                if (entry.getValue().getType() == Profile.ProfileType.TEAM) {
+                    entry.getKey().getRemote().sendString(
+                            WebSocketMessage
+                                    .who("api")
+                                    .what("rld-problems").toString()
+                    );
+                }
+            } catch (Exception ignored) {}
+        }
+    }
+    public static void teamReloadStatus() {
+        for (Map.Entry<Session, Profile> entry : sessionProfileMap.entrySet()) {
+            try {
+                if (entry.getValue().getType() == Profile.ProfileType.TEAM) {
+                    entry.getKey().getRemote().sendString(
+                            WebSocketMessage
+                                    .who("api")
+                                    .what("rld-status").toString()
+                    );
+                }
+            } catch (Exception ignored) {}
+        }
+    }
     public static void debug(Profile profile, String message) {
         try {
             Set<Session> sessions = profileSessionMap.get(profile);
@@ -165,5 +191,14 @@ public class SocketHandler {
         try {
             socketSession.getRemote().sendString(WebSocketMessage.who("alert").data(message).toString());
         } catch (Exception ignored) {}
+    }
+    public static void alert(Profile profile, String message) {
+        Set<Session> sessions = profileSessionMap.get(profile);
+
+        if (sessions != null) {
+            for (Session session : sessions) {
+                alert(session, message);
+            }
+        }
     }
 }

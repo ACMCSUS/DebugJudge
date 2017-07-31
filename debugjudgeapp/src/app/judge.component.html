@@ -3,10 +3,10 @@
   <md-card-content>
     SUBMITTED
     <code-editor
-      [code]="submission.code"></code-editor>
+      [code]="submission.code" [readonly]="true"></code-editor>
     CORRECT
     <code-editor
-      [code]="submission.problem.answer"></code-editor>
+      [code]="submission.problem.answer" [readonly]="true"></code-editor>
   </md-card-content>
   <md-card-actions>
     <button md-button (click)="accept(submission)">Accept</button>

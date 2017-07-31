@@ -31,11 +31,13 @@ public class ProblemSetMain {
     
         ObjectMapper mapper = new ObjectMapper();
     
-        Competition competition = new Competition();
-        competition.id = 1L;
-        competition.refId = "2017acmdc";
-        competition.name = "ACM Debugging Competition 2017";
-        competition.save();
+//        Competition competition = new Competition();
+//        competition.id = 1L;
+//        competition.refId = "2017acmdc";
+//        competition.name = "ACM Debugging Competition 2017";
+//        competition.save();
+        
+        Competition competition = Competition.find.byId(1L);
         
         for (int idx = 0; idx < records.size(); idx++) {
             CSVRecord record = records.get(idx);
@@ -55,6 +57,9 @@ public class ProblemSetMain {
             problem.answer = record.get("answer");
             System.out.println(mapper.writeValueAsString(problem));
             problem.save();
+//
+//            System.out.printf("INSERT INTO PROBLEMS (id, competition_id, order_index, title, ref_id, description, language, precode, code, postcode, answer)" +
+//                    " VALUES (%d, %d, %d, '%s', '%s')");
             
         }
     }

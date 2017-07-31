@@ -30,9 +30,13 @@ md-menu {
 
 @keyframes notify-animation {
   0%, 20%, 40%, 100% {
-    background-color: #ee9999;
+    background-color: #ccccff;
   }
   10%, 30% {
-    background-color: #ffcccc;
+    background-color: #eeeeee;
   }
+}
+
+.solvedSpan {
+  color: green;
 }

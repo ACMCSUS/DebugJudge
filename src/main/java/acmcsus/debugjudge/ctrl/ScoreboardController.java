@@ -1,20 +1,14 @@
 package acmcsus.debugjudge.ctrl;
 
 import acmcsus.debugjudge.Views;
-import acmcsus.debugjudge.model.Competition;
-import acmcsus.debugjudge.model.Problem;
-import acmcsus.debugjudge.model.Submission;
-import acmcsus.debugjudge.model.Team;
+import acmcsus.debugjudge.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.jetbrains.annotations.NotNull;
 import spark.Request;
 import spark.Response;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static spark.Spark.halt;
@@ -57,6 +51,7 @@ public class ScoreboardController {
     
     public static String getScoreboard(Request req, Response res) {
         Competition competition = SecurityApi.getCompetition(req);
+        Profile profile = SecurityApi.getProfile(req);
         
         if (competition == null) {
             throw halt(400);
@@ -72,10 +67,17 @@ public class ScoreboardController {
         ObjectWriter writer = new ObjectMapper().writerWithView(Views.PublicView.class);
         
         try {
-            List<Problem> problems = Problem.find.query()
-                    .where()
-                    .eq("competition_id", competition.id)
-                    .findList();
+            
+            List<Problem> problems;
+            
+            if (ApiController.competitionStarted != 0 || profile.getType() == Profile.ProfileType.JUDGE) {
+                problems = Problem.find.query()
+                        .where()
+                        .eq("competition_id", competition.id)
+                        .findList();
+            } else {
+                problems = new ArrayList<>();
+            }
             
             problems.sort(Comparator.comparing(p -> p.orderIndex));
             scoreboardMap.put("problems", problems);

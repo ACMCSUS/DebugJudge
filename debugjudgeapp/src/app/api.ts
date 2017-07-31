@@ -143,6 +143,7 @@ export class ApiService {
       .map(this.extractDataArray)
       .map((data) => data.map(p => new Problem(
         p.id,
+        p.orderIndex,
         p.title,
         p.description,
         p.language,

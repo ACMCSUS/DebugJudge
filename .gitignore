@@ -57,6 +57,7 @@ local.properties
 
 # User-specific stuff:
 .idea/
+!.idea/codeStyleSettings.xml
 
 ## File-based project format:
 *.iml

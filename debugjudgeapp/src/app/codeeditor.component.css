@@ -17,10 +17,10 @@ textarea {
   margin: 0;
   resize: none;
 }
-textarea.green {
+.green {
   background-color: #99ddaa;
 }
-textarea.red {
+.red {
   background-color: #dd9999;
 }
 pre {
