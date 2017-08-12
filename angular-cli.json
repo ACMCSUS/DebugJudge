@@ -37,9 +37,10 @@
     {
       "name": "judgeapp",
       "root": "src/main/angular",
-      "outDir": "target/classes/judgeapp",
+      "outDir": "target/classes/app/judge",
+      "baseHref": "/judge/",
       "assets": [
-        "assets",
+        "src/main/angular/assets",
         "favicon.ico"
       ],
       "index": "index.html",
@@ -53,14 +54,14 @@
         "theme.scss"
       ],
       "scripts": [
-        "node_modules/ace-builds/src-min/ace.js",
-        "node_modules/ace-builds/src-min/mode-plain_text.js",
-        "node_modules/ace-builds/src-min/theme-chrome.js"
+        "../../../node_modules/ace-builds/src-min/ace.js",
+        "../../../node_modules/ace-builds/src-min/mode-plain_text.js",
+        "../../../node_modules/ace-builds/src-min/theme-chrome.js"
       ],
-      "environmentSource": "src/main/angular/environments/environment.ts",
+      "environmentSource": "environments/environment.ts",
       "environments": {
-        "dev": "src/main/angular/environments/environment.ts",
-        "prod": "src/main/angular/environments/environment.prod.ts"
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
       }
     }
   ],
