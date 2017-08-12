@@ -37,8 +37,11 @@ $ mvn process-classes exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeM
 
 ###### 5. Changed frontend?
 ```bash
-$ npm run-script build
-    OR
+$ npm run-script build-team  # Build just TeamApp
+$ npm run-script build-judge # Build just JudgeApp
+$ # OR
+$ npm run-script build       # Build both
+$ # OR (also recompiles Java)
 $ mvn compile
 ```
 
