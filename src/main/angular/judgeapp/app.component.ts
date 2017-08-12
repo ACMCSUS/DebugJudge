@@ -1,7 +1,6 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {ApiService} from "./api";
-import {Profile} from "./models/profile";
-import {Subscription} from "@reactivex/rxjs";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from '@reactivex/rxjs';
+import {ApiService} from 'lib/api';
 
 @Component({
   selector: 'app-root',

@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 
-import {ApiService} from './api';
-import {Submission} from "./models/submission";
-import {Problem} from "./models/problem";
-import {ProblemCardComponent} from "./problemcard.component";
-import {Subscription} from "@reactivex/rxjs";
+import {ApiService} from 'lib/api';
+import {Submission} from 'lib/models/submission';
+import {Problem} from 'lib/models/problem';
+import {ProblemCardComponent} from 'teamapp/problemcard.component';
+import {Subscription} from '@reactivex/rxjs';
 
 @Component({
   selector: 'team-view',
@@ -12,7 +12,6 @@ import {Subscription} from "@reactivex/rxjs";
   entryComponents: [ ProblemCardComponent ],
 
   template: `
-
 <div id="problemCards">
   <div *ngIf="problems.length == 0">
     <md-card>

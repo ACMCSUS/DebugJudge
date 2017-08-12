@@ -23,8 +23,8 @@ export class CodeEditorComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.editor.getEditor().setAutoScrollEditorIntoView(true);
-    console.log(this.editor.getEditor());
+    this.editor.getEditor().setAutoScrollEditorIntoView(false);
+    this.editor.getEditor().$blockScrolling = Infinity;
   }
   ngAfterViewInit(): void {
     this.editor.getEditor().clearSelection();
