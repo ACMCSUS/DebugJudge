@@ -28,3 +28,7 @@ pre {
   margin: 0;
 }
 
+/* https://stackoverflow.com/a/43739723/3188059 */
+.ace_text-input {
+  position: absolute!important;
+}

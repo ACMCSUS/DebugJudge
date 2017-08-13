@@ -1,8 +1,8 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
-import {ApiService} from "./api";
-import {Submission} from "./models/submission";
+import {ApiService} from "lib/api";
+import {Submission} from "lib/models/submission";
 import {Subscription} from "@reactivex/rxjs";
-import {Problem} from "./models/problem";
+import {Problem} from "lib/models/problem";
 
 @Component({
   selector: 'judge-view',

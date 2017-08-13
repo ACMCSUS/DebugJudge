@@ -1,12 +1,15 @@
 package acmcsus.debugjudge;
 
 import acmcsus.debugjudge.ctrl.SecurityApi;
+import acmcsus.debugjudge.model.Profile;
+import acmcsus.debugjudge.model.Profile.ProfileType;
 import acmcsus.debugjudge.ws.SocketHandler;
 import spark.Request;
 import spark.Response;
 import spark.staticfiles.StaticFilesConfiguration;
 
 import static acmcsus.debugjudge.ctrl.ApiController.routeAPI;
+import static acmcsus.debugjudge.ctrl.SecurityApi.getProfile;
 import static spark.Spark.*;
 
 public class DebugJudgeMain {
@@ -26,10 +29,27 @@ public class DebugJudgeMain {
         post("/login", SecurityApi::login);
         get("/logout", SecurityApi::logout);
 
-        angularRoutes("/", "/index.html", "/team", "/judge", "/scoreboard");
+        get("/", (req, res) -> {
+          Profile profile = getProfile(req);
+
+          if (profile == null) {
+            res.redirect("/login");
+          }
+          else if (profile.getType() == ProfileType.TEAM) {
+            res.redirect("/team/");
+          }
+          else if (profile.getType() == ProfileType.JUDGE) {
+            res.redirect("/judge/");
+          }
+          else {
+            throw new RuntimeException();
+          }
+          return "";
+        });
+        angularRoutes("/team/", "/judge/");
 
         StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
-        staticHandler.configure("/ngapp");
+        staticHandler.configure("/app");
         before((req, res) -> staticHandler.consume(req.raw(), res.raw()));
 
         init();
@@ -48,10 +68,20 @@ public class DebugJudgeMain {
     }
     private static Object htmlRoute(Request req, Response res) {
         try {
-            return DebugJudgeMain.class.getResourceAsStream("/ngapp/index.html");
+            Profile profile = getProfile(req);
+
+            switch (profile.getType()) {
+              case TEAM:
+                return DebugJudgeMain.class.getResourceAsStream("/app/team/index.html");
+              case JUDGE:
+                return DebugJudgeMain.class.getResourceAsStream("/app/judge/index.html");
+              default:
+                res.status(500);
+                return new RuntimeException("Did not recognize ProfileType " + profile.getType());
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+          e.printStackTrace();
+          throw e;
         }
     }
     private static Object loginRoute(Request req, Response res) {

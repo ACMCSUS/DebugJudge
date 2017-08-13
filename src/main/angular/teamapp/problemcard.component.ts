@@ -1,8 +1,8 @@
 import {Component, animate, transition, style, state, trigger, ViewChild, OnInit, OnDestroy} from "@angular/core";
-import {CodeEditorComponent} from "./codeeditor.component";
-import {Problem} from "./models/problem";
-import {Submission} from "./models/submission";
-import {ApiService} from "./api";
+import {CodeEditorComponent} from "lib/codeeditor.component";
+import {Problem} from "lib/models/problem";
+import {Submission} from "lib/models/submission";
+import {ApiService} from "lib/api";
 import {Subscription} from "@reactivex/rxjs";
 
 @Component({
