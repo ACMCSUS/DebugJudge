@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async } from '@angular/core/testing';
-import {JudgeComponent} from "judgeapp/judge.component";
+import { TestBed } from '@angular/core/testing';
+import {JudgeComponent} from 'judgeapp/judge.component';
 
 describe('JudgeComponent', () => {
   beforeEach(() => {

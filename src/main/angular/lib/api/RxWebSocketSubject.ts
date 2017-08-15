@@ -3,7 +3,7 @@
  ********************************************************************/
 
 import {Subject, Observer, Observable, BehaviorSubject} from '@reactivex/rxjs';
-import {WebSocketSubjectConfig, WebSocketSubject} from "@reactivex/rxjs/dist/cjs/observable/dom/WebSocketSubject";
+import {WebSocketSubjectConfig, WebSocketSubject} from '@reactivex/rxjs/dist/cjs/observable/dom/WebSocketSubject';
 
 /// we inherit from the ordinary Subject
 export class RxWebSocketSubject<T> extends Subject<T> {
@@ -17,18 +17,18 @@ export class RxWebSocketSubject<T> extends Subject<T> {
   /// we can override it in the constructor
   defaultResultSelector = (e: MessageEvent) => {
     return JSON.parse(e.data);
-  }
+  };
 
   /// when sending a message, we encode it to JSON
   /// we can override it in the constructor
   defaultSerializer = (data: any): string => {
     return JSON.stringify(data);
-  }
+  };
 
   constructor(
     private url: string,
-    private reconnectInterval: number = 5000,  /// pause between connections
-    private reconnectAttempts: number = 10,  /// number of connection attempts
+    private reconnectInterval = 5000,  /// pause between connections
+    private reconnectAttempts = 10,  /// number of connection attempts
 
     private resultSelector?: (e: MessageEvent) => any,
     private serializer?: (data: any) => string,
@@ -66,7 +66,7 @@ export class RxWebSocketSubject<T> extends Subject<T> {
     this.connect();
     /// we follow the connection status and run the reconnect while losing the connection
     this.connectionStatus.subscribe((isConnected) => {
-      if (!this.reconnectionObservable && typeof(isConnected) == "boolean" && !isConnected) {
+      if (!this.reconnectionObservable && typeof(isConnected) === 'boolean' && !isConnected) {
         this.reconnect();
       }
     });

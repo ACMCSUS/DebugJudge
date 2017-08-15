@@ -1,13 +1,13 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async } from '@angular/core/testing';
-import {ScoreboardComponent} from "./scoreboard.component";
+import {TestBed, async} from '@angular/core/testing';
+import {ScoreboardComponent} from './scoreboard.component';
 
 describe('ScoreboardComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ScoreboardComponent
+        ScoreboardComponent,
       ],
     });
     TestBed.compileComponents();

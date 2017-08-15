@@ -3,11 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <groupId>acmcsus</groupId>
   <artifactId>DebugApp</artifactId>
   <version>1.0-SNAPSHOT</version>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -19,7 +19,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-  
+
       <plugin>
         <groupId>io.repaint.maven</groupId>
         <artifactId>tiles-maven-plugin</artifactId>
@@ -32,7 +32,7 @@
           </tiles>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -76,9 +76,39 @@
               <goal>exec</goal>
             </goals>
           </execution>
+          <!-- TODO(issues/#32): Make tests work -->
+          <!--<execution>-->
+            <!--<id>exec-npm-test</id>-->
+            <!--<goals>-->
+              <!--<goal>exec</goal>-->
+            <!--</goals>-->
+            <!--<phase>test</phase>-->
+            <!--<configuration>-->
+              <!--<executable>npm</executable>-->
+              <!--<arguments>-->
+                <!--<argument>run</argument>-->
+                <!--<argument>test</argument>-->
+              <!--</arguments>-->
+            <!--</configuration>-->
+          <!--</execution>-->
+
+          <execution>
+            <id>exec-tslint</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argument>run-script</argument>
+                <argument>tslint</argument>
+              </arguments>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
-  
+
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -101,8 +131,8 @@
           </execution>
         </executions>
       </plugin>
-  
-  
+
+
       <!--<plugin>-->
         <!--<artifactId>maven-resources-plugin</artifactId>-->
         <!--<version>2.6</version>-->
@@ -127,7 +157,7 @@
       <!--</plugin>-->
     </plugins>
   </build>
-  
+
   <dependencies>
     <!--
       Simple Web Server
@@ -138,7 +168,7 @@
       <artifactId>spark-core</artifactId>
       <version>2.5.5</version>
     </dependency>
-  
+
     <!--
       Database Connecting
       -->
@@ -159,7 +189,7 @@
       <artifactId>validation-api</artifactId>
       <version>1.0.0.GA</version>
     </dependency>
-  
+
     <!--
       JSON to/from Java Objects
       -->
@@ -175,7 +205,7 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.8.7</version>
     </dependency>
-  
+
     <!--
       Logging
       -->
@@ -191,7 +221,7 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.24</version>
     </dependency>
-    
+
     <!--
       Testing
       -->
@@ -201,7 +231,7 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-    
+
     <!--
       Problem CSV Parsing
       -->
@@ -213,5 +243,5 @@
     </dependency>
 
   </dependencies>
-  
+
 </project>

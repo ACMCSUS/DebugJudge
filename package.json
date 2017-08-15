@@ -6,7 +6,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "tslint": "npm run-script tslint-app; npm run-script tslint-e2e",
+    "eclint": "eclint check .",
+    "tslint": "npm run-script tslint-app && npm run-script tslint-e2e",
     "tslint-app": "tslint \"src/main/**/*.ts\" --project src/main/angular/tsconfig.json --type-check",
     "tslint-e2e": "tslint \"src/test/angular/e2e/**/*.ts\" --project src/test/angular/e2e/tsconfig.json --type-check",
     "test": "ng test",
@@ -34,6 +35,7 @@
     "ace-builds": "^1.2.8",
     "angular2-autosize": "^1.0.1",
     "core-js": "^2.4.1",
+    "eclint": "^2.4.2",
     "ng2-ace-editor": "^0.2.3",
     "ts-helpers": "^1.1.1",
     "typescript": "^2.1.5",
@@ -56,6 +58,7 @@
     "protractor": "~4.0.13",
     "ts-node": "1.2.1",
     "tslint": "^5.1",
+    "tslint-eslint-rules": "^4.1.1",
     "typescript": "~2.0.3"
   }
 }
