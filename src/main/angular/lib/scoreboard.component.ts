@@ -1,15 +1,14 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Http} from "@angular/http";
-import {Router} from "@angular/router";
-import {Observable, Subscription} from "@reactivex/rxjs";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Http} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable, Subscription} from '@reactivex/rxjs';
 
 @Component({
-  selector: 'app-root',
+  selector: 'dbgjdg-scoreboard',
   templateUrl: './scoreboard.component.html',
-  styleUrls: ['./scoreboard.component.css']
+  styleUrls: ['./scoreboard.component.css'],
 })
 export class ScoreboardComponent implements OnInit, OnDestroy {
-  constructor(private http: Http, private router: Router) {}
 
   problems: {}[];
 
@@ -18,6 +17,8 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   teamAcceptances: {};
 
   refreshSubscription: Subscription;
+
+  constructor(private http: Http, private router: Router) {}
 
   ngOnInit() {
     this.refresh();
@@ -29,9 +30,9 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
     this.refreshSubscription.unsubscribe();
   }
 
-  refresh():void {
-    this.http.get("/api/scoreboard").subscribe((res) => {
-      let data = res.json();
+  refresh(): void {
+    this.http.get('/api/scoreboard').subscribe((res) => {
+      const data = res.json();
       this.problems = data.problems;
       this.teams = data.teams;
       this.teamSubmissionCounts = data.teamSubmissionCounts;

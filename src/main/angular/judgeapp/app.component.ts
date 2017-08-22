@@ -3,7 +3,7 @@ import {Subscription} from '@reactivex/rxjs';
 import {ApiService} from 'lib/api';
 
 @Component({
-  selector: 'app-root',
+  selector: 'dbgjdg-app-root',
   templateUrl: './app.component.html',
   providers: [ ApiService ],
   styleUrls: ['./app.component.css']
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   profileSubscription: Subscription;
   profile: any;
 
-  constructor(private apiService : ApiService) {
+  constructor(private apiService: ApiService) {
     this.isTeam = false;
     this.isJudge = false;
   }

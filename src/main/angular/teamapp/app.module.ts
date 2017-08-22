@@ -16,11 +16,6 @@ import {TeamComponent} from 'teamapp/team.component';
 
 import {ScoreboardComponent} from 'lib/scoreboard.component';
 
-const appRoutes: Routes = [
-  { path: '', component: TeamComponent },
-  { path: 'scoreboard', component: ScoreboardComponent },
-];
-
 @NgModule({
   declarations: [
     Autosize,
@@ -37,10 +32,15 @@ const appRoutes: Routes = [
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(appRoutes),
+    RouterModule.forRoot(AppModule.appRoutes),
     MaterialModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {
+  public static appRoutes: Routes = [
+    {path: '', component: TeamComponent},
+    {path: 'scoreboard', component: ScoreboardComponent},
+  ];
+}

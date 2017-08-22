@@ -1,13 +1,13 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async } from '@angular/core/testing';
-import {TeamComponent} from "teamapp/team.component";
+import {TestBed, async} from '@angular/core/testing';
+import {TeamComponent} from 'teamapp/team.component';
 
 describe('TeamComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TeamComponent
+        TeamComponent,
       ],
     });
     TestBed.compileComponents();

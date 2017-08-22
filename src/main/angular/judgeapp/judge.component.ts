@@ -1,11 +1,11 @@
-import {Component, OnInit, OnDestroy} from "@angular/core";
-import {ApiService} from "lib/api";
-import {Submission} from "lib/models/submission";
-import {Subscription} from "@reactivex/rxjs";
-import {Problem} from "lib/models/problem";
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {ApiService} from 'lib/api';
+import {Submission} from 'lib/models/submission';
+import {Subscription} from '@reactivex/rxjs';
+import {Problem} from 'lib/models/problem';
 
 @Component({
-  selector: 'judge-view',
+  selector: 'dbgjdg-judge-view',
   templateUrl: './judge.component.html',
   styleUrls: ['./judge.component.css']
 })
@@ -29,8 +29,9 @@ export class JudgeComponent implements OnInit, OnDestroy {
     this.apiService.getProblems()
       .then((problems) => {
         this.problems = problems;
-        for (let problem of problems)
+        for (const problem of problems) {
           this.problemPreferences[problem.id] = true;
+        }
         console.log(this.problems);
     });
 

@@ -1,20 +1,20 @@
-alter table judges drop foreign key fk_judges_competition_id;
-drop index ix_judges_competition_id on judges;
+alter table judges drop constraint if exists fk_judges_competition_id;
+drop index if exists ix_judges_competition_id;
 
-alter table problems drop foreign key fk_problems_competition_id;
-drop index ix_problems_competition_id on problems;
+alter table problems drop constraint if exists fk_problems_competition_id;
+drop index if exists ix_problems_competition_id;
 
-alter table submissions drop foreign key fk_submissions_team_id;
-drop index ix_submissions_team_id on submissions;
+alter table submissions drop constraint if exists fk_submissions_team_id;
+drop index if exists ix_submissions_team_id;
 
-alter table submissions drop foreign key fk_submissions_problem_id;
-drop index ix_submissions_problem_id on submissions;
+alter table submissions drop constraint if exists fk_submissions_problem_id;
+drop index if exists ix_submissions_problem_id;
 
-alter table submissions drop foreign key fk_submissions_judge_id;
-drop index ix_submissions_judge_id on submissions;
+alter table submissions drop constraint if exists fk_submissions_judge_id;
+drop index if exists ix_submissions_judge_id;
 
-alter table teams drop foreign key fk_teams_competition_id;
-drop index ix_teams_competition_id on teams;
+alter table teams drop constraint if exists fk_teams_competition_id;
+drop index if exists ix_teams_competition_id;
 
 drop table if exists competitions;
 

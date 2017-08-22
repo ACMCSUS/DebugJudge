@@ -1,23 +1,22 @@
-import {Injectable, EventEmitter} from "@angular/core";
+import {Injectable} from '@angular/core';
 import {Http, Response, RequestOptions, Headers} from '@angular/http';
 
 import * as Rx from '@reactivex/rxjs';
 import 'rxjs/add/operator/toPromise';
 
-import {Problem} from "./models/problem";
-import {Submission} from "./models/submission";
-import {Observable} from "@reactivex/rxjs";
-import {Profile} from "./models/profile";
-import {JudgingApi} from "./api/jdg.api";
-import {RxWebSocketSubject} from "./api/RxWebSocketSubject";
-import {BehaviorSubject} from "@reactivex/rxjs";
-import {ErrorObservable} from '@reactivex/rxjs/dist/cjs/observable/ErrorObservable';
+import {Problem} from './models/problem';
+import {Submission} from './models/submission';
+import {Observable} from '@reactivex/rxjs';
+import {Profile} from './models/profile';
+import {JudgingApi} from './api/jdg.api';
+import {RxWebSocketSubject} from './api/RxWebSocketSubject';
+import {BehaviorSubject} from '@reactivex/rxjs';
 
 @Injectable()
 export class ApiService {
 
   private nonceUrl = '/ws/nonce';
-  private wsUrl = 'ws://'+window.location.host+'/ws/connect';
+  private wsUrl = 'ws://' + window.location.host + '/ws/connect';
 
   public problems: Rx.BehaviorSubject<Problem[]>;
   public submissions: Rx.BehaviorSubject<Submission[]>;
@@ -27,6 +26,53 @@ export class ApiService {
 
   public judgingApi: JudgingApi;
   public loggedInStatus: BehaviorSubject<boolean>;
+
+
+  private static extractDataArray(res: Response): any[] {
+    const body = res.json();
+    return body || [];
+  }
+
+  private static extractData(res: Response): any {
+    const body = res.json();
+    return body || {};
+  }
+
+  private static handleError(error: Response | any) {
+    // In a real world app, you might use a remote logging infrastructure
+    let errMsg: string;
+    if (error instanceof Response) {
+      console.error(error.text());
+      const body = error.json() || '';
+      const err = body.error || JSON.stringify(body);
+      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+    }
+    else {
+      errMsg = error.message ? error.message : error.toString();
+    }
+    console.error(errMsg);
+    console.log(error);
+    return Observable.throw(errMsg);
+  }
+
+  public static arraysEqual(a: any[], b: any[]): boolean {
+    if (a === b) {
+      return true;
+    }
+    if (a == null || b == null) {
+      return false;
+    }
+    if (a.length !== b.length) {
+      return false;
+    }
+
+    for (let i = 0; i < a.length; ++i) {
+      if (JSON.stringify(a[i]) !== JSON.stringify(b[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   constructor(private http: Http) {
     this.problems = new Rx.BehaviorSubject<Problem[]>([]);
@@ -40,7 +86,7 @@ export class ApiService {
     this.judgingApi = new JudgingApi(this, this.socket);
 
     this.socket.connectionStatus.subscribe((connectionStatus) => {
-      if (connectionStatus == true) {
+      if (connectionStatus === true) {
         this.http.get(this.nonceUrl).forEach((response) => {
           console.log(response);
           this.socket.send({who: 'login', data: response.text()});
@@ -55,20 +101,17 @@ export class ApiService {
 
   private setUpSocket() {
     this.socket.asObservable()
-      .subscribe(msg => console.debug("WS:", msg));
-
-    this.socket.asObservable()
       .filter(msg => msg.who === 'dbg')
-      .subscribe(msg => console.debug("WS DBG:", msg.data));
+      .subscribe(msg => console.log('WS DBG:', msg.data));
 
     this.socket.asObservable()
       .filter(msg => msg.who === 'alert')
       .subscribe(msg => alert(msg.data));
 
     this.socket.asObservable()
-      .filter(msg => msg.who === "api" && msg.what === 'rld-submissions')
+      .filter(msg => msg.who === 'api' && msg.what === 'rld-submissions')
       .subscribe((msg) => {
-        console.log("I should reload my submissions:", msg);
+        console.log('I should reload my submissions:', msg);
         this.getSubmissions()
           .then((submissions) => this.submissions.next(submissions));
       });
@@ -76,9 +119,9 @@ export class ApiService {
       .then((submissions) => this.submissions.next(submissions));
 
     this.socket.asObservable()
-      .filter(msg => msg.who === "api" && msg.what === 'rld-problems')
+      .filter(msg => msg.who === 'api' && msg.what === 'rld-problems')
       .subscribe((msg) => {
-        console.log("I should reload my problems:", msg);
+        console.log('I should reload my problems:', msg);
         this.getProblems()
           .then((problems) => this.problems.next(problems));
       });
@@ -86,7 +129,7 @@ export class ApiService {
       .then((problems) => this.problems.next(problems));
 
     this.socket.asObservable()
-      .filter(msg => msg.who === "api" && msg.what === 'rld-profile')
+      .filter(msg => msg.who === 'api' && msg.what === 'rld-profile')
       .subscribe((msg) => {
         this.getProfile()
           .then((profile) => this.profile.next(profile));
@@ -97,172 +140,124 @@ export class ApiService {
 
 
   public getSubmission(id: number): Promise<Submission> {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
 
-    return this.http.get("/api/submission/"+id, options)
+    return this.http.get('/api/submission/' + id, options)
       .toPromise()
       .then(ApiService.extractData)
-      .then((s) => new Submission(
-        s.id,
-        s.problem,
-        s.team_id,
-        new Date(s.submittedAt),
-        s.code,
-        s.accepted))
-      // .catch(ApiService.handleError);
+      .then((s) => new Submission(s.id, s.problem, s.team_id, new Date(s.submittedAt), s.code, s.accepted));
+    // .catch(ApiService.handleError);
   }
+
   public getSubmissions(): Promise<Submission[]> {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
 
-    return this.http.get("/api/submissions", options)
+    return this.http.get('/api/submissions', options)
       .toPromise()
       .then(ApiService.extractDataArray)
-      .then((data) => data.map(s => new Submission(
-        s.id,
-        s.problem,
-        s.team_id,
-        new Date(s.submittedAt),
-        s.code,
-        s.accepted)))
-      // .filter(submissions => {
-      //   if (!this.arraysEqual(this.submissions.getValue(), submissions)) {
-      //     console.log("New submissions!");
-      //     return true;
-      //   }
-      //   console.log("Steady Freddie");
-      //   return false;
-      // })
-      // .catch(ApiService.handleError);
+      .then((data) => data.map(
+        s => new Submission(s.id, s.problem, s.team_id, new Date(s.submittedAt), s.code, s.accepted)));
+    // .filter(submissions => {
+    //   if (!this.arraysEqual(this.submissions.getValue(), submissions)) {
+    //     console.log("New submissions!");
+    //     return true;
+    //   }
+    //   console.log("Steady Freddie");
+    //   return false;
+    // })
+    // .catch(ApiService.handleError);
   }
+
   public getProblems(): Promise<Problem[]> {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
 
-    return this.http.get("/api/problems", options)
+    return this.http.get('/api/problems', options)
       .toPromise()
       .then(ApiService.extractDataArray)
-      .then((data) => data.map(p => new Problem(
-        p.id,
-        p.orderIndex,
-        p.title,
-        p.description,
-        p.language,
-        p.precode,
-        p.code,
-        p.postcode,
-        p.answer)))
-      // .filter(problems => {
-      //   if (!this.arraysEqual(this.problems.getValue(), problems)) {
-      //     console.log("New problems!");
-      //     return true;
-      //   }
-      //   console.log("Steady Freddie");
-      //   return false;
-      // })
-      // .catch(ApiService.handleError);
+      .then((data) => data.map(
+        p => new Problem(p.id, p.orderIndex, p.title, p.description, p.language, p.precode, p.code, p.postcode, p.answer)));
+    // .filter(problems => {
+    //   if (!this.arraysEqual(this.problems.getValue(), problems)) {
+    //     console.log("New problems!");
+    //     return true;
+    //   }
+    //   console.log("Steady Freddie");
+    //   return false;
+    // })
+    // .catch(ApiService.handleError);
   }
-  public getProfile(): Promise<Profile> {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
 
-    return this.http.get("/api/profile", options)
+  public getProfile(): Promise<Profile> {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
+
+    return this.http.get('/api/profile', options)
       .toPromise()
       .then(ApiService.extractData)
-      .then(p => new Profile(
-        p.id,
-        p.type,
-        p.name,
-        p.members))
-      // .filter(profile => JSON.stringify(this.profile.getValue()) != JSON.stringify(profile))
-      // .catch(ApiService.handleError);
+      .then(p => new Profile(p.id, p.type, p.name, p.members));
+    // .filter(profile => JSON.stringify(this.profile.getValue()) !=
+    // JSON.stringify(profile)) .catch(ApiService.handleError);
   }
 
   public submit(problem: Problem, code: String) {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
 
     try {
-      this.http.post("/api/submissions", JSON.stringify({problem_id: problem.id, code: code}), options)
+      this.http.post('/api/submissions', JSON.stringify({
+          problem_id: problem.id, code: code,
+        }), options)
         .toPromise()
         .then((response) => {
-          console.log("Shah dud");
+          console.log('Shah dud');
           return response.json();
         })
         .catch(ApiService.handleError);
-    } catch (err) {
+    }
+    catch (err) {
       console.log(err);
     }
   }
+
   public accept(submission: Submission) {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
 
     try {
-      return this.http.post("/api/submission/"+submission.id+"/accept", "", options)
+      return this.http.post('/api/submission/' + submission.id + '/accept', '', options)
         .toPromise()
         .then((response) => {
-          console.log("Shah dud");
+          console.log('Shah dud');
           return response.json();
         })
         .catch(ApiService.handleError);
-    } catch (err) {
+    }
+    catch (err) {
       console.log(err);
       return undefined;
     }
   }
+
   public reject(submission: Submission) {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers});
 
     try {
       console.log(submission);
-      return this.http.post("/api/submission/"+submission.id+"/reject", "", options)
+      return this.http.post('/api/submission/' + submission.id + '/reject', '', options)
         .toPromise()
         .then((response) => {
-          console.log("Shah dud");
+          console.log('Shah dud');
           return response.json();
         })
         .catch(ApiService.handleError);
-    } catch (err) {
+    }
+    catch (err) {
       console.log(err);
       return undefined;
     }
-  }
-
-  private static extractDataArray(res: Response) : any[] {
-    let body = res.json();
-    return body || [];
-  }
-  private static extractData(res: Response) : any {
-    let body = res.json();
-    return body || {};
-  }
-  private static handleError (error: Response | any) {
-    // In a real world app, you might use a remote logging infrastructure
-    let errMsg: string;
-    if (error instanceof Response) {
-      console.error(error.text());
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    console.error(errMsg);
-    console.log(error);
-    return Observable.throw(errMsg);
-  }
-
-  public static arraysEqual(a: any[], b: any[]) : boolean {
-    if (a === b) return true;
-    if (a == null || b == null) return false;
-    if (a.length != b.length) return false;
-
-    for (let i = 0; i < a.length; ++i) {
-      if (JSON.stringify(a[i]) !== JSON.stringify(b[i])) return false;
-    }
-    return true;
   }
 }

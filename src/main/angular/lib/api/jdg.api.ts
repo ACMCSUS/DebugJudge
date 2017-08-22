@@ -1,14 +1,15 @@
-import {BehaviorSubject, Subscription} from "@reactivex/rxjs";
-import {ApiService} from "../api";
-import {Submission} from "../models/submission";
-import {RxWebSocketSubject} from "./RxWebSocketSubject";
+import {BehaviorSubject, Subscription} from '@reactivex/rxjs';
+import {ApiService} from 'lib/api';
+import {Submission} from 'lib/models/submission';
+import {RxWebSocketSubject} from 'lib/api/RxWebSocketSubject';
 
 export class JudgingApi {
+
+  private static connectingMessage = 'Connecting...';
+  private static waitingMessage = 'Waiting for submission...';
+
   public submission: BehaviorSubject<Submission>;
   public statusMessage: BehaviorSubject<string>;
-
-  private static connectingMessage: string = 'Connecting...';
-  private static waitingMessage: string = 'Waiting for submission...';
 
   public connectionSubscription: Subscription;
   private sessionSubscription: Subscription = null;
@@ -32,7 +33,7 @@ export class JudgingApi {
       .subscribe((connected) => {
         console.log('Connection Status:', connected);
         if (connected) {
-          this.socket.send({who:'jdg', what:'start'});
+          this.socket.send({who: 'jdg', what: 'start'});
           this.statusMessage.next(JudgingApi.waitingMessage);
         }
         else {
@@ -43,8 +44,12 @@ export class JudgingApi {
   }
 
   public stopSession() {
-    if (this.connectionSubscription) this.connectionSubscription.unsubscribe();
-    if (this.sessionSubscription) this.sessionSubscription.unsubscribe();
+    if (this.connectionSubscription) {
+      this.connectionSubscription.unsubscribe();
+    }
+    if (this.sessionSubscription) {
+      this.sessionSubscription.unsubscribe();
+    }
 
     this.submission.next(undefined);
     this.statusMessage.next('Judging Session Ended');
@@ -52,15 +57,15 @@ export class JudgingApi {
     this.connectionSubscription = null;
     this.sessionSubscription = null;
 
-    this.socket.send({who:'jdg', what:'stop'});
+    this.socket.send({who: 'jdg', what: 'stop'});
   }
 
   private handleMessage(msg: any) {
-    if (msg.what == 'kick') {
+    if (msg.what === 'kick') {
       this.submission.next(undefined);
       this.statusMessage.next(msg.data);
     }
-    else if (msg.what == 'set') {
+    else if (msg.what === 'set') {
       if (msg.data == null) {
         this.submission.next(undefined);
         this.statusMessage.next(JudgingApi.waitingMessage);
@@ -77,10 +82,10 @@ export class JudgingApi {
   }
 
   public defer(submission: Submission) {
-    this.socket.send({who:'jdg', what:'defer', data:submission.id})
+    this.socket.send({who: 'jdg', what: 'defer', data: submission.id})
   }
 
   preferences(problemPreferences: {}) {
-    this.socket.send({who:'jdg', what:'pref', data: problemPreferences})
+    this.socket.send({who: 'jdg', what: 'pref', data: problemPreferences})
   }
 }

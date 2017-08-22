@@ -69,7 +69,7 @@
   "packages": [],
   "e2e": {
     "protractor": {
-      "config": "./protractor.conf.js"
+      "config": "./src/test/angular/protractor.conf.js"
     }
   },
   "test": {

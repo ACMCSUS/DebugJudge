@@ -7,9 +7,9 @@ import {ProblemCardComponent} from 'teamapp/problemcard.component';
 import {Subscription} from '@reactivex/rxjs';
 
 @Component({
-  selector: 'team-view',
+  selector: 'dbgjdg-team-view',
   styleUrls: ['./team.component.css'],
-  entryComponents: [ ProblemCardComponent ],
+  entryComponents: [ProblemCardComponent],
 
   template: `
 <div id="problemCards">
@@ -17,14 +17,14 @@ import {Subscription} from '@reactivex/rxjs';
     <md-card>
       <md-card-title>Problems will appear here.</md-card-title>
       <md-card-subtitle>Problem language will appear here</md-card-subtitle>
-      <code-editor
+      <dbgjdg-code-editor
         [precode]="'// Uneditable code section'"
         [postcode]="'// Uneditable code section'"
-        [code]="'// This is where the broken code appears'"></code-editor>
+        [code]="'// This is where the broken code appears'"></dbgjdg-code-editor>
     </md-card>
   </div>
   <div class="problemcardWrapper" *ngFor="let problem of problems">
-    <problem-card [problem]="problem"></problem-card>
+    <dbgjdg-problem-card [problem]="problem"></dbgjdg-problem-card>
   </div>
 </div>`,
 })
@@ -33,8 +33,8 @@ export class TeamComponent implements OnInit, OnDestroy {
   problems: Problem[] = [];
   submissions: Submission[] = [];
 
-  problemSubscription : Subscription;
-  submissionSubscription : Subscription;
+  problemSubscription: Subscription;
+  submissionSubscription: Subscription;
 
   constructor(private apiService: ApiService) {
     this.problemSubscription = this.apiService.problems.asObservable()
@@ -46,6 +46,7 @@ export class TeamComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
   }
+
   ngOnDestroy() {
     this.problemSubscription.unsubscribe();
     this.submissionSubscription.unsubscribe();

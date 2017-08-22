@@ -9,12 +9,12 @@
 
   <md-menu></md-menu>
 
-  <code-editor #editor
+  <dbgjdg-code-editor #editor
                precode="{{problem.precode}}"
                [code]="problem.code"
                [green]="problemSolved"
                [readonly]="problemSolved"
-               postcode="{{problem.postcode}}"></code-editor>
+               postcode="{{problem.postcode}}"></dbgjdg-code-editor>
 
   <md-card-actions layout="row" layout-align="end center">
     <button md-raised-button
@@ -32,7 +32,7 @@
       <div class="submissionListing" *ngFor="let submission of submissions">
         {{submission.submissionTime.getHours()}}:{{('0'+submission.submissionTime.getMinutes()).slice(-2)}}:{{('0'+submission.submissionTime.getSeconds()).slice(-2)}}
         <br>
-        <code-editor [code]="submission.code" [green]="submission.accepted==true" [red]="submission.accepted==false" [readonly]="true"></code-editor>
+        <dbgjdg-code-editor [code]="submission.code" [green]="submission.accepted==true" [red]="submission.accepted==false" [readonly]="true"></dbgjdg-code-editor>
       </div>
     </div>
     <md-card-actions>
