@@ -968,7 +968,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/main/angular/previewapp/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<mat-sidenav-container>\n  <mat-sidenav mode=\"over\" #sidenav>\n    <nav>\n      <h3>ACMDC</h3>\n      <hr/>\n      <button mat-button routerLink=\"/\" (click)=\"sidenav.close()\">Team View</button>\n      <button mat-button routerLink=\"/scoreboard\" (click)=\"sidenav.close()\">Scoreboard</button>\n      <hr/>\n      <a mat-button href=\"/logout\" (click)=\"sidenav.close()\">Log Out</a>\n    </nav>\n  </mat-sidenav>\n\n  <mat-toolbar color=\"primary\">\n    <button mat-button class=\"menu-button\" (click)=\"sidenav.open()\">\n      <mat-icon>menu</mat-icon>\n    </button>\n    <span>ACM Debugging Competition</span>\n  </mat-toolbar>\n\n  <router-outlet></router-outlet>\n</mat-sidenav-container>\n"
+module.exports = "<mat-sidenav-container>\n  <mat-sidenav mode=\"over\" #sidenav>\n    <nav>\n      <h3>ACMDC</h3>\n      <hr/>\n      <button mat-button [disabled]=\"true\">Team View</button>\n      <button mat-button [disabled]=\"true\">Scoreboard</button>\n      <hr/>\n      <button mat-button [disabled]=\"true\">Log Out</button>\n    </nav>\n  </mat-sidenav>\n\n  <mat-toolbar color=\"primary\">\n    <button mat-button class=\"menu-button\" (click)=\"sidenav.open()\">\n      <mat-icon>menu</mat-icon>\n    </button>\n    <span>ACM Debugging Competition</span>\n  </mat-toolbar>\n\n  <router-outlet></router-outlet>\n</mat-sidenav-container>\n"
 
 /***/ }),
 
@@ -1178,28 +1178,25 @@ var PreviewComponent = (function () {
     };
     PreviewComponent.prototype.upload = function () {
         var _this = this;
-        var serialized = '';
         var dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_3__preview_dialogs__["b" /* PreviewUploadDialog */], {
             width: '250px',
-            data: { serialized: serialized }
+            data: { serialized: '' }
         });
         dialogRef.afterClosed().subscribe(function (result) {
-            _this.deserialize(serialized);
+            if (result)
+                _this.deserialize(result);
         });
     };
     PreviewComponent.prototype.download = function () {
-        var _this = this;
         var serialized = JSON.stringify(this.problems);
         var dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_3__preview_dialogs__["a" /* PreviewDownloadDialog */], {
             width: '250px',
             data: { serialized: serialized }
         });
-        dialogRef.afterClosed().subscribe(function (result) {
-            _this.deserialize(serialized);
-        });
     };
     PreviewComponent.prototype.deserialize = function (serialized) {
-        console.log(serialized);
+        var parsed = JSON.parse(serialized);
+        this.problems = parsed;
     };
     return PreviewComponent;
 }());

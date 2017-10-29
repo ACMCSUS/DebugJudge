@@ -70,14 +70,13 @@ export class PreviewComponent implements OnInit, OnDestroy {
   }
 
   private upload(): void {
-    let serialized = '';
     let dialogRef = this.dialog.open(PreviewUploadDialog, {
       width: '250px',
-      data: { serialized: serialized }
+      data: { serialized: '' }
     });
-
     dialogRef.afterClosed().subscribe(result => {
-      this.deserialize(serialized);
+      if (result)
+        this.deserialize(result);
     });
   }
 
@@ -87,13 +86,10 @@ export class PreviewComponent implements OnInit, OnDestroy {
       width: '250px',
       data: { serialized: serialized }
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.deserialize(serialized);
-    });
   }
 
   private deserialize(serialized : string): void {
-    console.log(serialized);
+    let parsed = JSON.parse(serialized)
+    this.problems = parsed;
   }
 }

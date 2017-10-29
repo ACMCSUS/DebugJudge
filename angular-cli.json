@@ -67,7 +67,7 @@
     {
       "name": "previewapp",
       "root": "src/main/angular",
-      "outDir": "gen_preview",
+      "outDir": "docs",
       "baseHref": "",
       "assets": [
         "assets",

@@ -3,10 +3,10 @@
     <nav>
       <h3>ACMDC</h3>
       <hr/>
-      <button mat-button routerLink="/" (click)="sidenav.close()">Team View</button>
-      <button mat-button routerLink="/scoreboard" (click)="sidenav.close()">Scoreboard</button>
+      <button mat-button [disabled]="true">Team View</button>
+      <button mat-button [disabled]="true">Scoreboard</button>
       <hr/>
-      <a mat-button href="/logout" (click)="sidenav.close()">Log Out</a>
+      <button mat-button [disabled]="true">Log Out</button>
     </nav>
   </mat-sidenav>
 
