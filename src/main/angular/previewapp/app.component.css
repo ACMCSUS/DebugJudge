@@ -1,0 +1,16 @@
+mat-sidenav-container {
+  height: 100%;
+}
+
+.menu-button {
+  margin-right: 5px;
+}
+
+nav h3 {
+  text-align: center;
+}
+nav * {
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+  font-size: 1.2rem;
+  width: 100%;
+}

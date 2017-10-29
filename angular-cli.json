@@ -8,9 +8,9 @@
       "name": "teamapp",
       "root": "src/main/angular",
       "outDir": "target/classes/app/team",
-      "baseHref": "/team/",
+      "baseHref": "",
       "assets": [
-        "src/main/angular/assets",
+        "assets",
         "favicon.ico"
       ],
       "index": "index.html",
@@ -20,8 +20,8 @@
       "prefix": "dbgjdg",
       "mobile": false,
       "styles": [
-        "styles.css",
-        "theme.scss"
+        "./styles.css",
+        "./theme.scss"
       ],
       "scripts": [
         "../../../node_modules/ace-builds/src-min/ace.js",
@@ -52,6 +52,36 @@
       "styles": [
         "styles.css",
         "theme.scss"
+      ],
+      "scripts": [
+        "../../../node_modules/ace-builds/src-min/ace.js",
+        "../../../node_modules/ace-builds/src-min/mode-plain_text.js",
+        "../../../node_modules/ace-builds/src-min/theme-chrome.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    },
+    {
+      "name": "previewapp",
+      "root": "src/main/angular",
+      "outDir": "gen_preview",
+      "baseHref": "",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "previewapp/main.ts",
+      "test": "previewapp/test.ts",
+      "tsconfig": "tsconfig.json",
+      "prefix": "dbgjdg",
+      "mobile": false,
+      "styles": [
+        "./styles.css",
+        "./theme.scss"
       ],
       "scripts": [
         "../../../node_modules/ace-builds/src-min/ace.js",

@@ -7,13 +7,14 @@ import {
   trigger,
   ViewChild,
   OnInit,
-  OnDestroy, Input,
+  OnDestroy, Input, Inject,
 } from '@angular/core';
 import {CodeEditorComponent} from 'lib/codeeditor.component';
 import {Problem} from 'lib/models/problem';
 import {Submission} from 'lib/models/submission';
-import {ApiService} from 'lib/api';
-import {Subscription} from '@reactivex/rxjs';
+import {ApiService} from 'lib/api.service';
+import {Subscription} from 'rxjs/Rx';
+import {ApiServiceImpl} from 'lib/api.impl';
 
 @Component({
   selector: 'dbgjdg-problem-card',
@@ -43,7 +44,7 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
 
   submissionSubscription: Subscription;
 
-  constructor(private apiService: ApiService) {
+  constructor(@Inject('ApiService') private apiService: ApiService) {
     this.collapse();
     this.notify = false;
   }
@@ -62,7 +63,7 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
         submission => submission.problem.id === this.problem.id))
       .subscribe(submissions => {
         if (this.submissions && this.submissions.length === submissions.length) {
-          if (!ApiService.arraysEqual(this.submissions, submissions)) {
+          if (!ApiServiceImpl.arraysEqual(this.submissions, submissions)) {
             this.notify = true;
           }
         }
