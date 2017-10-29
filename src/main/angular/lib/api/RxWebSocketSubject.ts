@@ -2,16 +2,16 @@
  * https://gearheart.io/blog/auto-websocket-reconnection-with-rxjs/ *
  ********************************************************************/
 
-import {Subject, Observer, Observable, BehaviorSubject} from '@reactivex/rxjs';
-import {WebSocketSubjectConfig, WebSocketSubject} from '@reactivex/rxjs/dist/cjs/observable/dom/WebSocketSubject';
+import * as Rx from 'rxjs/Rx';
+import {WebSocketSubjectConfig, WebSocketSubject} from 'rxjs/observable/dom/WebSocketSubject';
 
 /// we inherit from the ordinary Subject
-export class RxWebSocketSubject<T> extends Subject<T> {
-  private reconnectionObservable: Observable<number>;
+export class RxWebSocketSubject<T> extends Rx.Subject<T> {
+  private reconnectionObservable: Rx.Observable<number>;
   private wsSubjectConfig: WebSocketSubjectConfig;
   private socket: WebSocketSubject<any>;
   // private connectionObserver: Observer<boolean>;
-  public connectionStatus: BehaviorSubject<boolean>;
+  public connectionStatus: Rx.BehaviorSubject<boolean>;
 
   /// by default, when a message is received from the server, we are trying to decode it as JSON
   /// we can override it in the constructor
@@ -36,7 +36,7 @@ export class RxWebSocketSubject<T> extends Subject<T> {
     super();
 
     /// connection status
-    this.connectionStatus = new BehaviorSubject<boolean>(false);
+    this.connectionStatus = new Rx.BehaviorSubject<boolean>(false);
     // this.connectionStatus.subscribe((value) => this.connectionObserver.next(value));
 
     if (!resultSelector) {
@@ -72,11 +72,15 @@ export class RxWebSocketSubject<T> extends Subject<T> {
     });
   }
 
+  public subscribeLambda(argLambda) : void {
+    super.subscribe({ next: argLambda });
+  }
+
   connect(): void {
     this.socket = new WebSocketSubject(this.wsSubjectConfig);
     this.socket.subscribe(
       (m) => {
-        this.next(m); /// when receiving a message, we just send it to our Subject
+        this.send(m); /// when receiving a message, we just send it to our Subject
       },
       (error: Event) => {
         if (!this.socket) {
@@ -88,7 +92,7 @@ export class RxWebSocketSubject<T> extends Subject<T> {
 
   /// reconnection
   reconnect(): void {
-    this.reconnectionObservable = Observable.interval(this.reconnectInterval)
+    this.reconnectionObservable = Rx.Observable.interval(this.reconnectInterval)
       .takeWhile((v, index) => {
         return index < this.reconnectAttempts && !this.socket
     });

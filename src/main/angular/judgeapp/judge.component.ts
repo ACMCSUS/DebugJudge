@@ -1,7 +1,7 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {ApiService} from 'lib/api';
+import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import {ApiService} from 'lib/api.service';
 import {Submission} from 'lib/models/submission';
-import {Subscription} from '@reactivex/rxjs';
+import {Subscription} from 'rxjs/Subscription';
 import {Problem} from 'lib/models/problem';
 
 @Component({
@@ -20,7 +20,7 @@ export class JudgeComponent implements OnInit, OnDestroy {
   problems: Problem[] = [];
   problemPreferences: {} = {};
 
-  constructor(private apiService: ApiService) {
+  constructor(@Inject('ApiService') private apiService: ApiService) {
   }
 
   ngOnInit() {

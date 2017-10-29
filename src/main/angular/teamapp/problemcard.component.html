@@ -1,13 +1,13 @@
-<md-card class="problemcard">
-  <md-card-title>{{problem.title}}
-    <span *ngIf="problemSolved" class="solvedSpan">SOLVED</span></md-card-title>
-  <md-card-subtitle>Language: {{problem.language}}</md-card-subtitle>
+<mat-card class="problemcard">
+  <mat-card-title>{{problem.title}}
+    <span *ngIf="problemSolved" class="solvedSpan">SOLVED</span></mat-card-title>
+  <mat-card-subtitle>Language: {{problem.language}}</mat-card-subtitle>
 
-  <md-card-content>
+  <mat-card-content>
     {{problem.description}}
-  </md-card-content>
+  </mat-card-content>
 
-  <md-menu></md-menu>
+  <mat-menu></mat-menu>
 
   <dbgjdg-code-editor #editor
                precode="{{problem.precode}}"
@@ -16,18 +16,18 @@
                [readonly]="problemSolved"
                postcode="{{problem.postcode}}"></dbgjdg-code-editor>
 
-  <md-card-actions layout="row" layout-align="end center">
-    <button md-raised-button
+  <mat-card-actions layout="row" layout-align="end center">
+    <button mat-raised-button
             [disabled]="problemSolved"
             (click)="submit()">Submit</button>
-    <button md-raised-button
+    <button mat-raised-button
             [disabled]="problemSolved"
             (click)="reset()">Reset</button>
-  </md-card-actions>
-</md-card>
+  </mat-card-actions>
+</mat-card>
 
 <div class="submissionList">
-  <md-card>
+  <mat-card>
     <div class="toggle-container" [@openClose]="stateExpression">
       <div class="submissionListing" *ngFor="let submission of submissions">
         {{submission.submissionTime.getHours()}}:{{('0'+submission.submissionTime.getMinutes()).slice(-2)}}:{{('0'+submission.submissionTime.getSeconds()).slice(-2)}}
@@ -35,14 +35,14 @@
         <dbgjdg-code-editor [code]="submission.code" [green]="submission.accepted==true" [red]="submission.accepted==false" [readonly]="true"></dbgjdg-code-editor>
       </div>
     </div>
-    <md-card-actions>
-      <button md-raised-button
+    <mat-card-actions>
+      <button mat-raised-button
               [ngClass]="{'notify': notify}"
               [disabled]="submissions.length == 0"
               (click)="expand()">View Submissions</button>
-      <button md-raised-button
+      <button mat-raised-button
               [disabled]="submissions.length == 0"
               (click)="collapse()">Hide</button>
-    </md-card-actions>
-  </md-card>
+    </mat-card-actions>
+  </mat-card>
 </div>

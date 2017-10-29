@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Http} from '@angular/http';
 import {Router} from '@angular/router';
-import {Observable, Subscription} from '@reactivex/rxjs';
+import {Observable, Subscription} from 'rxjs/Rx';
 
 @Component({
   selector: 'dbgjdg-scoreboard',

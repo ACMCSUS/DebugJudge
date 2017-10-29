@@ -2,7 +2,7 @@
   position: relative;
   z-index: 5;
 }
-md-menu {
+mat-menu {
   position: absolute;
   top: 10px;
   right: 10px;

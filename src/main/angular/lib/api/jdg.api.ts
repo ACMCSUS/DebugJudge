@@ -1,5 +1,5 @@
-import {BehaviorSubject, Subscription} from '@reactivex/rxjs';
-import {ApiService} from 'lib/api';
+import * as Rx from 'rxjs/Rx';
+import {ApiService} from 'lib/api.service';
 import {Submission} from 'lib/models/submission';
 import {RxWebSocketSubject} from 'lib/api/RxWebSocketSubject';
 
@@ -8,15 +8,15 @@ export class JudgingApi {
   private static connectingMessage = 'Connecting...';
   private static waitingMessage = 'Waiting for submission...';
 
-  public submission: BehaviorSubject<Submission>;
-  public statusMessage: BehaviorSubject<string>;
+  public submission: Rx.BehaviorSubject<Submission>;
+  public statusMessage: Rx.BehaviorSubject<string>;
 
-  public connectionSubscription: Subscription;
-  private sessionSubscription: Subscription = null;
+  public connectionSubscription: Rx.Subscription;
+  private sessionSubscription: Rx.Subscription = null;
 
   constructor(private apiService: ApiService, private socket: RxWebSocketSubject<any>) {
-    this.submission = new BehaviorSubject(undefined);
-    this.statusMessage = new BehaviorSubject(JudgingApi.connectingMessage);
+    this.submission = new Rx.BehaviorSubject(undefined);
+    this.statusMessage = new Rx.BehaviorSubject(JudgingApi.connectingMessage);
     this.connectionSubscription = null;
   }
 

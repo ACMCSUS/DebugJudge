@@ -1,21 +1,21 @@
-<md-sidenav-container>
-  <md-sidenav mode="over" #sidenav>
+<mat-sidenav-container>
+  <mat-sidenav mode="over" #sidenav>
     <nav>
       <h3>ACMDC</h3>
       <hr/>
-      <button md-button routerLink="/" (click)="sidenav.close()">Team View</button>
-      <button md-button routerLink="/scoreboard" (click)="sidenav.close()">Scoreboard</button>
+      <button mat-button routerLink="/" (click)="sidenav.close()">Team View</button>
+      <button mat-button routerLink="/scoreboard" (click)="sidenav.close()">Scoreboard</button>
       <hr/>
-      <a md-button href="/logout" (click)="sidenav.close()">Log Out</a>
+      <a mat-button href="/logout" (click)="sidenav.close()">Log Out</a>
     </nav>
-  </md-sidenav>
+  </mat-sidenav>
 
-  <md-toolbar color="primary">
-    <button md-button class="menu-button" (click)="sidenav.open()">
-      <md-icon>menu</md-icon>
+  <mat-toolbar color="primary">
+    <button mat-button class="menu-button" (click)="sidenav.open()">
+      <mat-icon>menu</mat-icon>
     </button>
     <span>ACM Debugging Competition</span>
-  </md-toolbar>
+  </mat-toolbar>
 
   <router-outlet></router-outlet>
-</md-sidenav-container>
+</mat-sidenav-container>

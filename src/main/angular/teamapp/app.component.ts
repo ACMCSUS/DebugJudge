@@ -1,11 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from '@reactivex/rxjs';
-import {ApiService} from 'lib/api';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs/Subscription';
+import {ApiService} from 'lib/api.service';
 
 @Component({
   selector: 'dbgjdg-app-root',
   templateUrl: './app.component.html',
-  providers: [ApiService],
+  providers: [],
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   profileSubscription: Subscription;
   profile: any;
 
-  constructor(private apiService: ApiService) {
+  constructor(@Inject('ApiService') private apiService: ApiService) {
     this.isTeam = false;
     this.isJudge = false;
   }
