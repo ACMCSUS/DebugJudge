@@ -69,7 +69,7 @@
               <executable>npm</executable>
               <arguments>
                 <argument>run-script</argument>
-                <argument>build</argument>
+                <argument>buildall</argument>
               </arguments>
             </configuration>
             <goals>

@@ -5,7 +5,7 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-b
 import {RouterModule, Routes} from '@angular/router';
 import {DebugJudgeMaterialModule}from 'lib/debugjudgematerial.module';
 
-import {Autosize} from 'angular2-autosize/src/autosize.directive';
+import {Autosize} from 'ng-autosize';
 import {CodeEditorComponent} from 'lib/codeeditor.component';
 import {AceEditorModule} from 'ng2-ace-editor';
 

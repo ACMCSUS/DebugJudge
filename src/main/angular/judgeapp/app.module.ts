@@ -6,7 +6,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule, Routes} from '@angular/router';
 
-import {Autosize} from 'angular2-autosize/src/autosize.directive';
+import {Autosize} from 'ng-autosize';
 
 import {AppComponent} from 'judgeapp/app.component';
 import {JudgeComponent} from 'judgeapp/judge.component';
