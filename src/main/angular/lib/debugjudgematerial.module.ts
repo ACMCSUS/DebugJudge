@@ -13,6 +13,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     Mat.MatRippleModule,
     Mat.MatCardModule,
     Mat.MatDialogModule,
+    Mat.MatListModule,
   ],
   exports: [
     Mat.MatSidenavModule,
@@ -24,6 +25,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     Mat.MatRippleModule,
     Mat.MatCardModule,
     Mat.MatDialogModule,
+    Mat.MatListModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -7,7 +7,7 @@
     {
       "name": "teamapp",
       "root": "src/main/angular",
-      "outDir": "target/classes/app/team",
+      "outDir": "build/resources/main/app/team",
       "baseHref": "",
       "assets": [
         "assets",
@@ -37,7 +37,7 @@
     {
       "name": "judgeapp",
       "root": "src/main/angular",
-      "outDir": "target/classes/app/judge",
+      "outDir": "build/resources/main/app/judge",
       "baseHref": "/judge/",
       "assets": [
         "src/main/angular/assets",
