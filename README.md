@@ -9,7 +9,6 @@ A judging system for the ACM Debugging Competition
  - NPM
  - NodeJS
  - Java 8
- - Maven
 
 ### To Run:
 
@@ -30,9 +29,9 @@ $ export DB_PASS=password
 $ export DB_URL=jdbc:mysql://your.mysqlhost.url:3306/dbgjdg
 ```
 
-###### 4. Run with Maven
+###### 4. Run with Gradle
 ```bash
-$ mvn process-classes exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMain"
+$ gradle run
 ```
 
 ###### 5. Changed frontend?
@@ -41,8 +40,6 @@ $ npm run-script build-team  # Build just TeamApp
 $ npm run-script build-judge # Build just JudgeApp
 $ # OR
 $ npm run-script build       # Build both
-$ # OR (also recompiles Java)
-$ mvn compile
 ```
 
 An HTTP server will be hosted on ```localhost:4567```.
@@ -60,7 +57,7 @@ An HTTP server will be hosted on ```localhost:4567```.
     
 ###### 6. **Test your work using JUnit!**
 ```bash
-$ mvn test
+$ gradle test
 ```
 Test a variety of good and bad inputs.
 This will be exceedingly important in making sure our code will work during the competition.
