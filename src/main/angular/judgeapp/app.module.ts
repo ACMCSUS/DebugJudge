@@ -1,20 +1,21 @@
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
-// import {MaterialModule} from '@angular/material';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule, Routes} from '@angular/router';
 
-import {Autosize} from 'angular2-autosize/src/autosize.directive';
+import {Autosize} from 'ng-autosize';
+import {AceEditorModule} from 'ng2-ace-editor';
 
 import {AppComponent} from 'judgeapp/app.component';
 import {JudgeComponent} from 'judgeapp/judge.component';
 
+import {ApiService} from 'lib/api.service';
+import {ApiServiceImpl} from 'lib/api.impl';
+import {DebugJudgeMaterialModule} from 'lib/debugjudgematerial.module';
 import {CodeEditorComponent} from 'lib/codeeditor.component';
 import {ScoreboardComponent} from 'lib/scoreboard.component';
-import {AceEditorModule} from 'ng2-ace-editor';
-import {ApiServiceImpl} from '../lib/api.impl';
 
 const appRoutes: Routes = [
   { path: '', component: JudgeComponent },
@@ -37,7 +38,7 @@ const appRoutes: Routes = [
     FormsModule,
     HttpModule,
     RouterModule.forRoot(appRoutes),
-    // MaterialModule,
+    DebugJudgeMaterialModule,
   ],
   providers: [{provide: 'ApiService', useClass: ApiServiceImpl}],
   bootstrap: [AppComponent],
