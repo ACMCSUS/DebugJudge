@@ -17,24 +17,19 @@ A judging system for the ACM Debugging Competition
 $ git clone https://github.com/ACMCSUS/DebugJudge.git
 ```
 
-###### 2. Install Maven
-```bash
-$ sudo apt-get install maven
-```
-
-###### 3. Set ENV Variables
+###### 2. Set ENV Variables
 ```bash
 $ export DB_USER=dbgjdg
 $ export DB_PASS=password
 $ export DB_URL=jdbc:mysql://your.mysqlhost.url:3306/dbgjdg
 ```
 
-###### 4. Run with Gradle
+###### 3. Run with Gradle
 ```bash
 $ gradle run
 ```
 
-###### 5. Changed frontend?
+###### 4. Changed frontend?
 ```bash
 $ npm run-script build-team  # Build just TeamApp
 $ npm run-script build-judge # Build just JudgeApp
