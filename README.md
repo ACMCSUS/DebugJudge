@@ -65,7 +65,7 @@ Somebody else will give you a code review and perform the merge.
 ### Code style:
 
  - Java 8 ( ͡° ͜ʖ ͡°)
- - Spaces > Tabs. Use four spaces per level.
+ - Spaces > Tabs. Use two spaces per level.
  - Java/Oracle naming conventions
  - To declare a route/filter:
     - Declare a static method with the correct signature in a Controller class (acmcsus.ctrl.SomeNameForController)
