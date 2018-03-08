@@ -2,6 +2,7 @@ package acmcsus.debugjudge.ctrl;
 
 import acmcsus.debugjudge.Views;
 import acmcsus.debugjudge.model.*;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.CompetitionStateChangeMessage.CompetitionState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import spark.Request;
@@ -69,7 +70,8 @@ public class ScoreboardController {
 
             List<Problem> problems;
 
-            if (ApiController.competitionStarted != 0 || profile.getType() == Profile.ProfileType.JUDGE) {
+            if (ApiController.competitionState != CompetitionState.WAITING ||
+                    profile.getType() == Profile.ProfileType.JUDGE) {
                 problems = Problem.find.query()
                         .where()
                         .eq("competition_id", competition.id)

@@ -13,6 +13,14 @@ import {RxWebSocketSubject} from './api/RxWebSocketSubject';
 import {ApiService} from 'lib/api.service';
 // import {BehaviorSubject} from '@reactivex/rxjs';
 
+import * as pb from 'proto/debugjudge_pb';
+import {WebSocketSubject, WebSocketSubjectConfig} from "rxjs/observable/dom/WebSocketSubject";
+
+import {acmcsus} from "../proto/debugjudge_pb";
+import C2SMessage = acmcsus.debugjudge.C2SMessage;
+import S2CMessage = acmcsus.debugjudge.S2CMessage;
+import {NextObserver} from "rxjs/Observer";
+
 @Injectable()
 export class ApiServiceImpl implements ApiService {
 
@@ -23,7 +31,7 @@ export class ApiServiceImpl implements ApiService {
   public submissions: Rx.BehaviorSubject<Submission[]>;
   public profile: Rx.BehaviorSubject<Profile>;
 
-  private socket: RxWebSocketSubject<any>;
+  private socket: WebSocketSubject<S2CMessage>;
 
   public judgingApi: JudgingApi;
   public loggedInStatus: Rx.BehaviorSubject<boolean>;
@@ -80,61 +88,94 @@ export class ApiServiceImpl implements ApiService {
     this.submissions = new Rx.BehaviorSubject<Submission[]>([]);
     this.profile = new Rx.BehaviorSubject<Profile>(undefined);
 
-    this.socket = new RxWebSocketSubject<any>(this.wsUrl);
+    let socketConfig : WebSocketSubjectConfig;
+    socketConfig = {
+      url: this.wsUrl,
+      binaryType: "arraybuffer",
+    };
+    socketConfig.resultSelector = (e: MessageEvent) => {
+      // I am the greatest hacker. Rxjs has a weird type check that this bypasses.
+      return S2CMessage.decode.apply(this, [new Uint8Array(e.data).subarray(0)]);
+    };
+    socketConfig.openObserver = {
+      next: (event: Event) => {
+        this.http.get(this.nonceUrl).forEach((response) => {
+          let msg = C2SMessage.create({
+            loginMessage: {
+              nonce: response.text()
+            }
+          });
+          this.socket.socket.send(C2SMessage.encode(msg).finish());
+        })
+      }
+    };
+    this.socket = new WebSocketSubject<S2CMessage>(socketConfig);
+
     this.loggedInStatus = new Rx.BehaviorSubject<boolean>(false);
     this.setUpSocket();
 
-    this.judgingApi = new JudgingApi(this, this.socket);
+    // this.judgingApi = new JudgingApi(this, this.socket);
 
-    this.socket.connectionStatus.subscribe((connectionStatus) => {
-      if (connectionStatus === true) {
-        this.http.get(this.nonceUrl).forEach((response) => {
-          console.log(response);
-          this.socket.send({who: 'login', data: response.text()});
-          this.loggedInStatus.next(true);
-        });
-      }
-      else {
-        this.loggedInStatus.next(false);
-      }
-    });
+    this.socket.subscribe();
   }
 
   private setUpSocket() {
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'dbg')
-      .subscribe(msg => console.log('WS DBG:', msg.data));
+    this.socket.subscribe(msg => {
+      switch (msg.value) {
+        case('debugMessage'): {
+          console.debug('WS_DBG:', msg.debugMessage.message);
+          break;
+        }
+        case('alertMessage'): {
+          alert(msg.alertMessage.message);
+          break;
+        }
+        case ('loginResultMessage'): {
+          if (msg.loginResultMessage.value == S2CMessage.LoginResultMessage.LoginResult.SUCCESS) {
+            this.loggedInStatus.next(true);
+          }
+          else {
+            this.loggedInStatus.next(false);
+          }
+          break;
+        }
+        default: {
+          console.error("WS: I didn't know how to act on msg:", msg.value,
+            "Either this message is not supported in frontend or someone forgot a 'break'.");
+        }
+      }
+    });
 
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'alert')
-      .subscribe(msg => alert(msg.data));
-
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'api' && msg.what === 'rld-submissions')
-      .subscribe((msg) => {
-        console.log('I should reload my submissions:', msg);
-        this.getSubmissions()
-          .then((submissions) => this.submissions.next(submissions));
-      });
+    // this.socket.asObservable()
+    //   .filter(msg => msg.who === 'alert')
+    //   .subscribe(msg => alert(msg.data));
+    //
+    // this.socket.asObservable()
+    //   .filter(msg => msg.who === 'api' && msg.what === 'rld-submissions')
+    //   .subscribe((msg) => {
+    //     console.log('I should reload my submissions:', msg);
+    //     this.getSubmissions()
+    //       .then((submissions) => this.submissions.next(submissions));
+    //   });
     this.getSubmissions()
       .then((submissions) => this.submissions.next(submissions));
-
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'api' && msg.what === 'rld-problems')
-      .subscribe((msg) => {
-        console.log('I should reload my problems:', msg);
-        this.getProblems()
-          .then((problems) => this.problems.next(problems));
-      });
+    //
+    // this.socket.asObservable()
+    //   .filter(msg => msg.who === 'api' && msg.what === 'rld-problems')
+    //   .subscribe((msg) => {
+    //     console.log('I should reload my problems:', msg);
+    //     this.getProblems()
+    //       .then((problems) => this.problems.next(problems));
+    //   });
     this.getProblems()
       .then((problems) => this.problems.next(problems));
-
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'api' && msg.what === 'rld-profile')
-      .subscribe((msg) => {
-        this.getProfile()
-          .then((profile) => this.profile.next(profile));
-      });
+    //
+    // this.socket.asObservable()
+    //   .filter(msg => msg.who === 'api' && msg.what === 'rld-profile')
+    //   .subscribe((msg) => {
+    //     this.getProfile()
+    //       .then((profile) => this.profile.next(profile));
+    //   });
     this.getProfile()
       .then((profile) => this.profile.next(profile));
   }

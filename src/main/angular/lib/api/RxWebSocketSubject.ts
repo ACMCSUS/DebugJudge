@@ -60,7 +60,8 @@ export class RxWebSocketSubject<T> extends Rx.Subject<T> {
         next: (e: Event) => {
           this.connectionStatus.next(true);
         }
-      }
+      },
+      binaryType: 'arraybuffer',
     };
     /// we connect
     this.connect();

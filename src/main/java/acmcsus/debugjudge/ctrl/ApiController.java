@@ -3,6 +3,7 @@ package acmcsus.debugjudge.ctrl;
 import acmcsus.debugjudge.ProcessBody;
 import acmcsus.debugjudge.Views;
 import acmcsus.debugjudge.model.*;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.CompetitionStateChangeMessage.CompetitionState;
 import acmcsus.debugjudge.ws.JudgeQueueHandler;
 import acmcsus.debugjudge.ws.SocketHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,23 +38,29 @@ public class ApiController {
 
             before("/reset", SecurityApi::judgeFilter);
             get("/reset", (req, res) -> {
-                competitionStarted = 0;
-                SocketHandler.teamReloadProblems();
-                SocketHandler.teamReloadStatus();
+                if (competitionState != CompetitionState.WAITING) {
+                    competitionState = CompetitionState.WAITING;
+                    SocketHandler.teamReloadProblems();
+                    SocketHandler.teamReloadStatus();
+                }
                 return "okay";
             });
 
             before("/start", SecurityApi::judgeFilter);
             get("/start", (req, res) -> {
-                competitionStarted = 1;
-                SocketHandler.teamReloadProblems();
+                if (competitionState != CompetitionState.STOPPED) {
+                    competitionState = CompetitionState.STARTED;
+                    SocketHandler.broadcastStateChange();
+                }
                 return "okay";
             });
 
             before("/stop", SecurityApi::judgeFilter);
             get("/stop", (req, res) -> {
-                competitionStarted = 2;
-                SocketHandler.teamReloadStatus();
+                if (competitionState != CompetitionState.STOPPED) {
+                    competitionState = CompetitionState.STOPPED;
+                    SocketHandler.teamReloadStatus();
+                }
                 return "okay";
             });
 
@@ -102,7 +109,7 @@ public class ApiController {
         });
     }
 
-    public static int competitionStarted = 0;
+    public static CompetitionState competitionState = CompetitionState.WAITING;
 
     private static String getProfile(Request req, Response res) throws JsonProcessingException {
         ObjectNode jsonNode = new ObjectNode(JsonNodeFactory.instance);
@@ -181,7 +188,7 @@ public class ApiController {
     private static String newSubmission(Request req, Response res) {
         SecurityApi.teamFilter(req, res);
 
-        if (competitionStarted != 1) {
+        if (competitionState != CompetitionState.STARTED) {
             SocketHandler.alert(SecurityApi.getProfile(req), "Can't submit right now!");
             throw halt(400);
         }
@@ -269,7 +276,8 @@ public class ApiController {
         Competition competition = getCompetition(req);
         Profile profile = SecurityApi.getProfile(req);
 
-        if (competitionStarted==0 && profile.getType() != Profile.ProfileType.JUDGE) {
+        if (competitionState == CompetitionState.WAITING &&
+                profile.getType() != Profile.ProfileType.JUDGE) {
             return "[]";
         }
 
@@ -283,7 +291,8 @@ public class ApiController {
         Competition competition = getCompetition(req);
         Profile profile = SecurityApi.getProfile(req);
 
-        if (competitionStarted==0 && profile.getType() != Profile.ProfileType.JUDGE) {
+        if (competitionState == CompetitionState.WAITING &&
+                profile.getType() != Profile.ProfileType.JUDGE) {
             throw halt(404);
         }
 
