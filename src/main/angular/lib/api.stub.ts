@@ -6,21 +6,22 @@ import 'rxjs/add/operator/toPromise';
 import {Problem} from './models/problem';
 import {Submission} from './models/submission';
 import {Profile} from './models/profile';
-import {JudgingApi} from './api/jdg.api';
 import {RxWebSocketSubject} from './api/RxWebSocketSubject';
 import {ApiService} from 'lib/api.service';
+import {acmcsus} from "../proto/debugjudge_pb";
+import CompetitionState = acmcsus.debugjudge.CompetitionState;
+import C2SMessage = acmcsus.debugjudge.C2SMessage;
+import {JudgeApiService} from "../judgeapp/judgeapi.service";
+import {TeamApiService} from "../teamapp/teamapi.service";
 
 @Injectable()
 export class ApiServiceStub implements ApiService {
 
-  public theProfile : Profile;
+  public competitionState: Rx.BehaviorSubject<CompetitionState>;
   public problems: Rx.BehaviorSubject<Problem[]>;
   public submissions: Rx.BehaviorSubject<Submission[]>;
   public profile: Rx.BehaviorSubject<Profile>;
 
-  private socket: RxWebSocketSubject<any>;
-
-  public judgingApi: JudgingApi;
   public loggedInStatus: Rx.BehaviorSubject<boolean>;
 
   constructor() {
@@ -28,7 +29,14 @@ export class ApiServiceStub implements ApiService {
     this.submissions = new Rx.BehaviorSubject<Submission[]>([]);
     this.profile = new Rx.BehaviorSubject<Profile>(undefined);
     this.loggedInStatus = new Rx.BehaviorSubject<boolean>(false);
-    this.judgingApi = new JudgingApi(this, this.socket);
+  }
+
+  setJudgeApiService(judgeApiService: JudgeApiService) {
+    throw new Error("Method not implemented.");
+  }
+
+  setTeamApiService(teamApiService: TeamApiService) {
+    throw new Error("Method not implemented.");
   }
 
   public getSubmission(id: number): Promise<Submission> {
@@ -49,15 +57,8 @@ export class ApiServiceStub implements ApiService {
     return new Promise(() => this.profile);
   }
 
-  public submit(problem: Problem, code: String) {
-    alert('Submitted: ' + JSON.stringify(problem))
+  sendMessage(c2SMessage: C2SMessage): void {
+    throw new Error("Method not implemented.");
   }
 
-  public accept(submission: Submission) {
-    alert('Accepted: ' + JSON.stringify(submission))
-  }
-
-  public reject(submission: Submission) {
-    alert('Reject: ' + JSON.stringify(submission))
-  }
 }

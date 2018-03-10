@@ -1,17 +1,22 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.model.Judge;
-import acmcsus.debugjudge.model.Profile;
-import acmcsus.debugjudge.model.Submission;
-import org.eclipse.jetty.websocket.api.Session;
+import acmcsus.debugjudge.model.*;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
+import org.eclipse.jetty.websocket.api.*;
+import org.slf4j.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+
+import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 
 /**
  * Created by merrillm on 4/8/17.
  */
 public class JudgeQueueHandler {
+
+    private static Logger logger = LoggerFactory.getLogger(JudgeQueueHandler.class);
+
     private JudgeQueueHandler(){
         Submission.find.query().where()
                 .isNull("accepted")
@@ -24,17 +29,17 @@ public class JudgeQueueHandler {
     }
 
     private static class JudgeSession {
-        public final Judge judge;
-        public final Session socketSession;
+        private final Judge judge;
+        private final Session socketSession;
         private Submission currentSubmission = null;
         private Set<Long> skipProblems = null;
 
-        public JudgeSession(Judge judge, Session socketSession) {
+        private JudgeSession(Judge judge, Session socketSession) {
             this.judge = judge;
             this.socketSession = socketSession;
         }
 
-        public void setJudgePreferences(Map<Long, Boolean> judgePreferences) {
+        private void setJudgePreferences(Map<Long, Boolean> judgePreferences) {
             if (skipProblems == null) skipProblems = new HashSet<>();
 
             for (Map.Entry<Long, Boolean> entry : judgePreferences.entrySet()) {
@@ -46,7 +51,7 @@ public class JudgeQueueHandler {
             }
         }
 
-        public boolean canGrade(Submission submission) {
+        private boolean canGrade(Submission submission) {
             return skipProblems == null
                     || !skipProblems.contains(submission.problem.id);
         }
@@ -58,45 +63,6 @@ public class JudgeQueueHandler {
     private HashMap<Long, JudgeSession> judgeSessionMap = new HashMap<>();
     private HashMap<Long, JudgeSession> submissionSessionMap = new HashMap<>();
 
-//    @Override
-//    public void handle(IncomingWebSocketMessage msg) {
-//        if ("start".equals(msg.what)) {
-//            connected((Judge) msg.profile, msg.session);
-//        } else if ("stop".equals(msg.what)) {
-//            disconnected((Judge) msg.profile);
-//        } else if ("defer".equals(msg.what)) {
-//            defer((Judge) msg.profile);
-//        } else if ("pref".equals(msg.what)) {
-//            try {
-//                JudgeSession judgeSession = judgeSessionMap.get(msg.profile.getId());
-//                if (judgeSession == null) {
-//                    msg.session.getRemote().sendString("{" +
-//                            "\"who\":\"jdg\"," +
-//                            "\"what\":\"kick\"," +
-//                            "\"data\":\"You need to login!\"" +
-//                            "}");
-//                    return;
-//                }
-//
-//                Map<Long, Boolean> map = new HashMap<>();
-//                msg.data.fields().forEachRemaining(
-//                        e -> map.put(Long.parseLong(e.getKey()), e.getValue().booleanValue()));
-//
-//                judgeSession.setJudgePreferences(map);
-//
-//                if (judgeSession.currentSubmission == null) {
-//                    match(judgeSession);
-//                } else if (map.containsKey(judgeSession.currentSubmission.problem.id)) {
-//                    boolean needNewProblem = !map.get(judgeSession.currentSubmission.problem.id);
-//                    if (needNewProblem) defer(judgeSession.judge);
-//                }
-//
-//            } catch (Exception e) {e.printStackTrace();}
-//        } else {
-//            System.out.println("I don't understand: " + msg);
-//        }
-//    }
-//    @Override
     public boolean allowUse(Profile.ProfileType profileType) {
         return profileType == Profile.ProfileType.JUDGE;
     }
@@ -116,10 +82,7 @@ public class JudgeQueueHandler {
     public void submitted(Submission submission) {
         match(submission);
     }
-    public void accepted(Submission submission) {
-        purge(submission);
-    }
-    public void rejected(Submission submission) {
+    public void judged(Submission submission) {
         purge(submission);
     }
 
@@ -128,7 +91,8 @@ public class JudgeQueueHandler {
         if (judgeSession == null) return;
 
         if (waitingSubmissions.isEmpty()) {
-            SocketHandler.alert(judgeSession.socketSession, "There are no other submissions in the queue!");
+            SocketHandler.alert(judgeSession.socketSession,
+              "There are no other submissions in the queue!");
         } else {
             match(judgeSession);
         }
@@ -141,15 +105,33 @@ public class JudgeQueueHandler {
             purge(judge);
 
             try {
-                judgeSession.socketSession.getRemote().sendString("{" +
-                        "\"who\":\"jdg\"," +
-                        "\"what\":\"kick\"," +
-                        "\"data\":\"" + reason + "\"" +
-                        "}");
+              sendMessage(judgeSession.socketSession, S2JMessage.newBuilder()
+                .setKickMessage(S2JMessage.KickMessage.newBuilder()
+                    .setMessage(reason)).build());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setJudgePreferences(Judge judge, Session session, Map<Long, Boolean> map) {
+      JudgeSession judgeSession = judgeSessionMap.get(judge.getId());
+      if (judgeSession == null) {
+        kick(judge, "You need to login!");
+      }
+      else {
+        judgeSession.setJudgePreferences(map);
+
+        if (judgeSession.currentSubmission == null) {
+          match(judgeSession);
+        }
+        else if (map.containsKey(judgeSession.currentSubmission.problem.id)) {
+          boolean needNewProblem = !map.get(judgeSession.currentSubmission.problem.id);
+          if (needNewProblem) {
+            defer(judgeSession.judge);
+          }
+        }
+      }
     }
 
     private void purge(Judge judge) {
@@ -230,23 +212,21 @@ public class JudgeQueueHandler {
         waitingSubmissions.removeIf(sub -> sub.id.equals(submission.id));
 
         try {
-            judgeSession.socketSession.getRemote().sendString("{" +
-                    "\"who\":\"jdg\"," +
-                    "\"what\":\"set\"," +
-                    "\"data\":" + submission.id +
-                    "}");
+            sendMessage(judgeSession.socketSession, S2JMessage.newBuilder()
+              .setAssignedSubmissionMessage(
+                S2JMessage.AssignedSubmissionMessage.newBuilder()
+                  .setSubmissionId(submission.id)).build());
         } catch (IOException e) {
             kick(judgeSession.judge, "There was an error matching you with a submission.");
+            logger.error("", e);
         }
     }
     private void unmatched(JudgeSession judgeSession) {
         try {
             judgeSession.currentSubmission = null;
-            judgeSession.socketSession.getRemote().sendString("{" +
-                    "\"who\":\"jdg\"," +
-                    "\"what\":\"set\"," +
-                    "\"data\":null" +
-                    "}");
+            sendMessage(judgeSession.socketSession, S2JMessage.newBuilder()
+              .setAssignedSubmissionMessage(S2JMessage.AssignedSubmissionMessage.newBuilder())
+              .build());
             waitingJudges.add(judgeSession);
         } catch (IOException e) {
             e.printStackTrace();

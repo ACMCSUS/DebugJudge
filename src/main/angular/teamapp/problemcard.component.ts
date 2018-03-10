@@ -15,6 +15,7 @@ import {Submission} from 'lib/models/submission';
 import {ApiService} from 'lib/api.service';
 import {Subscription} from 'rxjs/Rx';
 import {ApiServiceImpl} from 'lib/api.impl';
+import {TeamApiService} from "./teamapi.service";
 
 @Component({
   selector: 'dbgjdg-problem-card',
@@ -44,7 +45,7 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
 
   submissionSubscription: Subscription;
 
-  constructor(@Inject('ApiService') private apiService: ApiService) {
+  constructor(@Inject('TeamApiService') private teamApiService: TeamApiService) {
     this.collapse();
     this.notify = false;
   }
@@ -57,7 +58,7 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
   collapse() { this.stateExpression = 'collapsed'; }
 
   ngOnInit() {
-    this.submissionSubscription = this.apiService.submissions.asObservable()
+    this.submissionSubscription = this.teamApiService.submissions.asObservable()
       .filter(submissions => submissions !== undefined)
       .map(submissions => submissions.filter(
         submission => submission.problem.id === this.problem.id))
@@ -77,7 +78,7 @@ export class ProblemCardComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    this.apiService.submit(this.problem, this.editor.code);
+    this.teamApiService.submit(this.problem, this.editor.code);
   }
 
   reset() {

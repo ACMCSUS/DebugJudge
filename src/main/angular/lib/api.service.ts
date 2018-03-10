@@ -1,35 +1,30 @@
-import {Injectable} from '@angular/core';
-import {Http, Response, RequestOptions, Headers} from '@angular/http';
-
 import * as Rx from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
 import {Problem} from './models/problem';
 import {Submission} from './models/submission';
-import {Observable} from 'rxjs/Rx';
 import {Profile} from './models/profile';
-import {JudgingApi} from './api/jdg.api';
-import {RxWebSocketSubject} from './api/RxWebSocketSubject';
-// import {BehaviorSubject} from '@reactivex/rxjs';
+import {acmcsus} from "proto/debugjudge_pb";
+import CompetitionState = acmcsus.debugjudge.CompetitionState;
+import {JudgeApiService} from "judgeapp/judgeapi.service";
+import {TeamApiService} from "teamapp/teamapi.service";
 
 export interface ApiService {
 
+  competitionState: Rx.BehaviorSubject<CompetitionState>;
   problems: Rx.BehaviorSubject<Problem[]>;
-  submissions: Rx.BehaviorSubject<Submission[]>;
   profile: Rx.BehaviorSubject<Profile>;
 
-  judgingApi: JudgingApi;
   loggedInStatus: Rx.BehaviorSubject<boolean>;
 
+  setJudgeApiService(judgeApiService: JudgeApiService);
+  setTeamApiService(teamApiService: TeamApiService);
+
   getSubmission(id: number): Promise<Submission>;
-  getSubmissions(): Promise<Submission[]>;
 
   getProblems(): Promise<Problem[]>;
-  getProfile(): Promise<Profile>
+  getProfile(): Promise<Profile>;
 
-  submit(problem: Problem, code: String);
-
-  accept(submission: Submission);
-  reject(submission: Submission);
+  sendMessage(c2SMessage: acmcsus.debugjudge.C2SMessage): void;
 
 }

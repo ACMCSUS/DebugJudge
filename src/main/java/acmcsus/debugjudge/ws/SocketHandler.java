@@ -4,7 +4,8 @@ import acmcsus.debugjudge.ctrl.*;
 import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.WebSocket.*;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.CompetitionStateChangeMessage.CompetitionState;
+import acmcsus.debugjudge.proto.Competition.*;
+import com.google.protobuf.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.slf4j.*;
@@ -15,6 +16,9 @@ import java.nio.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static acmcsus.debugjudge.model.Profile.ProfileType;
+import static acmcsus.debugjudge.ws.JudgeSocketHandler.handleJ2SMessage;
+import static acmcsus.debugjudge.ws.TeamSocketHandler.handleT2SMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
 
 @WebSocket
@@ -57,8 +61,7 @@ public class SocketHandler {
     Profile profile = sessionProfileMap.remove(user);
     if (profile != null) {
       if (profile instanceof Judge) {
-        // TODO
-//        JudgeQueueHandler.getInstance().disconnected((Judge) profile);
+        JudgeQueueHandler.getInstance().disconnected((Judge) profile);
       }
 
       profileSessionMap.remove(profile);
@@ -75,61 +78,75 @@ public class SocketHandler {
       ctx.req = C2SMessage.parseFrom(inputStream);
 
       logger.info("Received Message: " + shortDebugString(ctx.req));
-
-      try {
-        switch (ctx.req.getValueCase()) {
-          case LOGINMESSAGE: {
-            loginMessage(ctx);
-            break;
+      
+      switch (ctx.req.getValueCase()) {
+        case LOGINMESSAGE: {
+          loginMessage(ctx);
+          break;
+        }
+        case T2SMESSAGE: {
+          if (ctx.profile != null && ProfileType.TEAM == ctx.profile.getType()) {
+            handleT2SMessage(ctx);
           }
-          default: {
-            logger.error("WS: Backend does not recognize message: " + ctx.req.getValueCase());
+          else {
+            logger.warn("WS: Attempt to use T2SMessage while not registered! " +
+              shortDebugString(ctx.req));
             return;
           }
+          break;
         }
-
-        logger.info("WS Handled!\n  In: {}\n  Out: {}",
-          shortDebugString(ctx.req),
-          shortDebugString(ctx.res));
-
-        sendMessage(ctx.session, ctx.res);
+        case J2SMESSAGE: {
+          if (ctx.profile != null && ProfileType.JUDGE == ctx.profile.getType()) {
+            handleJ2SMessage(ctx);
+          }
+          else {
+            logger.warn("WS: Attempt to use J2SMessage while not registered! " +
+              shortDebugString(ctx.req));
+            return;
+          }
+          break;
+        }
+        default: {
+          logger.error("WS: Backend does not recognize message: " + ctx.req.getValueCase());
+          return;
+        }
       }
-      catch (HaltException ignored) {
-      }
+
+      logger.info("WS Handled!\n  In: {}\n  Out: {}",
+        shortDebugString(ctx.req),
+        shortDebugString(ctx.res));
     }
     catch (IOException e) {
       e.printStackTrace();
       return;
     }
-//    else{
-//      ISocketEventHandler who = handlers.get(msg.who);
-//
-//      if (who == null) {
-//        System.out.println("I don't understand: " + message);
-//        return;
-//      }
-//
-//      if ((msg.profile != null && who.allowUse(msg.profile.getType()))
-//        || (msg.profile == null && who.allowUse(null))) {
-//        who.handle(msg);
-//      }
-//      else {
-//        if (msg.profile == null) {
-//          System.err.println("Someone tried using a WebSocket from " +
-//            msg.session.getRemoteAddress().getAddress() +
-//            " without being logged in: " + msg);
-//        }
-//        else {
-//          if (msg.profile.getType() != Profile.ProfileType.JUDGE) {
-//            logger.warn("User " + msg.profile.getName() + " tried using the " + msg.who + " WS Handler!");
-//          }
-//        }
-//      }
-//    }
   }
 
+  public static void sendMessage(Session session, S2TMessage msg) throws IOException {
+    sendMessage(session, S2CMessage.newBuilder().setS2TMessage(msg).build());
+  }
+  public static void sendMessage(Session session, S2JMessage msg) throws IOException {
+    sendMessage(session, S2CMessage.newBuilder().setS2JMessage(msg).build());
+  }
   public static void sendMessage(Session session, S2CMessage msg) throws IOException {
+    logger.info("Sent Message: {}", shortDebugString(msg));
     session.getRemote().sendBytes(ByteBuffer.wrap(msg.toByteArray()));
+  }
+
+  public static void sendMessage(Profile profile, S2TMessage msg) {
+    sendMessage(profile, S2CMessage.newBuilder().setS2TMessage(msg).build());
+  }
+  public static void sendMessage(Profile profile, S2JMessage msg) {
+    sendMessage(profile, S2CMessage.newBuilder().setS2JMessage(msg).build());
+  }
+  public static void sendMessage(Profile profile, S2CMessage msg) {
+    for (Session session : profileSessionMap.get(profile)) {
+      try {
+        sendMessage(session, msg);
+      } catch (IOException e) {
+        logger.error("WS: Error while sending: " + shortDebugString(msg), e);
+      }
+    }
   }
 
   public static void broadcastMessage(S2CMessage msg) {
@@ -146,8 +163,8 @@ public class SocketHandler {
   public static void broadcastStateChange() {
     CompetitionState state = ApiController.competitionState;
     S2CMessage msg = S2CMessage.newBuilder()
-      .setCompetitionStateChangeMessage(
-        CompetitionStateChangeMessage.newBuilder()
+      .setCompetitionStateChangedMessage(
+        CompetitionStateChangedMessage.newBuilder()
           .setState(state)).build();
 
     broadcastMessage(msg);
@@ -183,6 +200,8 @@ public class SocketHandler {
             LoginResultMessage.newBuilder()
               .setValue(LoginResultMessage.LoginResult.SUCCESS))
           .build();
+
+        sendMessage(ctx.session, ctx.res);
         debug(ctx.session, "Login Successful!");
       }
       else {
@@ -194,68 +213,12 @@ public class SocketHandler {
     }
   }
 
-  public static void notify(Profile profile, Event event) {
-//    try {
-//      Set<Session> sessions = profileSessionMap.get(profile);
-//
-//      if (sessions != null) {
-//        for (Session session : sessions) {
-//          session.getRemote().sendString(WebSocketMessage.who("api").what("rld-submissions").toString());
-//        }
-//      }
-//    }
-//    catch (Exception e) {
-//      logger.warn("Error while notifying " + profile.getName() + ": ", e);
-//    }
-  }
-
-  public static void teamReloadProblems() {
-    // for (Map.Entry<Session, Profile> entry : sessionProfileMap.entrySet()) {
-    //   try {
-    //     if (entry.getValue().getType() == Profile.ProfileType.TEAM) {
-    //       S2CMessage msg = S2CMessage.newBuilder()
-    //         .
-
-    //       send(entry.getKey(), );
-    //       entry.getKey().getRemote().sendString(
-    //         WebSocketMessage
-    //           .who("api")
-    //           .what("rld-problems").toString()
-    //       );
-    //     }
-    //   }
-    //   catch (Exception ignored) {
-    //   }
-    // }
-  }
-
-  public static void teamReloadStatus() {
-//    for (Map.Entry<Session, Profile> entry : sessionProfileMap.entrySet()) {
-//      try {
-//        if (entry.getValue().getType() == Profile.ProfileType.TEAM) {
-//          entry.getKey().getRemote().sendString(
-//            WebSocketMessage
-//              .who("api")
-//              .what("rld-status").toString()
-//          );
-//        }
-//      }
-//      catch (Exception ignored) {
-//      }
-//    }
-  }
-
   public static void debug(Profile profile, String message) {
     try {
       Set<Session> sessions = profileSessionMap.get(profile);
-
       if (sessions != null) {
         for (Session session : sessions) {
           debug(session, message);
-//          session.getRemote().sendString(S2CMessage.newBuilder()
-//            .setDebugMessage(
-//              DebugMessage.newBuilder().setMessage(message))
-//            .build().toString());
         }
       }
     }
@@ -266,12 +229,8 @@ public class SocketHandler {
 
   public static void debug(Session session, String message) {
     try {
-      logger.debug(message);
-      session.getRemote().sendBytes(ByteBuffer.wrap(
-        S2CMessage.newBuilder()
-          .setDebugMessage(
-            DebugMessage.newBuilder().setMessage(message))
-          .build().toByteArray()));
+      sendMessage(session, S2CMessage.newBuilder()
+        .setDebugMessage(DebugMessage.newBuilder().setMessage(message)).build());
     }
     catch (Exception ignored) {
     }
@@ -279,12 +238,8 @@ public class SocketHandler {
 
   public static void alert(Session session, String message) {
     try {
-      logger.debug("alert:" + message);
-      session.getRemote().sendBytes(ByteBuffer.wrap(
-        S2CMessage.newBuilder()
-          .setAlertMessage(
-            AlertMessage.newBuilder().setMessage(message))
-          .build().toByteArray()));
+      sendMessage(session, S2CMessage.newBuilder()
+          .setAlertMessage(AlertMessage.newBuilder().setMessage(message)).build());
     }
     catch (Exception ignored) {
     }

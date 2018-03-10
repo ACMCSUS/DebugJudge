@@ -15,7 +15,8 @@ import {ProblemCardComponent} from 'teamapp/problemcard.component';
 import {TeamComponent} from 'teamapp/team.component';
 
 import {ScoreboardComponent} from 'lib/scoreboard.component';
-import {ApiServiceImpl} from '../lib/api.impl';
+import {ApiServiceImpl} from 'lib/api.impl';
+import {TeamApiServiceImpl} from "./teamapi.impl";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,10 @@ import {ApiServiceImpl} from '../lib/api.impl';
     DebugJudgeMaterialModule,
     RouterModule.forRoot(AppModule.appRoutes),
   ],
-  providers: [{provide: 'ApiService', useClass: ApiServiceImpl}],
+  providers: [
+    {provide: 'ApiService', useClass: ApiServiceImpl},
+    {provide: 'TeamApiService', useClass: TeamApiServiceImpl},
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

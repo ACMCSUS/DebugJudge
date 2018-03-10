@@ -1,0 +1,14 @@
+syntax = 'proto3';
+
+option java_package = 'acmcsus.debugjudge.proto';
+option java_outer_classname = 'Competition';
+
+package acmcsus.debugjudge;
+
+enum CompetitionState {
+  UNKNOWN = 0;
+  WAITING = 1;
+  STARTED = 2;
+  PAUSED = 3;
+  STOPPED = 4;
+}

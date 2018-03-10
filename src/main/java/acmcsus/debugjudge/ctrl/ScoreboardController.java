@@ -1,15 +1,13 @@
 package acmcsus.debugjudge.ctrl;
 
-import acmcsus.debugjudge.Views;
+import acmcsus.debugjudge.*;
 import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.CompetitionStateChangeMessage.CompetitionState;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import spark.Request;
-import spark.Response;
+import acmcsus.debugjudge.proto.Competition.*;
+import com.fasterxml.jackson.databind.*;
+import spark.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 import static spark.Spark.halt;
 
@@ -17,10 +15,6 @@ import static spark.Spark.halt;
  * Created by merrillm on 4/2/17.
  */
 public class ScoreboardController {
-
-//    private static Map<Long, String> lastScoreboard = null;
-//    private static Map<Long, Long> lastScoreboardCacheTime;
-
 
     private static class TeamBarebones {
         public String name;

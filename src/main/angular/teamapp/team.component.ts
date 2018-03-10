@@ -1,10 +1,11 @@
-import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 
 import {ApiService} from 'lib/api.service';
 import {Submission} from 'lib/models/submission';
 import {Problem} from 'lib/models/problem';
 import {ProblemCardComponent} from 'teamapp/problemcard.component';
 import {Subscription} from 'rxjs/Rx';
+import {TeamApiService} from "./teamapi.service";
 
 @Component({
   selector: 'dbgjdg-team-view',
@@ -36,11 +37,12 @@ export class TeamComponent implements OnInit, OnDestroy {
   problemSubscription: Subscription;
   submissionSubscription: Subscription;
 
-  constructor(@Inject('ApiService') private apiService: ApiService) {
+  constructor(@Inject('ApiService') private apiService: ApiService,
+              @Inject('TeamApiService') private teamApiService: TeamApiService) {
     this.problemSubscription = this.apiService.problems.asObservable()
       .subscribe(problems => this.problems = problems);
 
-    this.submissionSubscription = this.apiService.submissions.asObservable()
+    this.submissionSubscription = this.teamApiService.submissions.asObservable()
       .subscribe(submissions => this.submissions = submissions);
   }
 
