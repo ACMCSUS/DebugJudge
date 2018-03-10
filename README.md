@@ -9,7 +9,6 @@ A judging system for the ACM Debugging Competition
  - NPM
  - NodeJS
  - Java 8
- - Maven
 
 ### To Run:
 
@@ -18,31 +17,24 @@ A judging system for the ACM Debugging Competition
 $ git clone https://github.com/ACMCSUS/DebugJudge.git
 ```
 
-###### 2. Install Maven
-```bash
-$ sudo apt-get install maven
-```
-
-###### 3. Set ENV Variables
+###### 2. Set ENV Variables
 ```bash
 $ export DB_USER=dbgjdg
 $ export DB_PASS=password
 $ export DB_URL=jdbc:mysql://your.mysqlhost.url:3306/dbgjdg
 ```
 
-###### 4. Run with Maven
+###### 3. Run with Gradle
 ```bash
-$ mvn process-classes exec:java -Dexec.mainClass="acmcsus.debugjudge.DebugJudgeMain"
+$ gradle run
 ```
 
-###### 5. Changed frontend?
+###### 4. Changed frontend?
 ```bash
 $ npm run-script build-team  # Build just TeamApp
 $ npm run-script build-judge # Build just JudgeApp
 $ # OR
 $ npm run-script build       # Build both
-$ # OR (also recompiles Java)
-$ mvn compile
 ```
 
 An HTTP server will be hosted on ```localhost:4567```.
@@ -60,7 +52,7 @@ An HTTP server will be hosted on ```localhost:4567```.
     
 ###### 6. **Test your work using JUnit!**
 ```bash
-$ mvn test
+$ gradle test
 ```
 Test a variety of good and bad inputs.
 This will be exceedingly important in making sure our code will work during the competition.
@@ -73,7 +65,7 @@ Somebody else will give you a code review and perform the merge.
 ### Code style:
 
  - Java 8 ( ͡° ͜ʖ ͡°)
- - Spaces > Tabs. Use four spaces per level.
+ - Spaces > Tabs. Use two spaces per level.
  - Java/Oracle naming conventions
  - To declare a route/filter:
     - Declare a static method with the correct signature in a Controller class (acmcsus.ctrl.SomeNameForController)
