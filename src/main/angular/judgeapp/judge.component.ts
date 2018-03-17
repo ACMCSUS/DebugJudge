@@ -3,6 +3,7 @@ import {ApiService} from 'lib/api.service';
 import {Submission} from 'lib/models/submission';
 import {Subscription} from 'rxjs/Subscription';
 import {Problem} from 'lib/models/problem';
+import {JudgeApiService} from "./judgeapi.service";
 
 @Component({
   selector: 'dbgjdg-judge-view',
@@ -20,11 +21,13 @@ export class JudgeComponent implements OnInit, OnDestroy {
   problems: Problem[] = [];
   problemPreferences: {} = {};
 
-  constructor(@Inject('ApiService') private apiService: ApiService) {
+  constructor(
+    @Inject('ApiService') private apiService: ApiService,
+    @Inject('JudgeApiService') private judgeApiService: JudgeApiService) {
   }
 
   ngOnInit() {
-    this.apiService.judgingApi.startSession();
+    this.judgeApiService.startSession();
 
     this.apiService.getProblems()
       .then((problems) => {
@@ -35,29 +38,29 @@ export class JudgeComponent implements OnInit, OnDestroy {
         console.log(this.problems);
     });
 
-    this.submissionSubscription = this.apiService.judgingApi.submission
+    this.submissionSubscription = this.judgeApiService.submission
       .subscribe((submission) => this.submission = submission);
-    this.statusMessageSubscription = this.apiService.judgingApi.statusMessage
+    this.statusMessageSubscription = this.judgeApiService.statusMessage
       .subscribe((statusMessage) => this.statusMessage = statusMessage);
   }
 
   ngOnDestroy() {
     this.submissionSubscription.unsubscribe();
     this.statusMessageSubscription.unsubscribe();
-    this.apiService.judgingApi.stopSession();
+    this.judgeApiService.stopSession();
   }
 
   public accept(submission: Submission) {
-    this.apiService.accept(submission);
+    this.judgeApiService.accept(submission);
   }
   public reject(submission: Submission) {
-    this.apiService.reject(submission);
+    this.judgeApiService.reject(submission);
   }
   public defer(submission: Submission) {
-    this.apiService.judgingApi.defer(submission);
+    this.judgeApiService.defer(submission);
   }
 
   public updatePreferences() {
-    this.apiService.judgingApi.preferences(this.problemPreferences);
+    this.judgeApiService.preferences(this.problemPreferences);
   }
 }

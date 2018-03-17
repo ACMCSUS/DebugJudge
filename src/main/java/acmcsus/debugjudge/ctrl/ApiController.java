@@ -1,26 +1,19 @@
 package acmcsus.debugjudge.ctrl;
 
-import acmcsus.debugjudge.ProcessBody;
-import acmcsus.debugjudge.Views;
+import acmcsus.debugjudge.*;
 import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.ws.JudgeQueueHandler;
-import acmcsus.debugjudge.ws.SocketHandler;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.ebean.Ebean;
-import io.ebean.ExpressionList;
-import spark.Request;
-import spark.Response;
+import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.ws.*;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.node.*;
+import io.ebean.*;
+import spark.*;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.sql.Date;
-import java.time.Instant;
-import java.util.List;
+import java.time.*;
+import java.util.*;
 
 import static acmcsus.debugjudge.ctrl.SecurityApi.getCompetition;
 import static acmcsus.debugjudge.ctrl.SecurityApi.getJudge;
@@ -37,23 +30,28 @@ public class ApiController {
 
             before("/reset", SecurityApi::judgeFilter);
             get("/reset", (req, res) -> {
-                competitionStarted = 0;
-                SocketHandler.teamReloadProblems();
-                SocketHandler.teamReloadStatus();
+                if (competitionState != CompetitionState.WAITING) {
+                    competitionState = CompetitionState.WAITING;
+                    SocketHandler.broadcastStateChange();
+                }
                 return "okay";
             });
 
             before("/start", SecurityApi::judgeFilter);
             get("/start", (req, res) -> {
-                competitionStarted = 1;
-                SocketHandler.teamReloadProblems();
+                if (competitionState != CompetitionState.STARTED) {
+                    competitionState = CompetitionState.STARTED;
+                    SocketHandler.broadcastStateChange();
+                }
                 return "okay";
             });
 
             before("/stop", SecurityApi::judgeFilter);
             get("/stop", (req, res) -> {
-                competitionStarted = 2;
-                SocketHandler.teamReloadStatus();
+                if (competitionState != CompetitionState.STOPPED) {
+                    competitionState = CompetitionState.STOPPED;
+                    SocketHandler.broadcastStateChange();
+                }
                 return "okay";
             });
 
@@ -77,14 +75,7 @@ public class ApiController {
             path("/submission", () -> {
                 before("/:id", SecurityApi::loggedInFilter);
                 get("/:id", ApiController::getSubmission);
-
-                before("/:id/accept", SecurityApi::judgeFilter);
-                post("/:id/accept", ApiController::acceptSubmission);
-
-                before("/:id/reject", SecurityApi::judgeFilter);
-                post("/:id/reject", ApiController::rejectSubmission);
             });
-
 
             before("/problems", SecurityApi::loggedInFilter);
             get("/problems", ApiController::getProblems);
@@ -102,7 +93,7 @@ public class ApiController {
         });
     }
 
-    public static int competitionStarted = 0;
+    public static CompetitionState competitionState = CompetitionState.WAITING;
 
     private static String getProfile(Request req, Response res) throws JsonProcessingException {
         ObjectNode jsonNode = new ObjectNode(JsonNodeFactory.instance);
@@ -154,8 +145,7 @@ public class ApiController {
                 .fetch("problem", "*")
                 .where()
                 .eq("competition_id", profile.getCompetition().id);
-
-
+        
         if (profile.getType() == Profile.ProfileType.TEAM) {
             expr = expr.eq("team_id", profile.getId());
         }
@@ -181,7 +171,7 @@ public class ApiController {
     private static String newSubmission(Request req, Response res) {
         SecurityApi.teamFilter(req, res);
 
-        if (competitionStarted != 1) {
+        if (competitionState != CompetitionState.STARTED) {
             SocketHandler.alert(SecurityApi.getProfile(req), "Can't submit right now!");
             throw halt(400);
         }
@@ -198,11 +188,6 @@ public class ApiController {
             submission.save();
             submission.refresh();
 
-            Event event = new Event();
-            event.submission = submission;
-            event.eventType = Event.EventType.SUBMISSION;
-            SocketHandler.notify(submission.team, event);
-
             JudgeQueueHandler.getInstance().submitted(submission);
 
             return Long.toString(submission.id);
@@ -216,60 +201,13 @@ public class ApiController {
                             .replaceAll("\\\\", "\\\\")));
         }
     }
-    private static String acceptSubmission(Request req, Response res) {
-        Judge judge = SecurityApi.getJudge(req);
-        if (judge == null) throw halt(403);
-
-        try {
-            Submission submission = Submission.find.byId(Long.valueOf(req.params("id")));
-            if (submission == null) throw halt(404);
-
-            submission.accepted(judge, Date.from(Instant.now()));
-            submission.update();
-
-            Event event = new Event();
-            event.submission = submission;
-            event.eventType = Event.EventType.ACCEPTANCE;
-            SocketHandler.notify(submission.team, event);
-
-            JudgeQueueHandler.getInstance().accepted(submission);
-
-            return "200";
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw halt(400);
-        }
-    }
-    private static String rejectSubmission(Request req, Response res) {
-        Judge judge = SecurityApi.getJudge(req);
-        if (judge == null) throw halt(403);
-
-        try {
-            Submission submission = Submission.find.byId(Long.valueOf(req.params("id")));
-            if (submission == null) throw halt(404);
-
-            submission.rejected(judge, Date.from(Instant.now()));
-            submission.update();
-
-            Event event = new Event();
-            event.submission = submission;
-            event.eventType = Event.EventType.REJECTION;
-            SocketHandler.notify(submission.team, event);
-
-            JudgeQueueHandler.getInstance().rejected(submission);
-
-            return "200";
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw halt(400);
-        }
-    }
 
     public static String getProblems(Request req, Response res) throws JsonProcessingException {
         Competition competition = getCompetition(req);
         Profile profile = SecurityApi.getProfile(req);
 
-        if (competitionStarted==0 && profile.getType() != Profile.ProfileType.JUDGE) {
+        if (competitionState == CompetitionState.WAITING &&
+                profile.getType() != Profile.ProfileType.JUDGE) {
             return "[]";
         }
 
@@ -283,7 +221,8 @@ public class ApiController {
         Competition competition = getCompetition(req);
         Profile profile = SecurityApi.getProfile(req);
 
-        if (competitionStarted==0 && profile.getType() != Profile.ProfileType.JUDGE) {
+        if (competitionState == CompetitionState.WAITING &&
+                profile.getType() != Profile.ProfileType.JUDGE) {
             throw halt(404);
         }
 

@@ -13,8 +13,8 @@
     "build-team": "echo Building app \\\"teamapp\\\"; ng build --app teamapp",
     "build-judge": "echo Building app \\\"judgeapp\\\"; ng build --app judgeapp",
     "protoc": "npm run protoc-js && npm run protoc-ts",
-    "protoc-js": "mkdir -p target/generated-sources/ts/proto && pbjs -t static-module -o target/generated-sources/ts/proto/competition_pb.js src/main/proto/competition.proto",
-    "protoc-ts": "pbts -o target/generated-sources/ts/proto/competition_pb.d.ts target/generated-sources/ts/proto/competition_pb.js --no-comments",
+    "protoc-js": "mkdir -p src/main/angular/proto && pbjs -t static-module -o src/main/angular/proto/debugjudge_pb.js src/main/proto/*.proto",
+    "protoc-ts": "pbts -o src/main/angular/proto/debugjudge_pb.d.ts src/main/angular/proto/debugjudge_pb.js --no-comments",
     "watchbuild": "ng build --watch",
     "pree2e": "webdriver-manager update --standalone false --gecko false --quiet",
     "e2e": "protractor ./protractor.conf.js"

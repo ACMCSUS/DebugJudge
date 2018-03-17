@@ -1,0 +1,144 @@
+syntax = 'proto3';
+
+option java_package = 'acmcsus.debugjudge.proto';
+option java_outer_classname = 'WebSocket';
+
+package acmcsus.debugjudge;
+
+import "competition.proto";
+
+enum SubmissionJudgement {
+  SUCCESS = 0;
+  FAILURE = 1;
+  DEFERRED = 2;
+}
+
+message C2SMessage {
+
+  oneof value {
+    T2SMessage t2sMessage = 1;
+    J2SMessage j2sMessage = 2;
+
+    LoginMessage loginMessage = 5;
+
+  }
+
+  message LoginMessage {
+    string nonce = 1;
+  }
+
+  // Messages that only ever come from teams.
+  message T2SMessage {
+
+  }
+
+  // Messages that only ever come from judges.
+  message J2SMessage {
+    oneof value {
+      StartJudgingMessage startJudgingMessage = 1;
+      StopJudgingMessage stopJudgingMessage = 2;
+
+      SubmissionJudgementMessage submissionJudgementMessage = 3;
+      JudgingPreferencesMessage judgingPreferencesMessage = 4;
+
+      ChangeCompetitionStateMessage changeCompetitionStateMessage = 8;
+    }
+
+    message StartJudgingMessage {
+
+    }
+    message StopJudgingMessage {
+
+    }
+    message SubmissionJudgementMessage {
+      int64 submission_id = 1;
+      SubmissionJudgement ruling = 2;
+    }
+    message JudgingPreferencesMessage {
+      map<int64, bool> preferences = 1;
+    }
+    message ChangeCompetitionStateMessage {
+      int64 time_millis = 1;
+      CompetitionState state = 2;
+    }
+  }
+}
+
+message S2CMessage {
+
+  oneof value {
+    S2TMessage s2tMessage = 1;
+    S2JMessage s2jMessage = 2;
+
+    DebugMessage debugMessage = 3;
+    AlertMessage alertMessage = 4;
+    LoginResultMessage loginResultMessage = 5;
+    NotificationMessage notificationMessage = 6;
+    CompetitionStateChangedMessage competitionStateChangedMessage = 7;
+
+  }
+
+  message DebugMessage {
+    string message = 1;
+  }
+  message AlertMessage {
+    string message = 1;
+  }
+  message LoginResultMessage {
+    LoginResult value = 1;
+
+    enum LoginResult {
+      UNKNOWN = 0;
+      SUCCESS = 1;
+      FAILURE = 2;
+    }
+  }
+  message NotificationMessage {
+    string message = 1;
+    string icon = 2;
+
+    enum NotificationLevel {
+      DEFAULT = 0;
+      SUCCESS = 1;
+      FAILURE = 2;
+      WARNING = 3;
+    }
+  }
+  message CompetitionStateChangedMessage {
+    int64 time_millis = 1;
+    CompetitionState state = 2;
+  }
+
+// Messages that are specifically for teams.
+  message S2TMessage {
+
+    oneof value {
+      SubmissionJudgedMessage submissionResultMessage = 1;
+    }
+
+    message SubmissionJudgedMessage {
+      int64 submission_id = 1;
+      SubmissionJudgement result = 2;
+    }
+  }
+
+// Messages that are specifically for judges.
+  message S2JMessage {
+
+    oneof value {
+      AssignedSubmissionMessage assignedSubmissionMessage = 1;
+      KickMessage kickMessage = 2;
+    }
+
+    message AssignedSubmissionMessage {
+      // Hack lets us have an "optional" semantic to a scalar value.
+      // By default, the "unset" value would look the same as 0.
+      oneof value {
+        int64 submission_id = 1;
+      }
+    }
+    message KickMessage {
+      string message = 1;
+    }
+  }
+}

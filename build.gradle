@@ -5,6 +5,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.4'
     classpath "io.ebean:ebean-gradle-plugin:11.9.1"
   }
 }
@@ -13,11 +14,13 @@ plugins {
   id "com.moowork.node" version "1.2.0"
 }
 
-apply plugin: 'idea'
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'io.ebean'
 apply plugin: 'application'
+apply plugin: 'idea'
+
+apply plugin: 'maven'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'io.ebean'
 
 group = 'acmcsus'
 version = '1.0-SNAPSHOT'
@@ -33,6 +36,12 @@ repositories {
    maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
+
+// https://mvnrepository.com/artifact/org.eclipse.jetty.aggregate/jetty-all
+  compile group: 'org.eclipse.jetty.aggregate', name: 'jetty-all', version: '9.4.8.v20171121', ext: 'pom'
+
+
+  compile group: 'com.google.protobuf', name: 'protobuf-gradle-plugin', version: '0.8.4'
   compile group: 'com.sparkjava', name: 'spark-core', version:'2.5.5'
   compile group: 'mysql', name: 'mysql-connector-java', version:'5.1.39'
   compile group: 'io.ebean', name: 'ebean', version:'11.10.1'
@@ -59,3 +68,21 @@ task buildJudge(type: NpmTask) {
   args = ['run-script', 'build-judge']
 }
 
+protobuf {
+  protoc {
+    artifact = 'com.google.protobuf:protoc:3.0.0'
+  }
+  generateProtoTasks {
+    // all() returns the collection of all protoc tasks
+    all().each { task ->
+      task.builtins {
+        // This yields
+        // "--java_out=example_option1=true,example_option2:/path/to/output"
+        // on the protoc commandline, which is equivalent to
+        // "--java_out=/path/to/output --java_opt=example_option1=true,example_option2"
+        // with the latest version of protoc.
+        java { }
+      }
+    }
+  }
+}

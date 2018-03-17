@@ -16,6 +16,7 @@ import {ApiServiceImpl} from 'lib/api.impl';
 import {DebugJudgeMaterialModule} from 'lib/debugjudgematerial.module';
 import {CodeEditorComponent} from 'lib/codeeditor.component';
 import {ScoreboardComponent} from 'lib/scoreboard.component';
+import {JudgeApiServiceImpl} from "./judgeapi.impl";
 
 const appRoutes: Routes = [
   { path: '', component: JudgeComponent },
@@ -40,7 +41,10 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     DebugJudgeMaterialModule,
   ],
-  providers: [{provide: 'ApiService', useClass: ApiServiceImpl}],
+  providers: [
+    {provide: 'ApiService', useClass: ApiServiceImpl},
+    {provide: 'JudgeApiService', useClass: JudgeApiServiceImpl},
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

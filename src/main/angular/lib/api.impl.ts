@@ -1,17 +1,24 @@
 import {Injectable} from '@angular/core';
-import {Http, Response, RequestOptions, Headers} from '@angular/http';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
 
 import * as Rx from 'rxjs/Rx';
+import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
 import {Problem} from './models/problem';
 import {Submission} from './models/submission';
-import {Observable} from 'rxjs/Rx';
 import {Profile} from './models/profile';
-import {JudgingApi} from './api/jdg.api';
-import {RxWebSocketSubject} from './api/RxWebSocketSubject';
 import {ApiService} from 'lib/api.service';
-// import {BehaviorSubject} from '@reactivex/rxjs';
+import {WebSocketSubject} from "rxjs/observable/dom/WebSocketSubject";
+
+import {JudgeApiService} from "judgeapp/judgeapi.service";
+import {TeamApiService} from "teamapp/teamapi.service";
+import {acmcsus} from "proto/debugjudge_pb";
+import C2SMessage = acmcsus.debugjudge.C2SMessage;
+import S2CMessage = acmcsus.debugjudge.S2CMessage;
+import CompetitionState = acmcsus.debugjudge.CompetitionState;
+import S2JMessage = acmcsus.debugjudge.S2CMessage.S2JMessage;
+import S2TMessage = acmcsus.debugjudge.S2CMessage.S2TMessage;
 
 @Injectable()
 export class ApiServiceImpl implements ApiService {
@@ -19,27 +26,29 @@ export class ApiServiceImpl implements ApiService {
   private nonceUrl = '/ws/nonce';
   private wsUrl = 'ws://' + window.location.host + '/ws/connect';
 
+  public competitionState: Rx.BehaviorSubject<CompetitionState>;
   public problems: Rx.BehaviorSubject<Problem[]>;
   public submissions: Rx.BehaviorSubject<Submission[]>;
   public profile: Rx.BehaviorSubject<Profile>;
 
-  private socket: RxWebSocketSubject<any>;
+  private socket: WebSocketSubject<S2CMessage>;
 
-  public judgingApi: JudgingApi;
   public loggedInStatus: Rx.BehaviorSubject<boolean>;
 
+  private judgeApiService: JudgeApiService;
+  private teamApiService: TeamApiService;
 
-  private static extractDataArray(res: Response): any[] {
+  static extractDataArray(res: Response): any[] {
     const body = res.json();
     return body || [];
   }
 
-  private static extractData(res: Response): any {
+  static extractData(res: Response): any {
     const body = res.json();
     return body || {};
   }
 
-  private static handleError(error: Response | any) {
+  static handleError(error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;
     if (error instanceof Response) {
@@ -76,67 +85,113 @@ export class ApiServiceImpl implements ApiService {
   }
 
   constructor(private http: Http) {
+    this.competitionState = new Rx.BehaviorSubject<CompetitionState>(CompetitionState.WAITING);
     this.problems = new Rx.BehaviorSubject<Problem[]>([]);
     this.submissions = new Rx.BehaviorSubject<Submission[]>([]);
     this.profile = new Rx.BehaviorSubject<Profile>(undefined);
 
-    this.socket = new RxWebSocketSubject<any>(this.wsUrl);
+    this.socket = new WebSocketSubject<S2CMessage>({
+      url: this.wsUrl,
+      binaryType: "arraybuffer",
+
+      openObserver: {
+        next: (event: Event) => {
+          this.http.get(this.nonceUrl).forEach((response) => {
+            let msg = C2SMessage.create({
+              loginMessage: {
+                nonce: response.text()
+              }
+            });
+            this.sendMessage(msg);
+          })
+        }
+      },
+      resultSelector: (e: MessageEvent) => {
+        // I am the greatest hacker. Rxjs has a weird type check that this bypasses.
+        // If you find a way to bypass this hack, go for it.
+        return S2CMessage.decode.apply(this, [new Uint8Array(e.data)]);
+      },
+    });
+
     this.loggedInStatus = new Rx.BehaviorSubject<boolean>(false);
     this.setUpSocket();
+  }
 
-    this.judgingApi = new JudgingApi(this, this.socket);
+  public setJudgeApiService(judgeApiService: JudgeApiService) {
+    this.judgeApiService = judgeApiService;
+  }
 
-    this.socket.connectionStatus.subscribe((connectionStatus) => {
-      if (connectionStatus === true) {
-        this.http.get(this.nonceUrl).forEach((response) => {
-          console.log(response);
-          this.socket.send({who: 'login', data: response.text()});
-          this.loggedInStatus.next(true);
-        });
-      }
-      else {
-        this.loggedInStatus.next(false);
-      }
-    });
+  public setTeamApiService(teamApiService: TeamApiService) {
+    this.teamApiService = teamApiService;
+    this.teamApiService.getSubmissions()
+      .then(submissions => this.teamApiService.submissions.next(submissions));
   }
 
   private setUpSocket() {
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'dbg')
-      .subscribe(msg => console.log('WS DBG:', msg.data));
+    this.socket.subscribe(msg => {
+      if (msg === undefined) {
+        return
+      }
 
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'alert')
-      .subscribe(msg => alert(msg.data));
+      switch (msg.value) {
+        case'debugMessage': {
+          console.debug('WS_DBG:', msg.debugMessage.message);
+          break;
+        }
+        case 'alertMessage': {
+          alert(msg.alertMessage.message);
+          break;
+        }
+        case 'loginResultMessage': {
+          if (msg.loginResultMessage.value == S2CMessage.LoginResultMessage.LoginResult.SUCCESS) {
+            this.loggedInStatus.next(true);
+          }
+          else {
+            this.loggedInStatus.next(false);
+          }
+          break;
+        }
+        case 'competitionStateChangedMessage': {
+          // TODO: Fancy stuff with the state and time like a countdown in the titlebar
+          let state = msg.competitionStateChangedMessage.state;
+          let time = msg.competitionStateChangedMessage.timeMillis;
 
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'api' && msg.what === 'rld-submissions')
-      .subscribe((msg) => {
-        console.log('I should reload my submissions:', msg);
-        this.getSubmissions()
-          .then((submissions) => this.submissions.next(submissions));
-      });
-    this.getSubmissions()
-      .then((submissions) => this.submissions.next(submissions));
+          this.competitionState.next(state);
+          this.getProblems().then((problems) => this.problems.next(problems));
+          break;
+        }
+        case 'notificationMessage': {
+          // TODO: Notification logic
+          console.log('WS: Notification: "' + msg.notificationMessage.message + '"');
+          break;
+        }
+        case 's2tMessage': {
+          if (this.teamApiService) {
+            this.teamApiService.handleMessage(S2TMessage.create(msg.s2tMessage));
+          }
+          else {
+            console.error("WS: Received an s2tMessage but no teamApiService was set");
+          }
+          break;
+        }
+        case 's2jMessage': {
+          if (this.judgeApiService) {
+            this.judgeApiService.handleMessage(S2JMessage.create(msg.s2jMessage));
+          }
+          else {
+            console.error("WS: Received an s2jMessage but no judgeApiService was set");
+          }
+          break;
+        }
+        default: {
+          console.error("WS: I didn't know how to act on msg:", msg.value,
+            "Either this message is not supported in frontend or someone forgot a 'break'.");
+        }
+      }
+    });
 
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'api' && msg.what === 'rld-problems')
-      .subscribe((msg) => {
-        console.log('I should reload my problems:', msg);
-        this.getProblems()
-          .then((problems) => this.problems.next(problems));
-      });
-    this.getProblems()
-      .then((problems) => this.problems.next(problems));
-
-    this.socket.asObservable()
-      .filter(msg => msg.who === 'api' && msg.what === 'rld-profile')
-      .subscribe((msg) => {
-        this.getProfile()
-          .then((profile) => this.profile.next(profile));
-      });
-    this.getProfile()
-      .then((profile) => this.profile.next(profile));
+    this.getProfile().then((profile) => this.profile.next(profile));
+    this.getProblems().then((problems) => this.problems.next(problems));
   }
 
 
@@ -148,26 +203,6 @@ export class ApiServiceImpl implements ApiService {
       .toPromise()
       .then(ApiServiceImpl.extractData)
       .then((s) => new Submission(s.id, s.problem, s.team_id, new Date(s.submittedAt), s.code, s.accepted));
-    // .catch(ApiService.handleError);
-  }
-
-  public getSubmissions(): Promise<Submission[]> {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-
-    return this.http.get('/api/submissions', options)
-      .toPromise()
-      .then(ApiServiceImpl.extractDataArray)
-      .then((data) => data.map(
-        s => new Submission(s.id, s.problem, s.team_id, new Date(s.submittedAt), s.code, s.accepted)));
-    // .filter(submissions => {
-    //   if (!this.arraysEqual(this.submissions.getValue(), submissions)) {
-    //     console.log("New submissions!");
-    //     return true;
-    //   }
-    //   console.log("Steady Freddie");
-    //   return false;
-    // })
     // .catch(ApiService.handleError);
   }
 
@@ -203,62 +238,7 @@ export class ApiServiceImpl implements ApiService {
     // JSON.stringify(profile)) .catch(ApiService.handleError);
   }
 
-  public submit(problem: Problem, code: String) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-
-    try {
-      this.http.post('/api/submissions', JSON.stringify({
-          problem_id: problem.id, code: code,
-        }), options)
-        .toPromise()
-        .then((response) => {
-          console.log('Shah dud');
-          return response.json();
-        })
-        .catch(ApiServiceImpl.handleError);
-    }
-    catch (err) {
-      console.log(err);
-    }
-  }
-
-  public accept(submission: Submission) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-
-    try {
-      return this.http.post('/api/submission/' + submission.id + '/accept', '', options)
-        .toPromise()
-        .then((response) => {
-          console.log('Shah dud');
-          return response.json();
-        })
-        .catch(ApiServiceImpl.handleError);
-    }
-    catch (err) {
-      console.log(err);
-      return undefined;
-    }
-  }
-
-  public reject(submission: Submission) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-
-    try {
-      console.log(submission);
-      return this.http.post('/api/submission/' + submission.id + '/reject', '', options)
-        .toPromise()
-        .then((response) => {
-          console.log('Shah dud');
-          return response.json();
-        })
-        .catch(ApiServiceImpl.handleError);
-    }
-    catch (err) {
-      console.log(err);
-      return undefined;
-    }
+  public sendMessage(msg: C2SMessage) {
+    this.socket.socket.send(C2SMessage.encode(msg).finish());
   }
 }
