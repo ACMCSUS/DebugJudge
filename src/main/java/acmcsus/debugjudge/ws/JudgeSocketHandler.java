@@ -1,14 +1,17 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.WebSocket.*;
-import org.slf4j.*;
-
-import java.sql.Date;
-import java.time.*;
-import java.util.*;
-
 import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
+
+import acmcsus.debugjudge.model.Judge;
+import acmcsus.debugjudge.model.Submission;
+import acmcsus.debugjudge.proto.WebSocket.C2SMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage;
+import acmcsus.debugjudge.proto.WebSocket.SubmissionJudgement;
+import java.sql.Date;
+import java.time.Instant;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JudgeSocketHandler {
 

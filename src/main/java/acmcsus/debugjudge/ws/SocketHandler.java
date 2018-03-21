@@ -1,25 +1,41 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.ctrl.*;
-import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.WebSocket.*;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
-import acmcsus.debugjudge.proto.Competition.*;
-import com.google.protobuf.*;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.*;
-import org.slf4j.*;
-import spark.*;
-
-import java.io.*;
-import java.nio.*;
-import java.util.*;
-import java.util.concurrent.*;
-
 import static acmcsus.debugjudge.model.Profile.ProfileType;
 import static acmcsus.debugjudge.ws.JudgeSocketHandler.handleJ2SMessage;
 import static acmcsus.debugjudge.ws.TeamSocketHandler.handleT2SMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
+
+import acmcsus.debugjudge.ctrl.ApiController;
+import acmcsus.debugjudge.ctrl.SecurityApi;
+import acmcsus.debugjudge.model.Judge;
+import acmcsus.debugjudge.model.Profile;
+import acmcsus.debugjudge.proto.Competition.CompetitionState;
+import acmcsus.debugjudge.proto.WebSocket.C2SMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.AlertMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.CompetitionStateChangedMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.DebugMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.LoginResultMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2JMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2TMessage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import spark.Request;
+import spark.Response;
 
 @WebSocket
 public class SocketHandler {
@@ -78,7 +94,7 @@ public class SocketHandler {
       ctx.req = C2SMessage.parseFrom(inputStream);
 
       logger.info("Received Message: " + shortDebugString(ctx.req));
-      
+
       switch (ctx.req.getValueCase()) {
         case LOGINMESSAGE: {
           loginMessage(ctx);
@@ -115,8 +131,7 @@ public class SocketHandler {
       logger.info("WS Handled!\n  In: {}\n  Out: {}",
         shortDebugString(ctx.req),
         shortDebugString(ctx.res));
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       e.printStackTrace();
       return;
     }
@@ -125,9 +140,11 @@ public class SocketHandler {
   public static void sendMessage(Session session, S2TMessage msg) throws IOException {
     sendMessage(session, S2CMessage.newBuilder().setS2TMessage(msg).build());
   }
+
   public static void sendMessage(Session session, S2JMessage msg) throws IOException {
     sendMessage(session, S2CMessage.newBuilder().setS2JMessage(msg).build());
   }
+
   public static void sendMessage(Session session, S2CMessage msg) throws IOException {
     logger.info("Sent Message: {}", shortDebugString(msg));
     session.getRemote().sendBytes(ByteBuffer.wrap(msg.toByteArray()));
@@ -136,9 +153,11 @@ public class SocketHandler {
   public static void sendMessage(Profile profile, S2TMessage msg) {
     sendMessage(profile, S2CMessage.newBuilder().setS2TMessage(msg).build());
   }
+
   public static void sendMessage(Profile profile, S2JMessage msg) {
     sendMessage(profile, S2CMessage.newBuilder().setS2JMessage(msg).build());
   }
+
   public static void sendMessage(Profile profile, S2CMessage msg) {
     for (Session session : profileSessionMap.get(profile)) {
       try {
@@ -155,8 +174,7 @@ public class SocketHandler {
         if (entry.getValue().getType() == Profile.ProfileType.TEAM) {
           sendMessage(entry.getKey(), msg);
         }
-      }
-      catch (Exception ignored) {}
+      } catch (Exception ignored) {}
     }
   }
 
@@ -207,8 +225,7 @@ public class SocketHandler {
       else {
         debug(ctx.session, "Bad Nonce.");
       }
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       logger.error("Error while handling WS login", e);
     }
   }
@@ -221,8 +238,7 @@ public class SocketHandler {
           debug(session, message);
         }
       }
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       logger.warn("Error while debugging " + profile.getName() + ": ", e);
     }
   }
@@ -231,17 +247,15 @@ public class SocketHandler {
     try {
       sendMessage(session, S2CMessage.newBuilder()
         .setDebugMessage(DebugMessage.newBuilder().setMessage(message)).build());
-    }
-    catch (Exception ignored) {
+    } catch (Exception ignored) {
     }
   }
 
   public static void alert(Session session, String message) {
     try {
       sendMessage(session, S2CMessage.newBuilder()
-          .setAlertMessage(AlertMessage.newBuilder().setMessage(message)).build());
-    }
-    catch (Exception ignored) {
+        .setAlertMessage(AlertMessage.newBuilder().setMessage(message)).build());
+    } catch (Exception ignored) {
     }
   }
 
