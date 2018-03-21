@@ -41,10 +41,10 @@ public class DebugJudgeMain {
         res.redirect("/login");
       }
       else if (profile.getType() == ProfileType.TEAM) {
-        res.redirect("/team/");
+        res.redirect("/");
       }
       else if (profile.getType() == ProfileType.JUDGE) {
-        res.redirect("/judge/");
+        res.redirect("/");
       }
       else {
         throw new RuntimeException();
@@ -54,7 +54,7 @@ public class DebugJudgeMain {
     angularRoutes("/team/", "/judge/");
 
     StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
-    staticHandler.configure("/app");
+    staticHandler.configure("/angular");
     before((req, res) -> staticHandler.consume(req.raw(), res.raw()));
 
     init();
@@ -77,9 +77,8 @@ public class DebugJudgeMain {
 
       switch (profile.getType()) {
         case TEAM:
-          return DebugJudgeMain.class.getResourceAsStream("/app/team/index.html");
         case JUDGE:
-          return DebugJudgeMain.class.getResourceAsStream("/app/judge/index.html");
+          return DebugJudgeMain.class.getResourceAsStream("/angular/index.html");
         default:
           res.status(500);
           return new RuntimeException("Did not recognize ProfileType " + profile.getType());

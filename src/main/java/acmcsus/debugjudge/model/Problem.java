@@ -7,7 +7,6 @@ import io.ebean.Model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -35,23 +34,28 @@ public class Problem extends Model {
   @Column(name = "description", nullable = false, columnDefinition = "BLOB")
   public String description;
 
-  @Column(name = "language", nullable = false, columnDefinition = "BLOB")
-  public String language;
+  @Entity
+  @Table(name = "debuggingproblems", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"ref_id", "competition_id"}),
+    @UniqueConstraint(columnNames = {"order_index", "competition_id"})
+  })
+  static class DebuggingProblem {
 
-  @Column(name = "precode", columnDefinition = "BLOB")
-  public String precode;
+    @Column(name = "language", nullable = false, columnDefinition = "BLOB")
+    public String language;
 
-  @Column(name = "code", nullable = false, columnDefinition = "BLOB")
-  public String code;
+    @Column(name = "precode", columnDefinition = "BLOB")
+    public String precode;
 
-  @Column(name = "postcode", columnDefinition = "BLOB")
-  public String postcode;
+    @Column(name = "code", nullable = false, columnDefinition = "BLOB")
+    public String code;
 
-  @JsonView(Views.JudgeView.class)
-  @Column(name = "answer", nullable = false, columnDefinition = "BLOB")
-  public String answer;
+    @Column(name = "postcode", columnDefinition = "BLOB")
+    public String postcode;
 
-  @ManyToOne(optional = false)
-  public Competition competition;
+    @JsonView(Views.JudgeView.class)
+    @Column(name = "answer", nullable = false, columnDefinition = "BLOB")
+    public String answer;
+  }
 
 }
