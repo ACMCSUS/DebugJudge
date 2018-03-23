@@ -1,5 +1,6 @@
 title = "FizzBuzz"
 description = "If multiple of 3, return Fizz. If multiple of 5, Buzz. If 3 and 5, FizzBuzz. Otherwise, print the original number."
+orderIndex = 2
 
 problemType = "DEBUGGING"
 

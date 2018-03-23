@@ -2,16 +2,8 @@ package acmcsus.debugjudge.model;
 
 import acmcsus.debugjudge.Views;
 import com.fasterxml.jackson.annotation.JsonView;
-import io.ebean.Finder;
-import io.ebean.Model;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
-public class Problem extends Model {
+public class Problem {
 
   public Long id;
 

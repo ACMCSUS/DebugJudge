@@ -1,0 +1,7 @@
+id = 1
+teamName = "Judge Judy"
+memberNames = "Joey, Ross, Chandler"
+loginSecret = "pass"
+isTeam = false
+isJudge = true
+isAdmin = false

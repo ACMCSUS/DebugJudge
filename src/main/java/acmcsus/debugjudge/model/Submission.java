@@ -1,14 +1,8 @@
 package acmcsus.debugjudge.model;
 
 import acmcsus.debugjudge.Views;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonView;
-import io.ebean.Finder;
-import io.ebean.Model;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 public class Submission {
 

@@ -10,7 +10,9 @@ import acmcsus.debugjudge.model.Submission;
 import acmcsus.debugjudge.proto.Competition.CompetitionState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -73,7 +75,13 @@ public class ScoreboardController {
       }
 
       List<Submission> submissions = new ArrayList<>();
-      getTeams().forEach(t -> submissions.addAll(t.submissions));
+      getTeams().forEach(t -> {
+        try {
+          submissions.addAll(Arrays.asList(FileStore.getSubmissionsForTeam(t)));
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      });
 
       for (Submission submission : submissions) {
 

@@ -34,9 +34,9 @@ public class DebugJudgeMain {
 
     path("/api/", ApiBaseController::baseApiPath);
 
-    before("/registerTeam", SecurityApi::judgeFilter);
-    get("/registerTeam", DebugJudgeMain::registerRoute);
-    post("/registerTeam", SecurityApi::registerTeam);
+    before("/register", SecurityApi::judgeFilter);
+    get("/register", DebugJudgeMain::registerRoute);
+    post("/register", SecurityApi::registerTeam);
 
     get("/login", DebugJudgeMain::loginRoute);
     post("/login", SecurityApi::login);

@@ -102,6 +102,14 @@ public class FileStore {
   }
 
   public static void saveProfile(Profile profile) throws IOException {
+    if (profile.id == null) {
+      profile.id = 0L;
+      while (Files.exists(profileDirectoryPath.resolve("prof" + profile.id))) {
+        profile.id++;
+      }
+      Files.createDirectories(profileDirectoryPath.resolve("prof" + profile.id + "/submissions"));
+      profilesById.put(profile.id, profile);
+    }
     TOML_WRITER.write(profile,
       profileDirectoryPath.resolve(format("prof%d/profile.toml", profile.id)).toFile());
   }

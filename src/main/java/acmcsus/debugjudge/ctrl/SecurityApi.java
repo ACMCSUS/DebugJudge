@@ -19,7 +19,7 @@ public class SecurityApi {
   public static Object registerTeam(Request req, Response res) throws IOException {
     Profile registrar = getProfile(req);
 
-    if (registrar == null || registrar.isJudge) {
+    if (registrar == null || !registrar.isJudge) {
       throw halt(403);
     }
 
@@ -28,6 +28,7 @@ public class SecurityApi {
     team.name = json.get("team_name").asText();
 //    team.memberNames = json.get("member_names").asText();
     team.loginSecret = PasswordGenerator.randomPassword();
+    team.isTeam = true;
 
     FileStore.saveProfile(team);
 
@@ -120,6 +121,7 @@ public class SecurityApi {
 
   public static void judgeFilter(Request req, Response res) {
     Profile prof = getProfile(req);
+    System.out.println(prof);
     if (prof == null) {
       throw halt(401);
     }

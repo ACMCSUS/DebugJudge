@@ -3,7 +3,6 @@ package acmcsus.debugjudge.model;
 import com.moandjiezana.toml.TomlWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.List;
 
 public class Profile {
 
@@ -14,8 +13,6 @@ public class Profile {
   public Long id;
   public String name;
   public String loginSecret;
-
-  public List<Submission> submissions;
 
   @Override
   public String toString() {
