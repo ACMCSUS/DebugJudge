@@ -51,8 +51,10 @@ message C2SMessage {
 
     }
     message SubmissionJudgementMessage {
-      int64 submission_id = 1;
-      SubmissionJudgement ruling = 2;
+      int64 team_id = 1;
+      int64 problem_id = 2;
+      int64 submission_id = 3;
+      SubmissionJudgement ruling = 4;
     }
     message JudgingPreferencesMessage {
       map<int64, bool> preferences = 1;
@@ -117,8 +119,10 @@ message S2CMessage {
     }
 
     message SubmissionJudgedMessage {
-      int64 submission_id = 1;
-      SubmissionJudgement result = 2;
+      int64 team_id = 1;
+      int64 problem_id = 2;
+      int64 submission_id = 3;
+      SubmissionJudgement result = 4;
     }
   }
 
@@ -134,7 +138,9 @@ message S2CMessage {
       // Hack lets us have an "optional" semantic to a scalar value.
       // By default, the "unset" value would look the same as 0.
       oneof value {
-        int64 submission_id = 1;
+        int64 team_id = 1;
+        int64 problem_id = 2;
+        int64 submission_id = 3;
       }
     }
     message KickMessage {

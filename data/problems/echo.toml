@@ -1,0 +1,11 @@
+title = "Echo"
+description = "Python program to echo the first input line"
+
+problemType = "DEBUGGING"
+
+[debuggingProblem]
+    language = "python3"
+    precode = "# Uses the print and input functions"
+    code = "print(input)"
+    postcode = ""
+    answer = "print(input())"

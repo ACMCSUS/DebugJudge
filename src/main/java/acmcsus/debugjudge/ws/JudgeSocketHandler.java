@@ -2,7 +2,7 @@ package acmcsus.debugjudge.ws;
 
 import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 
-import acmcsus.debugjudge.model.Judge;
+import acmcsus.debugjudge.ctrl.FileStore;
 import acmcsus.debugjudge.model.Submission;
 import acmcsus.debugjudge.proto.WebSocket.C2SMessage;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage;
@@ -24,35 +24,38 @@ public class JudgeSocketHandler {
 
     switch (j2SMessage.getValueCase()) {
       case STARTJUDGINGMESSAGE: {
-        judgeQueueHandler.connected((Judge) ctx.profile, ctx.session);
+        judgeQueueHandler.connected(ctx.profile, ctx.session);
         break;
       }
       case STOPJUDGINGMESSAGE: {
-        judgeQueueHandler.disconnected((Judge) ctx.profile);
+        judgeQueueHandler.disconnected(ctx.profile);
         break;
       }
       case SUBMISSIONJUDGEMENTMESSAGE: {
-        Long submissionId = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
+        Long tid = j2SMessage.getSubmissionJudgementMessage().getTeamId();
+        Long pid = j2SMessage.getSubmissionJudgementMessage().getProblemId();
+        Long sid = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
+
         SubmissionJudgement ruling = j2SMessage.getSubmissionJudgementMessage().getRuling();
         boolean accepted = false;
 
         switch (ruling) {
           case DEFERRED: {
-            judgeQueueHandler.defer((Judge) ctx.profile);
+            judgeQueueHandler.defer(ctx.profile);
             break;
           }
           case SUCCESS:
             accepted = true;
           case FAILURE: {
-            Submission submission = Submission.find.byId(submissionId);
+            Submission submission = FileStore.getSubmissionFromIds(tid, pid, sid);
 
             if (submission != null) {
-              submission.ruling((Judge) ctx.profile, Date.from(Instant.now()), accepted);
-              submission.update();
+              submission.ruling(ctx.profile, Date.from(Instant.now()), accepted);
+//              submission.update();
             }
 
             judgeQueueHandler.judged(submission);
-            sendMessage(submission.team, S2CMessage.S2TMessage.newBuilder()
+            sendMessage(submission.judgeId, S2CMessage.S2TMessage.newBuilder()
               .setSubmissionResultMessage(
                 S2CMessage.S2TMessage.SubmissionJudgedMessage.newBuilder()
                   .setResult(ruling)).build());
@@ -69,7 +72,7 @@ public class JudgeSocketHandler {
           .getJudgingPreferencesMessage()
           .getPreferencesMap();
 
-        judgeQueueHandler.setJudgePreferences((Judge) ctx.profile, ctx.session, map);
+        judgeQueueHandler.setJudgePreferences(ctx.profile, ctx.session, map);
         break;
       }
       default: {

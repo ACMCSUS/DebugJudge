@@ -1,19 +1,14 @@
 package acmcsus.debugjudge.ws;
 
-import static acmcsus.debugjudge.model.Profile.ProfileType;
 import static acmcsus.debugjudge.ws.JudgeSocketHandler.handleJ2SMessage;
 import static acmcsus.debugjudge.ws.TeamSocketHandler.handleT2SMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
 
-import acmcsus.debugjudge.ctrl.ApiController;
 import acmcsus.debugjudge.ctrl.SecurityApi;
-import acmcsus.debugjudge.model.Judge;
 import acmcsus.debugjudge.model.Profile;
-import acmcsus.debugjudge.proto.Competition.CompetitionState;
 import acmcsus.debugjudge.proto.WebSocket.C2SMessage;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.AlertMessage;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.CompetitionStateChangedMessage;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.DebugMessage;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.LoginResultMessage;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2JMessage;
@@ -52,7 +47,7 @@ public class SocketHandler {
 
   private static Logger logger = LoggerFactory.getLogger(SocketHandler.class);
 
-  private static Map<Profile, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
+  private static Map<Long, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
   private static Map<Session, Profile> sessionProfileMap = new ConcurrentHashMap<>();
   private static Map<String, Profile> nonceProfileMap = new ConcurrentHashMap<>();
 
@@ -76,11 +71,11 @@ public class SocketHandler {
 
     Profile profile = sessionProfileMap.remove(user);
     if (profile != null) {
-      if (profile instanceof Judge) {
-        JudgeQueueHandler.getInstance().disconnected((Judge) profile);
+      if (profile.isJudge) {
+        JudgeQueueHandler.getInstance().disconnected(profile);
       }
 
-      profileSessionMap.remove(profile);
+      profileSessionMap.remove(profile.id);
     }
   }
 
@@ -101,7 +96,7 @@ public class SocketHandler {
           break;
         }
         case T2SMESSAGE: {
-          if (ctx.profile != null && ProfileType.TEAM == ctx.profile.getType()) {
+          if (ctx.profile != null && ctx.profile.isTeam) {
             handleT2SMessage(ctx);
           }
           else {
@@ -112,7 +107,7 @@ public class SocketHandler {
           break;
         }
         case J2SMESSAGE: {
-          if (ctx.profile != null && ProfileType.JUDGE == ctx.profile.getType()) {
+          if (ctx.profile != null && ctx.profile.isJudge) {
             handleJ2SMessage(ctx);
           }
           else {
@@ -151,15 +146,27 @@ public class SocketHandler {
   }
 
   public static void sendMessage(Profile profile, S2TMessage msg) {
-    sendMessage(profile, S2CMessage.newBuilder().setS2TMessage(msg).build());
+    sendMessage(profile.id, S2CMessage.newBuilder().setS2TMessage(msg).build());
+  }
+
+  public static void sendMessage(Long profileId, S2TMessage msg) {
+    sendMessage(profileId, S2CMessage.newBuilder().setS2TMessage(msg).build());
   }
 
   public static void sendMessage(Profile profile, S2JMessage msg) {
-    sendMessage(profile, S2CMessage.newBuilder().setS2JMessage(msg).build());
+    sendMessage(profile.id, S2CMessage.newBuilder().setS2JMessage(msg).build());
+  }
+
+  public static void sendMessage(Long profileId, S2JMessage msg) {
+    sendMessage(profileId, S2CMessage.newBuilder().setS2JMessage(msg).build());
   }
 
   public static void sendMessage(Profile profile, S2CMessage msg) {
-    for (Session session : profileSessionMap.get(profile)) {
+    sendMessage(profile.id, msg);
+  }
+
+  public static void sendMessage(Long profileId, S2CMessage msg) {
+    for (Session session : profileSessionMap.get(profileId)) {
       try {
         sendMessage(session, msg);
       } catch (IOException e) {
@@ -171,21 +178,11 @@ public class SocketHandler {
   public static void broadcastMessage(S2CMessage msg) {
     for (Map.Entry<Session, Profile> entry : sessionProfileMap.entrySet()) {
       try {
-        if (entry.getValue().getType() == Profile.ProfileType.TEAM) {
+        if (entry.getValue().isTeam) {
           sendMessage(entry.getKey(), msg);
         }
       } catch (Exception ignored) {}
     }
-  }
-
-  public static void broadcastStateChange() {
-    CompetitionState state = ApiController.competitionState;
-    S2CMessage msg = S2CMessage.newBuilder()
-      .setCompetitionStateChangedMessage(
-        CompetitionStateChangedMessage.newBuilder()
-          .setState(state)).build();
-
-    broadcastMessage(msg);
   }
 
   public static void loginMessage(WebSocketContext ctx) {
@@ -207,7 +204,7 @@ public class SocketHandler {
 
       if (ctx.profile != null) {
         if (!profileSessionMap.containsKey(ctx.profile)) {
-          profileSessionMap.put(ctx.profile, new HashSet<>());
+          profileSessionMap.put(ctx.profile.id, new HashSet<>());
         }
 
         profileSessionMap.get(ctx.profile).add(ctx.session);
@@ -239,7 +236,7 @@ public class SocketHandler {
         }
       }
     } catch (Exception e) {
-      logger.warn("Error while debugging " + profile.getName() + ": ", e);
+      logger.warn("Error while debugging " + profile.name + ": ", e);
     }
   }
 

@@ -1,17 +1,17 @@
 package acmcsus.debugjudge.ctrl;
 
-import static spark.Spark.halt;
+import static acmcsus.debugjudge.ctrl.CompetitionController.getCompetitionState;
+import static acmcsus.debugjudge.ctrl.FileStore.getTeams;
 
 import acmcsus.debugjudge.Views;
-import acmcsus.debugjudge.model.Competition;
 import acmcsus.debugjudge.model.Problem;
 import acmcsus.debugjudge.model.Profile;
 import acmcsus.debugjudge.model.Submission;
-import acmcsus.debugjudge.model.Team;
 import acmcsus.debugjudge.proto.Competition.CompetitionState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +20,6 @@ import java.util.stream.Collectors;
 import spark.Request;
 import spark.Response;
 
-/**
- * Created by merrillm on 4/2/17.
- */
 public class ScoreboardController {
 
   private static class TeamBarebones {
@@ -32,40 +29,20 @@ public class ScoreboardController {
     public Score score;
     public int place;
 
-    TeamBarebones(Team team, Score score) {
-      this.name = team.teamName;
-      this.id = team.id;
+    TeamBarebones(Profile prof, Score score) {
+      this.name = prof.name;
+      this.id = prof.id;
       this.score = score;
     }
   }
 
-  private static class Score implements Comparable<Score> {
-
+  private static class Score {
     public int correct = 0;
-//        public int penalty = 0;
-
-    @Override
-    public int compareTo(Score o) {
-      if (o == null) { return 1; }
-//            if (correct != o.correct)
-      return -Integer.compare(correct, o.correct);
-//            return Integer.compare(penalty, o.penalty);
-    }
+    public int penalty = 0;
   }
 
   public static String getScoreboard(Request req, Response res) {
-    Competition competition = SecurityApi.getCompetition(req);
     Profile profile = SecurityApi.getProfile(req);
-
-    if (competition == null) {
-      throw halt(400);
-    }
-
-//        if (lastScoreboardCacheTime.containsKey(competition.id)) {
-//            if (System.currentTimeMillis() - lastScoreboardCacheTime.get(competition.id) > 500) {
-//                return lastScoreboard.get(competition.id);
-//            }
-//        }
 
     Map<String, Object> scoreboardMap = new HashMap<>();
     ObjectWriter writer = new ObjectMapper().writerWithView(Views.PublicView.class);
@@ -74,12 +51,8 @@ public class ScoreboardController {
 
       List<Problem> problems;
 
-      if (ApiController.competitionState != CompetitionState.WAITING ||
-        profile.getType() == Profile.ProfileType.JUDGE) {
-        problems = Problem.find.query()
-          .where()
-          .eq("competition_id", competition.id)
-          .findList();
+      if (getCompetitionState() != CompetitionState.WAITING || profile.isJudge) {
+        problems = FileStore.getProblems();
       }
       else {
         problems = new ArrayList<>();
@@ -88,45 +61,37 @@ public class ScoreboardController {
       problems.sort(Comparator.comparing(p -> p.orderIndex));
       scoreboardMap.put("problems", problems);
 
-      List<Team> teams = Team.find.query()
-        .where()
-        .eq("competition_id", competition.id)
-        .findList();
+      Collection<Profile> teams = getTeams();
 
       Map<Long, Score> teamScores = new HashMap<>();
       Map<Long, Map<Long, Long>> teamProblemSubmissionCount = new HashMap<>();
       Map<Long, Map<Long, Boolean>> teamProblemAcceptance = new HashMap<>();
 
-      for (Team team : teams) {
+      for (Profile team : teams) {
         teamProblemSubmissionCount.put(team.id, new HashMap<>());
         teamScores.put(team.id, new Score());
       }
 
-      List<Submission> submissions = Submission.find.query()
-        .fetch("team", "*")
-        .where()
-        .in("team_id", teams.stream().map(t -> t.id).toArray())
-        .findList();
+      List<Submission> submissions = new ArrayList<>();
+      getTeams().forEach(t -> submissions.addAll(t.submissions));
 
       for (Submission submission : submissions) {
 
-//                if (submission.team == null || submission.team.competition == null
-//                        || submission.team.competition.id != competition.id)
-//                    continue;
+        if (submission.teamId == null) { continue; }
 
-        Score score = teamScores.get(submission.team.id);
+        Score score = teamScores.get(submission.teamId);
 
-        Map<Long, Long> problemCounts = teamProblemSubmissionCount.get(submission.team.id);
+        Map<Long, Long> problemCounts = teamProblemSubmissionCount.get(submission.teamId);
         problemCounts
-          .put(submission.problem.id, problemCounts.getOrDefault(submission.problem.id, 0L) + 1);
+          .put(submission.problemId, problemCounts.getOrDefault(submission.problemId, 0L) + 1);
 
         if (submission.accepted != null && submission.accepted) {
-          if (!teamProblemAcceptance.containsKey(submission.team.id)) {
-            teamProblemAcceptance.put(submission.team.id, new HashMap<>());
+          if (!teamProblemAcceptance.containsKey(submission.teamId)) {
+            teamProblemAcceptance.put(submission.teamId, new HashMap<>());
           }
 
-          Map<Long, Boolean> problemAcceptances = teamProblemAcceptance.get(submission.team.id);
-          Boolean prev = problemAcceptances.put(submission.problem.id, true);
+          Map<Long, Boolean> problemAcceptances = teamProblemAcceptance.get(submission.teamId);
+          Boolean prev = problemAcceptances.put(submission.problemId, true);
 
           if (prev == null || !prev) {
             score.correct += 1;
@@ -137,7 +102,12 @@ public class ScoreboardController {
       List<TeamBarebones> teamBarebones = teams.stream()
         .map(team -> new TeamBarebones(team, teamScores.get(team.id)))
         .collect(Collectors.toList());
-      teamBarebones.sort(Comparator.comparing(t -> t.score));
+
+      Comparator<Score> scoreComparator = Comparator
+        .<Score, Integer>comparing(score -> score.correct).reversed()
+        .thenComparing(score -> score.penalty);
+
+      teamBarebones.sort((a, b) -> scoreComparator.compare(a.score, b.score));
 
       int place = 1;
       if (!teamBarebones.isEmpty()) {
@@ -146,7 +116,7 @@ public class ScoreboardController {
           TeamBarebones prev = teamBarebones.get(i - 1);
           TeamBarebones cur = teamBarebones.get(i);
 
-          if (cur.score.compareTo(prev.score) != 0) {
+          if (scoreComparator.compare(cur.score, prev.score) != 0) {
             place = i + 1;
           }
 

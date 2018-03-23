@@ -1,27 +1,44 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {MatRipple} from '@angular/material';
+import {ApiTeamService} from './api-team.service';
+import {Problem} from './model';
+import {CodeEditorComponent} from './codeeditor.component';
 
 @Component({
   selector: 'app-team-view',
+  entryComponents: [CodeEditorComponent],
   template: `
     <div id="team-wrapper">
       <mat-card id="left" style="padding: 0">
-        <mat-card-content style="display: flex; flex-direction: column;">
-          <span *ngFor="let item of [0,1,2]; let isLast=last">
-            <button mat-button (click)="problemClicked(item)">Problem {{item}}</button>
+        <mat-card-content style="display: flex; flex-direction: column;" *ngIf="problems&&problems.length">
+          <span *ngFor="let problem of problems; let idx = index; let isLast=last">
+            <button mat-button (click)="problemClicked(idx)">{{problem.title}}</button>
             <mat-divider *ngIf="!isLast"></mat-divider>
           </span>
         </mat-card-content>
-      </mat-card>
-
-      <mat-card id="right">
-        <mat-card-title *ngIf="problemIdx>=0">{{problems[problemIdx].title}}</mat-card-title>
-        <mat-card-content *ngIf="problemIdx>=0">
-          <p>{{problems[problemIdx].description}}</p>
+        <mat-card-content *ngIf="!(problems && problems.length)">
+          <button mat-button [disabled]="true">Loading</button>
         </mat-card-content>
-        <mat-card-content *ngIf="problemIdx<0">
+      </mat-card>
+      <mat-card id="right" *ngIf="problems && problems.length">
+        <mat-card-title>{{problems[problemIdx].title}}</mat-card-title>
+        <mat-card-content>
+          
+          <p>{{problems[problemIdx].description}}</p>
+          
+          <app-code-editor
+            [precode]="problems[problemIdx].debuggingProblem.precode"
+            [code]="problems[problemIdx].debuggingProblem.code"
+            [postcode]="problems[problemIdx].debuggingProblem.postcode"
+          ></app-code-editor>
+          
+        </mat-card-content>
+        <mat-card-content *ngIf="!(problems && problems.length)">
           Loading...
         </mat-card-content>
+      </mat-card>
+      <mat-card id="right" *ngIf="!(problems && problems.length)">
+        <mat-card-title >Loading...</mat-card-title>
       </mat-card>
     </div>
     <div id="backRipple" matRipple [matRippleColor]="'#acb'"
@@ -75,24 +92,12 @@ export class TeamComponent implements OnInit, AfterViewInit {
 
   bkgdColor = '#fff';
 
-  problems = [
-    {
-      title: 'Hello World',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque turpis sed sapien molestie, nec feugiat est condimentum. Aliquam quis enim sed velit fringilla venenatis. Nam a cursus nibh. Suspendisse non bibendum dui. Etiam interdum dignissim nulla id malesuada. Pellentesque lorem ante, pellentesque a justo ut, porttitor viverra metus. Vivamus semper risus velit, quis eleifend odio fermentum eu. Maecenas mi neque, tempor vitae porttitor id, ornare vel est. Aliquam tincidunt tristique orci, quis sagittis neque ultricies sed. Donec consectetur ante a tortor condimentum, non iaculis felis congue. Aliquam a egestas leo. Integer euismod nisi id lorem placerat dictum. Fusce ac porttitor diam. Aenean elementum eros laoreet consequat scelerisque.\n' +
-      '\n',
-    },
-    {
-      title: 'Echo Echo',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque turpis sed sapien molestie, nec feugiat est condimentum. Aliquam quis enim sed velit fringilla venenatis. Nam a cursus nibh. Suspendisse non bibendum dui. Etiam interdum dignissim nulla id malesuada. Pellentesque lorem ante, pellentesque a justo ut, porttitor viverra metus. Vivamus semper risus velit, quis eleifend odio fermentum eu. Maecenas mi neque, tempor vitae porttitor id, ornare vel est. Aliquam tincidunt tristique orci, quis sagittis neque ultricies sed. Donec consectetur ante a tortor condimentum, non iaculis felis congue. Aliquam a egestas leo. Integer euismod nisi id lorem placerat dictum. Fusce ac porttitor diam. Aenean elementum eros laoreet consequat scelerisque.\n' +
-      '\n',
-    },
-    {
-      title: 'Tic Tac Toe',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque turpis sed sapien molestie, nec feugiat est condimentum. Aliquam quis enim sed velit fringilla venenatis. Nam a cursus nibh. Suspendisse non bibendum dui. Etiam interdum dignissim nulla id malesuada. Pellentesque lorem ante, pellentesque a justo ut, porttitor viverra metus. Vivamus semper risus velit, quis eleifend odio fermentum eu. Maecenas mi neque, tempor vitae porttitor id, ornare vel est. Aliquam tincidunt tristique orci, quis sagittis neque ultricies sed. Donec consectetur ante a tortor condimentum, non iaculis felis congue. Aliquam a egestas leo. Integer euismod nisi id lorem placerat dictum. Fusce ac porttitor diam. Aenean elementum eros laoreet consequat scelerisque.\n' +
-      '\n',
-    },
-  ];
+  problems: Problem[];
   problemIdx = 0;
+
+  constructor(@Inject('ApiTeamService') api: ApiTeamService) {
+    api.getProblems().subscribe((problems) => this.problems = problems);
+  }
 
   ngOnInit(): void {
     console.log('Hello Team!');

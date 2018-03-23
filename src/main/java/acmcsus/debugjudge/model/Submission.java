@@ -7,47 +7,29 @@ import io.ebean.Finder;
 import io.ebean.Model;
 import java.util.Date;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
-@Entity
-@Table(name = "submissions", uniqueConstraints = {
-  @UniqueConstraint(columnNames = {"team_id", "problem_id", "submitted_at"})
-})
-public class Submission extends Model {
+public class Submission {
 
-  public static final Finder<Long, Submission> find = new Finder<>(Submission.class);
-
-  @Id
   public Long id;
 
-  @JsonBackReference
-  @ManyToOne(optional = false)
-  public Team team;
+  public Long teamId;
 
-  @ManyToOne(optional = false)
-  public Problem problem;
+  public Long problemId;
 
   @JsonView(Views.TeamView.class)
-  @Column(nullable = false, length = 20_000)
   public String code;
 
-  @Column(name = "submitted_at", nullable = false, columnDefinition = "datetime")
   public Date submittedAt;
 
-  @Column(name = "judged_at", nullable = true, columnDefinition = "datetime")
   public Date judgedAt;
 
-  @ManyToOne
-  public Judge judge;
+  public Long judgeId;
 
-  @Column
   public Boolean accepted;
 
-  public void ruling(Judge judge, Date judgedAt, boolean accepted) {
+  public void ruling(Profile judge, Date judgedAt, boolean accepted) {
     if (accepted) {
       accepted(judge, judgedAt);
     }
@@ -56,14 +38,14 @@ public class Submission extends Model {
     }
   }
 
-  public void accepted(Judge judge, Date judgedAt) {
-    this.judge = judge;
+  public void accepted(Profile judge, Date judgedAt) {
+    this.judgeId = judge.id;
     this.judgedAt = judgedAt;
     this.accepted = true;
   }
 
-  public void rejected(Judge judge, Date judgedAt) {
-    this.judge = judge;
+  public void rejected(Profile judge, Date judgedAt) {
+    this.judgeId = judge.id;
     this.judgedAt = judgedAt;
     this.accepted = false;
   }

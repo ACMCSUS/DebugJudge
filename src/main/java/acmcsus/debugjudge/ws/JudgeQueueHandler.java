@@ -2,7 +2,6 @@ package acmcsus.debugjudge.ws;
 
 import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 
-import acmcsus.debugjudge.model.Judge;
 import acmcsus.debugjudge.model.Profile;
 import acmcsus.debugjudge.model.Submission;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2JMessage;
@@ -24,9 +23,10 @@ public class JudgeQueueHandler {
   private static Logger logger = LoggerFactory.getLogger(JudgeQueueHandler.class);
 
   private JudgeQueueHandler() {
-    Submission.find.query().where()
-      .isNull("accepted")
-      .findEach(waitingSubmissions::add);
+    // TODO: Uhh this is gonna be tricky
+//    Submission.find.query().where()
+//      .isNull("accepted")
+//      .findEach(waitingSubmissions::add);
   }
 
   private static final JudgeQueueHandler theInstance = new JudgeQueueHandler();
@@ -37,12 +37,12 @@ public class JudgeQueueHandler {
 
   private static class JudgeSession {
 
-    private final Judge judge;
+    private final Profile judge;
     private final Session socketSession;
     private Submission currentSubmission = null;
     private Set<Long> skipProblems = null;
 
-    private JudgeSession(Judge judge, Session socketSession) {
+    private JudgeSession(Profile judge, Session socketSession) {
       this.judge = judge;
       this.socketSession = socketSession;
     }
@@ -62,7 +62,7 @@ public class JudgeQueueHandler {
 
     private boolean canGrade(Submission submission) {
       return skipProblems == null
-        || !skipProblems.contains(submission.problem.id);
+        || !skipProblems.contains(submission.problemId);
     }
   }
 
@@ -72,11 +72,7 @@ public class JudgeQueueHandler {
   private HashMap<Long, JudgeSession> judgeSessionMap = new HashMap<>();
   private HashMap<Long, JudgeSession> submissionSessionMap = new HashMap<>();
 
-  public boolean allowUse(Profile.ProfileType profileType) {
-    return profileType == Profile.ProfileType.JUDGE;
-  }
-
-  public void connected(Judge judge, Session session) {
+  public void connected(Profile judge, Session session) {
     if (judgeSessionMap.containsKey(judge.id)) {
       kick(judge, "You've started judging somewhere else!");
     }
@@ -86,7 +82,7 @@ public class JudgeQueueHandler {
     match(judgeSession);
   }
 
-  public void disconnected(Judge judge) {
+  public void disconnected(Profile judge) {
     purge(judge);
   }
 
@@ -98,7 +94,7 @@ public class JudgeQueueHandler {
     purge(submission);
   }
 
-  public void defer(Judge judge) {
+  public void defer(Profile judge) {
     JudgeSession judgeSession = judgeSessionMap.get(judge.id);
     if (judgeSession == null) { return; }
 
@@ -111,7 +107,7 @@ public class JudgeQueueHandler {
     }
   }
 
-  public void kick(Judge judge, String reason) {
+  public void kick(Profile judge, String reason) {
     JudgeSession judgeSession = judgeSessionMap.get(judge.id);
 
     if (judgeSession != null) {
@@ -127,8 +123,8 @@ public class JudgeQueueHandler {
     }
   }
 
-  public void setJudgePreferences(Judge judge, Session session, Map<Long, Boolean> map) {
-    JudgeSession judgeSession = judgeSessionMap.get(judge.getId());
+  public void setJudgePreferences(Profile judge, Session session, Map<Long, Boolean> map) {
+    JudgeSession judgeSession = judgeSessionMap.get(judge.id);
     if (judgeSession == null) {
       kick(judge, "You need to login!");
     }
@@ -138,8 +134,8 @@ public class JudgeQueueHandler {
       if (judgeSession.currentSubmission == null) {
         match(judgeSession);
       }
-      else if (map.containsKey(judgeSession.currentSubmission.problem.id)) {
-        boolean needNewProblem = !map.get(judgeSession.currentSubmission.problem.id);
+      else if (map.containsKey(judgeSession.currentSubmission.problemId)) {
+        boolean needNewProblem = !map.get(judgeSession.currentSubmission.problemId);
         if (needNewProblem) {
           defer(judgeSession.judge);
         }
@@ -147,7 +143,7 @@ public class JudgeQueueHandler {
     }
   }
 
-  private void purge(Judge judge) {
+  private void purge(Profile judge) {
     JudgeSession judgeSession = judgeSessionMap.remove(judge.id);
 
     if (judgeSession == null) { return; }

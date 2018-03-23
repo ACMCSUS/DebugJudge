@@ -11,6 +11,11 @@ import {ScoreboardComponent} from './scoreboard.component';
 import {AdminComponent} from './view-admin.component';
 import {TeamComponent} from './view-team.component';
 import {JudgeComponent} from './view-judge.component';
+import {ApiTeamServiceImpl} from './api-team.service';
+import {HttpClientModule} from '@angular/common/http';
+import {CodeEditorComponent} from './codeeditor.component';
+import {AceEditorComponent} from 'ng2-ace-editor';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,16 +24,22 @@ import {JudgeComponent} from './view-judge.component';
     JudgeComponent,
     AdminComponent,
     ScoreboardComponent,
+    CodeEditorComponent,
+    AceEditorComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
+    HttpClientModule,
     AppRoutingModule,
     AppMaterialModule,
     // TODO: ServiceWorker Support?
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: false}),
   ],
-  providers: [],
+  providers: [
+    {provide: 'ApiTeamService', useClass: ApiTeamServiceImpl},
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -6,8 +6,10 @@ import * as Md from '@angular/material';
   imports: [
     Md.MatButtonModule,
     Md.MatCardModule,
+    Md.MatCheckboxModule,
     Md.MatExpansionModule,
     Md.MatGridListModule,
+    Md.MatIconModule,
     Md.MatInputModule,
     Md.MatListModule,
     Md.MatRippleModule,
@@ -18,8 +20,10 @@ import * as Md from '@angular/material';
   exports: [
     Md.MatButtonModule,
     Md.MatCardModule,
+    Md.MatCheckboxModule,
     Md.MatExpansionModule,
     Md.MatGridListModule,
+    Md.MatIconModule,
     Md.MatInputModule,
     Md.MatListModule,
     Md.MatRippleModule,
