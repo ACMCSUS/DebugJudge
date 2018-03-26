@@ -1,0 +1,6 @@
+isTeam = true
+isJudge = false
+isAdmin = false
+id = 4
+name = "asdf"
+loginSecret = "wackyEcho-3b0e89e9f77c314d"

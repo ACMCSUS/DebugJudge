@@ -26,6 +26,7 @@ public class SecurityApi {
     Profile team = new Profile();
     JsonNode json = ProcessBody.asJson(req);
     team.name = json.get("team_name").asText();
+    // TODO: Is this necessary?
 //    team.memberNames = json.get("member_names").asText();
     team.loginSecret = PasswordGenerator.randomPassword();
     team.isTeam = true;
@@ -71,7 +72,6 @@ public class SecurityApi {
 
   private static String login(Request req, Response res, LoginAttempt loginAttempt) {
     Profile profile = FileStore.getProfile(loginAttempt.getId());
-    System.out.println(profile);
 
     if (profile == null || !profile.loginSecret.equals(loginAttempt.password)) {
       throw halt(401, "Incorrect id number or incorrect password");
@@ -121,7 +121,6 @@ public class SecurityApi {
 
   public static void judgeFilter(Request req, Response res) {
     Profile prof = getProfile(req);
-    System.out.println(prof);
     if (prof == null) {
       throw halt(401);
     }

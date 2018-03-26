@@ -14,8 +14,13 @@ import {JudgeComponent} from './view-judge.component';
 import {ApiTeamServiceImpl} from './api-team.service';
 import {HttpClientModule} from '@angular/common/http';
 import {CodeEditorComponent} from './codeeditor.component';
-import {AceEditorComponent} from 'ng2-ace-editor';
 import {FormsModule} from '@angular/forms';
+import {ApiWebSocketService, ApiWebSocketServiceImpl} from './api-ws.service';
+import {DebuggingCardComponent} from "./debuggingcard.component";
+import {AdminStatusBoardComponent} from "./admin-statusboard.component";
+import {AceEditorModule} from "ng2-ace-editor";
+import {SubmissionsBarComponent} from "./submission-bar.component";
+import {SubmissionsViewComponent} from "./view-submissions.component";
 
 @NgModule({
   declarations: [
@@ -25,7 +30,10 @@ import {FormsModule} from '@angular/forms';
     AdminComponent,
     ScoreboardComponent,
     CodeEditorComponent,
-    AceEditorComponent,
+    DebuggingCardComponent,
+    AdminStatusBoardComponent,
+    SubmissionsViewComponent,
+    SubmissionsBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,11 +42,13 @@ import {FormsModule} from '@angular/forms';
     HttpClientModule,
     AppRoutingModule,
     AppMaterialModule,
+    AceEditorModule,
     // TODO: ServiceWorker Support?
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: false}),
   ],
   providers: [
     {provide: 'ApiTeamService', useClass: ApiTeamServiceImpl},
+    {provide: 'ApiWebSocketService', useClass: ApiWebSocketServiceImpl},
   ],
   bootstrap: [AppComponent],
 })

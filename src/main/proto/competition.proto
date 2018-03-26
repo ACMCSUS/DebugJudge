@@ -12,3 +12,17 @@ enum CompetitionState {
   PAUSED = 3;
   STOPPED = 4;
 }
+
+message Submission {
+
+  int64 problem_id = 1;
+
+
+  oneof value {
+    DebuggingSubmission debuggingSubmission = 2;
+  }
+
+  message DebuggingSubmission {
+    string code = 1;
+  }
+}

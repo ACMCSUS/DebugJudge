@@ -125,6 +125,8 @@ public class FileStore {
 
   public static Submission[] getSubmissionsForTeam(Profile profile) throws IOException {
     Path teamSubDirectory = profileDirectoryPath.resolve(format("prof%d/submissions", profile.id));
+    Files.createDirectories(teamSubDirectory);
+
     Stream<Path> subTomlPaths = Files.find(teamSubDirectory, 2,
       (path, bfa) -> bfa.isRegularFile() && path.toFile().getName().endsWith(".toml"));
 
@@ -160,6 +162,8 @@ public class FileStore {
     Path submissionPath = profileDirectoryPath.resolve(
       format("prof%d/submissions/prob%d/sub%d.toml", submission.teamId, submission.problemId,
         submission.id));
+
+    Files.createDirectories(submissionPath.getParent());
 
     TOML_WRITER.write(submission, submissionPath.toFile());
   }

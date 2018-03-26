@@ -23,17 +23,17 @@ class ApiAdminController {
 
     get("/reset", (req, res) -> {
       changeCompetitionState(CompetitionState.WAITING);
-      return "okay";
+      return "{\"result\":\"okay\"}";
     });
 
     get("/start", (req, res) -> {
       changeCompetitionState(CompetitionState.STARTED);
-      return "okay";
+      return "{\"result\":\"okay\"}";
     });
 
     get("/stop", (req, res) -> {
       changeCompetitionState(CompetitionState.STOPPED);
-      return "okay";
+      return "{\"result\":\"okay\"}";
     });
 
     get("/status", ApiAdminController::getCompetitionStatus);

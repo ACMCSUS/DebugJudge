@@ -1,44 +1,45 @@
-import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatRipple} from '@angular/material';
 import {ApiTeamService} from './api-team.service';
 import {Problem} from './model';
 import {CodeEditorComponent} from './codeeditor.component';
+import {ApiWebSocketService} from 'src/main/angular/app/api-ws.service';
+import {Subscription} from 'rxjs/Subscription';
+import {acmcsus} from 'proto';
+import CompetitionState = acmcsus.debugjudge.CompetitionState;
+import {DebuggingCardComponent} from "./debuggingcard.component";
 
 @Component({
   selector: 'app-team-view',
-  entryComponents: [CodeEditorComponent],
+  entryComponents: [DebuggingCardComponent],
   template: `
     <div id="team-wrapper">
       <mat-card id="left" style="padding: 0">
-        <mat-card-content style="display: flex; flex-direction: column;" *ngIf="problems&&problems.length">
+        <mat-card-content style="display: flex; flex-direction: column;"
+                          *ngIf="problems&&problems.length">
           <span *ngFor="let problem of problems; let idx = index; let isLast=last">
             <button mat-button (click)="problemClicked(idx)">{{problem.title}}</button>
             <mat-divider *ngIf="!isLast"></mat-divider>
           </span>
         </mat-card-content>
         <mat-card-content *ngIf="!(problems && problems.length)">
-          <button mat-button [disabled]="true">Loading</button>
+          <button mat-button [disabled]="true">Problems</button>
+          <mat-divider></mat-divider>
+          <button mat-button [disabled]="true">Will</button>
+          <mat-divider></mat-divider>
+          <button mat-button [disabled]="true">Be</button>
+          <mat-divider></mat-divider>
+          <button mat-button [disabled]="true">Listed</button>
+          <mat-divider></mat-divider>
+          <button mat-button [disabled]="true">Here</button>
         </mat-card-content>
       </mat-card>
-      <mat-card id="right" *ngIf="problems && problems.length">
-        <mat-card-title>{{problems[problemIdx].title}}</mat-card-title>
-        <mat-card-content>
-          
-          <p>{{problems[problemIdx].description}}</p>
-          
-          <app-code-editor
-            [precode]="problems[problemIdx].debuggingProblem.precode"
-            [code]="problems[problemIdx].debuggingProblem.code"
-            [postcode]="problems[problemIdx].debuggingProblem.postcode"
-          ></app-code-editor>
-          
-        </mat-card-content>
-        <mat-card-content *ngIf="!(problems && problems.length)">
-          Loading...
-        </mat-card-content>
-      </mat-card>
+      <!-- TODO: Refactor this to its own component problemcard.component.ts -->
+      <div id="right" *ngIf="problems && problems.length">
+        <app-problem-debug [problem]="problems[problemIdx]"></app-problem-debug>
+      </div>
       <mat-card id="right" *ngIf="!(problems && problems.length)">
-        <mat-card-title >Loading...</mat-card-title>
+        <mat-card-title>{{statusMessage}}</mat-card-title>
       </mat-card>
     </div>
     <div id="backRipple" matRipple [matRippleColor]="'#acb'"
@@ -57,6 +58,9 @@ import {CodeEditorComponent} from './codeeditor.component';
       /*width: 200px;*/
       max-width: 30%;
     }
+    #left button {
+      display: block;
+    }
 
     /deep/ .mat-button-wrapper, /deep/ .mat-button {
       white-space: normal !important;
@@ -68,7 +72,7 @@ import {CodeEditorComponent} from './codeeditor.component';
       flex: 1;
     }
 
-    mat-card {
+    mat-card, #right {
       display: inline-block;
       margin: 10px;
     }
@@ -83,7 +87,7 @@ import {CodeEditorComponent} from './codeeditor.component';
     }
   `],
 })
-export class TeamComponent implements OnInit, AfterViewInit {
+export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
 
   static colorFail = '#caa';
   static colorSuccess = '#acb';
@@ -95,28 +99,64 @@ export class TeamComponent implements OnInit, AfterViewInit {
   problems: Problem[];
   problemIdx = 0;
 
-  constructor(@Inject('ApiTeamService') api: ApiTeamService) {
-    api.getProblems().subscribe((problems) => this.problems = problems);
+  competitionStateSubscription: Subscription;
+  s2cSubscription: Subscription;
+  s2tSubscription: Subscription;
+
+  statusMessage = "Loading...";
+
+  constructor(@Inject('ApiTeamService') private api: ApiTeamService,
+              @Inject('ApiWebSocketService') private wsApi: ApiWebSocketService) {
+    this.api.problems.subscribe((problems) => this.problems = problems);
   }
 
   ngOnInit(): void {
-    console.log('Hello Team!');
+    this.wsApi.competitionState.subscribe((state) => {
+      console.log('STATE CHANGE!', state, CompetitionState);
+
+      if (state === CompetitionState.WAITING) {
+        this.statusMessage = "Hold tight! Competition starting soon.";
+      }
+      else if (state === CompetitionState.PAUSED) {
+        this.statusMessage = "Hold tight! Competition is paused!";
+      }
+      else if (state === CompetitionState.STARTED) {
+        this.statusMessage = "Loading...";
+      }
+      else if (state === CompetitionState.STOPPED) {
+        this.statusMessage = "Competition has ended!";
+      }
+      else {
+        this.statusMessage = "Competition is in some magical state the frontend doesn't recognize!";
+      }
+
+      this.api.reloadProblems();
+    });
+    this.s2cSubscription = this.wsApi.s2cMessages.subscribe(() => {});
+    this.s2tSubscription = this.wsApi.s2tMessages.subscribe(() => {});
+
   }
 
   ngAfterViewInit(): void {
     this.problemClicked(0);
   }
 
+  ngOnDestroy(): void {
+    this.competitionStateSubscription.unsubscribe();
+    this.s2cSubscription.unsubscribe();
+    this.s2tSubscription.unsubscribe();
+  }
+
   problemClicked(problem: number): void {
     this.problemIdx = problem;
     const colors = ['#abc', '#caa', '#aca'];
     const rippleRef = this.ripple.launch(0, 0, {
-      persistent: false,
+      persistent: true,
       color: colors[(problem % 3)],
     });
     setTimeout(() => {
       this.bkgdColor = colors[(problem % 3)];
       rippleRef.fadeOut();
-    }, 500);
+    }, 1000);
   }
 }

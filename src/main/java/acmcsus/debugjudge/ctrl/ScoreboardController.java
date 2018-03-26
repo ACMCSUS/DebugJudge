@@ -11,13 +11,7 @@ import acmcsus.debugjudge.proto.Competition.CompetitionState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import spark.Request;
 import spark.Response;
@@ -50,7 +44,6 @@ public class ScoreboardController {
     ObjectWriter writer = new ObjectMapper().writerWithView(Views.PublicView.class);
 
     try {
-
       List<Problem> problems;
 
       if (getCompetitionState() != CompetitionState.WAITING || profile.isJudge) {
@@ -60,11 +53,11 @@ public class ScoreboardController {
         problems = new ArrayList<>();
       }
 
-      problems.sort(Comparator.comparing(p -> p.orderIndex));
+      problems.sort(Comparator.comparing(
+        p -> Optional.ofNullable(p.orderIndex).orElse(Long.MAX_VALUE)));
+
       scoreboardMap.put("problems", problems);
-
       Collection<Profile> teams = getTeams();
-
       Map<Long, Score> teamScores = new HashMap<>();
       Map<Long, Map<Long, Long>> teamProblemSubmissionCount = new HashMap<>();
       Map<Long, Map<Long, Boolean>> teamProblemAcceptance = new HashMap<>();

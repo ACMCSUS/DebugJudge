@@ -55,7 +55,13 @@ public class ApiBaseController {
     }
 
     List<Problem> result = FileStore.getProblems();
-    return writeForJudge(result);
+
+    if (profile.isJudge) {
+      return writeForJudge(result);
+    }
+    else {
+      return writeForTeam(result);
+    }
   }
 
   private static String getProfile(Request req, Response res) throws JsonProcessingException {
@@ -65,6 +71,9 @@ public class ApiBaseController {
 
     jsonNode.put("id", profile.id);
     jsonNode.put("name", profile.name);
+    jsonNode.put("isTeam", profile.isTeam);
+    jsonNode.put("isJudge", profile.isJudge);
+    jsonNode.put("isAdmin", profile.isAdmin);
 
     ObjectMapper mapper = new ObjectMapper();
     return mapper.writeValueAsString(jsonNode);

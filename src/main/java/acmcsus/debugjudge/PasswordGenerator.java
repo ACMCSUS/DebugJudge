@@ -2,6 +2,7 @@ package acmcsus.debugjudge;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.*;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Map;
@@ -76,8 +77,13 @@ public class PasswordGenerator {
   }
 
   public static String randomPassword() {
+    byte[] tailBytes = new byte[2];
+    random.nextBytes(tailBytes);
+    // -1 signum means we get a dash in the password before the hex bit.
+    String tailHex = new BigInteger(-1, tailBytes).toString(26);
+
     return adjectives[random.nextInt(adjectives.length)] +
-      nouns[random.nextInt(nouns.length)];
+      nouns[random.nextInt(nouns.length)] + tailHex;
   }
 
 }

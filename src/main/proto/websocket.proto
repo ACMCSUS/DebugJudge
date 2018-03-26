@@ -29,7 +29,13 @@ message C2SMessage {
 
   // Messages that only ever come from teams.
   message T2SMessage {
+    oneof value {
+      SubmissionCreateMessage submissionCreateMessage = 1;
+    }
 
+    message SubmissionCreateMessage {
+      Submission submission = 1;
+    }
   }
 
   // Messages that only ever come from judges.
@@ -116,6 +122,7 @@ message S2CMessage {
 
     oneof value {
       SubmissionJudgedMessage submissionResultMessage = 1;
+      ReloadSubmissionsMessage reloadSubmissionsMessage = 2;
     }
 
     message SubmissionJudgedMessage {
@@ -123,6 +130,10 @@ message S2CMessage {
       int64 problem_id = 2;
       int64 submission_id = 3;
       SubmissionJudgement result = 4;
+    }
+
+    message ReloadSubmissionsMessage {
+      // Just reload the submission list tbh
     }
   }
 

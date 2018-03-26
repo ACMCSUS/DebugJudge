@@ -16,6 +16,8 @@ public class CompetitionController {
 
   public static void changeCompetitionState(CompetitionState state) {
     if (state != competitionState) {
+      competitionState = state;
+
       SocketHandler.broadcastMessage(S2CMessage.newBuilder()
         .setCompetitionStateChangedMessage(CompetitionStateChangedMessage.newBuilder()
           .setState(state)

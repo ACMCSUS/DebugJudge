@@ -203,11 +203,11 @@ public class SocketHandler {
       }
 
       if (ctx.profile != null) {
-        if (!profileSessionMap.containsKey(ctx.profile)) {
+        if (!profileSessionMap.containsKey(ctx.profile.id)) {
           profileSessionMap.put(ctx.profile.id, new HashSet<>());
         }
 
-        profileSessionMap.get(ctx.profile).add(ctx.session);
+        profileSessionMap.get(ctx.profile.id).add(ctx.session);
         sessionProfileMap.put(ctx.session, ctx.profile);
 
         ctx.res = S2CMessage.newBuilder()
@@ -229,7 +229,7 @@ public class SocketHandler {
 
   public static void debug(Profile profile, String message) {
     try {
-      Set<Session> sessions = profileSessionMap.get(profile);
+      Set<Session> sessions = profileSessionMap.get(profile.id);
       if (sessions != null) {
         for (Session session : sessions) {
           debug(session, message);
@@ -257,7 +257,7 @@ public class SocketHandler {
   }
 
   public static void alert(Profile profile, String message) {
-    Set<Session> sessions = profileSessionMap.get(profile);
+    Set<Session> sessions = profileSessionMap.get(profile.id);
 
     if (sessions != null) {
       for (Session session : sessions) {

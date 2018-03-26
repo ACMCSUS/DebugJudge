@@ -1,7 +1,6 @@
 id = 1
-teamName = "Judge Judy"
-memberNames = "Joey, Ross, Chandler"
+name = "Judge Judy"
 loginSecret = "pass"
 isTeam = false
 isJudge = true
-isAdmin = false
+isAdmin = true

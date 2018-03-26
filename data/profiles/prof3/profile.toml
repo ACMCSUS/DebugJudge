@@ -1,0 +1,6 @@
+isTeam = true
+isJudge = false
+isAdmin = false
+id = 3
+name = "asdf"
+loginSecret = "bentHotel"

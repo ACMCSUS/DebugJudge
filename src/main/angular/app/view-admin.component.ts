@@ -1,16 +1,27 @@
 import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {AdminStatusBoardComponent} from "./admin-statusboard.component";
 
 @Component({
   selector: 'app-admin-view',
+  entryComponents: [AdminStatusBoardComponent],
   template: `
     <div id="admin-wrapper">
       <mat-card>
         <mat-card-content>
-          
+          <app-admin-statusboard></app-admin-statusboard>
+
           <mat-card>
             <mat-checkbox [(ngModel)]="unlock">Unlock Admin Features</mat-checkbox>
-            <button mat-raised-button [disabled]="!unlock" color="primary">Start Competition</button>
-            <button mat-raised-button [disabled]="!unlock" color="primary">Stop Competition</button>
+            <button mat-raised-button [disabled]="!unlock" (click)="start()" color="primary">
+              Start Competition
+            </button>
+            <button mat-raised-button [disabled]="!unlock" (click)="reset()" color="primary">
+              Reset Competition
+            </button>
+            <button mat-raised-button [disabled]="!unlock" (click)="stop()" color="primary">
+              Stop Competition
+            </button>
           </mat-card>
         </mat-card-content>
       </mat-card>
@@ -28,6 +39,7 @@ import {Component, OnInit} from '@angular/core';
       display: inline-block;
       margin: 10px;
     }
+
     mat-checkbox {
       display: block;
     }
@@ -35,10 +47,27 @@ import {Component, OnInit} from '@angular/core';
 })
 export class AdminComponent implements OnInit {
 
-  unlock: false;
+  unlock = false;
+
+  constructor(private httpClient: HttpClient) {
+  }
 
   ngOnInit(): void {
-    console.log('Hello Admin!');
+  }
+
+  start(): void {
+    this.httpClient.get('/api/a/start').subscribe();
+    this.unlock = false;
+  }
+
+  stop(): void {
+    this.httpClient.get('/api/a/stop').subscribe();
+    this.unlock = false;
+  }
+
+  reset(): void {
+    this.httpClient.get('/api/a/reset').subscribe();
+    this.unlock = false;
   }
 
 }

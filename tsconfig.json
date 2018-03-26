@@ -8,9 +8,19 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
+    "types": [
+      "long"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "*",
+        "build/generated/source/proto/main/js/*"
+      ]
+    },
     "lib": [
       "es2017",
       "dom"

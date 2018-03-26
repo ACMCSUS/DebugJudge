@@ -2,6 +2,7 @@ package acmcsus.debugjudge.ctrl.api;
 
 import static acmcsus.debugjudge.ctrl.CompetitionController.getCompetitionState;
 import static acmcsus.debugjudge.ctrl.api.ApiBaseController.writeForTeam;
+import static acmcsus.debugjudge.model.Submission.processNewSubmission;
 import static java.lang.String.format;
 import static spark.Spark.get;
 import static spark.Spark.halt;
@@ -19,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Date;
+import java.util.Date;
 import java.time.Instant;
 import spark.Request;
 import spark.Response;
@@ -43,6 +44,7 @@ class ApiTeamController {
     return writeForTeam(FileStore.getSubmissionsForTeam(profile));
   }
 
+  @Deprecated
   private static String newSubmission(Request req, Response res) {
     if (getCompetitionState() != CompetitionState.STARTED) {
       SocketHandler.alert(SecurityApi.getProfile(req), "Can't submit right now!");
@@ -52,18 +54,12 @@ class ApiTeamController {
     try {
       JsonNode json = ProcessBody.asJson(req);
 
-      Submission submission = new Submission();
-      submission.teamId = req.attribute("profile");
-      submission.problemId = json.get("problem_id").asLong();
-      submission.submittedAt = Date.from(Instant.now());
-      submission.code = json.get("code").asText();
+      Long teamId = req.attribute("profile");
+      Long problemId = json.get("problem_id").asLong();
+      Date submittedAt = Date.from(Instant.now());
+      String code = json.get("code").asText();
 
-      Profile team = FileStore.getProfile(submission.teamId);
-
-      FileStore.saveSubmission(submission);
-
-      JudgeQueueHandler.getInstance().submitted(submission);
-
+      Submission submission = processNewSubmission(teamId, problemId, submittedAt, code);
       return Long.toString(submission.id);
     } catch (Exception e) {
       StringWriter sw = new StringWriter();

@@ -1,5 +1,15 @@
+import * as Long from 'long';
+
+export class Profile {
+  constructor(public id?: Long,
+              public name?: string,
+              public isTeam?: boolean,
+              public isJudge?: boolean,
+              public isAdmin?: boolean) {}
+}
+
 export class Problem {
-  constructor(public id?: number,
+  constructor(public id?: Long,
               public title?: string,
               public description?: string,
               public solved?: boolean,
