@@ -6,7 +6,7 @@ A judging system for the ACM Debugging Competition
 ### You'll need to install:
 
  - Git
- - NPM
+ - Yarn
  - NodeJS
  - Java 8
 
@@ -29,15 +29,21 @@ $ export DB_URL=jdbc:mysql://your.mysqlhost.url:3306/dbgjdg
 $ gradle run
 ```
 
-###### 4. Changed frontend?
+An HTTP server will be hosted on ```localhost:4567```.
+
+###### 4. Continuously build the frontend
 ```bash
-$ npm run-script build-team  # Build just TeamApp
-$ npm run-script build-judge # Build just JudgeApp
-$ # OR
-$ npm run-script build       # Build both
+$ yarn run ng build --watch
 ```
 
-An HTTP server will be hosted on ```localhost:4567```.
+### Protos:
+
+If you modify a proto file, you should rebuild the generated code:
+
+```bash
+$ ./gradlew generateProtos
+$ yarn run protoc
+```
 
 ### To Contribute:
 
@@ -52,7 +58,7 @@ An HTTP server will be hosted on ```localhost:4567```.
     
 ###### 6. **Test your work using JUnit!**
 ```bash
-$ gradle test
+$ ./gradlew test
 ```
 Test a variety of good and bad inputs.
 This will be exceedingly important in making sure our code will work during the competition.
@@ -65,6 +71,7 @@ Somebody else will give you a code review and perform the merge.
 ### Code style:
 
  - Java 8 ( ͡° ͜ʖ ͡°)
+ - Use the established websocket api thing I made for all new stuffs. REST is deprecated tbh
  - Spaces > Tabs. Use two spaces per level.
  - Java/Oracle naming conventions
  - To declare a route/filter:
