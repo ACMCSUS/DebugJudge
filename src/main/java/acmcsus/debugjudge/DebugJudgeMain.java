@@ -1,6 +1,5 @@
 package acmcsus.debugjudge;
 
-import static acmcsus.debugjudge.ctrl.FileStore.readProblems;
 import static acmcsus.debugjudge.ctrl.SecurityApi.getProfile;
 import static spark.Spark.before;
 import static spark.Spark.get;
@@ -10,11 +9,10 @@ import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.webSocket;
 
-import acmcsus.debugjudge.ctrl.api.ApiBaseController;
 import acmcsus.debugjudge.ctrl.SecurityApi;
-import acmcsus.debugjudge.model.Profile;
+import acmcsus.debugjudge.ctrl.api.ApiBaseController;
+import acmcsus.debugjudge.proto.Competition.Profile;
 import acmcsus.debugjudge.ws.SocketHandler;
-import java.io.IOException;
 import spark.Request;
 import spark.Response;
 import spark.staticfiles.StaticFilesConfiguration;
@@ -22,11 +20,6 @@ import spark.staticfiles.StaticFilesConfiguration;
 public class DebugJudgeMain {
 
   public static void main(String[] args) {
-    try {
-      readProblems();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
 
     port(4567);
     webSocket("/ws/connect", SocketHandler.getInstance());
@@ -105,7 +98,7 @@ public class DebugJudgeMain {
   private static Object registerRoute(Request req, Response res) {
     try {
       Profile profile = SecurityApi.getProfile(req);
-      if (profile == null || !profile.isJudge) {
+      if (profile == null || profile.getProfileType() != Profile.ProfileType.JUDGE) {
         res.redirect("/");
         return "";
       }

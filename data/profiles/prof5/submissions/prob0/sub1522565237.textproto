@@ -1,0 +1,5 @@
+team_id: 5
+submission_time_seconds: 1522565237
+debuggingSubmission {
+  code: "    if mul3:\n        return \'Fizz\'\n    if mul5:\n        return \'Buzz\'\n    if mul3 and mul5:\n        return \'FizzBuzz\'"
+}

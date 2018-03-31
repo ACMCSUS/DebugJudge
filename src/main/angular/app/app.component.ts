@@ -4,7 +4,8 @@ import {TeamComponent} from './view-team.component';
 import {JudgeComponent} from './view-judge.component';
 import {AdminComponent} from './view-admin.component';
 import {HttpClient} from '@angular/common/http';
-import {Profile} from './model';
+import {acmcsus} from "./proto/dbgjdg_pb";
+import Profile = acmcsus.debugjudge.Profile;
 
 @Component({
   selector: 'app-root',
@@ -17,23 +18,23 @@ import {Profile} from './model';
       </mat-toolbar>
       <mat-progress-spinner [mode]="'indeterminate'" *ngIf="!profile"></mat-progress-spinner>
       <mat-tab-group *ngIf="profile">
-        <mat-tab label="Team" *ngIf="profile.isTeam">
-          <app-submissions-bar></app-submissions-bar>
+        <mat-tab label="Team" *ngIf="profile.profileType === TEAM">
           <app-team-view></app-team-view>
         </mat-tab>
-        <mat-tab label="Judge" *ngIf="profile.isJudge">
+        <mat-tab label="Judge" *ngIf="profile.profileType === JUDGE">
           <app-judge-view></app-judge-view>
         </mat-tab>
-        <mat-tab label="Admin" *ngIf="profile.isAdmin">
+        <mat-tab label="Admin" *ngIf="profile.profileType === ADMIN">
           <app-admin-view></app-admin-view>
         </mat-tab>
-        <mat-tab label="Submissions" *ngIf="profile.isTeam || profile.isAdmin || profile.isJudge">
+        <mat-tab label="Submissions" *ngIf="[TEAM, JUDGE, ADMIN].indexOf(profile.profileType)>=0">
           <app-submissions-view></app-submissions-view>
         </mat-tab>
         <mat-tab label="Scoreboard">
           <app-scoreboard></app-scoreboard>
         </mat-tab>
       </mat-tab-group>
+      <app-submissions-bar></app-submissions-bar>
     </div>
   `,
   entryComponents: [
@@ -67,6 +68,10 @@ import {Profile} from './model';
   `],
 })
 export class AppComponent {
+
+  TEAM = Profile.ProfileType.TEAM;
+  JUDGE = Profile.ProfileType.JUDGE;
+  ADMIN = Profile.ProfileType.ADMIN;
 
   profile: Profile;
 

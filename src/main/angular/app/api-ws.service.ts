@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {acmcsus} from 'proto'
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 import {WebSocketSubject} from 'rxjs/observable/dom/WebSocketSubject';
 import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+
+import {acmcsus} from "./proto/dbgjdg_pb";
 import S2CMessage = acmcsus.debugjudge.S2CMessage;
 import S2TMessage = acmcsus.debugjudge.S2CMessage.S2TMessage;
 import S2JMessage = acmcsus.debugjudge.S2CMessage.S2JMessage;
 import C2SMessage = acmcsus.debugjudge.C2SMessage;
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {environment} from "../environments/environment";
 
 export interface ApiWebSocketService {
 
@@ -135,7 +137,11 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
           console.error("WS: I didn't know how to act on msg:", msg.value,
             "Either this message is not supported in frontend or someone forgot a 'break'.");
         }
+        // We know someone else takes care of these:
+        case 'scoreboardUpdateMessage':
       }
+
+      this.s2cSubject.next(msg);
     });
     //
     // this.getProfile().then((profile) => this.profile.next(profile));

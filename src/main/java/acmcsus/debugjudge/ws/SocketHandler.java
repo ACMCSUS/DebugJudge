@@ -1,36 +1,23 @@
 package acmcsus.debugjudge.ws;
 
+import acmcsus.debugjudge.ctrl.*;
+import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.proto.WebSocket.*;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
+import io.reactivex.disposables.*;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.*;
+import org.slf4j.*;
+import spark.*;
+
+import java.io.*;
+import java.nio.*;
+import java.util.*;
+import java.util.concurrent.*;
+
 import static acmcsus.debugjudge.ws.JudgeSocketHandler.handleJ2SMessage;
 import static acmcsus.debugjudge.ws.TeamSocketHandler.handleT2SMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
-
-import acmcsus.debugjudge.ctrl.SecurityApi;
-import acmcsus.debugjudge.model.Profile;
-import acmcsus.debugjudge.proto.WebSocket.C2SMessage;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.AlertMessage;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.DebugMessage;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.LoginResultMessage;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2JMessage;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2TMessage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import spark.Request;
-import spark.Response;
 
 @WebSocket
 public class SocketHandler {
@@ -50,6 +37,7 @@ public class SocketHandler {
   private static Map<Long, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
   private static Map<Session, Profile> sessionProfileMap = new ConcurrentHashMap<>();
   private static Map<String, Profile> nonceProfileMap = new ConcurrentHashMap<>();
+  private static Map<Session, Set<Disposable>> sessionObserversMap = new ConcurrentHashMap<>();
 
   public static String nonceRoute(Request req, Response res) {
     SecurityApi.loggedInFilter(req, res);
@@ -59,8 +47,9 @@ public class SocketHandler {
     return nonce;
   }
 
+
   @OnWebSocketConnect
-  public void onConnect(Session user) throws Exception {
+  public void onConnect(Session user) {
     user.setIdleTimeout(TimeUnit.HOURS.toMillis(12));
     logger.info("WebSocket opened");
   }
@@ -71,12 +60,15 @@ public class SocketHandler {
 
     Profile profile = sessionProfileMap.remove(user);
     if (profile != null) {
-      if (profile.isJudge) {
+      if (profile.getProfileType() == Profile.ProfileType.JUDGE) {
         JudgeQueueHandler.getInstance().disconnected(profile);
       }
 
-      profileSessionMap.remove(profile.id);
+      profileSessionMap.get(profile.getId()).remove(user);
     }
+
+    sessionObserversMap.get(user).forEach(Disposable::dispose);
+    sessionObserversMap.remove(user);
   }
 
   @OnWebSocketMessage
@@ -96,7 +88,7 @@ public class SocketHandler {
           break;
         }
         case T2SMESSAGE: {
-          if (ctx.profile != null && ctx.profile.isTeam) {
+          if (ctx.profile != null && ctx.profile.getProfileType() == Profile.ProfileType.TEAM) {
             handleT2SMessage(ctx);
           }
           else {
@@ -107,7 +99,9 @@ public class SocketHandler {
           break;
         }
         case J2SMESSAGE: {
-          if (ctx.profile != null && ctx.profile.isJudge) {
+          if (ctx.profile != null &&
+            (ctx.profile.getProfileType() == Profile.ProfileType.JUDGE ||
+              ctx.profile.getProfileType() == Profile.ProfileType.ADMIN)) {
             handleJ2SMessage(ctx);
           }
           else {
@@ -126,7 +120,8 @@ public class SocketHandler {
       logger.info("WS Handled!\n  In: {}\n  Out: {}",
         shortDebugString(ctx.req),
         shortDebugString(ctx.res));
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       e.printStackTrace();
       return;
     }
@@ -146,7 +141,7 @@ public class SocketHandler {
   }
 
   public static void sendMessage(Profile profile, S2TMessage msg) {
-    sendMessage(profile.id, S2CMessage.newBuilder().setS2TMessage(msg).build());
+    sendMessage(profile.getId(), S2CMessage.newBuilder().setS2TMessage(msg).build());
   }
 
   public static void sendMessage(Long profileId, S2TMessage msg) {
@@ -154,7 +149,7 @@ public class SocketHandler {
   }
 
   public static void sendMessage(Profile profile, S2JMessage msg) {
-    sendMessage(profile.id, S2CMessage.newBuilder().setS2JMessage(msg).build());
+    sendMessage(profile.getId(), S2CMessage.newBuilder().setS2JMessage(msg).build());
   }
 
   public static void sendMessage(Long profileId, S2JMessage msg) {
@@ -162,14 +157,15 @@ public class SocketHandler {
   }
 
   public static void sendMessage(Profile profile, S2CMessage msg) {
-    sendMessage(profile.id, msg);
+    sendMessage(profile.getId(), msg);
   }
 
   public static void sendMessage(Long profileId, S2CMessage msg) {
     for (Session session : profileSessionMap.get(profileId)) {
       try {
         sendMessage(session, msg);
-      } catch (IOException e) {
+      }
+      catch (IOException e) {
         logger.error("WS: Error while sending: " + shortDebugString(msg), e);
       }
     }
@@ -178,10 +174,22 @@ public class SocketHandler {
   public static void broadcastMessage(S2CMessage msg) {
     for (Map.Entry<Session, Profile> entry : sessionProfileMap.entrySet()) {
       try {
-        if (entry.getValue().isTeam) {
+        if (msg.getValueCase() == ValueCase.S2TMESSAGE) {
+          if (entry.getValue().getProfileType() == Profile.ProfileType.TEAM) {
+            sendMessage(entry.getKey(), msg);
+          }
+        }
+        else if (msg.getValueCase() == ValueCase.S2JMESSAGE) {
+          if (entry.getValue().getProfileType() == Profile.ProfileType.JUDGE) {
+            sendMessage(entry.getKey(), msg);
+          }
+        }
+        else {
           sendMessage(entry.getKey(), msg);
         }
-      } catch (Exception ignored) {}
+      }
+      catch (Exception ignored) {
+      }
     }
   }
 
@@ -203,11 +211,11 @@ public class SocketHandler {
       }
 
       if (ctx.profile != null) {
-        if (!profileSessionMap.containsKey(ctx.profile.id)) {
-          profileSessionMap.put(ctx.profile.id, new HashSet<>());
+        if (!profileSessionMap.containsKey(ctx.profile.getId())) {
+          profileSessionMap.put(ctx.profile.getId(), new HashSet<>());
         }
 
-        profileSessionMap.get(ctx.profile.id).add(ctx.session);
+        profileSessionMap.get(ctx.profile.getId()).add(ctx.session);
         sessionProfileMap.put(ctx.session, ctx.profile);
 
         ctx.res = S2CMessage.newBuilder()
@@ -218,25 +226,34 @@ public class SocketHandler {
 
         sendMessage(ctx.session, ctx.res);
         debug(ctx.session, "Login Successful!");
+
+        switch (ctx.profile.getProfileType()) {
+          case TEAM: {
+            TeamSocketHandler.subscribeNewTeam(ctx.session, ctx.profile);
+            break;
+          }
+        }
       }
       else {
         debug(ctx.session, "Bad Nonce.");
       }
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       logger.error("Error while handling WS login", e);
     }
   }
 
   public static void debug(Profile profile, String message) {
     try {
-      Set<Session> sessions = profileSessionMap.get(profile.id);
+      Set<Session> sessions = profileSessionMap.get(profile.getId());
       if (sessions != null) {
         for (Session session : sessions) {
           debug(session, message);
         }
       }
-    } catch (Exception e) {
-      logger.warn("Error while debugging " + profile.name + ": ", e);
+    }
+    catch (Exception e) {
+      logger.warn("Error while debugging " + profile.getName() + ": ", e);
     }
   }
 
@@ -244,7 +261,8 @@ public class SocketHandler {
     try {
       sendMessage(session, S2CMessage.newBuilder()
         .setDebugMessage(DebugMessage.newBuilder().setMessage(message)).build());
-    } catch (Exception ignored) {
+    }
+    catch (Exception ignored) {
     }
   }
 
@@ -252,17 +270,23 @@ public class SocketHandler {
     try {
       sendMessage(session, S2CMessage.newBuilder()
         .setAlertMessage(AlertMessage.newBuilder().setMessage(message)).build());
-    } catch (Exception ignored) {
+    }
+    catch (Exception ignored) {
     }
   }
 
   public static void alert(Profile profile, String message) {
-    Set<Session> sessions = profileSessionMap.get(profile.id);
+    Set<Session> sessions = profileSessionMap.get(profile.getId());
 
     if (sessions != null) {
       for (Session session : sessions) {
         alert(session, message);
       }
     }
+  }
+
+  static void addObserver(Session session, Disposable disposable) {
+    sessionObserversMap.computeIfAbsent(session, (f) -> new HashSet<>())
+      .add(disposable);
   }
 }

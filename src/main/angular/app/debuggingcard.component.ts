@@ -1,10 +1,10 @@
 import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Problem} from "./model";
 import {ApiTeamService} from "./api-team.service";
 import {CodeEditorComponent} from "./codeeditor.component";
-import {acmcsus} from 'proto';
+import {acmcsus} from "./proto/dbgjdg_pb";
 import Submission = acmcsus.debugjudge.Submission;
+import Problem = acmcsus.debugjudge.Problem;
 
 @Component({
   selector: 'app-problem-debug',
@@ -14,7 +14,7 @@ import Submission = acmcsus.debugjudge.Submission;
       <mat-card-title>{{problem.title}}</mat-card-title>
 
       <mat-card-content>
-        <p>{{problem.description}}</p>
+        <p>{{problem.descriptionText}}</p>
         <app-code-editor
           [precode]="problem.debuggingProblem.precode"
           [code]="code"
@@ -73,6 +73,9 @@ export class DebuggingCardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (!(this.code && this.code.length)) {
+      this.code = this.problem.debuggingProblem.code;
+    }
     // this.apiTeam.submissions.subscribe(
     //   subs => this.submissions = subs.filter(s => s.problemId === this.problem.id))
   }

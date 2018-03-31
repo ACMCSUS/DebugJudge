@@ -1,28 +1,21 @@
 package acmcsus.debugjudge.ctrl.api;
 
-import static acmcsus.debugjudge.ctrl.CompetitionController.getCompetitionState;
-import static spark.Spark.after;
-import static spark.Spark.get;
-import static spark.Spark.halt;
-import static spark.Spark.path;
+import acmcsus.debugjudge.*;
+import acmcsus.debugjudge.ctrl.*;
+import acmcsus.debugjudge.proto.Competition.*;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.node.*;
+import java.util.stream.Collectors;
+import spark.*;
 
-import acmcsus.debugjudge.Views;
-import acmcsus.debugjudge.ctrl.FileStore;
-import acmcsus.debugjudge.ctrl.ScoreboardController;
-import acmcsus.debugjudge.ctrl.SecurityApi;
-import acmcsus.debugjudge.model.Problem;
-import acmcsus.debugjudge.model.Profile;
-import acmcsus.debugjudge.proto.Competition.CompetitionState;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.IOException;
-import java.util.List;
-import spark.Request;
-import spark.Response;
-import spark.Spark;
+import java.io.*;
+import java.util.*;
+
+import static acmcsus.debugjudge.ctrl.CompetitionController.getCompetitionState;
+import static acmcsus.debugjudge.ctrl.MessageStores.PROBLEM_STORE;
+import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
+import static spark.Spark.*;
 
 public class ApiBaseController {
 
@@ -33,30 +26,29 @@ public class ApiBaseController {
     get("/profile", ApiBaseController::getProfile);
     get("/teams", ApiBaseController::getTeams);
     get("/problems", ApiBaseController::getProblems);
-    get("/scoreboard", ScoreboardController::getScoreboard);
 
-    path("/t/", ApiTeamController::teamApiPath);
-    path("/j/", ApiJudgeController::judgeApiPath);
-    path("/a/", ApiAdminController::adminApiPath);
+//    path("/t/", ApiTeamController::teamApiPath);
+//    path("/j/", ApiJudgeController::judgeApiPath);
+//    path("/a/", ApiAdminController::adminApiPath);
   }
 
   private static String getTeams(Request req, Response res) throws IOException {
-    return writeForView(FileStore.getTeams(), Views.PublicView.class);
+    return writeForView(PROFILE_STORE.readAll().toArray(), Views.PublicView.class);
   }
 
   private static String getProblems(Request req, Response res) throws IOException {
-    Profile profile = SecurityApi.getProfile(req);
+    Profile profile = SecurityApi.getProfileNonNull(req);
 
     // TODO: This is unnecessary, useful for debugging
-    FileStore.readProblems();
+//    FileStore.readProblems();
 
-    if (getCompetitionState() == CompetitionState.WAITING && profile.isTeam) {
+    if (getCompetitionState() == CompetitionState.WAITING && profile.getProfileType() == Profile.ProfileType.TEAM) {
       return "[]";
     }
 
-    List<Problem> result = FileStore.getProblems();
+    List<Problem> result = PROBLEM_STORE.readAll();
 
-    if (profile.isJudge) {
+    if (profile.getProfileType() == Profile.ProfileType.JUDGE) {
       return writeForJudge(result);
     }
     else {
@@ -67,13 +59,13 @@ public class ApiBaseController {
   private static String getProfile(Request req, Response res) throws JsonProcessingException {
     ObjectNode jsonNode = new ObjectNode(JsonNodeFactory.instance);
     Profile profile = SecurityApi.getProfile(req);
-    if (profile == null) { throw halt(401); }
+    if (profile == null) {
+      throw halt(401);
+    }
 
-    jsonNode.put("id", profile.id);
-    jsonNode.put("name", profile.name);
-    jsonNode.put("isTeam", profile.isTeam);
-    jsonNode.put("isJudge", profile.isJudge);
-    jsonNode.put("isAdmin", profile.isAdmin);
+    jsonNode.put("id", profile.getId());
+    jsonNode.put("name", profile.getName());
+    jsonNode.put("profileType", profile.getProfileType().getNumber());
 
     ObjectMapper mapper = new ObjectMapper();
     return mapper.writeValueAsString(jsonNode);
@@ -82,9 +74,11 @@ public class ApiBaseController {
   static String writeForTeam(Object result) throws JsonProcessingException {
     return writeForView(result, Views.TeamView.class);
   }
+
   static String writeForJudge(Object result) throws JsonProcessingException {
     return writeForView(result, Views.JudgeView.class);
   }
+
   static String writeForPublic(Object result) throws JsonProcessingException {
     return writeForView(result, Views.PublicView.class);
   }

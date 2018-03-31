@@ -1,0 +1,9 @@
+title: "FizzBuzz"
+description_text: "If multiple of 3, return Fizz. If multiple of 5, Buzz. If 3 and 5, FizzBuzz. Otherwise, print the original number."
+order_index: 2
+color: '#aaccbb'
+
+debugging_problem: {
+    language: "python3"
+    definition_file: "fizzbuzz.dbg.py"
+}

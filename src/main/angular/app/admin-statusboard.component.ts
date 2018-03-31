@@ -58,7 +58,7 @@ import {DataSource} from "@angular/cdk/collections";
       <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </div>
   `,
-  styles: ['table-http-example.css'],
+  styles: [``]
 })
 export class AdminStatusBoardComponent {
   displayedColumns = ['id', 'name', 'progress', 'color'];

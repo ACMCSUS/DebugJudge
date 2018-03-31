@@ -2,7 +2,8 @@ import {Component, Inject, OnDestroy, OnInit} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiTeamService} from "./api-team.service";
 import {Subscription} from "rxjs/Subscription";
-import {acmcsus} from 'proto';
+
+import {acmcsus} from "./proto/dbgjdg_pb";
 import Submission = acmcsus.debugjudge.Submission;
 
 @Component({

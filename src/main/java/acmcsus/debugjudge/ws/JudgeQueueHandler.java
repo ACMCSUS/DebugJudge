@@ -1,9 +1,11 @@
 package acmcsus.debugjudge.ws;
 
 import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
+import static java.lang.String.format;
 
-import acmcsus.debugjudge.model.Profile;
-import acmcsus.debugjudge.model.Submission;
+import acmcsus.debugjudge.model.*;
+import acmcsus.debugjudge.proto.Competition.Profile;
+import acmcsus.debugjudge.proto.Competition.Submission;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2JMessage;
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -27,6 +29,8 @@ public class JudgeQueueHandler {
 //    Submission.find.query().where()
 //      .isNull("accepted")
 //      .findEach(waitingSubmissions::add);
+    StateService.instance.addSubmissionCreateListener(this::submitted);
+    StateService.instance.addSubmissionRulingListener(this::judged);
   }
 
   private static final JudgeQueueHandler theInstance = new JudgeQueueHandler();
@@ -62,7 +66,7 @@ public class JudgeQueueHandler {
 
     private boolean canGrade(Submission submission) {
       return skipProblems == null
-        || !skipProblems.contains(submission.problemId);
+        || !skipProblems.contains(submission.getProblemId());
     }
   }
 
@@ -70,15 +74,19 @@ public class JudgeQueueHandler {
   private ArrayDeque<Submission> waitingSubmissions = new ArrayDeque<>();
 
   private HashMap<Long, JudgeSession> judgeSessionMap = new HashMap<>();
-  private HashMap<Long, JudgeSession> submissionSessionMap = new HashMap<>();
+  private HashMap<String, JudgeSession> submissionSessionMap = new HashMap<>();
+
+  private static String idForSubmission(Submission sub) {
+    return format("%d_%d_%d", sub.getTeamId(), sub.getProblemId(), sub.getSubmissionTimeSeconds());
+  }
 
   public void connected(Profile judge, Session session) {
-    if (judgeSessionMap.containsKey(judge.id)) {
+    if (judgeSessionMap.containsKey(judge.getId())) {
       kick(judge, "You've started judging somewhere else!");
     }
 
     JudgeSession judgeSession = new JudgeSession(judge, session);
-    judgeSessionMap.put(judgeSession.judge.id, judgeSession);
+    judgeSessionMap.put(judgeSession.judge.getId(), judgeSession);
     match(judgeSession);
   }
 
@@ -95,7 +103,7 @@ public class JudgeQueueHandler {
   }
 
   public void defer(Profile judge) {
-    JudgeSession judgeSession = judgeSessionMap.get(judge.id);
+    JudgeSession judgeSession = judgeSessionMap.get(judge.getId());
     if (judgeSession == null) { return; }
 
     if (waitingSubmissions.isEmpty()) {
@@ -108,7 +116,7 @@ public class JudgeQueueHandler {
   }
 
   public void kick(Profile judge, String reason) {
-    JudgeSession judgeSession = judgeSessionMap.get(judge.id);
+    JudgeSession judgeSession = judgeSessionMap.get(judge.getId());
 
     if (judgeSession != null) {
       purge(judge);
@@ -124,7 +132,7 @@ public class JudgeQueueHandler {
   }
 
   public void setJudgePreferences(Profile judge, Session session, Map<Long, Boolean> map) {
-    JudgeSession judgeSession = judgeSessionMap.get(judge.id);
+    JudgeSession judgeSession = judgeSessionMap.get(judge.getId());
     if (judgeSession == null) {
       kick(judge, "You need to login!");
     }
@@ -134,8 +142,8 @@ public class JudgeQueueHandler {
       if (judgeSession.currentSubmission == null) {
         match(judgeSession);
       }
-      else if (map.containsKey(judgeSession.currentSubmission.problemId)) {
-        boolean needNewProblem = !map.get(judgeSession.currentSubmission.problemId);
+      else if (map.containsKey(judgeSession.currentSubmission.getProblemId())) {
+        boolean needNewProblem = !map.get(judgeSession.currentSubmission.getProblemId());
         if (needNewProblem) {
           defer(judgeSession.judge);
         }
@@ -144,24 +152,25 @@ public class JudgeQueueHandler {
   }
 
   private void purge(Profile judge) {
-    JudgeSession judgeSession = judgeSessionMap.remove(judge.id);
+    JudgeSession judgeSession = judgeSessionMap.remove(judge.getId());
 
     if (judgeSession == null) { return; }
 
     if (judgeSession.currentSubmission == null) {
-      waitingJudges.removeIf(jSess -> jSess.judge.id.equals(judge.id));
+      waitingJudges.removeIf(jSess -> jSess.judge.getId() == judge.getId());
     }
     else {
-      submissionSessionMap.remove(judgeSession.currentSubmission.id);
+      submissionSessionMap.remove(idForSubmission(judgeSession.currentSubmission));
       matchOrPushBack(judgeSession.currentSubmission);
     }
   }
 
   private void purge(Submission submission) {
-    JudgeSession judgeSession = submissionSessionMap.remove(submission.id);
+    JudgeSession judgeSession = submissionSessionMap.remove(idForSubmission(submission));
+    String submissionId = idForSubmission(submission);
 
     if (judgeSession == null) {
-      waitingSubmissions.removeIf(sub -> sub.id.equals(submission.id));
+      waitingSubmissions.removeIf(sub -> submissionId.equals(idForSubmission(sub)));
     }
     else {
       judgeSession.currentSubmission = null;
@@ -203,7 +212,7 @@ public class JudgeQueueHandler {
 
     if (judgeSession == null) {
       waitingSubmissions.add(submission);
-      submissionSessionMap.remove(submission.id);
+      submissionSessionMap.remove(idForSubmission(submission));
     }
     else {
       matched(judgeSession, submission);
@@ -215,7 +224,7 @@ public class JudgeQueueHandler {
 
     if (judgeSession == null) {
       waitingSubmissions.addFirst(submission);
-      submissionSessionMap.remove(submission.id);
+      submissionSessionMap.remove(idForSubmission(submission));
     }
     else {
       matched(judgeSession, submission);
@@ -224,16 +233,17 @@ public class JudgeQueueHandler {
 
   private void matched(JudgeSession judgeSession, Submission submission) {
     judgeSession.currentSubmission = submission;
-    submissionSessionMap.put(submission.id, judgeSession);
+    submissionSessionMap.put(idForSubmission(submission), judgeSession);
 
-    waitingJudges.removeIf(js -> js.judge.id.equals(judgeSession.judge.id));
-    waitingSubmissions.removeIf(sub -> sub.id.equals(submission.id));
+    String submissionId = idForSubmission(submission);
+    waitingJudges.removeIf(js -> js.judge.getId() == judgeSession.judge.getId());
+    waitingSubmissions.removeIf(sub -> submissionId.equals(idForSubmission(sub)));
 
     try {
       sendMessage(judgeSession.socketSession, S2JMessage.newBuilder()
         .setAssignedSubmissionMessage(
           S2JMessage.AssignedSubmissionMessage.newBuilder()
-            .setSubmissionId(submission.id)).build());
+            .setSubmission(submission)).build());
     } catch (IOException e) {
       kick(judgeSession.judge, "There was an error matching you with a submission.");
       logger.error("", e);

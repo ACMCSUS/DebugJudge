@@ -1,17 +1,24 @@
 package acmcsus.debugjudge.ws;
 
+import acmcsus.debugjudge.ctrl.*;
 import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.*;
-import acmcsus.debugjudge.proto.WebSocket.C2SMessage.T2SMessage.*;
+import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2TMessage.*;
+import io.reactivex.functions.*;
+import org.eclipse.jetty.websocket.api.*;
+import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.*;
+import spark.*;
 
 import java.io.*;
-import java.sql.*;
-import java.time.*;
+import java.util.*;
 
-import static acmcsus.debugjudge.model.Submission.processNewSubmission;
-import static spark.Spark.halt;
+import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.ws.SocketHandler.addObserver;
+import static acmcsus.debugjudge.ws.SocketHandler.alert;
+import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 
 public class TeamSocketHandler {
 
@@ -23,29 +30,60 @@ public class TeamSocketHandler {
     switch (t2s.getValueCase()) {
       case SUBMISSIONCREATEMESSAGE: {
         try {
-          SubmissionCreateMessage msg = t2s.getSubmissionCreateMessage();
-          Submission submission = processNewSubmission(ctx.profile.id, msg.getSubmission().getProblemId(), Date.from(Instant.now()), msg.getSubmission().getDebuggingSubmission().getCode());
-
-          ctx.res = WebSocket.S2CMessage.newBuilder()
-            .setS2TMessage(WebSocket.S2CMessage.S2TMessage.newBuilder()
-              .setReloadSubmissionsMessage(ReloadSubmissionsMessage.newBuilder())).build();
-
-          SocketHandler.sendMessage(submission.teamId, ctx.res);
-//          ctx.res = WebSocket.S2CMessage.newBuilder()
-//            .setS2TMessage(WebSocket.S2CMessage.S2TMessage.newBuilder()
-//              .setSubmissionCreatedMessage(SubmissionCreatedMessage.newBuilder()
-//                .setSubmission(Competition.Submission.newBuilder()
-//                  .setProblemId(submission.problemId)
-//                  .setDebuggingSubmission(DebuggingSubmission.newBuilder()
-//                    .setCode(submission.code))))).build();
+          Submission sent = t2s.getSubmissionCreateMessage().getSubmission();
+          StateService.instance.submissionCreate(ctx.profile.getId(), sent.getProblemId(), sent);
         }
-        catch (IOException e) {
-          logger.warn("Error while creating submission", e);
-          throw halt(500);
+        catch (HaltException haltException) {
+          alert(ctx.session,
+              "Slow down!\n\n" +
+                  "Your last submission was NOT saved. " +
+                  "You must wait at least one second between submits.");
         }
         break;
       }
     }
   }
 
+  public static void subscribeNewTeam(final Session session, final Competition.Profile profile) throws IOException {
+    final long teamId = profile.getId();
+
+    Consumer<Submission> submissionReloader =
+        (sub) -> {
+          try {
+            SocketHandler.sendMessage(session, S2TMessage.newBuilder()
+                .setReloadSubmissionMessage(ReloadSubmissionMessage.newBuilder()
+                    .setSubmission(sub))
+                .build());
+          }
+          catch (IOException e) {
+            logger.error("error reloading submission of team", e);
+          }
+        };
+
+    Consumer<List<Problem>> problemReloader =
+        (problems) -> SocketHandler.sendMessage(session, S2TMessage.newBuilder()
+            .setReloadProblemsMessage(ReloadProblemsMessage.newBuilder()
+                .setProblems(Problem.List.newBuilder().addAllValue(problems))).build());
+
+    Predicate<Submission> isTeamsSubmission = (sub) -> sub.getTeamId() == teamId;
+
+    sendMessage(session, S2TMessage.newBuilder().setReloadSubmissionsMessage(ReloadSubmissionsMessage.newBuilder().setSubmissions(Submission.List.newBuilder()
+        .addAllValue(SUBMISSION_STORE.readAll(SUBMISSION_STORE.getPathsForTeam(teamId)))
+        .build())).build());
+
+    Scoreboard lastScoreboard = ScoreboardBroadcaster.getLastScoreboard();
+    if (lastScoreboard != null) {
+      sendMessage(session, WebSocket.S2CMessage.newBuilder()
+          .setScoreboardUpdateMessage(ScoreboardUpdateMessage.newBuilder()
+              .setScoreboard(lastScoreboard))
+          .build());
+    }
+
+    addObserver(session,
+        StateService.instance.addSubmissionCreateListener(submissionReloader, isTeamsSubmission));
+    addObserver(session,
+        StateService.instance.addSubmissionRulingListener(submissionReloader, isTeamsSubmission));
+
+    addObserver(session, StateService.instance.addTeamProblemsListener(problemReloader));
+  }
 }

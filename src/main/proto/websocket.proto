@@ -7,12 +7,6 @@ package acmcsus.debugjudge;
 
 import "competition.proto";
 
-enum SubmissionJudgement {
-  SUCCESS = 0;
-  FAILURE = 1;
-  DEFERRED = 2;
-}
-
 message C2SMessage {
 
   oneof value {
@@ -83,6 +77,7 @@ message S2CMessage {
     LoginResultMessage loginResultMessage = 5;
     NotificationMessage notificationMessage = 6;
     CompetitionStateChangedMessage competitionStateChangedMessage = 7;
+    ScoreboardUpdateMessage scoreboardUpdateMessage = 8;
 
   }
 
@@ -117,23 +112,31 @@ message S2CMessage {
     CompetitionState state = 2;
   }
 
+  message ScoreboardUpdateMessage {
+    Scoreboard scoreboard = 1;
+  }
+
 // Messages that are specifically for teams.
   message S2TMessage {
 
     oneof value {
-      SubmissionJudgedMessage submissionResultMessage = 1;
+      ReloadSubmissionMessage reloadSubmissionMessage = 1;
       ReloadSubmissionsMessage reloadSubmissionsMessage = 2;
+      ReloadProblemsMessage reloadProblemsMessage = 3;
     }
 
-    message SubmissionJudgedMessage {
-      int64 team_id = 1;
-      int64 problem_id = 2;
-      int64 submission_id = 3;
-      SubmissionJudgement result = 4;
+    // Make known creation/changes to one submission
+    message ReloadSubmissionMessage {
+      Submission submission = 1;
     }
 
+    // Make known creation/changes to all submissions
     message ReloadSubmissionsMessage {
-      // Just reload the submission list tbh
+      Submission.List submissions = 1;
+    }
+
+    message ReloadProblemsMessage {
+      Problem.List problems = 1;
     }
   }
 
@@ -146,13 +149,7 @@ message S2CMessage {
     }
 
     message AssignedSubmissionMessage {
-      // Hack lets us have an "optional" semantic to a scalar value.
-      // By default, the "unset" value would look the same as 0.
-      oneof value {
-        int64 team_id = 1;
-        int64 problem_id = 2;
-        int64 submission_id = 3;
-      }
+      Submission submission = 1;
     }
     message KickMessage {
       string message = 1;

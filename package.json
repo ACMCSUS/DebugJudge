@@ -4,9 +4,9 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "protoc": "mkdirp build/generated/source/proto/main/js/ && npm run protocjs && npm run protocts",
-    "protocjs": "pbjs -t static-module -o build/generated/source/proto/main/js/proto.js src/main/proto/*.proto",
-    "protocts": "pbts -o build/generated/source/proto/main/js/proto.d.ts build/generated/source/proto/main/js/proto.js",
+    "protoc": "mkdirp src/main/angular/app/proto && npm run protocjs && npm run protocts",
+    "protocjs": "pbjs -t static-module -o src/main/angular/app/proto/dbgjdg_pb.js src/main/proto/*.proto",
+    "protocts": "pbts -o src/main/angular/app/proto/dbgjdg_pb.d.ts src/main/angular/app/proto/dbgjdg_pb.js",
     "start": "ng serve",
     "build": "ng build --prod",
     "test": "ng test",

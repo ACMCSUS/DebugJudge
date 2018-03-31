@@ -1,6 +1,0 @@
-id = 1
-name = "Judge Judy"
-loginSecret = "pass"
-isTeam = false
-isJudge = true
-isAdmin = true

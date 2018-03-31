@@ -1,51 +1,52 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
-import {HttpClient} from '@angular/common/http';
-import {IntervalObservable} from 'rxjs/observable/IntervalObservable';
+import {acmcsus} from "./proto/dbgjdg_pb";
+import {ApiWebSocketService} from "./api-ws.service";
+import Scoreboard = acmcsus.debugjudge.Scoreboard;
+import * as Long from "long";
 
 @Component({
   selector: 'app-scoreboard',
   template: `
     <mat-card>
       <mat-card-title>Team Standings</mat-card-title>
-      
-      <span *ngIf="!(problems && problems.length)">Problems and team standings will be visible here when the competition begins.</span>
 
       <mat-card-content>
-        <table border="1" *ngIf="problems">
+        <table border="1" *ngIf="scoreboard && scoreboard.row.length">
           <thead>
             <tr>
               <td colspan="4"></td>
-              <td colSpan="{{problems.length}}">Problems (hover)</td>
+              <td colSpan="{{problems && problems.length}}">Problems (hover)</td>
             </tr>
             <tr>
               <td>Place</td>
-              <td>Correct</td>
-              <td>Penalty</td>
               <td>Team</td>
               <td class="problemName"
                   *ngFor="let problem of problems"
                   [title]="problem.title">
                 {{problem.orderIndex}}
               </td>
+              <td>Correct</td>
+              <td>Penalty</td>
             </tr>
           </thead>
-          <tr *ngFor="let team of teams">
-            <td>{{team.place}}</td>
-            <td>{{team.score.correct}}</td>
-            <td>{{team.score.penalty}}</td>
-            <td>{{team.name}}</td>
-            <td [ngClass]="{'green':(teamAcceptances[team.id]||{})[problem.id]}"
+          <tr *ngFor="let row of scoreboard.row">
+            <td>{{row.place}}</td>
+            <td>{{row.profileName}}</td>
+            <td [ngClass]="{'green':row.problemCompletions[problem.id]}"
                 *ngFor="let problem of problems">
-              {{(teamSubmissionCounts[team.id] || {})[problem.id] || 0}}
+              {{row.problemAttempts[problem.id] || 0}}
             </td>
+            <td>{{row.correct}}</td>
+            <td>{{row.penalty}}</td>
           </tr>
         </table>
       </mat-card-content>
 
-      <mat-card-actions>
-        <button mat-button (click)="refresh();">Refresh</button>
-      </mat-card-actions>
+      <span>During the competition, this scoreboard will be updated every 30 seconds.</span>
+      <span *ngIf="!(scoreboard && scoreboard.row.length)">Problems and team standings will be visible here shortly after the competition begins.</span>
+      <span *ngIf="scoreboard">The last scoreboard update was at {{lastUpdateString}}</span>
+
     </mat-card>
   `,
   styles: [`
@@ -55,33 +56,29 @@ import {IntervalObservable} from 'rxjs/observable/IntervalObservable';
   `],
 })
 export class ScoreboardComponent implements OnInit, OnDestroy {
-  problems: {}[];
 
-  teams: {}[];
-  teamSubmissionCounts: {};
-  teamAcceptances: {};
+  scoreboard: Scoreboard;
+  lastUpdateString: string;
 
-  refreshSubscription: Subscription;
+  s2cSubscription: Subscription;
 
-  constructor(private http: HttpClient) {}
+  constructor(@Inject("ApiWebSocketService") private apiWs: ApiWebSocketService) {}
 
   ngOnInit() {
-    this.refresh();
-    this.refreshSubscription = IntervalObservable
-      .create(10000)
-      .subscribe(() => this.refresh());
+    this.s2cSubscription = this.apiWs.s2cMessages.subscribe((s2cMessage) => {
+      if (s2cMessage.value === "scoreboardUpdateMessage") {
+        this.scoreboard = Scoreboard.create(s2cMessage.scoreboardUpdateMessage.scoreboard);
+
+        let d = new Date();
+        console.log(this.scoreboard.updateTimeMillis);
+        console.log(Long.fromValue(this.scoreboard.updateTimeMillis).toNumber());
+        d.setUTCMilliseconds(Long.fromValue(this.scoreboard.updateTimeMillis).toNumber());
+        this.lastUpdateString = d.toTimeString();
+      }
+    });
   }
 
   ngOnDestroy() {
-    this.refreshSubscription.unsubscribe();
-  }
-
-  refresh(): void {
-    this.http.get<{}>('/api/scoreboard').subscribe((data) => {
-      this.problems = data['problems'];
-      this.teams = data['teams'];
-      this.teamSubmissionCounts = data['teamSubmissionCounts'];
-      this.teamAcceptances = data['teamAcceptances'];
-    });
+    this.s2cSubscription.unsubscribe();
   }
 }

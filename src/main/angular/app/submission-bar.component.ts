@@ -1,21 +1,24 @@
 import {Component, Inject, OnDestroy, OnInit} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {acmcsus} from 'proto';
 import {ApiTeamService} from "./api-team.service";
 import {Subscription} from "rxjs/Subscription";
+
+import {acmcsus} from "./proto/dbgjdg_pb";
 import Submission = acmcsus.debugjudge.Submission;
 
 @Component({
   selector: 'app-submissions-bar',
   template: `
-    <div id="submissionBar">
+    <mat-card id="submissionBar">
       <mat-chip-list>
         <mat-chip *ngFor="let submission of submissions"
                   [selected]="true"
                   [color]="'accent'">
           {{submission.problemId}}</mat-chip>
+        <mat-chip *ngIf="!(submissions&&submissions.length)">
+          Notifications will arrive here.</mat-chip>
       </mat-chip-list>
-    </div>
+    </mat-card>
   `,
   styles: [`
     #submissionBar {

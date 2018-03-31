@@ -1,6 +1,6 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.model.Profile;
+import acmcsus.debugjudge.proto.Competition.Profile;
 import acmcsus.debugjudge.proto.WebSocket;
 import org.eclipse.jetty.websocket.api.Session;
 

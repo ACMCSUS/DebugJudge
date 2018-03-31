@@ -1,6 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AdminStatusBoardComponent} from "./admin-statusboard.component";
+import {ApiAdminService} from "./api-admin.service";
+import {acmcsus} from "./proto/dbgjdg_pb";
+import CompetitionState = acmcsus.debugjudge.CompetitionState;
 
 @Component({
   selector: 'app-admin-view',
@@ -16,11 +19,11 @@ import {AdminStatusBoardComponent} from "./admin-statusboard.component";
             <button mat-raised-button [disabled]="!unlock" (click)="start()" color="primary">
               Start Competition
             </button>
-            <button mat-raised-button [disabled]="!unlock" (click)="reset()" color="primary">
-              Reset Competition
-            </button>
             <button mat-raised-button [disabled]="!unlock" (click)="stop()" color="primary">
               Stop Competition
+            </button>
+            <button mat-raised-button [disabled]="!unlock" (click)="reset()" color="primary">
+              Pause Competition
             </button>
           </mat-card>
         </mat-card-content>
@@ -49,24 +52,29 @@ export class AdminComponent implements OnInit {
 
   unlock = false;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(@Inject('ApiAdminService') private apiAdmin: ApiAdminService) {
   }
 
   ngOnInit(): void {
   }
 
   start(): void {
-    this.httpClient.get('/api/a/start').subscribe();
+    this.apiAdmin.changeCompetitionState(CompetitionState.STARTED);
     this.unlock = false;
   }
 
   stop(): void {
-    this.httpClient.get('/api/a/stop').subscribe();
+    this.apiAdmin.changeCompetitionState(CompetitionState.STOPPED);
+    this.unlock = false;
+  }
+
+  pause(): void {
+    this.apiAdmin.changeCompetitionState(CompetitionState.PAUSED);
     this.unlock = false;
   }
 
   reset(): void {
-    this.httpClient.get('/api/a/reset').subscribe();
+    this.apiAdmin.changeCompetitionState(CompetitionState.WAITING);
     this.unlock = false;
   }
 

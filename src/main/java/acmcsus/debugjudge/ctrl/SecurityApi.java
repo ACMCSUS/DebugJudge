@@ -1,16 +1,17 @@
 package acmcsus.debugjudge.ctrl;
 
-import static spark.Spark.halt;
+import acmcsus.debugjudge.*;
+import acmcsus.debugjudge.proto.Competition.*;
+import com.fasterxml.jackson.databind.*;
+import spark.*;
 
-import acmcsus.debugjudge.PasswordGenerator;
-import acmcsus.debugjudge.ProcessBody;
-import acmcsus.debugjudge.model.Profile;
-import com.fasterxml.jackson.databind.JsonNode;
-import java.io.IOException;
-import java.util.Map;
-import spark.HaltException;
-import spark.Request;
-import spark.Response;
+import java.io.*;
+import java.util.*;
+
+import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
+import static acmcsus.debugjudge.ctrl.MessageStores.getLoginSecret;
+import static java.util.Objects.requireNonNull;
+import static spark.Spark.halt;
 
 public class SecurityApi {
 
@@ -19,25 +20,28 @@ public class SecurityApi {
   public static Object registerTeam(Request req, Response res) throws IOException {
     Profile registrar = getProfile(req);
 
-    if (registrar == null || !registrar.isJudge) {
+    if (registrar == null || registrar.getProfileType() != Profile.ProfileType.JUDGE) {
       throw halt(403);
     }
 
-    Profile team = new Profile();
+    Profile profile;
     JsonNode json = ProcessBody.asJson(req);
-    team.name = json.get("team_name").asText();
-    // TODO: Is this necessary?
-//    team.memberNames = json.get("member_names").asText();
-    team.loginSecret = PasswordGenerator.randomPassword();
-    team.isTeam = true;
+    Profile.Builder builder = Profile.newBuilder();
 
-    FileStore.saveProfile(team);
+    builder.setName(json.get("team_name").asText());
+    builder.setProfileType(Profile.ProfileType.TEAM);
+    profile = builder.build();
+
+    profile = PROFILE_STORE.create(profile);
+
+    String loginSecret = PasswordGenerator.randomPassword();
+    MessageStores.writeLoginSecret(profile.getId(), loginSecret);
 
     res.type("application/json");
     return String.format("{" +
       "\"username\":\"team_%d\"," +
       "\"password\":\"%s\"" +
-      "}", team.id, team.loginSecret);
+      "}", profile.getId(), loginSecret);
   }
 
   private static class LoginAttempt {
@@ -62,22 +66,24 @@ public class SecurityApi {
     try {
       LoginAttempt loginAttempt = new LoginAttempt(ProcessBody.asMap(req.body(), "UTF-8"));
       return login(req, res, loginAttempt);
-    } catch (HaltException he) {
+    }
+    catch (HaltException he) {
       throw he;
-    } catch (Exception ignored) {
+    }
+    catch (Exception ignored) {
       ignored.printStackTrace();
     }
     throw halt(401, "Bad Username");
   }
 
-  private static String login(Request req, Response res, LoginAttempt loginAttempt) {
-    Profile profile = FileStore.getProfile(loginAttempt.getId());
+  private static String login(Request req, Response res, LoginAttempt loginAttempt) throws IOException {
+    Profile profile = PROFILE_STORE.readFromPath(PROFILE_STORE.getPathForId(loginAttempt.getId()));
 
-    if (profile == null || !profile.loginSecret.equals(loginAttempt.password)) {
+    if (profile == null || !getLoginSecret(profile.getId()).equals(loginAttempt.password)) {
       throw halt(401, "Incorrect id number or incorrect password");
     }
 
-    req.session().attribute("profile", profile.id);
+    req.session().attribute("profile", profile.getId());
     res.redirect("/");
     return "";
   }
@@ -90,13 +96,20 @@ public class SecurityApi {
 
   public static Profile getProfile(Request req) {
     Long id = req.session().attribute("profile");
-    if (id == null) { return null; }
-
-    try {
-      return FileStore.getProfile(id);
-    } catch (Exception e) {
+    if (id == null) {
       return null;
     }
+
+    try {
+      return PROFILE_STORE.readFromPath(PROFILE_STORE.getPathForId(id));
+    }
+    catch (Exception e) {
+      return null;
+    }
+  }
+
+  public static Profile getProfileNonNull(Request req) {
+    return requireNonNull(getProfile(req));
   }
 
   public static boolean isLoggedIn(Request req) {
@@ -114,7 +127,7 @@ public class SecurityApi {
     if (prof == null) {
       throw halt(401);
     }
-    else if (!prof.isTeam) {
+    else if (prof.getProfileType() != Profile.ProfileType.TEAM) {
       throw halt(403);
     }
   }
@@ -124,7 +137,7 @@ public class SecurityApi {
     if (prof == null) {
       throw halt(401);
     }
-    else if (!prof.isJudge) {
+    else if (prof.getProfileType() != Profile.ProfileType.JUDGE) {
       throw halt(403);
     }
   }
@@ -134,7 +147,7 @@ public class SecurityApi {
     if (prof == null) {
       throw halt(401);
     }
-    else if (!prof.isAdmin) {
+    else if (prof.getProfileType() != Profile.ProfileType.ADMIN) {
       throw halt(403);
     }
   }

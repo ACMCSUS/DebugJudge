@@ -1,0 +1,12 @@
+title: "Echo"
+description_text: "Python program to echo the first input line"
+order_index: 1
+color: '#ccaabb'
+
+debugging_problem: {
+    language: "python3"
+    precode: "# Uses the print and input functions"
+    code: "print(input)"
+    postcode: ""
+    answer: "print(input())"
+}

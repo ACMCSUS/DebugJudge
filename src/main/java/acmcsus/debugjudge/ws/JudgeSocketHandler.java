@@ -1,17 +1,16 @@
 package acmcsus.debugjudge.ws;
 
-import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
+import acmcsus.debugjudge.ctrl.*;
+import acmcsus.debugjudge.model.*;
+import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.proto.WebSocket.*;
+import org.slf4j.*;
 
-import acmcsus.debugjudge.ctrl.FileStore;
-import acmcsus.debugjudge.model.Submission;
-import acmcsus.debugjudge.proto.WebSocket.C2SMessage;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage;
-import acmcsus.debugjudge.proto.WebSocket.SubmissionJudgement;
-import java.sql.Date;
-import java.time.Instant;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
+
+import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static java.lang.String.format;
+import static spark.Spark.halt;
 
 public class JudgeSocketHandler {
 
@@ -23,6 +22,11 @@ public class JudgeSocketHandler {
     JudgeQueueHandler judgeQueueHandler = JudgeQueueHandler.getInstance();
 
     switch (j2SMessage.getValueCase()) {
+      case CHANGECOMPETITIONSTATEMESSAGE: {
+        CompetitionController.changeCompetitionState(
+          j2SMessage.getChangeCompetitionStateMessage().getState());
+        break;
+      }
       case STARTJUDGINGMESSAGE: {
         judgeQueueHandler.connected(ctx.profile, ctx.session);
         break;
@@ -37,28 +41,33 @@ public class JudgeSocketHandler {
         Long sid = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
 
         SubmissionJudgement ruling = j2SMessage.getSubmissionJudgementMessage().getRuling();
-        boolean accepted = false;
 
         switch (ruling) {
-          case DEFERRED: {
+          case JUDGEMENT_UNKNOWN: {
             judgeQueueHandler.defer(ctx.profile);
             break;
           }
-          case SUCCESS:
-            accepted = true;
-          case FAILURE: {
-            Submission submission = FileStore.getSubmissionFromIds(tid, pid, sid);
+          case JUDGEMENT_SUCCESS:
+          case JUDGEMENT_FAILURE: {
+            Submission submission =
+              SUBMISSION_STORE.readFromPath(SUBMISSION_STORE.pathForIds(tid, pid, sid));
 
-            if (submission != null) {
-              submission.ruling(ctx.profile, Date.from(Instant.now()), accepted);
-//              submission.update();
+            if (submission == null) {
+              logger.error(format("Submission %d/%d/%d not found for judge's ruling",
+                tid, pid, sid));
+              throw halt(400);
             }
 
-            judgeQueueHandler.judged(submission);
-            sendMessage(submission.judgeId, S2CMessage.S2TMessage.newBuilder()
-              .setSubmissionResultMessage(
-                S2CMessage.S2TMessage.SubmissionJudgedMessage.newBuilder()
-                  .setResult(ruling)).build());
+            // TODO: Judgement Messages (like "TLE" or "Excessive Output")
+            StateService.instance
+              .submissionRuling(submission, ctx.profile.getId(), ruling, "lorem ipsum");
+
+//            judgeQueueHandler.judged(submission);
+
+//            sendMessage(subm(), S2CMessage.S2TMessage.newBuilder()
+//              .setReloadSubmissionMessage(
+//                S2CMessage.S2TMessage.ReloadSubmissionMessage.newBuilder()
+//                  .setSubmission(submission)).build());
             break;
           }
           default: {
