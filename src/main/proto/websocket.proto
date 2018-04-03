@@ -51,13 +51,13 @@ message C2SMessage {
 
     }
     message SubmissionJudgementMessage {
-      int64 team_id = 1;
-      int64 problem_id = 2;
+      int32 team_id = 1;
+      int32 problem_id = 2;
       int64 submission_id = 3;
       SubmissionJudgement ruling = 4;
     }
     message JudgingPreferencesMessage {
-      map<int64, bool> preferences = 1;
+      map<int32, bool> preferences = 1;
     }
     message ChangeCompetitionStateMessage {
       int64 time_millis = 1;
@@ -78,7 +78,7 @@ message S2CMessage {
     NotificationMessage notificationMessage = 6;
     CompetitionStateChangedMessage competitionStateChangedMessage = 7;
     ScoreboardUpdateMessage scoreboardUpdateMessage = 8;
-
+    ReloadProblemsMessage reloadProblemsMessage = 9;
   }
 
   message DebugMessage {
@@ -116,13 +116,16 @@ message S2CMessage {
     Scoreboard scoreboard = 1;
   }
 
+  message ReloadProblemsMessage {
+    Problem.List problems = 1;
+  }
+
 // Messages that are specifically for teams.
   message S2TMessage {
 
     oneof value {
       ReloadSubmissionMessage reloadSubmissionMessage = 1;
       ReloadSubmissionsMessage reloadSubmissionsMessage = 2;
-      ReloadProblemsMessage reloadProblemsMessage = 3;
     }
 
     // Make known creation/changes to one submission
@@ -134,10 +137,6 @@ message S2CMessage {
     message ReloadSubmissionsMessage {
       Submission.List submissions = 1;
     }
-
-    message ReloadProblemsMessage {
-      Problem.List problems = 1;
-    }
   }
 
 // Messages that are specifically for judges.
@@ -145,14 +144,15 @@ message S2CMessage {
 
     oneof value {
       AssignedSubmissionMessage assignedSubmissionMessage = 1;
-      KickMessage kickMessage = 2;
+      JudgingStatusMessage judgingStatus = 2;
     }
 
     message AssignedSubmissionMessage {
       Submission submission = 1;
     }
-    message KickMessage {
-      string message = 1;
+    message JudgingStatusMessage {
+      bool judging = 1;
+      string message = 2;
     }
   }
 }

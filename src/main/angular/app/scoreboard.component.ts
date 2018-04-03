@@ -70,8 +70,6 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
         this.scoreboard = Scoreboard.create(s2cMessage.scoreboardUpdateMessage.scoreboard);
 
         let d = new Date();
-        console.log(this.scoreboard.updateTimeMillis);
-        console.log(Long.fromValue(this.scoreboard.updateTimeMillis).toNumber());
         d.setUTCMilliseconds(Long.fromValue(this.scoreboard.updateTimeMillis).toNumber());
         this.lastUpdateString = d.toTimeString();
       }

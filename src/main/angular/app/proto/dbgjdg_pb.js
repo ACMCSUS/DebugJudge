@@ -76,10 +76,10 @@
                  * Properties of a Submission.
                  * @memberof acmcsus.debugjudge
                  * @interface ISubmission
-                 * @property {number|Long|null} [problemId] Submission problemId
-                 * @property {number|Long|null} [teamId] Submission teamId
+                 * @property {number|null} [problemId] Submission problemId
+                 * @property {number|null} [teamId] Submission teamId
                  * @property {number|Long|null} [submissionTimeSeconds] Submission submissionTimeSeconds
-                 * @property {number|Long|null} [judgeId] Submission judgeId
+                 * @property {number|null} [judgeId] Submission judgeId
                  * @property {acmcsus.debugjudge.SubmissionJudgement|null} [judgement] Submission judgement
                  * @property {string|null} [judgementMessage] Submission judgementMessage
                  * @property {acmcsus.debugjudge.Submission.IDebuggingSubmission|null} [debuggingSubmission] Submission debuggingSubmission
@@ -102,19 +102,19 @@
     
                 /**
                  * Submission problemId.
-                 * @member {number|Long} problemId
+                 * @member {number} problemId
                  * @memberof acmcsus.debugjudge.Submission
                  * @instance
                  */
-                Submission.prototype.problemId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                Submission.prototype.problemId = 0;
     
                 /**
                  * Submission teamId.
-                 * @member {number|Long} teamId
+                 * @member {number} teamId
                  * @memberof acmcsus.debugjudge.Submission
                  * @instance
                  */
-                Submission.prototype.teamId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                Submission.prototype.teamId = 0;
     
                 /**
                  * Submission submissionTimeSeconds.
@@ -122,15 +122,15 @@
                  * @memberof acmcsus.debugjudge.Submission
                  * @instance
                  */
-                Submission.prototype.submissionTimeSeconds = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+                Submission.prototype.submissionTimeSeconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
                 /**
                  * Submission judgeId.
-                 * @member {number|Long} judgeId
+                 * @member {number} judgeId
                  * @memberof acmcsus.debugjudge.Submission
                  * @instance
                  */
-                Submission.prototype.judgeId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                Submission.prototype.judgeId = 0;
     
                 /**
                  * Submission judgement.
@@ -195,13 +195,13 @@
                     if (!writer)
                         writer = $Writer.create();
                     if (message.problemId != null && message.hasOwnProperty("problemId"))
-                        writer.uint32(/* id 2, wireType 0 =*/16).int64(message.problemId);
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
                     if (message.teamId != null && message.hasOwnProperty("teamId"))
-                        writer.uint32(/* id 3, wireType 0 =*/24).int64(message.teamId);
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.teamId);
                     if (message.submissionTimeSeconds != null && message.hasOwnProperty("submissionTimeSeconds"))
-                        writer.uint32(/* id 4, wireType 0 =*/32).uint64(message.submissionTimeSeconds);
+                        writer.uint32(/* id 4, wireType 0 =*/32).int64(message.submissionTimeSeconds);
                     if (message.judgeId != null && message.hasOwnProperty("judgeId"))
-                        writer.uint32(/* id 5, wireType 0 =*/40).int64(message.judgeId);
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.judgeId);
                     if (message.judgement != null && message.hasOwnProperty("judgement"))
                         writer.uint32(/* id 6, wireType 0 =*/48).int32(message.judgement);
                     if (message.judgementMessage != null && message.hasOwnProperty("judgementMessage"))
@@ -243,16 +243,16 @@
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
                         case 2:
-                            message.problemId = reader.int64();
+                            message.problemId = reader.int32();
                             break;
                         case 3:
-                            message.teamId = reader.int64();
+                            message.teamId = reader.int32();
                             break;
                         case 4:
-                            message.submissionTimeSeconds = reader.uint64();
+                            message.submissionTimeSeconds = reader.int64();
                             break;
                         case 5:
-                            message.judgeId = reader.int64();
+                            message.judgeId = reader.int32();
                             break;
                         case 6:
                             message.judgement = reader.int32();
@@ -300,17 +300,17 @@
                         return "object expected";
                     var properties = {};
                     if (message.problemId != null && message.hasOwnProperty("problemId"))
-                        if (!$util.isInteger(message.problemId) && !(message.problemId && $util.isInteger(message.problemId.low) && $util.isInteger(message.problemId.high)))
-                            return "problemId: integer|Long expected";
+                        if (!$util.isInteger(message.problemId))
+                            return "problemId: integer expected";
                     if (message.teamId != null && message.hasOwnProperty("teamId"))
-                        if (!$util.isInteger(message.teamId) && !(message.teamId && $util.isInteger(message.teamId.low) && $util.isInteger(message.teamId.high)))
-                            return "teamId: integer|Long expected";
+                        if (!$util.isInteger(message.teamId))
+                            return "teamId: integer expected";
                     if (message.submissionTimeSeconds != null && message.hasOwnProperty("submissionTimeSeconds"))
                         if (!$util.isInteger(message.submissionTimeSeconds) && !(message.submissionTimeSeconds && $util.isInteger(message.submissionTimeSeconds.low) && $util.isInteger(message.submissionTimeSeconds.high)))
                             return "submissionTimeSeconds: integer|Long expected";
                     if (message.judgeId != null && message.hasOwnProperty("judgeId"))
-                        if (!$util.isInteger(message.judgeId) && !(message.judgeId && $util.isInteger(message.judgeId.low) && $util.isInteger(message.judgeId.high)))
-                            return "judgeId: integer|Long expected";
+                        if (!$util.isInteger(message.judgeId))
+                            return "judgeId: integer expected";
                     if (message.judgement != null && message.hasOwnProperty("judgement"))
                         switch (message.judgement) {
                         default:
@@ -347,41 +347,20 @@
                         return object;
                     var message = new $root.acmcsus.debugjudge.Submission();
                     if (object.problemId != null)
-                        if ($util.Long)
-                            (message.problemId = $util.Long.fromValue(object.problemId)).unsigned = false;
-                        else if (typeof object.problemId === "string")
-                            message.problemId = parseInt(object.problemId, 10);
-                        else if (typeof object.problemId === "number")
-                            message.problemId = object.problemId;
-                        else if (typeof object.problemId === "object")
-                            message.problemId = new $util.LongBits(object.problemId.low >>> 0, object.problemId.high >>> 0).toNumber();
+                        message.problemId = object.problemId | 0;
                     if (object.teamId != null)
-                        if ($util.Long)
-                            (message.teamId = $util.Long.fromValue(object.teamId)).unsigned = false;
-                        else if (typeof object.teamId === "string")
-                            message.teamId = parseInt(object.teamId, 10);
-                        else if (typeof object.teamId === "number")
-                            message.teamId = object.teamId;
-                        else if (typeof object.teamId === "object")
-                            message.teamId = new $util.LongBits(object.teamId.low >>> 0, object.teamId.high >>> 0).toNumber();
+                        message.teamId = object.teamId | 0;
                     if (object.submissionTimeSeconds != null)
                         if ($util.Long)
-                            (message.submissionTimeSeconds = $util.Long.fromValue(object.submissionTimeSeconds)).unsigned = true;
+                            (message.submissionTimeSeconds = $util.Long.fromValue(object.submissionTimeSeconds)).unsigned = false;
                         else if (typeof object.submissionTimeSeconds === "string")
                             message.submissionTimeSeconds = parseInt(object.submissionTimeSeconds, 10);
                         else if (typeof object.submissionTimeSeconds === "number")
                             message.submissionTimeSeconds = object.submissionTimeSeconds;
                         else if (typeof object.submissionTimeSeconds === "object")
-                            message.submissionTimeSeconds = new $util.LongBits(object.submissionTimeSeconds.low >>> 0, object.submissionTimeSeconds.high >>> 0).toNumber(true);
+                            message.submissionTimeSeconds = new $util.LongBits(object.submissionTimeSeconds.low >>> 0, object.submissionTimeSeconds.high >>> 0).toNumber();
                     if (object.judgeId != null)
-                        if ($util.Long)
-                            (message.judgeId = $util.Long.fromValue(object.judgeId)).unsigned = false;
-                        else if (typeof object.judgeId === "string")
-                            message.judgeId = parseInt(object.judgeId, 10);
-                        else if (typeof object.judgeId === "number")
-                            message.judgeId = object.judgeId;
-                        else if (typeof object.judgeId === "object")
-                            message.judgeId = new $util.LongBits(object.judgeId.low >>> 0, object.judgeId.high >>> 0).toNumber();
+                        message.judgeId = object.judgeId | 0;
                     switch (object.judgement) {
                     case "JUDGEMENT_UNKNOWN":
                     case 0:
@@ -420,49 +399,28 @@
                         options = {};
                     var object = {};
                     if (options.defaults) {
+                        object.problemId = 0;
+                        object.teamId = 0;
                         if ($util.Long) {
                             var long = new $util.Long(0, 0, false);
-                            object.problemId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                        } else
-                            object.problemId = options.longs === String ? "0" : 0;
-                        if ($util.Long) {
-                            var long = new $util.Long(0, 0, false);
-                            object.teamId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                        } else
-                            object.teamId = options.longs === String ? "0" : 0;
-                        if ($util.Long) {
-                            var long = new $util.Long(0, 0, true);
                             object.submissionTimeSeconds = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                         } else
                             object.submissionTimeSeconds = options.longs === String ? "0" : 0;
-                        if ($util.Long) {
-                            var long = new $util.Long(0, 0, false);
-                            object.judgeId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                        } else
-                            object.judgeId = options.longs === String ? "0" : 0;
+                        object.judgeId = 0;
                         object.judgement = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
                         object.judgementMessage = "";
                     }
                     if (message.problemId != null && message.hasOwnProperty("problemId"))
-                        if (typeof message.problemId === "number")
-                            object.problemId = options.longs === String ? String(message.problemId) : message.problemId;
-                        else
-                            object.problemId = options.longs === String ? $util.Long.prototype.toString.call(message.problemId) : options.longs === Number ? new $util.LongBits(message.problemId.low >>> 0, message.problemId.high >>> 0).toNumber() : message.problemId;
+                        object.problemId = message.problemId;
                     if (message.teamId != null && message.hasOwnProperty("teamId"))
-                        if (typeof message.teamId === "number")
-                            object.teamId = options.longs === String ? String(message.teamId) : message.teamId;
-                        else
-                            object.teamId = options.longs === String ? $util.Long.prototype.toString.call(message.teamId) : options.longs === Number ? new $util.LongBits(message.teamId.low >>> 0, message.teamId.high >>> 0).toNumber() : message.teamId;
+                        object.teamId = message.teamId;
                     if (message.submissionTimeSeconds != null && message.hasOwnProperty("submissionTimeSeconds"))
                         if (typeof message.submissionTimeSeconds === "number")
                             object.submissionTimeSeconds = options.longs === String ? String(message.submissionTimeSeconds) : message.submissionTimeSeconds;
                         else
-                            object.submissionTimeSeconds = options.longs === String ? $util.Long.prototype.toString.call(message.submissionTimeSeconds) : options.longs === Number ? new $util.LongBits(message.submissionTimeSeconds.low >>> 0, message.submissionTimeSeconds.high >>> 0).toNumber(true) : message.submissionTimeSeconds;
+                            object.submissionTimeSeconds = options.longs === String ? $util.Long.prototype.toString.call(message.submissionTimeSeconds) : options.longs === Number ? new $util.LongBits(message.submissionTimeSeconds.low >>> 0, message.submissionTimeSeconds.high >>> 0).toNumber() : message.submissionTimeSeconds;
                     if (message.judgeId != null && message.hasOwnProperty("judgeId"))
-                        if (typeof message.judgeId === "number")
-                            object.judgeId = options.longs === String ? String(message.judgeId) : message.judgeId;
-                        else
-                            object.judgeId = options.longs === String ? $util.Long.prototype.toString.call(message.judgeId) : options.longs === Number ? new $util.LongBits(message.judgeId.low >>> 0, message.judgeId.high >>> 0).toNumber() : message.judgeId;
+                        object.judgeId = message.judgeId;
                     if (message.judgement != null && message.hasOwnProperty("judgement"))
                         object.judgement = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.judgement] : message.judgement;
                     if (message.judgementMessage != null && message.hasOwnProperty("judgementMessage"))
@@ -890,7 +848,7 @@
                  * Properties of a Profile.
                  * @memberof acmcsus.debugjudge
                  * @interface IProfile
-                 * @property {number|Long|null} [id] Profile id
+                 * @property {number|null} [id] Profile id
                  * @property {string|null} [name] Profile name
                  * @property {acmcsus.debugjudge.Profile.ProfileType|null} [profileType] Profile profileType
                  */
@@ -912,11 +870,11 @@
     
                 /**
                  * Profile id.
-                 * @member {number|Long} id
+                 * @member {number} id
                  * @memberof acmcsus.debugjudge.Profile
                  * @instance
                  */
-                Profile.prototype.id = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                Profile.prototype.id = 0;
     
                 /**
                  * Profile name.
@@ -959,7 +917,7 @@
                     if (!writer)
                         writer = $Writer.create();
                     if (message.id != null && message.hasOwnProperty("id"))
-                        writer.uint32(/* id 1, wireType 0 =*/8).int64(message.id);
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
                     if (message.name != null && message.hasOwnProperty("name"))
                         writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
                     if (message.profileType != null && message.hasOwnProperty("profileType"))
@@ -999,7 +957,7 @@
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
                         case 1:
-                            message.id = reader.int64();
+                            message.id = reader.int32();
                             break;
                         case 2:
                             message.name = reader.string();
@@ -1043,8 +1001,8 @@
                     if (typeof message !== "object" || message === null)
                         return "object expected";
                     if (message.id != null && message.hasOwnProperty("id"))
-                        if (!$util.isInteger(message.id) && !(message.id && $util.isInteger(message.id.low) && $util.isInteger(message.id.high)))
-                            return "id: integer|Long expected";
+                        if (!$util.isInteger(message.id))
+                            return "id: integer expected";
                     if (message.name != null && message.hasOwnProperty("name"))
                         if (!$util.isString(message.name))
                             return "name: string expected";
@@ -1073,14 +1031,7 @@
                         return object;
                     var message = new $root.acmcsus.debugjudge.Profile();
                     if (object.id != null)
-                        if ($util.Long)
-                            (message.id = $util.Long.fromValue(object.id)).unsigned = false;
-                        else if (typeof object.id === "string")
-                            message.id = parseInt(object.id, 10);
-                        else if (typeof object.id === "number")
-                            message.id = object.id;
-                        else if (typeof object.id === "object")
-                            message.id = new $util.LongBits(object.id.low >>> 0, object.id.high >>> 0).toNumber();
+                        message.id = object.id | 0;
                     if (object.name != null)
                         message.name = String(object.name);
                     switch (object.profileType) {
@@ -1114,19 +1065,12 @@
                         options = {};
                     var object = {};
                     if (options.defaults) {
-                        if ($util.Long) {
-                            var long = new $util.Long(0, 0, false);
-                            object.id = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                        } else
-                            object.id = options.longs === String ? "0" : 0;
+                        object.id = 0;
                         object.name = "";
                         object.profileType = options.enums === String ? "TEAM" : 0;
                     }
                     if (message.id != null && message.hasOwnProperty("id"))
-                        if (typeof message.id === "number")
-                            object.id = options.longs === String ? String(message.id) : message.id;
-                        else
-                            object.id = options.longs === String ? $util.Long.prototype.toString.call(message.id) : options.longs === Number ? new $util.LongBits(message.id.low >>> 0, message.id.high >>> 0).toNumber() : message.id;
+                        object.id = message.id;
                     if (message.name != null && message.hasOwnProperty("name"))
                         object.name = message.name;
                     if (message.profileType != null && message.hasOwnProperty("profileType"))
@@ -1378,7 +1322,7 @@
                  * Properties of a Problem.
                  * @memberof acmcsus.debugjudge
                  * @interface IProblem
-                 * @property {number|Long|null} [id] Problem id
+                 * @property {number|null} [id] Problem id
                  * @property {string|null} [title] Problem title
                  * @property {number|null} [orderIndex] Problem orderIndex
                  * @property {string|null} [color] Problem color
@@ -1404,11 +1348,11 @@
     
                 /**
                  * Problem id.
-                 * @member {number|Long} id
+                 * @member {number} id
                  * @memberof acmcsus.debugjudge.Problem
                  * @instance
                  */
-                Problem.prototype.id = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                Problem.prototype.id = 0;
     
                 /**
                  * Problem title.
@@ -1508,7 +1452,7 @@
                     if (!writer)
                         writer = $Writer.create();
                     if (message.id != null && message.hasOwnProperty("id"))
-                        writer.uint32(/* id 1, wireType 0 =*/8).int64(message.id);
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
                     if (message.title != null && message.hasOwnProperty("title"))
                         writer.uint32(/* id 2, wireType 2 =*/18).string(message.title);
                     if (message.orderIndex != null && message.hasOwnProperty("orderIndex"))
@@ -1556,7 +1500,7 @@
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
                         case 1:
-                            message.id = reader.int64();
+                            message.id = reader.int32();
                             break;
                         case 2:
                             message.title = reader.string();
@@ -1613,8 +1557,8 @@
                         return "object expected";
                     var properties = {};
                     if (message.id != null && message.hasOwnProperty("id"))
-                        if (!$util.isInteger(message.id) && !(message.id && $util.isInteger(message.id.low) && $util.isInteger(message.id.high)))
-                            return "id: integer|Long expected";
+                        if (!$util.isInteger(message.id))
+                            return "id: integer expected";
                     if (message.title != null && message.hasOwnProperty("title"))
                         if (!$util.isString(message.title))
                             return "title: string expected";
@@ -1660,14 +1604,7 @@
                         return object;
                     var message = new $root.acmcsus.debugjudge.Problem();
                     if (object.id != null)
-                        if ($util.Long)
-                            (message.id = $util.Long.fromValue(object.id)).unsigned = false;
-                        else if (typeof object.id === "string")
-                            message.id = parseInt(object.id, 10);
-                        else if (typeof object.id === "number")
-                            message.id = object.id;
-                        else if (typeof object.id === "object")
-                            message.id = new $util.LongBits(object.id.low >>> 0, object.id.high >>> 0).toNumber();
+                        message.id = object.id | 0;
                     if (object.title != null)
                         message.title = String(object.title);
                     if (object.orderIndex != null)
@@ -1700,20 +1637,13 @@
                         options = {};
                     var object = {};
                     if (options.defaults) {
-                        if ($util.Long) {
-                            var long = new $util.Long(0, 0, false);
-                            object.id = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                        } else
-                            object.id = options.longs === String ? "0" : 0;
+                        object.id = 0;
                         object.title = "";
                         object.orderIndex = 0;
                         object.color = "";
                     }
                     if (message.id != null && message.hasOwnProperty("id"))
-                        if (typeof message.id === "number")
-                            object.id = options.longs === String ? String(message.id) : message.id;
-                        else
-                            object.id = options.longs === String ? $util.Long.prototype.toString.call(message.id) : options.longs === Number ? new $util.LongBits(message.id.low >>> 0, message.id.high >>> 0).toNumber() : message.id;
+                        object.id = message.id;
                     if (message.title != null && message.hasOwnProperty("title"))
                         object.title = message.title;
                     if (message.orderIndex != null && message.hasOwnProperty("orderIndex"))
@@ -2607,10 +2537,10 @@
                             writer.uint32(/* id 1, wireType 2 =*/10).string(message.profileName);
                         if (message.problemAttempts != null && message.hasOwnProperty("problemAttempts"))
                             for (var keys = Object.keys(message.problemAttempts), i = 0; i < keys.length; ++i)
-                                writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 0 =*/8).int64(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.problemAttempts[keys[i]]).ldelim();
+                                writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.problemAttempts[keys[i]]).ldelim();
                         if (message.problemCompletions != null && message.hasOwnProperty("problemCompletions"))
                             for (var keys = Object.keys(message.problemCompletions), i = 0; i < keys.length; ++i)
-                                writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 0 =*/8).int64(keys[i]).uint32(/* id 2, wireType 0 =*/16).bool(message.problemCompletions[keys[i]]).ldelim();
+                                writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).bool(message.problemCompletions[keys[i]]).ldelim();
                         if (message.place != null && message.hasOwnProperty("place"))
                             writer.uint32(/* id 4, wireType 0 =*/32).int32(message.place);
                         if (message.score != null && message.hasOwnProperty("score"))
@@ -2658,17 +2588,17 @@
                                 reader.skip().pos++;
                                 if (message.problemAttempts === $util.emptyObject)
                                     message.problemAttempts = {};
-                                key = reader.int64();
+                                key = reader.int32();
                                 reader.pos++;
-                                message.problemAttempts[typeof key === "object" ? $util.longToHash(key) : key] = reader.int32();
+                                message.problemAttempts[key] = reader.int32();
                                 break;
                             case 3:
                                 reader.skip().pos++;
                                 if (message.problemCompletions === $util.emptyObject)
                                     message.problemCompletions = {};
-                                key = reader.int64();
+                                key = reader.int32();
                                 reader.pos++;
-                                message.problemCompletions[typeof key === "object" ? $util.longToHash(key) : key] = reader.bool();
+                                message.problemCompletions[key] = reader.bool();
                                 break;
                             case 4:
                                 message.place = reader.int32();
@@ -2722,10 +2652,10 @@
                                 return "problemAttempts: object expected";
                             var key = Object.keys(message.problemAttempts);
                             for (var i = 0; i < key.length; ++i) {
-                                if (!$util.key64Re.test(key[i]))
-                                    return "problemAttempts: integer|Long key{k:int64} expected";
+                                if (!$util.key32Re.test(key[i]))
+                                    return "problemAttempts: integer key{k:int32} expected";
                                 if (!$util.isInteger(message.problemAttempts[key[i]]))
-                                    return "problemAttempts: integer{k:int64} expected";
+                                    return "problemAttempts: integer{k:int32} expected";
                             }
                         }
                         if (message.problemCompletions != null && message.hasOwnProperty("problemCompletions")) {
@@ -2733,10 +2663,10 @@
                                 return "problemCompletions: object expected";
                             var key = Object.keys(message.problemCompletions);
                             for (var i = 0; i < key.length; ++i) {
-                                if (!$util.key64Re.test(key[i]))
-                                    return "problemCompletions: integer|Long key{k:int64} expected";
+                                if (!$util.key32Re.test(key[i]))
+                                    return "problemCompletions: integer key{k:int32} expected";
                                 if (typeof message.problemCompletions[key[i]] !== "boolean")
-                                    return "problemCompletions: boolean{k:int64} expected";
+                                    return "problemCompletions: boolean{k:int32} expected";
                             }
                         }
                         if (message.place != null && message.hasOwnProperty("place"))
@@ -4386,8 +4316,8 @@
                          * Properties of a SubmissionJudgementMessage.
                          * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
                          * @interface ISubmissionJudgementMessage
-                         * @property {number|Long|null} [teamId] SubmissionJudgementMessage teamId
-                         * @property {number|Long|null} [problemId] SubmissionJudgementMessage problemId
+                         * @property {number|null} [teamId] SubmissionJudgementMessage teamId
+                         * @property {number|null} [problemId] SubmissionJudgementMessage problemId
                          * @property {number|Long|null} [submissionId] SubmissionJudgementMessage submissionId
                          * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] SubmissionJudgementMessage ruling
                          */
@@ -4409,19 +4339,19 @@
     
                         /**
                          * SubmissionJudgementMessage teamId.
-                         * @member {number|Long} teamId
+                         * @member {number} teamId
                          * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
                          * @instance
                          */
-                        SubmissionJudgementMessage.prototype.teamId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                        SubmissionJudgementMessage.prototype.teamId = 0;
     
                         /**
                          * SubmissionJudgementMessage problemId.
-                         * @member {number|Long} problemId
+                         * @member {number} problemId
                          * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
                          * @instance
                          */
-                        SubmissionJudgementMessage.prototype.problemId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                        SubmissionJudgementMessage.prototype.problemId = 0;
     
                         /**
                          * SubmissionJudgementMessage submissionId.
@@ -4464,9 +4394,9 @@
                             if (!writer)
                                 writer = $Writer.create();
                             if (message.teamId != null && message.hasOwnProperty("teamId"))
-                                writer.uint32(/* id 1, wireType 0 =*/8).int64(message.teamId);
+                                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.teamId);
                             if (message.problemId != null && message.hasOwnProperty("problemId"))
-                                writer.uint32(/* id 2, wireType 0 =*/16).int64(message.problemId);
+                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
                             if (message.submissionId != null && message.hasOwnProperty("submissionId"))
                                 writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
                             if (message.ruling != null && message.hasOwnProperty("ruling"))
@@ -4506,10 +4436,10 @@
                                 var tag = reader.uint32();
                                 switch (tag >>> 3) {
                                 case 1:
-                                    message.teamId = reader.int64();
+                                    message.teamId = reader.int32();
                                     break;
                                 case 2:
-                                    message.problemId = reader.int64();
+                                    message.problemId = reader.int32();
                                     break;
                                 case 3:
                                     message.submissionId = reader.int64();
@@ -4553,11 +4483,11 @@
                             if (typeof message !== "object" || message === null)
                                 return "object expected";
                             if (message.teamId != null && message.hasOwnProperty("teamId"))
-                                if (!$util.isInteger(message.teamId) && !(message.teamId && $util.isInteger(message.teamId.low) && $util.isInteger(message.teamId.high)))
-                                    return "teamId: integer|Long expected";
+                                if (!$util.isInteger(message.teamId))
+                                    return "teamId: integer expected";
                             if (message.problemId != null && message.hasOwnProperty("problemId"))
-                                if (!$util.isInteger(message.problemId) && !(message.problemId && $util.isInteger(message.problemId.low) && $util.isInteger(message.problemId.high)))
-                                    return "problemId: integer|Long expected";
+                                if (!$util.isInteger(message.problemId))
+                                    return "problemId: integer expected";
                             if (message.submissionId != null && message.hasOwnProperty("submissionId"))
                                 if (!$util.isInteger(message.submissionId) && !(message.submissionId && $util.isInteger(message.submissionId.low) && $util.isInteger(message.submissionId.high)))
                                     return "submissionId: integer|Long expected";
@@ -4586,23 +4516,9 @@
                                 return object;
                             var message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage();
                             if (object.teamId != null)
-                                if ($util.Long)
-                                    (message.teamId = $util.Long.fromValue(object.teamId)).unsigned = false;
-                                else if (typeof object.teamId === "string")
-                                    message.teamId = parseInt(object.teamId, 10);
-                                else if (typeof object.teamId === "number")
-                                    message.teamId = object.teamId;
-                                else if (typeof object.teamId === "object")
-                                    message.teamId = new $util.LongBits(object.teamId.low >>> 0, object.teamId.high >>> 0).toNumber();
+                                message.teamId = object.teamId | 0;
                             if (object.problemId != null)
-                                if ($util.Long)
-                                    (message.problemId = $util.Long.fromValue(object.problemId)).unsigned = false;
-                                else if (typeof object.problemId === "string")
-                                    message.problemId = parseInt(object.problemId, 10);
-                                else if (typeof object.problemId === "number")
-                                    message.problemId = object.problemId;
-                                else if (typeof object.problemId === "object")
-                                    message.problemId = new $util.LongBits(object.problemId.low >>> 0, object.problemId.high >>> 0).toNumber();
+                                message.problemId = object.problemId | 0;
                             if (object.submissionId != null)
                                 if ($util.Long)
                                     (message.submissionId = $util.Long.fromValue(object.submissionId)).unsigned = false;
@@ -4643,16 +4559,8 @@
                                 options = {};
                             var object = {};
                             if (options.defaults) {
-                                if ($util.Long) {
-                                    var long = new $util.Long(0, 0, false);
-                                    object.teamId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                                } else
-                                    object.teamId = options.longs === String ? "0" : 0;
-                                if ($util.Long) {
-                                    var long = new $util.Long(0, 0, false);
-                                    object.problemId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                                } else
-                                    object.problemId = options.longs === String ? "0" : 0;
+                                object.teamId = 0;
+                                object.problemId = 0;
                                 if ($util.Long) {
                                     var long = new $util.Long(0, 0, false);
                                     object.submissionId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
@@ -4661,15 +4569,9 @@
                                 object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
                             }
                             if (message.teamId != null && message.hasOwnProperty("teamId"))
-                                if (typeof message.teamId === "number")
-                                    object.teamId = options.longs === String ? String(message.teamId) : message.teamId;
-                                else
-                                    object.teamId = options.longs === String ? $util.Long.prototype.toString.call(message.teamId) : options.longs === Number ? new $util.LongBits(message.teamId.low >>> 0, message.teamId.high >>> 0).toNumber() : message.teamId;
+                                object.teamId = message.teamId;
                             if (message.problemId != null && message.hasOwnProperty("problemId"))
-                                if (typeof message.problemId === "number")
-                                    object.problemId = options.longs === String ? String(message.problemId) : message.problemId;
-                                else
-                                    object.problemId = options.longs === String ? $util.Long.prototype.toString.call(message.problemId) : options.longs === Number ? new $util.LongBits(message.problemId.low >>> 0, message.problemId.high >>> 0).toNumber() : message.problemId;
+                                object.problemId = message.problemId;
                             if (message.submissionId != null && message.hasOwnProperty("submissionId"))
                                 if (typeof message.submissionId === "number")
                                     object.submissionId = options.longs === String ? String(message.submissionId) : message.submissionId;
@@ -4753,7 +4655,7 @@
                                 writer = $Writer.create();
                             if (message.preferences != null && message.hasOwnProperty("preferences"))
                                 for (var keys = Object.keys(message.preferences), i = 0; i < keys.length; ++i)
-                                    writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 0 =*/8).int64(keys[i]).uint32(/* id 2, wireType 0 =*/16).bool(message.preferences[keys[i]]).ldelim();
+                                    writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).bool(message.preferences[keys[i]]).ldelim();
                             return writer;
                         };
     
@@ -4792,9 +4694,9 @@
                                     reader.skip().pos++;
                                     if (message.preferences === $util.emptyObject)
                                         message.preferences = {};
-                                    key = reader.int64();
+                                    key = reader.int32();
                                     reader.pos++;
-                                    message.preferences[typeof key === "object" ? $util.longToHash(key) : key] = reader.bool();
+                                    message.preferences[key] = reader.bool();
                                     break;
                                 default:
                                     reader.skipType(tag & 7);
@@ -4836,10 +4738,10 @@
                                     return "preferences: object expected";
                                 var key = Object.keys(message.preferences);
                                 for (var i = 0; i < key.length; ++i) {
-                                    if (!$util.key64Re.test(key[i]))
-                                        return "preferences: integer|Long key{k:int64} expected";
+                                    if (!$util.key32Re.test(key[i]))
+                                        return "preferences: integer key{k:int32} expected";
                                     if (typeof message.preferences[key[i]] !== "boolean")
-                                        return "preferences: boolean{k:int64} expected";
+                                        return "preferences: boolean{k:int32} expected";
                                 }
                             }
                             return null;
@@ -5177,6 +5079,7 @@
                  * @property {acmcsus.debugjudge.S2CMessage.INotificationMessage|null} [notificationMessage] S2CMessage notificationMessage
                  * @property {acmcsus.debugjudge.S2CMessage.ICompetitionStateChangedMessage|null} [competitionStateChangedMessage] S2CMessage competitionStateChangedMessage
                  * @property {acmcsus.debugjudge.S2CMessage.IScoreboardUpdateMessage|null} [scoreboardUpdateMessage] S2CMessage scoreboardUpdateMessage
+                 * @property {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null} [reloadProblemsMessage] S2CMessage reloadProblemsMessage
                  */
     
                 /**
@@ -5258,17 +5161,25 @@
                  */
                 S2CMessage.prototype.scoreboardUpdateMessage = null;
     
+                /**
+                 * S2CMessage reloadProblemsMessage.
+                 * @member {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null|undefined} reloadProblemsMessage
+                 * @memberof acmcsus.debugjudge.S2CMessage
+                 * @instance
+                 */
+                S2CMessage.prototype.reloadProblemsMessage = null;
+    
                 // OneOf field names bound to virtual getters and setters
                 var $oneOfFields;
     
                 /**
                  * S2CMessage value.
-                 * @member {"s2tMessage"|"s2jMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|undefined} value
+                 * @member {"s2tMessage"|"s2jMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|"reloadProblemsMessage"|undefined} value
                  * @memberof acmcsus.debugjudge.S2CMessage
                  * @instance
                  */
                 Object.defineProperty(S2CMessage.prototype, "value", {
-                    get: $util.oneOfGetter($oneOfFields = ["s2tMessage", "s2jMessage", "debugMessage", "alertMessage", "loginResultMessage", "notificationMessage", "competitionStateChangedMessage", "scoreboardUpdateMessage"]),
+                    get: $util.oneOfGetter($oneOfFields = ["s2tMessage", "s2jMessage", "debugMessage", "alertMessage", "loginResultMessage", "notificationMessage", "competitionStateChangedMessage", "scoreboardUpdateMessage", "reloadProblemsMessage"]),
                     set: $util.oneOfSetter($oneOfFields)
                 });
     
@@ -5312,6 +5223,8 @@
                         $root.acmcsus.debugjudge.S2CMessage.CompetitionStateChangedMessage.encode(message.competitionStateChangedMessage, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                     if (message.scoreboardUpdateMessage != null && message.hasOwnProperty("scoreboardUpdateMessage"))
                         $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.encode(message.scoreboardUpdateMessage, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                    if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage"))
+                        $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.encode(message.reloadProblemsMessage, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
                     return writer;
                 };
     
@@ -5369,6 +5282,9 @@
                             break;
                         case 8:
                             message.scoreboardUpdateMessage = $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.decode(reader, reader.uint32());
+                            break;
+                        case 9:
+                            message.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.decode(reader, reader.uint32());
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -5484,6 +5400,16 @@
                                 return "scoreboardUpdateMessage." + error;
                         }
                     }
+                    if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.verify(message.reloadProblemsMessage);
+                            if (error)
+                                return "reloadProblemsMessage." + error;
+                        }
+                    }
                     return null;
                 };
     
@@ -5538,6 +5464,11 @@
                         if (typeof object.scoreboardUpdateMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.S2CMessage.scoreboardUpdateMessage: object expected");
                         message.scoreboardUpdateMessage = $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.fromObject(object.scoreboardUpdateMessage);
+                    }
+                    if (object.reloadProblemsMessage != null) {
+                        if (typeof object.reloadProblemsMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2CMessage.reloadProblemsMessage: object expected");
+                        message.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.fromObject(object.reloadProblemsMessage);
                     }
                     return message;
                 };
@@ -5594,6 +5525,11 @@
                         object.scoreboardUpdateMessage = $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.toObject(message.scoreboardUpdateMessage, options);
                         if (options.oneofs)
                             object.value = "scoreboardUpdateMessage";
+                    }
+                    if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage")) {
+                        object.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.toObject(message.reloadProblemsMessage, options);
+                        if (options.oneofs)
+                            object.value = "reloadProblemsMessage";
                     }
                     return object;
                 };
@@ -6876,6 +6812,198 @@
                     return ScoreboardUpdateMessage;
                 })();
     
+                S2CMessage.ReloadProblemsMessage = (function() {
+    
+                    /**
+                     * Properties of a ReloadProblemsMessage.
+                     * @memberof acmcsus.debugjudge.S2CMessage
+                     * @interface IReloadProblemsMessage
+                     * @property {acmcsus.debugjudge.Problem.IList|null} [problems] ReloadProblemsMessage problems
+                     */
+    
+                    /**
+                     * Constructs a new ReloadProblemsMessage.
+                     * @memberof acmcsus.debugjudge.S2CMessage
+                     * @classdesc Represents a ReloadProblemsMessage.
+                     * @implements IReloadProblemsMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage=} [properties] Properties to set
+                     */
+                    function ReloadProblemsMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * ReloadProblemsMessage problems.
+                     * @member {acmcsus.debugjudge.Problem.IList|null|undefined} problems
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @instance
+                     */
+                    ReloadProblemsMessage.prototype.problems = null;
+    
+                    /**
+                     * Creates a new ReloadProblemsMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage} ReloadProblemsMessage instance
+                     */
+                    ReloadProblemsMessage.create = function create(properties) {
+                        return new ReloadProblemsMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified ReloadProblemsMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage} message ReloadProblemsMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ReloadProblemsMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.problems != null && message.hasOwnProperty("problems"))
+                            $root.acmcsus.debugjudge.Problem.List.encode(message.problems, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified ReloadProblemsMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage} message ReloadProblemsMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ReloadProblemsMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a ReloadProblemsMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage} ReloadProblemsMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ReloadProblemsMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.problems = $root.acmcsus.debugjudge.Problem.List.decode(reader, reader.uint32());
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a ReloadProblemsMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage} ReloadProblemsMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ReloadProblemsMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a ReloadProblemsMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    ReloadProblemsMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.problems != null && message.hasOwnProperty("problems")) {
+                            var error = $root.acmcsus.debugjudge.Problem.List.verify(message.problems);
+                            if (error)
+                                return "problems." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a ReloadProblemsMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage} ReloadProblemsMessage
+                     */
+                    ReloadProblemsMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage();
+                        if (object.problems != null) {
+                            if (typeof object.problems !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.problems: object expected");
+                            message.problems = $root.acmcsus.debugjudge.Problem.List.fromObject(object.problems);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a ReloadProblemsMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage} message ReloadProblemsMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    ReloadProblemsMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.problems = null;
+                        if (message.problems != null && message.hasOwnProperty("problems"))
+                            object.problems = $root.acmcsus.debugjudge.Problem.List.toObject(message.problems, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this ReloadProblemsMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    ReloadProblemsMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return ReloadProblemsMessage;
+                })();
+    
                 S2CMessage.S2TMessage = (function() {
     
                     /**
@@ -6884,7 +7012,6 @@
                      * @interface IS2TMessage
                      * @property {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionMessage|null} [reloadSubmissionMessage] S2TMessage reloadSubmissionMessage
                      * @property {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage|null} [reloadSubmissionsMessage] S2TMessage reloadSubmissionsMessage
-                     * @property {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage|null} [reloadProblemsMessage] S2TMessage reloadProblemsMessage
                      */
     
                     /**
@@ -6918,25 +7045,17 @@
                      */
                     S2TMessage.prototype.reloadSubmissionsMessage = null;
     
-                    /**
-                     * S2TMessage reloadProblemsMessage.
-                     * @member {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage|null|undefined} reloadProblemsMessage
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                     * @instance
-                     */
-                    S2TMessage.prototype.reloadProblemsMessage = null;
-    
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
     
                     /**
                      * S2TMessage value.
-                     * @member {"reloadSubmissionMessage"|"reloadSubmissionsMessage"|"reloadProblemsMessage"|undefined} value
+                     * @member {"reloadSubmissionMessage"|"reloadSubmissionsMessage"|undefined} value
                      * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
                      * @instance
                      */
                     Object.defineProperty(S2TMessage.prototype, "value", {
-                        get: $util.oneOfGetter($oneOfFields = ["reloadSubmissionMessage", "reloadSubmissionsMessage", "reloadProblemsMessage"]),
+                        get: $util.oneOfGetter($oneOfFields = ["reloadSubmissionMessage", "reloadSubmissionsMessage"]),
                         set: $util.oneOfSetter($oneOfFields)
                     });
     
@@ -6968,8 +7087,6 @@
                             $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.encode(message.reloadSubmissionMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                         if (message.reloadSubmissionsMessage != null && message.hasOwnProperty("reloadSubmissionsMessage"))
                             $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.encode(message.reloadSubmissionsMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                        if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage"))
-                            $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.encode(message.reloadProblemsMessage, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                         return writer;
                     };
     
@@ -7009,9 +7126,6 @@
                                 break;
                             case 2:
                                 message.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.decode(reader, reader.uint32());
-                                break;
-                            case 3:
-                                message.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -7067,16 +7181,6 @@
                                     return "reloadSubmissionsMessage." + error;
                             }
                         }
-                        if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage")) {
-                            if (properties.value === 1)
-                                return "value: multiple values";
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.verify(message.reloadProblemsMessage);
-                                if (error)
-                                    return "reloadProblemsMessage." + error;
-                            }
-                        }
                         return null;
                     };
     
@@ -7101,11 +7205,6 @@
                             if (typeof object.reloadSubmissionsMessage !== "object")
                                 throw TypeError(".acmcsus.debugjudge.S2CMessage.S2TMessage.reloadSubmissionsMessage: object expected");
                             message.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.fromObject(object.reloadSubmissionsMessage);
-                        }
-                        if (object.reloadProblemsMessage != null) {
-                            if (typeof object.reloadProblemsMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.S2CMessage.S2TMessage.reloadProblemsMessage: object expected");
-                            message.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.fromObject(object.reloadProblemsMessage);
                         }
                         return message;
                     };
@@ -7132,11 +7231,6 @@
                             object.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.toObject(message.reloadSubmissionsMessage, options);
                             if (options.oneofs)
                                 object.value = "reloadSubmissionsMessage";
-                        }
-                        if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage")) {
-                            object.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.toObject(message.reloadProblemsMessage, options);
-                            if (options.oneofs)
-                                object.value = "reloadProblemsMessage";
                         }
                         return object;
                     };
@@ -7536,198 +7630,6 @@
                         return ReloadSubmissionsMessage;
                     })();
     
-                    S2TMessage.ReloadProblemsMessage = (function() {
-    
-                        /**
-                         * Properties of a ReloadProblemsMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                         * @interface IReloadProblemsMessage
-                         * @property {acmcsus.debugjudge.Problem.IList|null} [problems] ReloadProblemsMessage problems
-                         */
-    
-                        /**
-                         * Constructs a new ReloadProblemsMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                         * @classdesc Represents a ReloadProblemsMessage.
-                         * @implements IReloadProblemsMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage=} [properties] Properties to set
-                         */
-                        function ReloadProblemsMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * ReloadProblemsMessage problems.
-                         * @member {acmcsus.debugjudge.Problem.IList|null|undefined} problems
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @instance
-                         */
-                        ReloadProblemsMessage.prototype.problems = null;
-    
-                        /**
-                         * Creates a new ReloadProblemsMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage} ReloadProblemsMessage instance
-                         */
-                        ReloadProblemsMessage.create = function create(properties) {
-                            return new ReloadProblemsMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified ReloadProblemsMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage} message ReloadProblemsMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        ReloadProblemsMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.problems != null && message.hasOwnProperty("problems"))
-                                $root.acmcsus.debugjudge.Problem.List.encode(message.problems, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified ReloadProblemsMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage} message ReloadProblemsMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        ReloadProblemsMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a ReloadProblemsMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage} ReloadProblemsMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        ReloadProblemsMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    message.problems = $root.acmcsus.debugjudge.Problem.List.decode(reader, reader.uint32());
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a ReloadProblemsMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage} ReloadProblemsMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        ReloadProblemsMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a ReloadProblemsMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        ReloadProblemsMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.problems != null && message.hasOwnProperty("problems")) {
-                                var error = $root.acmcsus.debugjudge.Problem.List.verify(message.problems);
-                                if (error)
-                                    return "problems." + error;
-                            }
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a ReloadProblemsMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage} ReloadProblemsMessage
-                         */
-                        ReloadProblemsMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage();
-                            if (object.problems != null) {
-                                if (typeof object.problems !== "object")
-                                    throw TypeError(".acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.problems: object expected");
-                                message.problems = $root.acmcsus.debugjudge.Problem.List.fromObject(object.problems);
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from a ReloadProblemsMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage} message ReloadProblemsMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        ReloadProblemsMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.defaults)
-                                object.problems = null;
-                            if (message.problems != null && message.hasOwnProperty("problems"))
-                                object.problems = $root.acmcsus.debugjudge.Problem.List.toObject(message.problems, options);
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this ReloadProblemsMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        ReloadProblemsMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return ReloadProblemsMessage;
-                    })();
-    
                     return S2TMessage;
                 })();
     
@@ -7738,7 +7640,7 @@
                      * @memberof acmcsus.debugjudge.S2CMessage
                      * @interface IS2JMessage
                      * @property {acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage|null} [assignedSubmissionMessage] S2JMessage assignedSubmissionMessage
-                     * @property {acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage|null} [kickMessage] S2JMessage kickMessage
+                     * @property {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage|null} [judgingStatus] S2JMessage judgingStatus
                      */
     
                     /**
@@ -7765,24 +7667,24 @@
                     S2JMessage.prototype.assignedSubmissionMessage = null;
     
                     /**
-                     * S2JMessage kickMessage.
-                     * @member {acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage|null|undefined} kickMessage
+                     * S2JMessage judgingStatus.
+                     * @member {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage|null|undefined} judgingStatus
                      * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
                      * @instance
                      */
-                    S2JMessage.prototype.kickMessage = null;
+                    S2JMessage.prototype.judgingStatus = null;
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
     
                     /**
                      * S2JMessage value.
-                     * @member {"assignedSubmissionMessage"|"kickMessage"|undefined} value
+                     * @member {"assignedSubmissionMessage"|"judgingStatus"|undefined} value
                      * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
                      * @instance
                      */
                     Object.defineProperty(S2JMessage.prototype, "value", {
-                        get: $util.oneOfGetter($oneOfFields = ["assignedSubmissionMessage", "kickMessage"]),
+                        get: $util.oneOfGetter($oneOfFields = ["assignedSubmissionMessage", "judgingStatus"]),
                         set: $util.oneOfSetter($oneOfFields)
                     });
     
@@ -7812,8 +7714,8 @@
                             writer = $Writer.create();
                         if (message.assignedSubmissionMessage != null && message.hasOwnProperty("assignedSubmissionMessage"))
                             $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.encode(message.assignedSubmissionMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                        if (message.kickMessage != null && message.hasOwnProperty("kickMessage"))
-                            $root.acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.encode(message.kickMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus"))
+                            $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.encode(message.judgingStatus, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                         return writer;
                     };
     
@@ -7852,7 +7754,7 @@
                                 message.assignedSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.decode(reader, reader.uint32());
                                 break;
                             case 2:
-                                message.kickMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.decode(reader, reader.uint32());
+                                message.judgingStatus = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -7898,14 +7800,14 @@
                                     return "assignedSubmissionMessage." + error;
                             }
                         }
-                        if (message.kickMessage != null && message.hasOwnProperty("kickMessage")) {
+                        if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus")) {
                             if (properties.value === 1)
                                 return "value: multiple values";
                             properties.value = 1;
                             {
-                                var error = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.verify(message.kickMessage);
+                                var error = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.verify(message.judgingStatus);
                                 if (error)
-                                    return "kickMessage." + error;
+                                    return "judgingStatus." + error;
                             }
                         }
                         return null;
@@ -7928,10 +7830,10 @@
                                 throw TypeError(".acmcsus.debugjudge.S2CMessage.S2JMessage.assignedSubmissionMessage: object expected");
                             message.assignedSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.fromObject(object.assignedSubmissionMessage);
                         }
-                        if (object.kickMessage != null) {
-                            if (typeof object.kickMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.S2CMessage.S2JMessage.kickMessage: object expected");
-                            message.kickMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.fromObject(object.kickMessage);
+                        if (object.judgingStatus != null) {
+                            if (typeof object.judgingStatus !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2CMessage.S2JMessage.judgingStatus: object expected");
+                            message.judgingStatus = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.fromObject(object.judgingStatus);
                         }
                         return message;
                     };
@@ -7954,10 +7856,10 @@
                             if (options.oneofs)
                                 object.value = "assignedSubmissionMessage";
                         }
-                        if (message.kickMessage != null && message.hasOwnProperty("kickMessage")) {
-                            object.kickMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.toObject(message.kickMessage, options);
+                        if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus")) {
+                            object.judgingStatus = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.toObject(message.judgingStatus, options);
                             if (options.oneofs)
-                                object.value = "kickMessage";
+                                object.value = "judgingStatus";
                         }
                         return object;
                     };
@@ -8165,24 +8067,25 @@
                         return AssignedSubmissionMessage;
                     })();
     
-                    S2JMessage.KickMessage = (function() {
+                    S2JMessage.JudgingStatusMessage = (function() {
     
                         /**
-                         * Properties of a KickMessage.
+                         * Properties of a JudgingStatusMessage.
                          * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
-                         * @interface IKickMessage
-                         * @property {string|null} [message] KickMessage message
+                         * @interface IJudgingStatusMessage
+                         * @property {boolean|null} [judging] JudgingStatusMessage judging
+                         * @property {string|null} [message] JudgingStatusMessage message
                          */
     
                         /**
-                         * Constructs a new KickMessage.
+                         * Constructs a new JudgingStatusMessage.
                          * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
-                         * @classdesc Represents a KickMessage.
-                         * @implements IKickMessage
+                         * @classdesc Represents a JudgingStatusMessage.
+                         * @implements IJudgingStatusMessage
                          * @constructor
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage=} [properties] Properties to set
+                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage=} [properties] Properties to set
                          */
-                        function KickMessage(properties) {
+                        function JudgingStatusMessage(properties) {
                             if (properties)
                                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                     if (properties[keys[i]] != null)
@@ -8190,74 +8093,87 @@
                         }
     
                         /**
-                         * KickMessage message.
-                         * @member {string} message
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * JudgingStatusMessage judging.
+                         * @member {boolean} judging
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @instance
                          */
-                        KickMessage.prototype.message = "";
+                        JudgingStatusMessage.prototype.judging = false;
     
                         /**
-                         * Creates a new KickMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage} KickMessage instance
+                         * JudgingStatusMessage message.
+                         * @member {string} message
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
+                         * @instance
                          */
-                        KickMessage.create = function create(properties) {
-                            return new KickMessage(properties);
+                        JudgingStatusMessage.prototype.message = "";
+    
+                        /**
+                         * Creates a new JudgingStatusMessage instance using the specified properties.
+                         * @function create
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
+                         * @static
+                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage=} [properties] Properties to set
+                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} JudgingStatusMessage instance
+                         */
+                        JudgingStatusMessage.create = function create(properties) {
+                            return new JudgingStatusMessage(properties);
                         };
     
                         /**
-                         * Encodes the specified KickMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.verify|verify} messages.
+                         * Encodes the specified JudgingStatusMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.verify|verify} messages.
                          * @function encode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage} message KickMessage message or plain object to encode
+                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage} message JudgingStatusMessage message or plain object to encode
                          * @param {$protobuf.Writer} [writer] Writer to encode to
                          * @returns {$protobuf.Writer} Writer
                          */
-                        KickMessage.encode = function encode(message, writer) {
+                        JudgingStatusMessage.encode = function encode(message, writer) {
                             if (!writer)
                                 writer = $Writer.create();
+                            if (message.judging != null && message.hasOwnProperty("judging"))
+                                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.judging);
                             if (message.message != null && message.hasOwnProperty("message"))
-                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.message);
+                                writer.uint32(/* id 2, wireType 2 =*/18).string(message.message);
                             return writer;
                         };
     
                         /**
-                         * Encodes the specified KickMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.verify|verify} messages.
+                         * Encodes the specified JudgingStatusMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.verify|verify} messages.
                          * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage} message KickMessage message or plain object to encode
+                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage} message JudgingStatusMessage message or plain object to encode
                          * @param {$protobuf.Writer} [writer] Writer to encode to
                          * @returns {$protobuf.Writer} Writer
                          */
-                        KickMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        JudgingStatusMessage.encodeDelimited = function encodeDelimited(message, writer) {
                             return this.encode(message, writer).ldelim();
                         };
     
                         /**
-                         * Decodes a KickMessage message from the specified reader or buffer.
+                         * Decodes a JudgingStatusMessage message from the specified reader or buffer.
                          * @function decode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @static
                          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
                          * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage} KickMessage
+                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        KickMessage.decode = function decode(reader, length) {
+                        JudgingStatusMessage.decode = function decode(reader, length) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage();
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
                                 switch (tag >>> 3) {
                                 case 1:
+                                    message.judging = reader.bool();
+                                    break;
+                                case 2:
                                     message.message = reader.string();
                                     break;
                                 default:
@@ -8269,32 +8185,35 @@
                         };
     
                         /**
-                         * Decodes a KickMessage message from the specified reader or buffer, length delimited.
+                         * Decodes a JudgingStatusMessage message from the specified reader or buffer, length delimited.
                          * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @static
                          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage} KickMessage
+                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        KickMessage.decodeDelimited = function decodeDelimited(reader) {
+                        JudgingStatusMessage.decodeDelimited = function decodeDelimited(reader) {
                             if (!(reader instanceof $Reader))
                                 reader = new $Reader(reader);
                             return this.decode(reader, reader.uint32());
                         };
     
                         /**
-                         * Verifies a KickMessage message.
+                         * Verifies a JudgingStatusMessage message.
                          * @function verify
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @static
                          * @param {Object.<string,*>} message Plain object to verify
                          * @returns {string|null} `null` if valid, otherwise the reason why it is not
                          */
-                        KickMessage.verify = function verify(message) {
+                        JudgingStatusMessage.verify = function verify(message) {
                             if (typeof message !== "object" || message === null)
                                 return "object expected";
+                            if (message.judging != null && message.hasOwnProperty("judging"))
+                                if (typeof message.judging !== "boolean")
+                                    return "judging: boolean expected";
                             if (message.message != null && message.hasOwnProperty("message"))
                                 if (!$util.isString(message.message))
                                     return "message: string expected";
@@ -8302,54 +8221,60 @@
                         };
     
                         /**
-                         * Creates a KickMessage message from a plain object. Also converts values to their respective internal types.
+                         * Creates a JudgingStatusMessage message from a plain object. Also converts values to their respective internal types.
                          * @function fromObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @static
                          * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage} KickMessage
+                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
                          */
-                        KickMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage)
+                        JudgingStatusMessage.fromObject = function fromObject(object) {
+                            if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage)
                                 return object;
-                            var message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage();
+                            var message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage();
+                            if (object.judging != null)
+                                message.judging = Boolean(object.judging);
                             if (object.message != null)
                                 message.message = String(object.message);
                             return message;
                         };
     
                         /**
-                         * Creates a plain object from a KickMessage message. Also converts values to other types if specified.
+                         * Creates a plain object from a JudgingStatusMessage message. Also converts values to other types if specified.
                          * @function toObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage} message KickMessage
+                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} message JudgingStatusMessage
                          * @param {$protobuf.IConversionOptions} [options] Conversion options
                          * @returns {Object.<string,*>} Plain object
                          */
-                        KickMessage.toObject = function toObject(message, options) {
+                        JudgingStatusMessage.toObject = function toObject(message, options) {
                             if (!options)
                                 options = {};
                             var object = {};
-                            if (options.defaults)
+                            if (options.defaults) {
+                                object.judging = false;
                                 object.message = "";
+                            }
+                            if (message.judging != null && message.hasOwnProperty("judging"))
+                                object.judging = message.judging;
                             if (message.message != null && message.hasOwnProperty("message"))
                                 object.message = message.message;
                             return object;
                         };
     
                         /**
-                         * Converts this KickMessage to JSON.
+                         * Converts this JudgingStatusMessage to JSON.
                          * @function toJSON
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage
+                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
                          * @instance
                          * @returns {Object.<string,*>} JSON object
                          */
-                        KickMessage.prototype.toJSON = function toJSON() {
+                        JudgingStatusMessage.prototype.toJSON = function toJSON() {
                             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
                         };
     
-                        return KickMessage;
+                        return JudgingStatusMessage;
                     })();
     
                     return S2JMessage;

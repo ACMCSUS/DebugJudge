@@ -18,17 +18,23 @@ export interface ApiTeamService {
 }
 
 @Injectable()
-export class ApiTeamServiceImpl {
+export class ApiTeamServiceImpl implements ApiTeamService {
 
   submissions: BehaviorSubject<Submission[]>;
   problems: BehaviorSubject<Problem[]>;
-  private readonly problemsUrl = '/api/problems';
-  private readonly submissionsUrl = '/api/t/submissions';
 
   constructor(@Inject(HttpClient) private http: HttpClient,
               @Inject('ApiWebSocketService') private apiWs: ApiWebSocketService) {
     this.submissions = new BehaviorSubject<Submission[]>([]);
     this.problems = new BehaviorSubject<Problem[]>([]);
+
+    this.apiWs.s2cMessages.subscribe((s2c) => {
+      if (s2c.value == "reloadProblemsMessage") {
+        this.problems.next(
+            s2c.reloadProblemsMessage.problems.value.map(Problem.create));
+        console.log('problems: ', this.problems.getValue())
+      }
+    });
 
     this.apiWs.s2tMessages.subscribe((s2t) => {
       if (s2t.value == "reloadSubmissionMessage") {
@@ -47,7 +53,7 @@ export class ApiTeamServiceImpl {
         }
         console.log(found);
         if (!found) {
-          submissionList.push(newSub);
+          submissionList.unshift(newSub);
         }
 
         this.submissions.next(submissionList);
@@ -56,15 +62,7 @@ export class ApiTeamServiceImpl {
         this.submissions.next(
             s2t.reloadSubmissionsMessage.submissions.value.map(Submission.create));
       }
-      if (s2t.value == "reloadProblemsMessage") {
-        this.problems.next(
-            s2t.reloadProblemsMessage.problems.value.map(Problem.create));
-        console.log('problems: ', this.problems.getValue())
-      }
     });
-
-    // this.reloadSubmissions();
-    // this.reloadProblems();
   }
 
   submit(submission: Submission): void {

@@ -41,9 +41,9 @@ public class MessageStores {
       requireValid(m);
 
       Path storePath = getPath(m);
+      Files.createDirectories(storePath.getParent());
       Files.createFile(storePath);
 
-      Files.createDirectories(storePath.getParent());
       BufferedWriter writer = newBufferedWriter(storePath);
       TextFormat.print(m, writer);
       writer.close();
@@ -239,7 +239,7 @@ public class MessageStores {
 
       Profile.Builder builder = Profile.newBuilder();
       if (profile.getId() == 0) {
-        long id = 1;
+        int id = 1;
         while (Files.exists(profileDirectoryPath.resolve("prof" + id))) {
           id++;
         }

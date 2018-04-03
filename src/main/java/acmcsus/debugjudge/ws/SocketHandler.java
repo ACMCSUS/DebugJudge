@@ -34,7 +34,7 @@ public class SocketHandler {
 
   private static Logger logger = LoggerFactory.getLogger(SocketHandler.class);
 
-  private static Map<Long, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
+  private static Map<Integer, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
   private static Map<Session, Profile> sessionProfileMap = new ConcurrentHashMap<>();
   private static Map<String, Profile> nonceProfileMap = new ConcurrentHashMap<>();
   private static Map<Session, Set<Disposable>> sessionObserversMap = new ConcurrentHashMap<>();
@@ -61,7 +61,7 @@ public class SocketHandler {
     Profile profile = sessionProfileMap.remove(user);
     if (profile != null) {
       if (profile.getProfileType() == Profile.ProfileType.JUDGE) {
-        JudgeQueueHandler.getInstance().disconnected(profile);
+        JudgeQueueHandler.getInstance().disconnected(profile, user);
       }
 
       profileSessionMap.get(profile.getId()).remove(user);
@@ -144,7 +144,7 @@ public class SocketHandler {
     sendMessage(profile.getId(), S2CMessage.newBuilder().setS2TMessage(msg).build());
   }
 
-  public static void sendMessage(Long profileId, S2TMessage msg) {
+  public static void sendMessage(Integer profileId, S2TMessage msg) {
     sendMessage(profileId, S2CMessage.newBuilder().setS2TMessage(msg).build());
   }
 
@@ -152,7 +152,7 @@ public class SocketHandler {
     sendMessage(profile.getId(), S2CMessage.newBuilder().setS2JMessage(msg).build());
   }
 
-  public static void sendMessage(Long profileId, S2JMessage msg) {
+  public static void sendMessage(Integer profileId, S2JMessage msg) {
     sendMessage(profileId, S2CMessage.newBuilder().setS2JMessage(msg).build());
   }
 
@@ -160,7 +160,7 @@ public class SocketHandler {
     sendMessage(profile.getId(), msg);
   }
 
-  public static void sendMessage(Long profileId, S2CMessage msg) {
+  public static void sendMessage(Integer profileId, S2CMessage msg) {
     for (Session session : profileSessionMap.get(profileId)) {
       try {
         sendMessage(session, msg);
@@ -230,6 +230,10 @@ public class SocketHandler {
         switch (ctx.profile.getProfileType()) {
           case TEAM: {
             TeamSocketHandler.subscribeNewTeam(ctx.session, ctx.profile);
+            break;
+          }
+          case JUDGE: {
+            JudgeSocketHandler.subscribeNewJudge(ctx.session, ctx.profile);
             break;
           }
         }

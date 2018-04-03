@@ -26,16 +26,16 @@ export namespace acmcsus {
         interface ISubmission {
 
             /** Submission problemId */
-            problemId?: (number|Long|null);
+            problemId?: (number|null);
 
             /** Submission teamId */
-            teamId?: (number|Long|null);
+            teamId?: (number|null);
 
             /** Submission submissionTimeSeconds */
             submissionTimeSeconds?: (number|Long|null);
 
             /** Submission judgeId */
-            judgeId?: (number|Long|null);
+            judgeId?: (number|null);
 
             /** Submission judgement */
             judgement?: (acmcsus.debugjudge.SubmissionJudgement|null);
@@ -57,16 +57,16 @@ export namespace acmcsus {
             constructor(properties?: acmcsus.debugjudge.ISubmission);
 
             /** Submission problemId. */
-            public problemId: (number|Long);
+            public problemId: number;
 
             /** Submission teamId. */
-            public teamId: (number|Long);
+            public teamId: number;
 
             /** Submission submissionTimeSeconds. */
             public submissionTimeSeconds: (number|Long);
 
             /** Submission judgeId. */
-            public judgeId: (number|Long);
+            public judgeId: number;
 
             /** Submission judgement. */
             public judgement: acmcsus.debugjudge.SubmissionJudgement;
@@ -338,7 +338,7 @@ export namespace acmcsus {
         interface IProfile {
 
             /** Profile id */
-            id?: (number|Long|null);
+            id?: (number|null);
 
             /** Profile name */
             name?: (string|null);
@@ -357,7 +357,7 @@ export namespace acmcsus {
             constructor(properties?: acmcsus.debugjudge.IProfile);
 
             /** Profile id. */
-            public id: (number|Long);
+            public id: number;
 
             /** Profile name. */
             public name: string;
@@ -540,7 +540,7 @@ export namespace acmcsus {
         interface IProblem {
 
             /** Problem id */
-            id?: (number|Long|null);
+            id?: (number|null);
 
             /** Problem title */
             title?: (string|null);
@@ -571,7 +571,7 @@ export namespace acmcsus {
             constructor(properties?: acmcsus.debugjudge.IProblem);
 
             /** Problem id. */
-            public id: (number|Long);
+            public id: number;
 
             /** Problem title. */
             public title: string;
@@ -1774,10 +1774,10 @@ export namespace acmcsus {
                 interface ISubmissionJudgementMessage {
 
                     /** SubmissionJudgementMessage teamId */
-                    teamId?: (number|Long|null);
+                    teamId?: (number|null);
 
                     /** SubmissionJudgementMessage problemId */
-                    problemId?: (number|Long|null);
+                    problemId?: (number|null);
 
                     /** SubmissionJudgementMessage submissionId */
                     submissionId?: (number|Long|null);
@@ -1796,10 +1796,10 @@ export namespace acmcsus {
                     constructor(properties?: acmcsus.debugjudge.C2SMessage.J2SMessage.ISubmissionJudgementMessage);
 
                     /** SubmissionJudgementMessage teamId. */
-                    public teamId: (number|Long);
+                    public teamId: number;
 
                     /** SubmissionJudgementMessage problemId. */
-                    public problemId: (number|Long);
+                    public problemId: number;
 
                     /** SubmissionJudgementMessage submissionId. */
                     public submissionId: (number|Long);
@@ -2092,6 +2092,9 @@ export namespace acmcsus {
 
             /** S2CMessage scoreboardUpdateMessage */
             scoreboardUpdateMessage?: (acmcsus.debugjudge.S2CMessage.IScoreboardUpdateMessage|null);
+
+            /** S2CMessage reloadProblemsMessage */
+            reloadProblemsMessage?: (acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null);
         }
 
         /** Represents a S2CMessage. */
@@ -2127,8 +2130,11 @@ export namespace acmcsus {
             /** S2CMessage scoreboardUpdateMessage. */
             public scoreboardUpdateMessage?: (acmcsus.debugjudge.S2CMessage.IScoreboardUpdateMessage|null);
 
+            /** S2CMessage reloadProblemsMessage. */
+            public reloadProblemsMessage?: (acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null);
+
             /** S2CMessage value. */
-            public value?: ("s2tMessage"|"s2jMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage");
+            public value?: ("s2tMessage"|"s2jMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|"reloadProblemsMessage");
 
             /**
              * Creates a new S2CMessage instance using the specified properties.
@@ -2776,6 +2782,96 @@ export namespace acmcsus {
                 public toJSON(): { [k: string]: any };
             }
 
+            /** Properties of a ReloadProblemsMessage. */
+            interface IReloadProblemsMessage {
+
+                /** ReloadProblemsMessage problems */
+                problems?: (acmcsus.debugjudge.Problem.IList|null);
+            }
+
+            /** Represents a ReloadProblemsMessage. */
+            class ReloadProblemsMessage implements IReloadProblemsMessage {
+
+                /**
+                 * Constructs a new ReloadProblemsMessage.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage);
+
+                /** ReloadProblemsMessage problems. */
+                public problems?: (acmcsus.debugjudge.Problem.IList|null);
+
+                /**
+                 * Creates a new ReloadProblemsMessage instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns ReloadProblemsMessage instance
+                 */
+                public static create(properties?: acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage): acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage;
+
+                /**
+                 * Encodes the specified ReloadProblemsMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.verify|verify} messages.
+                 * @param message ReloadProblemsMessage message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified ReloadProblemsMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.verify|verify} messages.
+                 * @param message ReloadProblemsMessage message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a ReloadProblemsMessage message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns ReloadProblemsMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage;
+
+                /**
+                 * Decodes a ReloadProblemsMessage message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns ReloadProblemsMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage;
+
+                /**
+                 * Verifies a ReloadProblemsMessage message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a ReloadProblemsMessage message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns ReloadProblemsMessage
+                 */
+                public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage;
+
+                /**
+                 * Creates a plain object from a ReloadProblemsMessage message. Also converts values to other types if specified.
+                 * @param message ReloadProblemsMessage
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this ReloadProblemsMessage to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+            }
+
             /** Properties of a S2TMessage. */
             interface IS2TMessage {
 
@@ -2784,9 +2880,6 @@ export namespace acmcsus {
 
                 /** S2TMessage reloadSubmissionsMessage */
                 reloadSubmissionsMessage?: (acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage|null);
-
-                /** S2TMessage reloadProblemsMessage */
-                reloadProblemsMessage?: (acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage|null);
             }
 
             /** Represents a S2TMessage. */
@@ -2804,11 +2897,8 @@ export namespace acmcsus {
                 /** S2TMessage reloadSubmissionsMessage. */
                 public reloadSubmissionsMessage?: (acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage|null);
 
-                /** S2TMessage reloadProblemsMessage. */
-                public reloadProblemsMessage?: (acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage|null);
-
                 /** S2TMessage value. */
-                public value?: ("reloadSubmissionMessage"|"reloadSubmissionsMessage"|"reloadProblemsMessage");
+                public value?: ("reloadSubmissionMessage"|"reloadSubmissionsMessage");
 
                 /**
                  * Creates a new S2TMessage instance using the specified properties.
@@ -3062,96 +3152,6 @@ export namespace acmcsus {
                      */
                     public toJSON(): { [k: string]: any };
                 }
-
-                /** Properties of a ReloadProblemsMessage. */
-                interface IReloadProblemsMessage {
-
-                    /** ReloadProblemsMessage problems */
-                    problems?: (acmcsus.debugjudge.Problem.IList|null);
-                }
-
-                /** Represents a ReloadProblemsMessage. */
-                class ReloadProblemsMessage implements IReloadProblemsMessage {
-
-                    /**
-                     * Constructs a new ReloadProblemsMessage.
-                     * @param [properties] Properties to set
-                     */
-                    constructor(properties?: acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage);
-
-                    /** ReloadProblemsMessage problems. */
-                    public problems?: (acmcsus.debugjudge.Problem.IList|null);
-
-                    /**
-                     * Creates a new ReloadProblemsMessage instance using the specified properties.
-                     * @param [properties] Properties to set
-                     * @returns ReloadProblemsMessage instance
-                     */
-                    public static create(properties?: acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage): acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage;
-
-                    /**
-                     * Encodes the specified ReloadProblemsMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.verify|verify} messages.
-                     * @param message ReloadProblemsMessage message or plain object to encode
-                     * @param [writer] Writer to encode to
-                     * @returns Writer
-                     */
-                    public static encode(message: acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                    /**
-                     * Encodes the specified ReloadProblemsMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage.verify|verify} messages.
-                     * @param message ReloadProblemsMessage message or plain object to encode
-                     * @param [writer] Writer to encode to
-                     * @returns Writer
-                     */
-                    public static encodeDelimited(message: acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadProblemsMessage, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                    /**
-                     * Decodes a ReloadProblemsMessage message from the specified reader or buffer.
-                     * @param reader Reader or buffer to decode from
-                     * @param [length] Message length if known beforehand
-                     * @returns ReloadProblemsMessage
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage;
-
-                    /**
-                     * Decodes a ReloadProblemsMessage message from the specified reader or buffer, length delimited.
-                     * @param reader Reader or buffer to decode from
-                     * @returns ReloadProblemsMessage
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage;
-
-                    /**
-                     * Verifies a ReloadProblemsMessage message.
-                     * @param message Plain object to verify
-                     * @returns `null` if valid, otherwise the reason why it is not
-                     */
-                    public static verify(message: { [k: string]: any }): (string|null);
-
-                    /**
-                     * Creates a ReloadProblemsMessage message from a plain object. Also converts values to their respective internal types.
-                     * @param object Plain object
-                     * @returns ReloadProblemsMessage
-                     */
-                    public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage;
-
-                    /**
-                     * Creates a plain object from a ReloadProblemsMessage message. Also converts values to other types if specified.
-                     * @param message ReloadProblemsMessage
-                     * @param [options] Conversion options
-                     * @returns Plain object
-                     */
-                    public static toObject(message: acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadProblemsMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                    /**
-                     * Converts this ReloadProblemsMessage to JSON.
-                     * @returns JSON object
-                     */
-                    public toJSON(): { [k: string]: any };
-                }
             }
 
             /** Properties of a S2JMessage. */
@@ -3160,8 +3160,8 @@ export namespace acmcsus {
                 /** S2JMessage assignedSubmissionMessage */
                 assignedSubmissionMessage?: (acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage|null);
 
-                /** S2JMessage kickMessage */
-                kickMessage?: (acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage|null);
+                /** S2JMessage judgingStatus */
+                judgingStatus?: (acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage|null);
             }
 
             /** Represents a S2JMessage. */
@@ -3176,11 +3176,11 @@ export namespace acmcsus {
                 /** S2JMessage assignedSubmissionMessage. */
                 public assignedSubmissionMessage?: (acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage|null);
 
-                /** S2JMessage kickMessage. */
-                public kickMessage?: (acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage|null);
+                /** S2JMessage judgingStatus. */
+                public judgingStatus?: (acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage|null);
 
                 /** S2JMessage value. */
-                public value?: ("assignedSubmissionMessage"|"kickMessage");
+                public value?: ("assignedSubmissionMessage"|"judgingStatus");
 
                 /**
                  * Creates a new S2JMessage instance using the specified properties.
@@ -3345,91 +3345,97 @@ export namespace acmcsus {
                     public toJSON(): { [k: string]: any };
                 }
 
-                /** Properties of a KickMessage. */
-                interface IKickMessage {
+                /** Properties of a JudgingStatusMessage. */
+                interface IJudgingStatusMessage {
 
-                    /** KickMessage message */
+                    /** JudgingStatusMessage judging */
+                    judging?: (boolean|null);
+
+                    /** JudgingStatusMessage message */
                     message?: (string|null);
                 }
 
-                /** Represents a KickMessage. */
-                class KickMessage implements IKickMessage {
+                /** Represents a JudgingStatusMessage. */
+                class JudgingStatusMessage implements IJudgingStatusMessage {
 
                     /**
-                     * Constructs a new KickMessage.
+                     * Constructs a new JudgingStatusMessage.
                      * @param [properties] Properties to set
                      */
-                    constructor(properties?: acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage);
+                    constructor(properties?: acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage);
 
-                    /** KickMessage message. */
+                    /** JudgingStatusMessage judging. */
+                    public judging: boolean;
+
+                    /** JudgingStatusMessage message. */
                     public message: string;
 
                     /**
-                     * Creates a new KickMessage instance using the specified properties.
+                     * Creates a new JudgingStatusMessage instance using the specified properties.
                      * @param [properties] Properties to set
-                     * @returns KickMessage instance
+                     * @returns JudgingStatusMessage instance
                      */
-                    public static create(properties?: acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage): acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage;
+                    public static create(properties?: acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage): acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
 
                     /**
-                     * Encodes the specified KickMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.verify|verify} messages.
-                     * @param message KickMessage message or plain object to encode
+                     * Encodes the specified JudgingStatusMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.verify|verify} messages.
+                     * @param message JudgingStatusMessage message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encode(message: acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encode(message: acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Encodes the specified KickMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage.verify|verify} messages.
-                     * @param message KickMessage message or plain object to encode
+                     * Encodes the specified JudgingStatusMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.verify|verify} messages.
+                     * @param message JudgingStatusMessage message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encodeDelimited(message: acmcsus.debugjudge.S2CMessage.S2JMessage.IKickMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Decodes a KickMessage message from the specified reader or buffer.
+                     * Decodes a JudgingStatusMessage message from the specified reader or buffer.
                      * @param reader Reader or buffer to decode from
                      * @param [length] Message length if known beforehand
-                     * @returns KickMessage
+                     * @returns JudgingStatusMessage
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
 
                     /**
-                     * Decodes a KickMessage message from the specified reader or buffer, length delimited.
+                     * Decodes a JudgingStatusMessage message from the specified reader or buffer, length delimited.
                      * @param reader Reader or buffer to decode from
-                     * @returns KickMessage
+                     * @returns JudgingStatusMessage
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
 
                     /**
-                     * Verifies a KickMessage message.
+                     * Verifies a JudgingStatusMessage message.
                      * @param message Plain object to verify
                      * @returns `null` if valid, otherwise the reason why it is not
                      */
                     public static verify(message: { [k: string]: any }): (string|null);
 
                     /**
-                     * Creates a KickMessage message from a plain object. Also converts values to their respective internal types.
+                     * Creates a JudgingStatusMessage message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
-                     * @returns KickMessage
+                     * @returns JudgingStatusMessage
                      */
-                    public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage;
+                    public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
 
                     /**
-                     * Creates a plain object from a KickMessage message. Also converts values to other types if specified.
-                     * @param message KickMessage
+                     * Creates a plain object from a JudgingStatusMessage message. Also converts values to other types if specified.
+                     * @param message JudgingStatusMessage
                      * @param [options] Conversion options
                      * @returns Plain object
                      */
-                    public static toObject(message: acmcsus.debugjudge.S2CMessage.S2JMessage.KickMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static toObject(message: acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                     /**
-                     * Converts this KickMessage to JSON.
+                     * Converts this JudgingStatusMessage to JSON.
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };

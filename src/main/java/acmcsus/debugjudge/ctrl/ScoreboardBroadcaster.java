@@ -3,16 +3,12 @@ package acmcsus.debugjudge.ctrl;
 import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.ws.*;
-import io.reactivex.Observable;
 
 import java.time.*;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.stream.*;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
-import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
-import static java.util.stream.Collectors.toCollection;
+import static acmcsus.debugjudge.ctrl.MessageStores.*;
 import static java.util.stream.Collectors.toList;
 
 public class ScoreboardBroadcaster {
@@ -20,7 +16,7 @@ public class ScoreboardBroadcaster {
   private static class TeamBarebones {
 
     public String name;
-    public Long id;
+    public Integer id;
     public Score score;
     public int place;
 
@@ -48,36 +44,47 @@ public class ScoreboardBroadcaster {
           .filter(p -> p.getProfileType() == Profile.ProfileType.TEAM)
           .collect(toList());
 
-      Map<Long, Score> teamScores = new HashMap<>();
-      Map<Long, Map<Long, Integer>> teamProblemSubmissionCount = new HashMap<>();
-      Map<Long, Map<Long, Boolean>> teamProblemAcceptance = new HashMap<>();
+      Collection<Problem> problems = PROBLEM_STORE.readAll();
+
+      Map<Integer, Score> teamScores = new HashMap<>();
+      Map<Integer, Map<Integer, Integer>> teamProblemSubmissionCount = new HashMap<>();
+      Map<Integer, Map<Integer, Boolean>> teamProblemAcceptance = new HashMap<>();
+
+      Map<Integer, Integer> defProbSubmissionCount = new HashMap<>();
+      Map<Integer, Boolean> defProbAcceptance = new HashMap<>();
+
+      for (Problem prob : problems) {
+        defProbSubmissionCount.put(prob.getId(), 0);
+        defProbAcceptance.put(prob.getId(), false);
+      }
 
       for (Profile team : teams) {
-        teamProblemSubmissionCount.put(team.getId(), new HashMap<>());
+        teamProblemSubmissionCount.put(team.getId(), new HashMap<>(defProbSubmissionCount));
+        teamProblemAcceptance.put(team.getId(), new HashMap<>(defProbAcceptance));
         teamScores.put(team.getId(), new Score());
       }
 
       List<Submission> submissions = SUBMISSION_STORE.readAll();
 
       for (Submission submission : submissions) {
-
-        if (submission.getTeamId() == 0) {
+        if (submission.getTeamId() == 0 ||
+            !defProbAcceptance.containsKey(submission.getProblemId())) {
           continue;
         }
 
         Score score = teamScores.get(submission.getTeamId());
 
-        Map<Long, Integer> problemCounts = teamProblemSubmissionCount.get(submission.getTeamId());
+        Map<Integer, Integer> problemCounts = teamProblemSubmissionCount.get(submission.getTeamId());
         problemCounts.put(
             submission.getProblemId(),
-            problemCounts.getOrDefault(submission.getProblemId(), 0) + 1);
+            problemCounts.get(submission.getProblemId()) + 1);
 
         if (submission.getJudgement() == SubmissionJudgement.JUDGEMENT_SUCCESS) {
           if (!teamProblemAcceptance.containsKey(submission.getTeamId())) {
             teamProblemAcceptance.put(submission.getTeamId(), new HashMap<>());
           }
 
-          Map<Long, Boolean> problemAcceptances = teamProblemAcceptance.get(submission.getTeamId());
+          Map<Integer, Boolean> problemAcceptances = teamProblemAcceptance.get(submission.getTeamId());
           Boolean prev = problemAcceptances.put(submission.getProblemId(), true);
 
           if (prev == null || !prev) {

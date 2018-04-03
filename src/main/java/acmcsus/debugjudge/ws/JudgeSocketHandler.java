@@ -2,13 +2,19 @@ package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.ctrl.*;
 import acmcsus.debugjudge.model.*;
+import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.WebSocket.*;
+import io.reactivex.functions.*;
+import org.eclipse.jetty.websocket.api.*;
 import org.slf4j.*;
 
+import java.io.*;
 import java.util.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.ws.SocketHandler.addObserver;
+import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 import static java.lang.String.format;
 import static spark.Spark.halt;
 
@@ -32,12 +38,12 @@ public class JudgeSocketHandler {
         break;
       }
       case STOPJUDGINGMESSAGE: {
-        judgeQueueHandler.disconnected(ctx.profile);
+        judgeQueueHandler.disconnected(ctx.profile, ctx.session);
         break;
       }
       case SUBMISSIONJUDGEMENTMESSAGE: {
-        Long tid = j2SMessage.getSubmissionJudgementMessage().getTeamId();
-        Long pid = j2SMessage.getSubmissionJudgementMessage().getProblemId();
+        Integer tid = j2SMessage.getSubmissionJudgementMessage().getTeamId();
+        Integer pid = j2SMessage.getSubmissionJudgementMessage().getProblemId();
         Long sid = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
 
         SubmissionJudgement ruling = j2SMessage.getSubmissionJudgementMessage().getRuling();
@@ -77,7 +83,7 @@ public class JudgeSocketHandler {
         break;
       }
       case JUDGINGPREFERENCESMESSAGE: {
-        Map<Long, Boolean> map = ctx.req.getJ2SMessage()
+        Map<Integer, Boolean> map = ctx.req.getJ2SMessage()
           .getJudgingPreferencesMessage()
           .getPreferencesMap();
 
@@ -90,4 +96,20 @@ public class JudgeSocketHandler {
     }
   }
 
+  public static void subscribeNewJudge(Session session, Profile profile) throws IOException {
+    Consumer<List<Problem>> problemReloader =
+        (problems) -> SocketHandler.sendMessage(session, S2CMessage.newBuilder()
+            .setReloadProblemsMessage(S2CMessage.ReloadProblemsMessage.newBuilder()
+                .setProblems(Problem.List.newBuilder().addAllValue(problems))).build());
+
+    Scoreboard lastScoreboard = ScoreboardBroadcaster.getLastScoreboard();
+    if (lastScoreboard != null) {
+      sendMessage(session, WebSocket.S2CMessage.newBuilder()
+          .setScoreboardUpdateMessage(S2CMessage.ScoreboardUpdateMessage.newBuilder()
+              .setScoreboard(lastScoreboard))
+          .build());
+    }
+
+    addObserver(session, StateService.instance.addJudgeProblemsListener(problemReloader));
+  }
 }

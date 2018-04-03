@@ -68,11 +68,15 @@ public class StateService {
     return submissionRulingSubject.subscribe(submissionObserver);
   }
 
+  public Disposable addJudgeProblemsListener(Consumer<List<Problem>> problemReloader) {
+    return judgeProblemListSubject.subscribe(problemReloader);
+  }
+
   public Disposable addTeamProblemsListener(Consumer<List<Problem>> problemReloader) {
     return teamProblemListSubject.subscribe(problemReloader);
   }
 
-  public void submissionCreate(long teamId, long problemId, Submission submission) {
+  public void submissionCreate(int teamId, int problemId, Submission submission) {
     Submission.Builder builder = Submission.newBuilder();
     builder.setTeamId(teamId);
     builder.setProblemId(problemId);
@@ -95,6 +99,7 @@ public class StateService {
     }
     catch (IOException e) {
       logger.error("could not save new submission", e);
+      throw halt(500);
     }
 
     List<Submission> oldSubmissionList = submissionListSubject.getValue();
@@ -108,11 +113,12 @@ public class StateService {
 
   }
 
-  public void submissionRuling(Submission submission, long judgeId, SubmissionJudgement judgement,
+  public void submissionRuling(Submission submission, int judgeId, SubmissionJudgement judgement,
                                String message) {
     Submission.Builder builder = Submission.newBuilder(submission);
     builder.setJudgeId(judgeId);
     builder.setJudgement(judgement);
     builder.setJudgementMessage(message);
+    submissionRulingSubject.onNext(builder.build());
   }
 }

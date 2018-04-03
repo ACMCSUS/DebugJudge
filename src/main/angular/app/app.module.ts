@@ -22,6 +22,7 @@ import {AceEditorModule} from "ng2-ace-editor";
 import {SubmissionsBarComponent} from "./submission-bar.component";
 import {SubmissionsViewComponent} from "./view-submissions.component";
 import {ApiAdminServiceImpl} from "./api-admin.service";
+import {ApiJudgeServiceImpl} from "./api-judge.service";
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import {ApiAdminServiceImpl} from "./api-admin.service";
   ],
   providers: [
     {provide: 'ApiAdminService', useClass: ApiAdminServiceImpl},
+    {provide: 'ApiJudgeService', useClass: ApiJudgeServiceImpl},
     {provide: 'ApiTeamService', useClass: ApiTeamServiceImpl},
     {provide: 'ApiWebSocketService', useClass: ApiWebSocketServiceImpl},
   ],

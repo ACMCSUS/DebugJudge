@@ -17,6 +17,8 @@ export interface ApiWebSocketService {
   webSocket: Observable<S2CMessage>;
 
   competitionState: Observable<acmcsus.debugjudge.CompetitionState>;
+  loggedInStatus: Observable<boolean>;
+
   s2cMessages: Observable<S2CMessage>;
   s2tMessages: Observable<S2TMessage>;
   s2jMessages: Observable<S2JMessage>;
@@ -34,27 +36,19 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
   webSocket: WebSocketSubject<S2CMessage>;
 
   competitionState: BehaviorSubject<acmcsus.debugjudge.CompetitionState>;
+  loggedInStatus: BehaviorSubject<boolean>;
 
-  s2cMessages: Observable<S2CMessage>;
-  s2tMessages: Observable<S2TMessage>;
-  s2jMessages: Observable<S2JMessage>;
-
-  private loggedInStatus: BehaviorSubject<boolean>;
-  private s2cSubject: ReplaySubject<S2CMessage>;
-  private s2tSubject: ReplaySubject<S2TMessage>;
-  private s2jSubject: ReplaySubject<S2JMessage>;
+  s2cMessages: ReplaySubject<S2CMessage>;
+  s2tMessages: ReplaySubject<S2TMessage>;
+  s2jMessages: ReplaySubject<S2JMessage>;
 
   constructor(private httpClient: HttpClient) {
-    this.s2cSubject = new ReplaySubject<S2CMessage>(16);
-    this.s2tSubject = new ReplaySubject<S2TMessage>(16);
-    this.s2jSubject = new ReplaySubject<S2JMessage>(16);
+    this.s2cMessages = new ReplaySubject<S2CMessage>(16);
+    this.s2tMessages = new ReplaySubject<S2TMessage>(16);
+    this.s2jMessages = new ReplaySubject<S2JMessage>(16);
 
     this.competitionState = new BehaviorSubject(acmcsus.debugjudge.CompetitionState.WAITING);
     this.loggedInStatus = new BehaviorSubject(false);
-
-    this.s2cMessages = this.s2cSubject;//.asObservable();
-    this.s2tMessages = this.s2tSubject;//.asObservable();
-    this.s2jMessages = this.s2jSubject;//.asObservable();
 
     // noinspection JSUnusedGlobalSymbols
     this.webSocket = new WebSocketSubject<S2CMessage>({
@@ -126,11 +120,11 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
           break;
         }
         case 's2tMessage': {
-          this.s2tSubject.next(S2TMessage.create(msg.s2tMessage));
+          this.s2tMessages.next(S2TMessage.create(msg.s2tMessage));
           break;
         }
         case 's2jMessage': {
-          this.s2jSubject.next(S2JMessage.create(msg.s2jMessage));
+          this.s2jMessages.next(S2JMessage.create(msg.s2jMessage));
           break;
         }
         default: {
@@ -138,10 +132,11 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
             "Either this message is not supported in frontend or someone forgot a 'break'.");
         }
         // We know someone else takes care of these:
-        case 'scoreboardUpdateMessage':
+        case 'scoreboardUpdateMessage': break;
+        case 'reloadProblemsMessage': break;
       }
 
-      this.s2cSubject.next(msg);
+      this.s2cMessages.next(msg);
     });
     //
     // this.getProfile().then((profile) => this.profile.next(profile));

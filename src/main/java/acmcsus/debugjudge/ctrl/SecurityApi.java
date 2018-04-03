@@ -10,6 +10,7 @@ import java.util.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
 import static acmcsus.debugjudge.ctrl.MessageStores.getLoginSecret;
+import static java.lang.Integer.parseInt;
 import static java.util.Objects.requireNonNull;
 import static spark.Spark.halt;
 
@@ -57,8 +58,8 @@ public class SecurityApi {
       password = map.get("password");
     }
 
-    public Long getId() {
-      return Long.parseLong(username.substring(username.indexOf("_") + 1));
+    public Integer getId() {
+      return parseInt(username.substring(username.indexOf("_") + 1));
     }
   }
 
@@ -95,7 +96,7 @@ public class SecurityApi {
   }
 
   public static Profile getProfile(Request req) {
-    Long id = req.session().attribute("profile");
+    Integer id = req.session().attribute("profile");
     if (id == null) {
       return null;
     }

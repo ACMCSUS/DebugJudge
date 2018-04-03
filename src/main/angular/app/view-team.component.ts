@@ -37,7 +37,9 @@ import Problem = acmcsus.debugjudge.Problem;
         </mat-card>
         <!-- TODO: Refactor this to its own component problemcard.component.ts -->
         <div id="right" *ngIf="problems && problems.length">
-          <app-problem-debug [problem]="problems[problemIdx]"></app-problem-debug>
+          <app-problem-debug *ngFor="let problem of problems"
+                             [hidden]="problem.id!==problems[problemIdx].id"
+                             [problem]="problem"></app-problem-debug>
         </div>
         <mat-card id="right" *ngIf="!(problems && problems.length)">
           <mat-card-title>{{statusMessage}}</mat-card-title>

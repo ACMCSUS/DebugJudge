@@ -7,7 +7,6 @@ import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2TMessage.*;
 import io.reactivex.functions.*;
-import org.eclipse.jetty.websocket.api.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.*;
 import spark.*;
@@ -16,9 +15,7 @@ import java.io.*;
 import java.util.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
-import static acmcsus.debugjudge.ws.SocketHandler.addObserver;
-import static acmcsus.debugjudge.ws.SocketHandler.alert;
-import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
+import static acmcsus.debugjudge.ws.SocketHandler.*;
 
 public class TeamSocketHandler {
 
@@ -61,15 +58,17 @@ public class TeamSocketHandler {
         };
 
     Consumer<List<Problem>> problemReloader =
-        (problems) -> SocketHandler.sendMessage(session, S2TMessage.newBuilder()
+        (problems) -> SocketHandler.sendMessage(session, WebSocket.S2CMessage.newBuilder()
             .setReloadProblemsMessage(ReloadProblemsMessage.newBuilder()
                 .setProblems(Problem.List.newBuilder().addAllValue(problems))).build());
 
     Predicate<Submission> isTeamsSubmission = (sub) -> sub.getTeamId() == teamId;
 
-    sendMessage(session, S2TMessage.newBuilder().setReloadSubmissionsMessage(ReloadSubmissionsMessage.newBuilder().setSubmissions(Submission.List.newBuilder()
-        .addAllValue(SUBMISSION_STORE.readAll(SUBMISSION_STORE.getPathsForTeam(teamId)))
-        .build())).build());
+    sendMessage(session, S2TMessage.newBuilder()
+        .setReloadSubmissionsMessage(ReloadSubmissionsMessage.newBuilder()
+            .setSubmissions(Submission.List.newBuilder()
+                .addAllValue(SUBMISSION_STORE.readAll(SUBMISSION_STORE.getPathsForTeam(teamId)))))
+        .build());
 
     Scoreboard lastScoreboard = ScoreboardBroadcaster.getLastScoreboard();
     if (lastScoreboard != null) {
