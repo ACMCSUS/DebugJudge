@@ -9,6 +9,8 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
+import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.proto.Competition.SubmissionJudgement.JUDGEMENT_UNKNOWN;
 import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 import static java.lang.String.format;
 
@@ -20,10 +22,11 @@ public class JudgeQueueHandler {
   private static Logger logger = LoggerFactory.getLogger(JudgeQueueHandler.class);
 
   private JudgeQueueHandler() {
-    // TODO: Uhh this is gonna be tricky
-//    Submission.find.query().where()
-//      .isNull("accepted")
-//      .findEach(waitingSubmissions::add);
+    SUBMISSION_STORE.streamAll()
+        .filter(s -> s.getJudgement() == JUDGEMENT_UNKNOWN)
+        .sorted(Comparator.comparing(Submission::getSubmissionTimeSeconds))
+        .forEach(waitingSubmissions::add);
+
     StateService.instance.addSubmissionCreateListener(this::submitted);
     StateService.instance.addSubmissionRulingListener(this::judged);
   }
@@ -81,6 +84,7 @@ public class JudgeQueueHandler {
     if (judgeSessionMap.containsKey(judge.getId())) {
       kick(judge, "You've started judging somewhere else!");
     }
+    System.out.println(waitingSubmissions);
 
     JudgeSession judgeSession = new JudgeSession(judge, session);
     if (session.isOpen()) {

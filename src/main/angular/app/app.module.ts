@@ -23,6 +23,7 @@ import {SubmissionsBarComponent} from "./submission-bar.component";
 import {SubmissionsViewComponent} from "./view-submissions.component";
 import {ApiAdminServiceImpl} from "./api-admin.service";
 import {ApiJudgeServiceImpl} from "./api-judge.service";
+import {DebuggingJudgeComponent} from "./debuggingjudge.component";
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import {ApiJudgeServiceImpl} from "./api-judge.service";
     ScoreboardComponent,
     CodeEditorComponent,
     DebuggingCardComponent,
+    DebuggingJudgeComponent,
     AdminStatusBoardComponent,
     SubmissionsViewComponent,
     SubmissionsBarComponent,

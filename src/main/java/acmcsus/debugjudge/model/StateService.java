@@ -115,10 +115,19 @@ public class StateService {
 
   public void submissionRuling(Submission submission, int judgeId, SubmissionJudgement judgement,
                                String message) {
-    Submission.Builder builder = Submission.newBuilder(submission);
-    builder.setJudgeId(judgeId);
-    builder.setJudgement(judgement);
-    builder.setJudgementMessage(message);
-    submissionRulingSubject.onNext(builder.build());
+    try {
+      {
+        Submission.Builder builder = Submission.newBuilder(submission);
+        builder.setJudgeId(judgeId);
+        builder.setJudgement(judgement);
+        builder.setJudgementMessage(message);
+
+        submission = SUBMISSION_STORE.save(builder.build());
+      }
+      submissionRulingSubject.onNext(submission);
+    }
+    catch (IOException e) {
+      logger.error("could not save submission", e);
+    }
   }
 }

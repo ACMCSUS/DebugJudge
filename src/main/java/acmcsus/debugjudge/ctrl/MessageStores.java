@@ -51,6 +51,19 @@ public class MessageStores {
       return m;
     }
 
+    public M save(M m) throws IOException {
+      requireValid(m);
+
+      Path storePath = getPath(m);
+      Files.createDirectories(storePath.getParent());
+
+      BufferedWriter writer = newBufferedWriter(storePath);
+      TextFormat.print(m, writer);
+      writer.close();
+
+      return m;
+    }
+
     public M readFromPath(Path p) {
       try {
         BufferedReader reader = newBufferedReader(p);
@@ -164,7 +177,7 @@ public class MessageStores {
                   p.getName(0).toString().matches("prof\\d+") &&
                   p.getName(1).toString().matches("submissions") &&
                   p.getName(2).toString().matches("prob\\d+") &&
-                  p.getFileName().toString().equals("sub\\d+.textproto");
+                  p.getFileName().toString().matches("sub\\d+.textproto");
             });
       }
       catch (IOException e) {

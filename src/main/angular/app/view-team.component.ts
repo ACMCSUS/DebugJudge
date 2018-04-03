@@ -148,6 +148,7 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.problemSubscription = this.api.problems.subscribe((problems) => {
       this.problems = problems;
+      this.problems.sort((a, b) => b.orderIndex - a.orderIndex);
       this.problemClicked(this.problemIdx);
     });
   }

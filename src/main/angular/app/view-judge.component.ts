@@ -2,19 +2,18 @@ import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@a
 import {MatRipple} from '@angular/material';
 import {ApiWebSocketService} from './api-ws.service';
 import {Subscription} from 'rxjs/Subscription';
-import {DebuggingCardComponent} from "./debuggingcard.component";
 
 import {acmcsus} from "./proto/dbgjdg_pb";
 import {ApiJudgeService} from "./api-judge.service";
+import {DebuggingJudgeComponent} from "./debuggingjudge.component";
 import Problem = acmcsus.debugjudge.Problem;
 import Submission = acmcsus.debugjudge.Submission;
 import JudgingStatusMessage = acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
 import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
-import * as Long from "long";
 
 @Component({
   selector: 'app-judge-view',
-  entryComponents: [DebuggingCardComponent],
+  entryComponents: [DebuggingJudgeComponent],
   template: `
     <div id="outer">
       <div id="wrapper">
@@ -38,11 +37,16 @@ import * as Long from "long";
         <mat-card id="right">
           <mat-card-title *ngIf="statusMessage&&statusMessage.length">{{statusMessage}}</mat-card-title>
           <mat-card-title *ngIf="judgingStatus.judging && assignedSubmission">
-            Now Judging: {{assignedSubmission.problemId}}</mat-card-title>
+            Now Judging: {{problemMap[assignedSubmission.problemId].title}}</mat-card-title>
           <mat-card-title *ngIf="judgingStatus.judging && !assignedSubmission">
             Waiting for submissions...</mat-card-title>
           <mat-card-content *ngIf="assignedSubmission">
-            
+            <div [ngSwitch]="assignedSubmission.value">
+              <app-judge-debug
+                  *ngSwitchCase="'debuggingSubmission'"
+                  [problem]="problemMap[assignedSubmission.problemId]"
+                  [submission]="assignedSubmission"></app-judge-debug>
+            </div>
           </mat-card-content>
           <mat-card-content *ngIf="!assignedSubmission">
             
@@ -124,7 +128,7 @@ export class JudgeComponent implements OnInit, AfterViewInit, OnDestroy {
   bkgdColor = '#fff';
 
   problems: Problem[];
-  problemColors: Map<number|Long, string>;
+  problemMap: {};
   assignedSubmission: Submission;
   judgingStatus: JudgingStatusMessage;
 
@@ -142,21 +146,22 @@ export class JudgeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.problems = [];
-    this.problemColors = new Map<number|Long, string>();
+    this.problemMap = new Map<number, Problem>();
     this.assignedSubmission = null;
     this.judgingStatus = JudgingStatusMessage.create();
     this.setBanner(0);
 
     this.problemSubscription = this.api.problems.subscribe(
         (problems) => {
-          let colorMap = new Map<number|Long, string>();
+          let problemMap = {};
+
           for (let problem of problems) {
-            colorMap.set(problem.id, problem.color);
+            problemMap[problem.id] = problem;
             if (this.problemWhitelist[problem.id] === undefined) {
               this.problemWhitelist[problem.id] = true;
             }
           }
-          this.problemColors = colorMap;
+          this.problemMap = problemMap;
           this.problems = problems;
         });
     this.assignmentSubscription = this.api.assignedSubmission.subscribe(
@@ -218,8 +223,8 @@ export class JudgeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_UNKNOWN);
   }
 
-  setBanner(problemId: number|Long): void {
-    let color = (this.problemColors.get(problemId) || '#cccccc');
+  setBanner(problemId: number): void {
+    let color = (((this.problemMap[problemId]||{}).color) || '#cccccc');
     const rippleRef = this.ripple.launch(0, 0, {
       persistent: true,
       color: color,
