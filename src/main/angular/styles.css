@@ -11,3 +11,31 @@ html, body {
 /deep/.mat-tab-body-content {
   overflow-y: scroll;
 }
+
+.descriptionHtml {
+  font-family: "Roboto Medium", sans-serif;
+}
+
+.descriptionHtml .descriptionIO {
+  display: flex;
+  align-items: stretch;
+  margin: 0 -5px;
+}
+
+.descriptionHtml .descriptionIO * {
+  margin: 10px 5px;
+}
+
+.descriptionHtml pre {
+  flex: 1;
+  font-family: "Roboto Mono", Consolas, monospace;
+  border: inset 1px #cccccc;
+  background-color: #666666;
+  background-image:
+      linear-gradient(to right, #f0f0f0, #f0f0f0 1px, transparent),
+      linear-gradient(to bottom, #f0f0f0, #f0f0f0 19px, transparent);
+  /*-webkit-background-size: 4px 20px;*/
+  line-height: 20px;
+  background-size: 2px 20px;
+  padding: 0 .5em;
+}

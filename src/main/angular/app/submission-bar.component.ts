@@ -40,6 +40,7 @@ import * as Long from "long";
   styles: [`
     mat-chip {
       /*overflow-x: hidden;*/
+      white-space: nowrap;
     }
     #submissionBar {
       background-color: #eee;
@@ -98,7 +99,7 @@ export class SubmissionsBarComponent implements OnInit, OnDestroy {
         case acmcsus.debugjudge.SubmissionJudgement.JUDGEMENT_SUCCESS:
           return '#696';
         case acmcsus.debugjudge.SubmissionJudgement.JUDGEMENT_FAILURE:
-          return '#966';
+          return '#a66';
         default:
           return '#666';
       }

@@ -64,7 +64,7 @@ public class MessageStores {
       return m;
     }
 
-    public M readFromPath(Path p) {
+    public M readFromPath(Path p) throws IOException {
       try {
         BufferedReader reader = newBufferedReader(p);
         M.Builder mBuilder = newBuilder();
@@ -79,11 +79,19 @@ public class MessageStores {
     }
 
     public Stream<M> streamAll() {
-      return getAllPaths().map(this::readFromPath);
+      return streamAll(getAllPaths());
     }
 
     public Stream<M> streamAll(Stream<Path> paths) {
-      return paths.map(this::readFromPath);
+      return paths.map(p -> {
+        try {
+          return readFromPath(p);
+        }
+        catch (IOException ioe) {
+          logger.error(format("error reading problem at %s", p), ioe);
+          return null;
+        }
+      }).filter(Objects::nonNull);
     }
 
     public List<M> readAll() {
@@ -304,7 +312,7 @@ public class MessageStores {
     }
 
     @Override
-    public Problem readFromPath(Path p) {
+    public Problem readFromPath(Path p) throws IOException {
       Problem.Builder builder = Problem.newBuilder(super.readFromPath(p));
 
       if (builder.getDescriptionCase() == Problem.DescriptionCase.DESCRIPTION_FILE) {
@@ -315,7 +323,7 @@ public class MessageStores {
         }
         catch (IOException e) {
           logger.error("could not find description file " + builder.getDescriptionFile() + " listed in " + p);
-          throw new RuntimeException(e);
+          return null;
         }
       }
 
@@ -326,31 +334,26 @@ public class MessageStores {
           Problem.DebuggingProblemValue.Builder debugBuilder = Problem.DebuggingProblemValue.newBuilder();
           debugBuilder.setLanguage(builder.getDebuggingProblem().getLanguage());
 
-          try {
-            Scanner scn = new Scanner(p.getParent().resolve(definitionFile));
-            scn.useDelimiter("\\n?# @DBG:");
-            while (scn.hasNext()) {
-              String chunk = scn.next();
-              if (chunk.startsWith("PRECODE")) {
-                debugBuilder.setPrecode(chunk.substring(chunk.indexOf('\n') + 1));
-              }
-              else if (chunk.startsWith("CODE")) {
-                debugBuilder.setCode(chunk.substring(chunk.indexOf('\n') + 1));
-              }
-              else if (chunk.startsWith("ANSWER")) {
-                debugBuilder.setAnswer(chunk.substring(chunk.indexOf('\n') + 1));
-              }
-              else if (chunk.startsWith("POSTCODE")) {
-                debugBuilder.setPostcode(chunk.substring(chunk.indexOf('\n') + 1));
-              }
-              else {
-                throw new IllegalArgumentException("Invalid DBG problem definition file: " + definitionFile);
-              }
+          Scanner scn = new Scanner(p.getParent().resolve(definitionFile));
+          scn.useDelimiter("\\n?# @DBG:");
+          while (scn.hasNext()) {
+            String chunk = scn.next();
+            if (chunk.startsWith("PRECODE")) {
+              debugBuilder.setPrecode(chunk.substring(chunk.indexOf('\n') + 1));
             }
-          }
-          catch (IOException e) {
-            logger.error("could not find definition file:");
-            throw new RuntimeException(e);
+            else if (chunk.startsWith("CODE")) {
+              debugBuilder.setCode(chunk.substring(chunk.indexOf('\n') + 1));
+            }
+            else if (chunk.startsWith("ANSWER")) {
+              debugBuilder.setAnswer(chunk.substring(chunk.indexOf('\n') + 1));
+            }
+            else if (chunk.startsWith("POSTCODE")) {
+              debugBuilder.setPostcode(chunk.substring(chunk.indexOf('\n') + 1));
+            }
+            else {
+              logger.error("Invalid problem definition file {} for problem {}",
+                  definitionFile, p);
+            }
           }
           builder.setDebuggingProblem(debugBuilder);
         }

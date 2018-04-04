@@ -30,6 +30,7 @@
     "core-js": "2.5.3",
     "google-protobuf": "3.5.0",
     "long": "4.0.0",
+    "marked": "^0.3.19",
     "ng2-ace-editor": "0.3.4",
     "protobufjs": "6.8.6",
     "rxjs": "5.5.7",

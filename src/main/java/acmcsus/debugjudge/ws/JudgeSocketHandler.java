@@ -55,25 +55,20 @@ public class JudgeSocketHandler {
           }
           case JUDGEMENT_SUCCESS:
           case JUDGEMENT_FAILURE: {
-            Submission submission =
-              SUBMISSION_STORE.readFromPath(SUBMISSION_STORE.pathForIds(tid, pid, sid));
+            Submission submission;
 
-            if (submission == null) {
+            try {
+              submission = SUBMISSION_STORE.readFromPath(SUBMISSION_STORE.pathForIds(tid, pid, sid));
+            }
+            catch (IOException e) {
               logger.error(format("Submission %d/%d/%d not found for judge's ruling",
-                tid, pid, sid));
+                  tid, pid, sid), e);
               throw halt(400);
             }
 
             // TODO: Judgement Messages (like "TLE" or "Excessive Output")
-            StateService.instance
-              .submissionRuling(submission, ctx.profile.getId(), ruling, "lorem ipsum");
-
-//            judgeQueueHandler.judged(submission);
-
-//            sendMessage(subm(), S2CMessage.S2TMessage.newBuilder()
-//              .setReloadSubmissionMessage(
-//                S2CMessage.S2TMessage.ReloadSubmissionMessage.newBuilder()
-//                  .setSubmission(submission)).build());
+            StateService.instance.submissionRuling(
+                submission, ctx.profile.getId(), ruling, "lorem ipsum");
             break;
           }
           default: {

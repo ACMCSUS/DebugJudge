@@ -1,5 +1,6 @@
 package acmcsus.debugjudge.ctrl;
 
+import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.ws.*;
@@ -12,6 +13,13 @@ import static acmcsus.debugjudge.ctrl.MessageStores.*;
 import static java.util.stream.Collectors.toList;
 
 public class ScoreboardBroadcaster {
+
+  private static List<Problem> problems = null;
+
+  static {
+    StateService.instance.addTeamProblemsListener(
+        (problems) -> ScoreboardBroadcaster.problems = problems);
+  }
 
   private static class TeamBarebones {
 
@@ -44,8 +52,6 @@ public class ScoreboardBroadcaster {
           .filter(p -> p.getProfileType() == Profile.ProfileType.TEAM)
           .collect(toList());
 
-      Collection<Problem> problems = PROBLEM_STORE.readAll();
-
       Map<Integer, Score> teamScores = new HashMap<>();
       Map<Integer, Map<Integer, Integer>> teamProblemSubmissionCount = new HashMap<>();
       Map<Integer, Map<Integer, Boolean>> teamProblemAcceptance = new HashMap<>();
@@ -75,6 +81,11 @@ public class ScoreboardBroadcaster {
         Score score = teamScores.get(submission.getTeamId());
 
         Map<Integer, Integer> problemCounts = teamProblemSubmissionCount.get(submission.getTeamId());
+
+        if (problemCounts == null) {
+          continue;
+        }
+
         problemCounts.put(
             submission.getProblemId(),
             problemCounts.get(submission.getProblemId()) + 1);

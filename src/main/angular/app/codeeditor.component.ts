@@ -1,4 +1,4 @@
-import {Component, ViewChild, OnInit, AfterViewInit, Input} from '@angular/core';
+import {Component, ViewChild, OnInit, AfterViewInit, Input, Output} from '@angular/core';
 import {AceEditorComponent} from 'ng2-ace-editor';
 
 @Component({
@@ -24,7 +24,7 @@ import {AceEditorComponent} from 'ng2-ace-editor';
       font-family: "Monospaced",monospace;
     }
     .codepane {
-      border: inset 2px white;
+      border: inset 1px white;
       padding: 0;
     }
     textarea {
@@ -40,7 +40,7 @@ import {AceEditorComponent} from 'ng2-ace-editor';
     }
     pre {
       padding-left: 4px;
-      background-color: #bbb;
+      background-color: #ddd;
       margin: 0;
     }
 
@@ -57,7 +57,7 @@ export class CodeEditorComponent implements OnInit, AfterViewInit {
   editor: AceEditorComponent;
 
   @Input() public precode: string;
-  @Input() public code: string;
+  @Input() @Output() public code: string;
   @Input() public postcode: string;
   @Input() public readonly: boolean;
   @Input() public green: boolean;

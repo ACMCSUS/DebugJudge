@@ -4,6 +4,8 @@ import {acmcsus} from "./proto/dbgjdg_pb";
 import {ApiWebSocketService} from "./api-ws.service";
 import Scoreboard = acmcsus.debugjudge.Scoreboard;
 import * as Long from "long";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import Problem = acmcsus.debugjudge.Problem;
 
 @Component({
   selector: 'app-scoreboard',
@@ -21,24 +23,25 @@ import * as Long from "long";
             <tr>
               <td>Place</td>
               <td>Team</td>
+              <td>Correct</td>
+              <td>Penalty</td>
               <td class="problemName"
                   *ngFor="let problem of problems"
                   [title]="problem.title">
-                {{problem.orderIndex}}
+                {{problem.title}}
               </td>
-              <td>Correct</td>
-              <td>Penalty</td>
             </tr>
           </thead>
           <tr *ngFor="let row of scoreboard.row">
             <td>{{row.place}}</td>
             <td>{{row.profileName}}</td>
+            <td>{{row.score}}</td>
+            <td>{{row.penalty}}</td>
             <td [ngClass]="{'green':row.problemCompletions[problem.id]}"
+                [title]="row.problemCompletions[problem.id] ? 'SOLVED' : 'UNSOLVED'"
                 *ngFor="let problem of problems">
               {{row.problemAttempts[problem.id] || 0}}
             </td>
-            <td>{{row.correct}}</td>
-            <td>{{row.penalty}}</td>
           </tr>
         </table>
       </mat-card-content>
@@ -53,11 +56,16 @@ import * as Long from "long";
     mat-card {
       margin: 15px;
     }
+    .green {
+      background-color: #aeb;
+    }
   `],
 })
 export class ScoreboardComponent implements OnInit, OnDestroy {
 
   scoreboard: Scoreboard;
+  problems: Problem[];
+
   lastUpdateString: string;
 
   s2cSubscription: Subscription;
@@ -72,6 +80,10 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
         let d = new Date();
         d.setUTCMilliseconds(Long.fromValue(this.scoreboard.updateTimeMillis).toNumber());
         this.lastUpdateString = d.toTimeString();
+      }
+      else if (s2cMessage.value == "reloadProblemsMessage") {
+        this.problems = s2cMessage.reloadProblemsMessage.problems.value.map(Problem.create);
+        this.problems.sort((a, b) => a.orderIndex - b.orderIndex)
       }
     });
   }

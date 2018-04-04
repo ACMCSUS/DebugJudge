@@ -38,7 +38,6 @@ export class ApiJudgeServiceImpl implements ApiJudgeService {
       if (s2c.value == "reloadProblemsMessage") {
         this.problems.next(
             s2c.reloadProblemsMessage.problems.value.map(Problem.create));
-        console.log('problems: ', this.problems.getValue())
       }
     });
 

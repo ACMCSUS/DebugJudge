@@ -18,6 +18,7 @@ import java.util.concurrent.*;
 import static acmcsus.debugjudge.ws.JudgeSocketHandler.handleJ2SMessage;
 import static acmcsus.debugjudge.ws.TeamSocketHandler.handleT2SMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
+import static java.lang.String.format;
 
 @WebSocket
 public class SocketHandler {
@@ -80,7 +81,7 @@ public class SocketHandler {
       ctx.session = user;
       ctx.req = C2SMessage.parseFrom(inputStream);
 
-      logger.info("Received Message: " + shortDebugString(ctx.req));
+      logger.debug("Received Message: " + shortDebugString(ctx.req));
 
       switch (ctx.req.getValueCase()) {
         case LOGINMESSAGE: {
@@ -116,14 +117,10 @@ public class SocketHandler {
           return;
         }
       }
-
-      logger.info("WS Handled!\n  In: {}\n  Out: {}",
-        shortDebugString(ctx.req),
-        shortDebugString(ctx.res));
     }
     catch (IOException e) {
-      e.printStackTrace();
-      return;
+      logger.error(format("Error after %s sent socket request %s",
+          shortDebugString(ctx.profile), shortDebugString(ctx.req)), e);
     }
   }
 
@@ -136,7 +133,7 @@ public class SocketHandler {
   }
 
   public static void sendMessage(Session session, S2CMessage msg) throws IOException {
-    logger.info("Sent Message: {}", shortDebugString(msg));
+    logger.debug("Sent Message: {}", shortDebugString(msg));
     session.getRemote().sendBytes(ByteBuffer.wrap(msg.toByteArray()));
   }
 

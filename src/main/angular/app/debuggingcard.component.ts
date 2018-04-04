@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ApiTeamService} from "./api-team.service";
 import {CodeEditorComponent} from "./codeeditor.component";
@@ -14,10 +14,15 @@ import Problem = acmcsus.debugjudge.Problem;
       <mat-card-title>{{problem.title}}</mat-card-title>
 
       <mat-card-content>
-        <p>{{problem.descriptionText}}</p>
+        <div id="descriptionHtml" class="descriptionHtml"
+             [innerHtml]="problem.descriptionText"></div>
+        
+        <mat-card-title
+            style="font-size: 16px; margin-top: 15px; margin-bottom: 5px">
+          Fix the code below:</mat-card-title>
+        
         <app-code-editor
           [precode]="problem.debuggingProblem.precode"
-          [code]="code"
           [postcode]="problem.debuggingProblem.postcode"
         ></app-code-editor>
       </mat-card-content>
@@ -66,33 +71,31 @@ export class DebuggingCardComponent implements OnInit, OnDestroy {
   @Input("problem")
   problem: Problem;
 
-  code: string;
+  @ViewChild(CodeEditorComponent)
+  editor: CodeEditorComponent;
 
   constructor(@Inject(HttpClient) private http: HttpClient,
               @Inject("ApiTeamService") private apiTeam: ApiTeamService) {
   }
 
   ngOnInit() {
-    if (!(this.code && this.code.length)) {
-      this.code = this.problem.debuggingProblem.code;
-    }
-    // this.apiTeam.submissions.subscribe(
-    //   subs => this.submissions = subs.filter(s => s.problemId === this.problem.id))
+    this.reset();
   }
 
   ngOnDestroy() {
   }
 
   submit(): void {
+    console.log(this.editor.code);
     this.apiTeam.submit(new Submission({
       problemId: this.problem.id,
       debuggingSubmission: {
-        code: this.code,
+        code: this.editor.code,
       }
     }));
   }
 
   reset(): void {
-    this.code = this.problem.debuggingProblem.code;
+    this.editor.code = "" + this.problem.debuggingProblem.code;
   }
 }
