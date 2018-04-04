@@ -11,7 +11,10 @@ import Problem = acmcsus.debugjudge.Problem;
   entryComponents: [CodeEditorComponent],
   template: `
     <mat-card>
-      <mat-card-title>{{problem.title}}</mat-card-title>
+      <mat-card-title>
+        {{problem.title}}
+        <span *ngIf="solved" style="color: green">SOLVED!</span>
+      </mat-card-title>
 
       <mat-card-content>
         <div id="descriptionHtml" class="descriptionHtml"
@@ -22,14 +25,15 @@ import Problem = acmcsus.debugjudge.Problem;
           Fix the code below:</mat-card-title>
         
         <app-code-editor
+          [readonly]="solved"
           [precode]="problem.debuggingProblem.precode"
           [postcode]="problem.debuggingProblem.postcode"
         ></app-code-editor>
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-button (click)="submit();">Submit</button>
-        <button mat-button (click)="reset();">Reset</button>
+        <button mat-button (click)="submit();" [disabled]="solved">Submit</button>
+        <button mat-button (click)="reset();" [disabled]="solved">Reset</button>
       </mat-card-actions>
     </mat-card>
   `,
@@ -70,6 +74,9 @@ export class DebuggingCardComponent implements OnInit, OnDestroy {
 
   @Input("problem")
   problem: Problem;
+
+  @Input("solved")
+  solved = false;
 
   @ViewChild(CodeEditorComponent)
   editor: CodeEditorComponent;

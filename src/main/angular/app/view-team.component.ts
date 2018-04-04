@@ -19,7 +19,8 @@ import Problem = acmcsus.debugjudge.Problem;
           <mat-card-content style="display: flex; flex-direction: column;"
                             *ngIf="problems&&problems.length">
             <span *ngFor="let problem of problems; let idx = index; let isLast=last">
-              <button mat-button (click)="problemClicked(idx)">{{problem.title}}</button>
+              <button mat-button [ngClass]="{'green': solvedProblems[problem.id]}"
+                      (click)="problemClicked(idx)">{{problem.title}}</button>
               <mat-divider *ngIf="!isLast"></mat-divider>
             </span>
           </mat-card-content>
@@ -39,6 +40,7 @@ import Problem = acmcsus.debugjudge.Problem;
         <div id="right" *ngIf="problems && problems.length">
           <app-problem-debug *ngFor="let problem of problems"
                              [hidden]="problem.id!==problems[problemIdx].id"
+                             [solved]="solvedProblems[problem.id]"
                              [problem]="problem"></app-problem-debug>
         </div>
         <mat-card id="right" *ngIf="!(problems && problems.length)">
@@ -96,6 +98,11 @@ import Problem = acmcsus.debugjudge.Problem;
       width: 100%;
       height: 50px;
     }
+
+    .green {
+      text-decoration-line: line-through;
+      background-color: #aeb;
+    }
   `],
 })
 export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -107,13 +114,13 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
 
   bkgdColor = '#fff';
 
+  solvedProblems: {[p: number]: boolean};
   problems: Problem[];
   problemIdx = 0;
 
   competitionStateSubscription: Subscription;
-  s2cSubscription: Subscription;
-  s2tSubscription: Subscription;
   problemSubscription: Subscription;
+  solvedSubscription: Subscription;
 
   statusMessage = "Loading...";
 
@@ -141,15 +148,16 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
         this.statusMessage = "Competition is in some magical state the frontend doesn't recognize!";
       }
     });
-    this.s2cSubscription = this.wsApi.s2cMessages.subscribe(() => {
-    });
-    this.s2tSubscription = this.wsApi.s2tMessages.subscribe(() => {
-    });
 
     this.problemSubscription = this.api.problems.subscribe((problems) => {
       this.problems = problems;
       this.problems.sort((a, b) => b.orderIndex - a.orderIndex);
       this.problemClicked(this.problemIdx);
+    });
+
+    this.solvedSubscription = this.api.solvedProblems.subscribe((solvedProblems) => {
+      this.solvedProblems = solvedProblems;
+      console.log('solved', this.solvedProblems)
     });
   }
 
@@ -159,9 +167,8 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.competitionStateSubscription.unsubscribe();
-    this.s2cSubscription.unsubscribe();
-    this.s2tSubscription.unsubscribe();
     this.problemSubscription.unsubscribe();
+    this.solvedSubscription.unsubscribe();
   }
 
   problemClicked(problem: number): void {
