@@ -1,0 +1,13 @@
+id: 3
+title: "Simple Sum"
+description_text: ""
+order_index: 2
+color: '#55bb20'
+
+debugging_problem: {
+    language: "python3"
+    precode: "# Recursively sum the array\ndef sum(arr):"
+    code: "    return arr[0] + sum(arr[1:])"
+    postcode: ""
+    answer: "    return arr[0] + sum(arr[1:]) if len(arr) > 0 else 0"
+}

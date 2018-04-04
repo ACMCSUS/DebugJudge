@@ -1,0 +1,10 @@
+id: 2
+title: "FizzBuzz"
+description_file: "fizzbuzz.html"
+order_index: 2
+color: '#aaccbb'
+
+debugging_problem: {
+    language: "python3"
+    definition_file: "fizzbuzz.dbg.py"
+}

@@ -1,14 +1,22 @@
 package acmcsus.debugjudge.ws;
 
+import acmcsus.debugjudge.ctrl.*;
 import acmcsus.debugjudge.model.*;
+import acmcsus.debugjudge.proto.*;
+import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.WebSocket.*;
+import io.reactivex.functions.*;
+import org.eclipse.jetty.websocket.api.*;
 import org.slf4j.*;
 
-import java.sql.Date;
-import java.time.*;
+import java.io.*;
 import java.util.*;
 
+import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.ws.SocketHandler.addObserver;
 import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
+import static java.lang.String.format;
+import static spark.Spark.halt;
 
 public class JudgeSocketHandler {
 
@@ -20,39 +28,47 @@ public class JudgeSocketHandler {
     JudgeQueueHandler judgeQueueHandler = JudgeQueueHandler.getInstance();
 
     switch (j2SMessage.getValueCase()) {
+      case CHANGECOMPETITIONSTATEMESSAGE: {
+        CompetitionController.changeCompetitionState(
+          j2SMessage.getChangeCompetitionStateMessage().getState());
+        break;
+      }
       case STARTJUDGINGMESSAGE: {
-        judgeQueueHandler.connected((Judge) ctx.profile, ctx.session);
+        judgeQueueHandler.connected(ctx.profile, ctx.session);
         break;
       }
       case STOPJUDGINGMESSAGE: {
-        judgeQueueHandler.disconnected((Judge) ctx.profile);
+        judgeQueueHandler.disconnected(ctx.profile, ctx.session);
         break;
       }
       case SUBMISSIONJUDGEMENTMESSAGE: {
-        Long submissionId = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
+        Integer tid = j2SMessage.getSubmissionJudgementMessage().getTeamId();
+        Integer pid = j2SMessage.getSubmissionJudgementMessage().getProblemId();
+        Long sid = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
+
         SubmissionJudgement ruling = j2SMessage.getSubmissionJudgementMessage().getRuling();
-        boolean accepted = false;
 
         switch (ruling) {
-          case DEFERRED: {
-            judgeQueueHandler.defer((Judge) ctx.profile);
+          case JUDGEMENT_UNKNOWN: {
+            judgeQueueHandler.defer(ctx.profile);
             break;
           }
-          case SUCCESS:
-            accepted = true;
-          case FAILURE: {
-            Submission submission = Submission.find.byId(submissionId);
+          case JUDGEMENT_SUCCESS:
+          case JUDGEMENT_FAILURE: {
+            Submission submission;
 
-            if (submission != null) {
-              submission.ruling((Judge) ctx.profile, Date.from(Instant.now()), accepted);
-              submission.update();
+            try {
+              submission = SUBMISSION_STORE.readFromPath(SUBMISSION_STORE.pathForIds(tid, pid, sid));
+            }
+            catch (IOException e) {
+              logger.error(format("Submission %d/%d/%d not found for judge's ruling",
+                  tid, pid, sid), e);
+              throw halt(400);
             }
 
-            judgeQueueHandler.judged(submission);
-            sendMessage(submission.team, S2CMessage.S2TMessage.newBuilder()
-              .setSubmissionResultMessage(
-                S2CMessage.S2TMessage.SubmissionJudgedMessage.newBuilder()
-                  .setResult(ruling)).build());
+            // TODO: Judgement Messages (like "TLE" or "Excessive Output")
+            StateService.instance.submissionRuling(
+                submission, ctx.profile.getId(), ruling, "lorem ipsum");
             break;
           }
           default: {
@@ -62,11 +78,11 @@ public class JudgeSocketHandler {
         break;
       }
       case JUDGINGPREFERENCESMESSAGE: {
-        Map<Long, Boolean> map = ctx.req.getJ2SMessage()
+        Map<Integer, Boolean> map = ctx.req.getJ2SMessage()
           .getJudgingPreferencesMessage()
           .getPreferencesMap();
 
-        judgeQueueHandler.setJudgePreferences((Judge) ctx.profile, ctx.session, map);
+        judgeQueueHandler.setJudgePreferences(ctx.profile, ctx.session, map);
         break;
       }
       default: {
@@ -75,4 +91,20 @@ public class JudgeSocketHandler {
     }
   }
 
+  public static void subscribeNewJudge(Session session, Profile profile) throws IOException {
+    Consumer<List<Problem>> problemReloader =
+        (problems) -> SocketHandler.sendMessage(session, S2CMessage.newBuilder()
+            .setReloadProblemsMessage(S2CMessage.ReloadProblemsMessage.newBuilder()
+                .setProblems(Problem.List.newBuilder().addAllValue(problems))).build());
+
+    Scoreboard lastScoreboard = ScoreboardBroadcaster.getLastScoreboard();
+    if (lastScoreboard != null) {
+      sendMessage(session, WebSocket.S2CMessage.newBuilder()
+          .setScoreboardUpdateMessage(S2CMessage.ScoreboardUpdateMessage.newBuilder()
+              .setScoreboard(lastScoreboard))
+          .build());
+    }
+
+    addObserver(session, StateService.instance.addJudgeProblemsListener(problemReloader));
+  }
 }

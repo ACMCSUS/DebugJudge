@@ -1,14 +1,16 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./target/classes/app",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
     "declaration": false,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "rootDir": "./src/main/angular/",
     "target": "es5",
+    "types": [
+      "long"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -16,9 +18,5 @@
       "es2017",
       "dom"
     ]
-  },
-  "include": [
-    "./src/main/**/*",
-    "./node_modules/ng-autosize/*"
-  ]
+  }
 }
