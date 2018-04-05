@@ -78,5 +78,10 @@
       <button type="submit">Submit</button>
     </form>
   </div>
+  <script>
+    if (window.location.hash.indexOf('#') >= 0) {
+      alert(decodeURIComponent(window.location.href.substr(window.location.href.indexOf('#')+1)));
+    }
+  </script>
 </body>
 </html>
