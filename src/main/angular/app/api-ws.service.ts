@@ -10,11 +10,8 @@ import S2CMessage = acmcsus.debugjudge.S2CMessage;
 import S2TMessage = acmcsus.debugjudge.S2CMessage.S2TMessage;
 import S2JMessage = acmcsus.debugjudge.S2CMessage.S2JMessage;
 import C2SMessage = acmcsus.debugjudge.C2SMessage;
-import {environment} from "../environments/environment";
 
 export interface ApiWebSocketService {
-
-  webSocket: Observable<S2CMessage>;
 
   competitionState: Observable<acmcsus.debugjudge.CompetitionState>;
   loggedInStatus: Observable<boolean>;
@@ -32,15 +29,12 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
 
   private static nonceUrl = '/ws/nonce';
   private static wsUrl = 'ws://' + window.location.host + '/ws/connect';
-
-  webSocket: WebSocketSubject<S2CMessage>;
-
   competitionState: BehaviorSubject<acmcsus.debugjudge.CompetitionState>;
   loggedInStatus: BehaviorSubject<boolean>;
-
   s2cMessages: ReplaySubject<S2CMessage>;
   s2tMessages: ReplaySubject<S2TMessage>;
   s2jMessages: ReplaySubject<S2JMessage>;
+  private webSocket: WebSocketSubject<S2CMessage>;
 
   constructor(private httpClient: HttpClient) {
     this.s2cMessages = new ReplaySubject<S2CMessage>(16);
@@ -49,7 +43,20 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
 
     this.competitionState = new BehaviorSubject(acmcsus.debugjudge.CompetitionState.WAITING);
     this.loggedInStatus = new BehaviorSubject(false);
+    this.connect();
+  }
 
+  public sendMessage(msg: C2SMessage) {
+    if (this.webSocket && this.webSocket.socket.readyState === 1) {
+      this.webSocket.socket.send(C2SMessage.encode(msg).finish());
+    }
+    else {
+      // TODO: Send buffer? Freeze the page with an overlay while reconnecting?
+      console.error('WS is not in a state to be sending right now!');
+    }
+  }
+
+  private connect(): void {
     // noinspection JSUnusedGlobalSymbols
     this.webSocket = new WebSocketSubject<S2CMessage>({
       url: ApiWebSocketServiceImpl.wsUrl,
@@ -57,16 +64,35 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
 
       openObserver: {
         next: (event: Event) => {
-          this.httpClient.get(ApiWebSocketServiceImpl.nonceUrl, {responseType: 'text'})
-            .subscribe((response) => {
-              let msg = C2SMessage.create({
-                loginMessage: {
-                  nonce: response,
-                },
-              });
-              this.sendMessage(msg);
-            })
+          this.httpClient
+              .get(ApiWebSocketServiceImpl.nonceUrl, {responseType: 'text'})
+              .subscribe(
+                  (response) => {
+                    let msg = C2SMessage.create({
+                      loginMessage: {
+                        nonce: response,
+                      },
+                    });
+                    this.sendMessage(msg);
+                  },
+                  (err) => {
+                    if (err.status === 401) {
+                      window.location.hash = encodeURIComponent(
+                          'You are no longer authenticated! ' +
+                          'Please login again. Apologies for any inconvenience.');
+                      window.location.pathname = '/login';
+                    }
+                    else {
+                      console.error(err);
+                    }
+                  });
         },
+      },
+      closeObserver: {
+        next: (event: Event) => {
+          this.loggedInStatus.next(false);
+          this.connect();
+        }
       },
       resultSelector: (e: MessageEvent) => {
         // I am the greatest hacker. Rxjs has a weird type check that this bypasses.
@@ -76,10 +102,6 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
     });
 
     this.setUpSocket();
-  }
-
-  public sendMessage(msg: C2SMessage) {
-    this.webSocket.socket.send(C2SMessage.encode(msg).finish());
   }
 
   private setUpSocket() {
@@ -129,11 +151,13 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
         }
         default: {
           console.error("WS: I didn't know how to act on msg:", msg.value,
-            "Either this message is not supported in frontend or someone forgot a 'break'.");
+              "Either this message is not supported in frontend or someone forgot a 'break'.");
         }
-        // We know someone else takes care of these:
-        case 'scoreboardUpdateMessage': break;
-        case 'reloadProblemsMessage': break;
+          // We know someone else takes care of these:
+        case 'scoreboardUpdateMessage':
+          break;
+        case 'reloadProblemsMessage':
+          break;
       }
 
       this.s2cMessages.next(msg);
