@@ -1,0 +1,29 @@
+syntax = 'proto3';
+
+option java_package = 'acmcsus.debugjudge.proto';
+option java_outer_classname = 'Admin';
+
+package acmcsus.debugjudge;
+
+import "competition.proto";
+
+// Messages that only ever come from admins.
+message A2SMessage {
+  oneof value {
+    ChangeCompetitionStateMessage changeCompetitionStateMessage = 1;
+  }
+  message ChangeCompetitionStateMessage {
+    int64 time_millis = 1;
+    CompetitionState state = 2;
+  }
+}
+
+// Messages that are specifically for admins.
+message S2AMessage {
+  oneof value {
+    StatusAppendMessage statusAppendMessage = 1;
+  }
+  message StatusAppendMessage {
+    string value = 1;
+  }
+}

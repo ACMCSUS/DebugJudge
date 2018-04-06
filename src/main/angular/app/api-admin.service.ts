@@ -17,7 +17,7 @@ export class ApiAdminServiceImpl implements ApiAdminService {
 
   changeCompetitionState(state: CompetitionState) {
     this.apiWs.sendMessage(C2SMessage.create({
-      j2sMessage: {
+      a2sMessage: {
         changeCompetitionStateMessage: {
           state: state,
         },

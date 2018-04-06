@@ -83,7 +83,7 @@ public class StateService {
     builder.setSubmissionTimeSeconds(Instant.now().getEpochSecond());
 
     switch (submission.getValueCase()) {
-      case DEBUGGINGSUBMISSION:
+      case DEBUGGING_SUBMISSION:
         builder.setDebuggingSubmission(submission.getDebuggingSubmission());
         break;
       default:

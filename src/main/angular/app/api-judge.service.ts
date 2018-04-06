@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import Submission = acmcsus.debugjudge.Submission;
 import Problem = acmcsus.debugjudge.Problem;
 import C2SMessage = acmcsus.debugjudge.C2SMessage;
-import JudgingStatusMessage = acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
+import JudgingStatusMessage = acmcsus.debugjudge.S2JMessage.JudgingStatusMessage;
 import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
 
 export interface ApiJudgeService {

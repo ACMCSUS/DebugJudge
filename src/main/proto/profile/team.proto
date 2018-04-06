@@ -1,0 +1,24 @@
+syntax = 'proto3';
+
+option java_package = 'acmcsus.debugjudge.proto';
+option java_outer_classname = 'Team';
+
+package acmcsus.debugjudge;
+
+import "competition.proto";
+
+// Messages that only ever come from teams.
+message T2SMessage {
+  oneof value {
+    SubmissionCreateMessage submissionCreateMessage = 1;
+  }
+
+  message SubmissionCreateMessage {
+    Submission submission = 1;
+  }
+}
+
+// Messages that are specifically for teams.
+message S2TMessage {
+
+}

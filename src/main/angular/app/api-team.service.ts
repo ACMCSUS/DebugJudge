@@ -46,11 +46,8 @@ export class ApiTeamServiceImpl implements ApiTeamService {
             s2c.reloadProblemsMessage.problems.value.map(Problem.create));
 
       }
-    });
-
-    this.apiWs.s2tMessages.subscribe((s2t) => {
-      if (s2t.value == "reloadSubmissionMessage") {
-        let newSub = Submission.create(s2t.reloadSubmissionMessage.submission);
+      else if (s2c.value == "reloadSubmissionMessage") {
+        let newSub = Submission.create(s2c.reloadSubmissionMessage.submission);
         let submissionList = [...this.submissions.getValue()]; // copy
         let found = false;
 
@@ -74,9 +71,9 @@ export class ApiTeamServiceImpl implements ApiTeamService {
 
         this.submissions.next(submissionList);
       }
-      if (s2t.value == "reloadSubmissionsMessage") {
+      if (s2c.value == "reloadSubmissionsMessage") {
         this.submissions.next(
-            s2t.reloadSubmissionsMessage.submissions.value.map(Submission.create));
+            s2c.reloadSubmissionsMessage.submissions.value.map(Submission.create));
       }
     });
   }

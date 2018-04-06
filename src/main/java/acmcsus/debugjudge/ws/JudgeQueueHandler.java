@@ -2,6 +2,7 @@ package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.proto.Judge.*;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
 import org.eclipse.jetty.websocket.api.*;
 import org.slf4j.*;
@@ -84,7 +85,6 @@ public class JudgeQueueHandler {
     if (judgeSessionMap.containsKey(judge.getId())) {
       kick(judge, "You've started judging somewhere else!");
     }
-    System.out.println(waitingSubmissions);
 
     JudgeSession judgeSession = new JudgeSession(judge, session);
     if (session.isOpen()) {

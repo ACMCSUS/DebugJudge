@@ -7,8 +7,8 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {acmcsus} from "./proto/dbgjdg_pb";
 import S2CMessage = acmcsus.debugjudge.S2CMessage;
-import S2TMessage = acmcsus.debugjudge.S2CMessage.S2TMessage;
-import S2JMessage = acmcsus.debugjudge.S2CMessage.S2JMessage;
+import S2TMessage = acmcsus.debugjudge.S2TMessage;
+import S2JMessage = acmcsus.debugjudge.S2JMessage;
 import C2SMessage = acmcsus.debugjudge.C2SMessage;
 
 export interface ApiWebSocketService {
