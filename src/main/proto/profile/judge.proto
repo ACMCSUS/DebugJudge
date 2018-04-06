@@ -1,0 +1,53 @@
+syntax = 'proto3';
+
+option java_package = 'acmcsus.debugjudge.proto';
+option java_outer_classname = 'Judge';
+
+package acmcsus.debugjudge;
+
+import "competition.proto";
+
+// Messages that only ever come from judges.
+message J2SMessage {
+  oneof value {
+    StartJudgingMessage startJudgingMessage = 1;
+    StopJudgingMessage stopJudgingMessage = 2;
+
+    SubmissionJudgementMessage submissionJudgementMessage = 3;
+    JudgingPreferencesMessage judgingPreferencesMessage = 4;
+  }
+
+  message StartJudgingMessage {
+
+  }
+  message StopJudgingMessage {
+
+  }
+  // See also: AJ2SMessage.AutoJudgeResultMessage
+  message SubmissionJudgementMessage {
+    int32 team_id = 1;
+    int32 problem_id = 2;
+    int64 submission_id = 3;
+    SubmissionJudgement ruling = 4;
+  }
+  message JudgingPreferencesMessage {
+    map<int32, bool> preferences = 1;
+  }
+}
+
+// Messages that are specifically for judges.
+message S2JMessage {
+
+  oneof value {
+    AssignedSubmissionMessage assignedSubmissionMessage = 1;
+    JudgingStatusMessage judgingStatus = 2;
+  }
+
+  message AssignedSubmissionMessage {
+    Submission submission = 1;
+  }
+  message JudgingStatusMessage {
+    bool judging = 1;
+    string message = 2;
+  }
+}

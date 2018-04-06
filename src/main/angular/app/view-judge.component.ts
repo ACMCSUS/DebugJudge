@@ -8,7 +8,7 @@ import {ApiJudgeService} from "./api-judge.service";
 import {DebuggingJudgeComponent} from "./debuggingjudge.component";
 import Problem = acmcsus.debugjudge.Problem;
 import Submission = acmcsus.debugjudge.Submission;
-import JudgingStatusMessage = acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
+import JudgingStatusMessage = acmcsus.debugjudge.S2JMessage.JudgingStatusMessage;
 import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
 
 @Component({

@@ -7,62 +7,29 @@ package acmcsus.debugjudge;
 
 import "competition.proto";
 
+import "profile/team.proto";
+import "profile/judge.proto";
+import "profile/admin.proto";
+import "profile/auto_judge.proto";
+import "profile/balloon_runner.proto";
+import "profile/registrar.proto";
+
 message C2SMessage {
 
   oneof value {
     T2SMessage t2sMessage = 1;
     J2SMessage j2sMessage = 2;
+    A2SMessage a2sMessage = 3;
+    AJ2SMessage aj2sMessage = 4;
+    B2SMessage b2sMessage = 5;
+    R2SMessage rj2sMessage = 6;
 
-    LoginMessage loginMessage = 5;
+    LoginMessage loginMessage = 10;
 
   }
 
   message LoginMessage {
     string nonce = 1;
-  }
-
-  // Messages that only ever come from teams.
-  message T2SMessage {
-    oneof value {
-      SubmissionCreateMessage submissionCreateMessage = 1;
-    }
-
-    message SubmissionCreateMessage {
-      Submission submission = 1;
-    }
-  }
-
-  // Messages that only ever come from judges.
-  message J2SMessage {
-    oneof value {
-      StartJudgingMessage startJudgingMessage = 1;
-      StopJudgingMessage stopJudgingMessage = 2;
-
-      SubmissionJudgementMessage submissionJudgementMessage = 3;
-      JudgingPreferencesMessage judgingPreferencesMessage = 4;
-
-      ChangeCompetitionStateMessage changeCompetitionStateMessage = 8;
-    }
-
-    message StartJudgingMessage {
-
-    }
-    message StopJudgingMessage {
-
-    }
-    message SubmissionJudgementMessage {
-      int32 team_id = 1;
-      int32 problem_id = 2;
-      int64 submission_id = 3;
-      SubmissionJudgement ruling = 4;
-    }
-    message JudgingPreferencesMessage {
-      map<int32, bool> preferences = 1;
-    }
-    message ChangeCompetitionStateMessage {
-      int64 time_millis = 1;
-      CompetitionState state = 2;
-    }
   }
 }
 
@@ -71,14 +38,18 @@ message S2CMessage {
   oneof value {
     S2TMessage s2tMessage = 1;
     S2JMessage s2jMessage = 2;
+    S2AMessage s2aMessage = 3;
+    S2AJMessage s2ajMessage = 4;
 
-    DebugMessage debugMessage = 3;
-    AlertMessage alertMessage = 4;
-    LoginResultMessage loginResultMessage = 5;
-    NotificationMessage notificationMessage = 6;
-    CompetitionStateChangedMessage competitionStateChangedMessage = 7;
-    ScoreboardUpdateMessage scoreboardUpdateMessage = 8;
-    ReloadProblemsMessage reloadProblemsMessage = 9;
+    DebugMessage debugMessage = 17;
+    AlertMessage alertMessage = 18;
+    LoginResultMessage loginResultMessage = 19;
+    NotificationMessage notificationMessage = 20;
+    CompetitionStateChangedMessage competitionStateChangedMessage = 21;
+    ScoreboardUpdateMessage scoreboardUpdateMessage = 22;
+    ReloadSubmissionMessage reloadSubmissionMessage = 23;
+    ReloadSubmissionsMessage reloadSubmissionsMessage = 24;
+    ReloadProblemsMessage reloadProblemsMessage = 25;
   }
 
   message DebugMessage {
@@ -120,39 +91,13 @@ message S2CMessage {
     Problem.List problems = 1;
   }
 
-// Messages that are specifically for teams.
-  message S2TMessage {
-
-    oneof value {
-      ReloadSubmissionMessage reloadSubmissionMessage = 1;
-      ReloadSubmissionsMessage reloadSubmissionsMessage = 2;
-    }
-
-    // Make known creation/changes to one submission
-    message ReloadSubmissionMessage {
-      Submission submission = 1;
-    }
-
-    // Make known creation/changes to all submissions
-    message ReloadSubmissionsMessage {
-      Submission.List submissions = 1;
-    }
+  // Make known creation/changes to one submission
+  message ReloadSubmissionMessage {
+    Submission submission = 1;
   }
 
-// Messages that are specifically for judges.
-  message S2JMessage {
-
-    oneof value {
-      AssignedSubmissionMessage assignedSubmissionMessage = 1;
-      JudgingStatusMessage judgingStatus = 2;
-    }
-
-    message AssignedSubmissionMessage {
-      Submission submission = 1;
-    }
-    message JudgingStatusMessage {
-      bool judging = 1;
-      string message = 2;
-    }
+  // Make known creation/changes to all submissions
+  message ReloadSubmissionsMessage {
+    Submission.List submissions = 1;
   }
 }

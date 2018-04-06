@@ -1,10 +1,14 @@
 package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.ctrl.*;
+import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.proto.Judge.*;
+import acmcsus.debugjudge.proto.Team.*;
 import acmcsus.debugjudge.proto.WebSocket.*;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
 import io.reactivex.disposables.*;
+import io.reactivex.functions.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.slf4j.*;
@@ -15,8 +19,15 @@ import java.nio.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.ADMIN;
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.JUDGE;
+import static acmcsus.debugjudge.ws.AdminSocketHandler.handleA2SMessage;
+import static acmcsus.debugjudge.ws.AdminSocketHandler.subscribeNewAdmin;
+import static acmcsus.debugjudge.ws.AutoJudgeSocketHandler.handleAJ2SMessage;
 import static acmcsus.debugjudge.ws.JudgeSocketHandler.handleJ2SMessage;
 import static acmcsus.debugjudge.ws.TeamSocketHandler.handleT2SMessage;
+import static acmcsus.debugjudge.ws.TeamSocketHandler.subscribeNewTeam;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static java.lang.String.format;
 
@@ -61,15 +72,17 @@ public class SocketHandler {
 
     Profile profile = sessionProfileMap.remove(user);
     if (profile != null) {
-      if (profile.getProfileType() == Profile.ProfileType.JUDGE) {
+      if (profile.getProfileType() == JUDGE) {
         JudgeQueueHandler.getInstance().disconnected(profile, user);
       }
 
       profileSessionMap.get(profile.getId()).remove(user);
     }
 
-    sessionObserversMap.get(user).forEach(Disposable::dispose);
-    sessionObserversMap.remove(user);
+    Set<Disposable> disposables = sessionObserversMap.remove(user);
+    if (disposables != null) {
+      disposables.forEach(Disposable::dispose);
+    }
   }
 
   @OnWebSocketMessage
@@ -93,28 +106,47 @@ public class SocketHandler {
             handleT2SMessage(ctx);
           }
           else {
-            logger.warn("WS: Attempt to use T2SMessage while not registered! " +
+            logger.warn("WS: Attempt to use T2SMessage while not registered as a Team! " +
               shortDebugString(ctx.req));
             return;
           }
           break;
         }
         case J2SMESSAGE: {
-          if (ctx.profile != null &&
-            (ctx.profile.getProfileType() == Profile.ProfileType.JUDGE ||
-              ctx.profile.getProfileType() == Profile.ProfileType.ADMIN)) {
+          if (ctx.profile != null && ctx.profile.getProfileType() == JUDGE) {
             handleJ2SMessage(ctx);
           }
           else {
-            logger.warn("WS: Attempt to use J2SMessage while not registered! " +
+            logger.warn("WS: Attempt to use J2SMessage while not registered as a Judge! " +
               shortDebugString(ctx.req));
+            return;
+          }
+          break;
+        }
+        case A2SMESSAGE: {
+          if (ctx.profile != null && ctx.profile.getProfileType() == ADMIN) {
+            handleA2SMessage(ctx);
+          }
+          else {
+            logger.warn("WS: Attempt to use A2SMessage while not registered as an Admin! " +
+                shortDebugString(ctx.req));
+            return;
+          }
+          break;
+        }
+        case AJ2SMESSAGE: {
+          if (ctx.profile != null && ctx.profile.getProfileType() == Profile.ProfileType.AUTO_JUDGE) {
+            handleAJ2SMessage(ctx);
+          }
+          else {
+            logger.warn("WS: Attempt to use AJ2SMessage while not registered as an AutoJudge! " +
+                shortDebugString(ctx.req));
             return;
           }
           break;
         }
         default: {
           logger.error("WS: Backend does not recognize message: " + ctx.req.getValueCase());
-          return;
         }
       }
     }
@@ -177,7 +209,7 @@ public class SocketHandler {
           }
         }
         else if (msg.getValueCase() == ValueCase.S2JMESSAGE) {
-          if (entry.getValue().getProfileType() == Profile.ProfileType.JUDGE) {
+          if (entry.getValue().getProfileType() == JUDGE) {
             sendMessage(entry.getKey(), msg);
           }
         }
@@ -226,16 +258,27 @@ public class SocketHandler {
 
         switch (ctx.profile.getProfileType()) {
           case TEAM: {
-            TeamSocketHandler.subscribeNewTeam(ctx.session, ctx.profile);
+            subscribeNewTeam(ctx.session, ctx.profile);
+            subscribeNewScoreboardReceiver(ctx.session);
             break;
           }
-          case JUDGE: {
-            JudgeSocketHandler.subscribeNewJudge(ctx.session, ctx.profile);
+          case ADMIN:
+            subscribeNewAdmin(ctx.session, ctx.profile);
+          case JUDGE:
+          case BALLOON_RUNNER: {
+            subscribeNewOfficial(ctx.session);
+            subscribeNewScoreboardReceiver(ctx.session);
             break;
           }
         }
       }
       else {
+        ctx.res = S2CMessage.newBuilder()
+            .setLoginResultMessage(
+                LoginResultMessage.newBuilder()
+                    .setValue(LoginResultMessage.LoginResult.FAILURE))
+            .build();
+
         debug(ctx.session, "Bad Nonce.");
       }
     }
@@ -289,5 +332,48 @@ public class SocketHandler {
   static void addObserver(Session session, Disposable disposable) {
     sessionObserversMap.computeIfAbsent(session, (f) -> new HashSet<>())
       .add(disposable);
+  }
+
+  static void subscribeNewScoreboardReceiver(Session session) throws IOException {
+    Scoreboard lastScoreboard = ScoreboardBroadcaster.getLastScoreboard();
+    if (lastScoreboard != null) {
+      sendMessage(session, S2CMessage.newBuilder()
+          .setScoreboardUpdateMessage(S2CMessage.ScoreboardUpdateMessage.newBuilder()
+              .setScoreboard(lastScoreboard))
+          .build());
+    }
+  }
+
+  static void subscribeNewOfficial(Session session) throws IOException {
+    Consumer<Submission> submissionReloader =
+        (sub) -> {
+          try {
+            SocketHandler.sendMessage(session, S2CMessage.newBuilder()
+                .setReloadSubmissionMessage(S2CMessage.ReloadSubmissionMessage.newBuilder()
+                    .setSubmission(sub))
+                .build());
+          }
+          catch (IOException e) {
+            logger.error("error reloading submission of team", e);
+          }
+        };
+
+    Consumer<List<Problem>> problemReloader =
+        (problems) -> SocketHandler.sendMessage(session, S2CMessage.newBuilder()
+            .setReloadProblemsMessage(S2CMessage.ReloadProblemsMessage.newBuilder()
+                .setProblems(Problem.List.newBuilder().addAllValue(problems))).build());
+
+    sendMessage(session, S2CMessage.newBuilder()
+        .setReloadSubmissionsMessage(S2CMessage.ReloadSubmissionsMessage.newBuilder()
+            .setSubmissions(Submission.List.newBuilder()
+                .addAllValue(SUBMISSION_STORE.readAll())))
+        .build());
+
+    addObserver(session,
+        StateService.instance.addSubmissionCreateListener(submissionReloader));
+    addObserver(session,
+        StateService.instance.addSubmissionRulingListener(submissionReloader));
+
+    addObserver(session, StateService.instance.addJudgeProblemsListener(problemReloader));
   }
 }

@@ -4,8 +4,9 @@ import acmcsus.debugjudge.ctrl.*;
 import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.proto.Team.*;
+import acmcsus.debugjudge.proto.WebSocket.*;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.S2TMessage.*;
 import io.reactivex.functions.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.*;
@@ -22,7 +23,7 @@ public class TeamSocketHandler {
   private static Logger logger = LoggerFactory.getLogger(TeamSocketHandler.class);
 
   static void handleT2SMessage(WebSocketContext ctx) {
-    WebSocket.C2SMessage.T2SMessage t2s = ctx.req.getT2SMessage();
+    T2SMessage t2s = ctx.req.getT2SMessage();
 
     switch (t2s.getValueCase()) {
       case SUBMISSIONCREATEMESSAGE: {
@@ -47,7 +48,7 @@ public class TeamSocketHandler {
     Consumer<Submission> submissionReloader =
         (sub) -> {
           try {
-            SocketHandler.sendMessage(session, S2TMessage.newBuilder()
+            SocketHandler.sendMessage(session, S2CMessage.newBuilder()
                 .setReloadSubmissionMessage(ReloadSubmissionMessage.newBuilder()
                     .setSubmission(sub))
                 .build());
@@ -58,25 +59,17 @@ public class TeamSocketHandler {
         };
 
     Consumer<List<Problem>> problemReloader =
-        (problems) -> SocketHandler.sendMessage(session, WebSocket.S2CMessage.newBuilder()
+        (problems) -> SocketHandler.sendMessage(session, S2CMessage.newBuilder()
             .setReloadProblemsMessage(ReloadProblemsMessage.newBuilder()
                 .setProblems(Problem.List.newBuilder().addAllValue(problems))).build());
 
     Predicate<Submission> isTeamsSubmission = (sub) -> sub.getTeamId() == teamId;
 
-    sendMessage(session, S2TMessage.newBuilder()
+    sendMessage(session, S2CMessage.newBuilder()
         .setReloadSubmissionsMessage(ReloadSubmissionsMessage.newBuilder()
             .setSubmissions(Submission.List.newBuilder()
                 .addAllValue(SUBMISSION_STORE.readAll(SUBMISSION_STORE.getPathsForTeam(teamId)))))
         .build());
-
-    Scoreboard lastScoreboard = ScoreboardBroadcaster.getLastScoreboard();
-    if (lastScoreboard != null) {
-      sendMessage(session, WebSocket.S2CMessage.newBuilder()
-          .setScoreboardUpdateMessage(ScoreboardUpdateMessage.newBuilder()
-              .setScoreboard(lastScoreboard))
-          .build());
-    }
 
     addObserver(session,
         StateService.instance.addSubmissionCreateListener(submissionReloader, isTeamsSubmission));

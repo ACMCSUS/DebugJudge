@@ -1,0 +1,29 @@
+syntax = 'proto3';
+
+option java_package = 'acmcsus.debugjudge.proto';
+option java_outer_classname = 'BalloonRunner';
+
+package acmcsus.debugjudge;
+
+import "competition.proto";
+
+// Messages that are specifically for balloon runners.
+message S2BMessage {
+  oneof value {
+    ExecuteSubmissionMessage executeSubmission = 1;
+  }
+  message ExecuteSubmissionMessage {
+    Submission submission = 1;
+  }
+}
+
+// Messages that only ever come from balloon runners.
+message B2SMessage {
+  oneof value {
+    BalloonDeliveredMessage balloonDeliveredMessage = 1;
+  }
+  message BalloonDeliveredMessage {
+    int32 team_id = 1;
+    int32 problem_id = 2;
+  }
+}

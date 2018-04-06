@@ -31,11 +31,18 @@ message Submission {
   string judgement_message = 7;
 
   oneof value {
-    DebuggingSubmission debuggingSubmission = 9;
+    DebuggingSubmission debugging_submission = 9;
+    DebuggingSubmission algorithmic_submission = 10;
   }
 
   message DebuggingSubmission {
     string code = 1;
+  }
+
+  message AlgorithmicSubmission {
+    string file_name = 1;
+    string source_code = 2;
+    string language = 3;
   }
 
   message List {
@@ -54,6 +61,9 @@ message Profile {
     TEAM = 0;
     JUDGE = 1;
     ADMIN = 2;
+    AUTO_JUDGE = 3;
+    REGISTRAR = 4;
+    BALLOON_RUNNER = 5;
   }
 
   message List {
