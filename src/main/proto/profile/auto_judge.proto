@@ -18,6 +18,7 @@ message AJ2SMessage {
     int32 problem_id = 2;
     int64 submission_id = 3;
     SubmissionJudgement ruling = 4;
+    string rulingMessage = 5;
   }
 }
 

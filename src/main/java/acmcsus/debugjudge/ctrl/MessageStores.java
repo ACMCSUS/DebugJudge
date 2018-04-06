@@ -65,17 +65,14 @@ public class MessageStores {
     }
 
     public M readFromPath(Path p) throws IOException {
-      try {
-        BufferedReader reader = newBufferedReader(p);
-        M.Builder mBuilder = newBuilder();
-        TextFormat.merge(reader, mBuilder);
-        reader.close();
-        return (M) mBuilder.build();
+      if (!Files.isRegularFile(p)) {
+        throw new NoSuchFileException(p.toString());
       }
-      catch (IOException ioe) {
-        logger.error("error reading path " + p, ioe);
-        return null;
-      }
+      BufferedReader reader = newBufferedReader(p);
+      M.Builder mBuilder = newBuilder();
+      TextFormat.merge(reader, mBuilder);
+      reader.close();
+      return (M) mBuilder.build();
     }
 
     public Stream<M> streamAll() {
@@ -301,11 +298,18 @@ public class MessageStores {
     public Problem clearProtectedFields(Problem problem) {
       Problem.Builder builder = Problem.newBuilder(problem);
 
-      if (builder.getValueCase() == Problem.ValueCase.DEBUGGING_PROBLEM) {
-        builder.getDebuggingProblemBuilder().clearAnswer();
-      }
-      else {
-        logger.warn("Did not clear answer field for problem of type: {}", builder.getValueCase());
+      switch (builder.getValueCase()) {
+        case DEBUGGING_PROBLEM: {
+          builder.getDebuggingProblemBuilder().clearAnswer();
+          break;
+        }
+        case ALGORITHMIC_PROBLEM: {
+          builder.getAlgorithmicProblemBuilder().clearValidatorProgram();
+          break;
+        }
+        default: {
+          logger.warn("Did not clear answer field for problem of type: {}", builder.getValueCase());
+        }
       }
 
       return super.clearProtectedFields(builder.build());

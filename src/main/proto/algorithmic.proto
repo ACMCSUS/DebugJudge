@@ -1,0 +1,16 @@
+syntax = 'proto3';
+
+option java_package = 'acmcsus.debugjudge.proto';
+option java_outer_classname = 'Algorithmic';
+
+package acmcsus.debugjudge;
+
+message ProgrammingLanguage {
+  string name = 1;
+  string compile = 2;
+  string run = 3;
+
+  message List {
+    repeated ProgrammingLanguage language = 1;
+  }
+}

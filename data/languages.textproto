@@ -1,0 +1,18 @@
+language {
+  name: 'c'
+  compile: 'gcc {{FILE_NAME}} -o {{BASE_NAME}}'
+  run: './{{BASE_NAME}}'
+}
+language {
+  name: 'java'
+  compile: 'javac {{FILE_NAME}}'
+  run: 'java {{BASE_NAME}}'
+}
+language {
+  name: 'python2'
+  run: 'python2 {{BASE_NAME}}'
+}
+language {
+  name: 'python3'
+  run: 'python3 {{BASE_NAME}}'
+}

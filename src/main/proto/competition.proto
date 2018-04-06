@@ -32,7 +32,7 @@ message Submission {
 
   oneof value {
     DebuggingSubmission debugging_submission = 9;
-    DebuggingSubmission algorithmic_submission = 10;
+    AlgorithmicSubmission algorithmic_submission = 10;
   }
 
   message DebuggingSubmission {
@@ -85,6 +85,7 @@ message Problem {
 
   oneof value {
     DebuggingProblemValue debugging_problem = 9;
+    AlgorithmicProblemValue algorithmic_problem = 10;
   }
 
   message DebuggingProblemValue {
@@ -94,6 +95,10 @@ message Problem {
     string postcode = 4;
     string answer = 5;
     string definition_file = 6;
+  }
+
+  message AlgorithmicProblemValue {
+    string validator_program = 1;
   }
 
   message List {

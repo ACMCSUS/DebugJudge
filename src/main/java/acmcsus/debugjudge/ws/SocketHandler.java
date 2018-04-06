@@ -16,15 +16,17 @@ import spark.*;
 
 import java.io.*;
 import java.nio.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.ctrl.MessageStores.*;
 import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.ADMIN;
 import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.JUDGE;
 import static acmcsus.debugjudge.ws.AdminSocketHandler.handleA2SMessage;
 import static acmcsus.debugjudge.ws.AdminSocketHandler.subscribeNewAdmin;
 import static acmcsus.debugjudge.ws.AutoJudgeSocketHandler.handleAJ2SMessage;
+import static acmcsus.debugjudge.ws.AutoJudgeSocketHandler.subscribeNewAutoJudge;
 import static acmcsus.debugjudge.ws.JudgeSocketHandler.handleJ2SMessage;
 import static acmcsus.debugjudge.ws.TeamSocketHandler.handleT2SMessage;
 import static acmcsus.debugjudge.ws.TeamSocketHandler.subscribeNewTeam;
@@ -58,7 +60,6 @@ public class SocketHandler {
     nonceProfileMap.put(nonce, SecurityApi.getProfile(req));
     return nonce;
   }
-
 
   @OnWebSocketConnect
   public void onConnect(Session user) {
@@ -107,7 +108,7 @@ public class SocketHandler {
           }
           else {
             logger.warn("WS: Attempt to use T2SMessage while not registered as a Team! " +
-              shortDebugString(ctx.req));
+                shortDebugString(ctx.req));
             return;
           }
           break;
@@ -118,7 +119,7 @@ public class SocketHandler {
           }
           else {
             logger.warn("WS: Attempt to use J2SMessage while not registered as a Judge! " +
-              shortDebugString(ctx.req));
+                shortDebugString(ctx.req));
             return;
           }
           break;
@@ -227,15 +228,17 @@ public class SocketHandler {
       String nonce = ctx.req.getLoginMessage().getNonce();
 
       if (nonce == null || nonce.isEmpty()) {
-        ctx.res = S2CMessage.newBuilder()
-          .setLoginResultMessage(
-            LoginResultMessage.newBuilder()
-              .setValue(LoginResultMessage.LoginResult.FAILURE))
-          .build();
-        debug(ctx.session, "No Nonce.");
+        C2SMessage.LoginMessage msg = ctx.req.getLoginMessage();
+        if (!getLoginSecret(msg.getId()).equals(msg.getPass())) {
+          ctx.res = S2CMessage.newBuilder()
+              .setLoginResultMessage(
+                  LoginResultMessage.newBuilder()
+                      .setValue(LoginResultMessage.LoginResult.FAILURE))
+              .build();
+        }
+        ctx.profile = PROFILE_STORE.readFromPath(PROFILE_STORE.getPathForId(msg.getId()));
       }
-
-      if (ctx.profile == null) {
+      else if (ctx.profile == null) {
         ctx.profile = nonceProfileMap.remove(nonce);
       }
 
@@ -248,12 +251,11 @@ public class SocketHandler {
         sessionProfileMap.put(ctx.session, ctx.profile);
 
         ctx.res = S2CMessage.newBuilder()
-          .setLoginResultMessage(
-            LoginResultMessage.newBuilder()
-              .setValue(LoginResultMessage.LoginResult.SUCCESS))
-          .build();
+            .setLoginResultMessage(
+                LoginResultMessage.newBuilder()
+                    .setValue(LoginResultMessage.LoginResult.SUCCESS))
+            .build();
 
-        sendMessage(ctx.session, ctx.res);
         debug(ctx.session, "Login Successful!");
 
         switch (ctx.profile.getProfileType()) {
@@ -270,6 +272,10 @@ public class SocketHandler {
             subscribeNewScoreboardReceiver(ctx.session);
             break;
           }
+          case AUTO_JUDGE: {
+            subscribeNewAutoJudge(ctx.session);
+            break;
+          }
         }
       }
       else {
@@ -278,12 +284,28 @@ public class SocketHandler {
                 LoginResultMessage.newBuilder()
                     .setValue(LoginResultMessage.LoginResult.FAILURE))
             .build();
-
-        debug(ctx.session, "Bad Nonce.");
       }
     }
     catch (Exception e) {
-      logger.error("Error while handling WS login", e);
+      if (e instanceof NoSuchFileException) {
+        logger.warn("Bad login attempt: " + shortDebugString(ctx.req.getLoginMessage()));
+        logger.warn("Bad login attempt came from " + ctx.session.getRemoteAddress());
+      }
+      else {
+        logger.error("Error while handling WS login", e);
+      }
+      ctx.res = S2CMessage.newBuilder()
+          .setLoginResultMessage(
+              LoginResultMessage.newBuilder()
+                  .setValue(LoginResultMessage.LoginResult.FAILURE))
+          .build();
+    }
+
+    try {
+      sendMessage(ctx.session, ctx.res);
+    }
+    catch (IOException e) {
+      logger.error("error responding to websocket login attempt", e);
     }
   }
 
@@ -304,7 +326,7 @@ public class SocketHandler {
   public static void debug(Session session, String message) {
     try {
       sendMessage(session, S2CMessage.newBuilder()
-        .setDebugMessage(DebugMessage.newBuilder().setMessage(message)).build());
+          .setDebugMessage(DebugMessage.newBuilder().setMessage(message)).build());
     }
     catch (Exception ignored) {
     }
@@ -313,7 +335,7 @@ public class SocketHandler {
   public static void alert(Session session, String message) {
     try {
       sendMessage(session, S2CMessage.newBuilder()
-        .setAlertMessage(AlertMessage.newBuilder().setMessage(message)).build());
+          .setAlertMessage(AlertMessage.newBuilder().setMessage(message)).build());
     }
     catch (Exception ignored) {
     }
@@ -331,7 +353,7 @@ public class SocketHandler {
 
   static void addObserver(Session session, Disposable disposable) {
     sessionObserversMap.computeIfAbsent(session, (f) -> new HashSet<>())
-      .add(disposable);
+        .add(disposable);
   }
 
   static void subscribeNewScoreboardReceiver(Session session) throws IOException {

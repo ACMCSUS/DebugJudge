@@ -30,6 +30,8 @@ message C2SMessage {
 
   message LoginMessage {
     string nonce = 1;
+    int32 id = 2;
+    string pass = 3;
   }
 }
 
