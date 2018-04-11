@@ -26,7 +26,7 @@ html, body {
   margin: 10px 5px;
 }
 
-.descriptionHtml pre {
+.descriptionHtml pre, .dottedUnderline {
   flex: 1;
   font-family: "Roboto Mono", Consolas, monospace;
   border: inset 1px #cccccc;

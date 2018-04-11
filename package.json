@@ -28,6 +28,7 @@
     "@angular/router": "5.2.9",
     "@angular/service-worker": "5.2.9",
     "core-js": "2.5.3",
+    "diff": "^3.5.0",
     "google-protobuf": "3.5.0",
     "long": "4.0.0",
     "marked": "^0.3.19",
