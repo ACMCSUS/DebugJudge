@@ -34,7 +34,7 @@
 
 ### Frontend changes automatically applied
  - Just refresh your browser to get the new frontend
- - If you don't like the watching functionality, run `npx ng build` instead.
+ - If you don't like the watching functionality, run `yarn ng build` instead.
 
 ### Protocol Buffers
  - When you change the proto files, you need to regenerate the TS code.
