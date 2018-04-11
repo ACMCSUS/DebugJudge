@@ -8,10 +8,11 @@ import {DebuggingCardComponent} from "./debuggingcard.component";
 import {acmcsus} from "./proto/dbgjdg_pb";
 import CompetitionState = acmcsus.debugjudge.CompetitionState;
 import Problem = acmcsus.debugjudge.Problem;
+import {AlgorithmicCardComponent} from "./algorithmiccard.component";
 
 @Component({
   selector: 'app-team-view',
-  entryComponents: [DebuggingCardComponent],
+  entryComponents: [DebuggingCardComponent, AlgorithmicCardComponent],
   template: `
     <div id="outer">
       <div id="team-wrapper">
@@ -38,10 +39,16 @@ import Problem = acmcsus.debugjudge.Problem;
         </mat-card>
         <!-- TODO: Refactor this to its own component problemcard.component.ts -->
         <div id="right" *ngIf="problems && problems.length">
-          <app-problem-debug *ngFor="let problem of problems"
-                             [hidden]="problem.id!==problems[problemIdx].id"
-                             [solved]="solvedProblems[problem.id]"
-                             [problem]="problem"></app-problem-debug>
+          <span *ngFor="let problem of problems" [ngSwitch]="problem.value">
+            <app-problem-debug *ngSwitchCase="'debuggingProblem'"
+                               [hidden]="problem.id!==problems[problemIdx].id"
+                               [solved]="solvedProblems[problem.id]"
+                               [problem]="problem"></app-problem-debug>
+            <app-problem-algorithm *ngSwitchCase="'algorithmicProblem'"
+                                   [hidden]="problem.id!==problems[problemIdx].id"
+                                   [solved]="solvedProblems[problem.id]"
+                                   [problem]="problem"></app-problem-algorithm>
+            </span>
         </div>
         <mat-card id="right" *ngIf="!(problems && problems.length)">
           <mat-card-title>{{statusMessage}}</mat-card-title>
@@ -114,7 +121,7 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
 
   bkgdColor = '#fff';
 
-  solvedProblems: {[p: number]: boolean};
+  solvedProblems: { [p: number]: boolean };
   problems: Problem[];
   problemIdx = 0;
 

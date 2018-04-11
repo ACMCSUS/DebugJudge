@@ -138,8 +138,8 @@ public class AutoJudgeSocket {
             .setTeamId(submission.getTeamId())
             .setProblemId(submission.getProblemId())
             .setSubmissionId(submission.getSubmissionTimeSeconds())
-            .setRuling(result.judgement)
-            .setRulingMessage(result.judgementMessage)).build());
+            .setPreliminaryJudgement(result.judgement)
+            .setPreliminaryJudgementMessage(result.judgementMessage)).build());
   }
 
   private static void sendMessage(Session session, AJ2SMessage msg) throws IOException {

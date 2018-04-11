@@ -62,6 +62,7 @@ message S2CMessage {
   }
   message LoginResultMessage {
     LoginResult value = 1;
+    Profile profile = 2;
 
     enum LoginResult {
       UNKNOWN = 0;

@@ -1,11 +1,8 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.ctrl.*;
 import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
-import acmcsus.debugjudge.proto.WebSocket.*;
-import io.reactivex.functions.*;
+import acmcsus.debugjudge.proto.*;
 import org.eclipse.jetty.websocket.api.*;
 import org.slf4j.*;
 
@@ -13,19 +10,16 @@ import java.io.*;
 import java.util.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
-import static acmcsus.debugjudge.ws.SocketHandler.addObserver;
-import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 import static java.lang.String.format;
 import static spark.Spark.halt;
 
 public class JudgeSocketHandler {
 
   private static Logger logger = LoggerFactory.getLogger(JudgeSocketHandler.class);
+  private static ProfileToSubmissionMapper judgeQueueHandler = new ProfileToSubmissionMapper();
 
   static void handleJ2SMessage(WebSocketContext ctx) {
     Judge.J2SMessage j2SMessage = ctx.req.getJ2SMessage();
-
-    JudgeQueueHandler judgeQueueHandler = JudgeQueueHandler.getInstance();
 
     switch (j2SMessage.getValueCase()) {
       case STARTJUDGINGMESSAGE: {
@@ -77,12 +71,16 @@ public class JudgeSocketHandler {
           .getJudgingPreferencesMessage()
           .getPreferencesMap();
 
-        judgeQueueHandler.setJudgePreferences(ctx.profile, ctx.session, map);
+        judgeQueueHandler.setProfilePreferences(ctx.profile, ctx.session, map);
         break;
       }
       default: {
         logger.error("WS: Backend does not recognize J2SMessage: {}", j2SMessage.getValueCase());
       }
     }
+  }
+
+  static void lostJudge(Session session, Profile profile) {
+    judgeQueueHandler.disconnected(profile, session);
   }
 }

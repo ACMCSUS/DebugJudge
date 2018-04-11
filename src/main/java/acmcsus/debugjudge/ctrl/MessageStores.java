@@ -261,7 +261,6 @@ public class MessageStores {
         while (Files.exists(profileDirectoryPath.resolve("prof" + id))) {
           id++;
         }
-        createDirectories(profileDirectoryPath.resolve("prof" + id + "/submissions"));
         builder.setId(id);
       }
 
@@ -339,7 +338,7 @@ public class MessageStores {
           debugBuilder.setLanguage(builder.getDebuggingProblem().getLanguage());
 
           Scanner scn = new Scanner(p.getParent().resolve(definitionFile));
-          scn.useDelimiter("\\n?# @DBG:");
+          scn.useDelimiter("\\n?(#|//) @DBG:");
           while (scn.hasNext()) {
             String chunk = scn.next();
             if (chunk.startsWith("PRECODE")) {
@@ -354,7 +353,7 @@ public class MessageStores {
             else if (chunk.startsWith("POSTCODE")) {
               debugBuilder.setPostcode(chunk.substring(chunk.indexOf('\n') + 1));
             }
-            else {
+            else if (!chunk.startsWith("IGNORE")) {
               logger.error("Invalid problem definition file {} for problem {}",
                   definitionFile, p);
             }

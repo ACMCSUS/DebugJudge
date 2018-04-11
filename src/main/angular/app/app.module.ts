@@ -14,7 +14,7 @@ import {JudgeComponent} from './view-judge.component';
 import {ApiTeamServiceImpl} from './api-team.service';
 import {HttpClientModule} from '@angular/common/http';
 import {CodeEditorComponent} from './codeeditor.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ApiWebSocketService, ApiWebSocketServiceImpl} from './api-ws.service';
 import {DebuggingCardComponent} from "./debuggingcard.component";
 import {AdminStatusBoardComponent} from "./admin-statusboard.component";
@@ -24,6 +24,7 @@ import {SubmissionsViewComponent} from "./view-submissions.component";
 import {ApiAdminServiceImpl} from "./api-admin.service";
 import {ApiJudgeServiceImpl} from "./api-judge.service";
 import {DebuggingJudgeComponent} from "./debuggingjudge.component";
+import {AlgorithmicCardComponent} from "./algorithmiccard.component";
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import {DebuggingJudgeComponent} from "./debuggingjudge.component";
     AdminComponent,
     ScoreboardComponent,
     CodeEditorComponent,
+    AlgorithmicCardComponent,
     DebuggingCardComponent,
     DebuggingJudgeComponent,
     AdminStatusBoardComponent,
@@ -43,6 +45,7 @@ import {DebuggingJudgeComponent} from "./debuggingjudge.component";
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
     AppMaterialModule,
@@ -58,4 +61,5 @@ import {DebuggingJudgeComponent} from "./debuggingjudge.component";
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}

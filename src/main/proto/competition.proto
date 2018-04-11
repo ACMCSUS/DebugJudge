@@ -43,6 +43,11 @@ message Submission {
     string file_name = 1;
     string source_code = 2;
     string language = 3;
+
+    repeated AlgorithmicCaseResult execution_result = 4;
+
+    SubmissionJudgement preliminary_judgement = 5;
+    string preliminary_judgement_message = 6;
   }
 
   message List {
@@ -98,7 +103,22 @@ message Problem {
   }
 
   message AlgorithmicProblemValue {
-    string validator_program = 1;
+
+    string sample_case_directory = 1;
+    string secret_case_directory = 2;
+    uint64 time_limit_seconds = 3;
+    uint64 memory_limit_megabytes = 4;
+
+    oneof validator {
+      string validator_program = 5;
+      ValidatorScanner validator_scanner = 6;
+    }
+
+    message ValidatorScanner {
+      float float_precision = 1;
+      bool whitespace_sensitive = 2;
+      bool trailing_newline_sensitive = 3;
+    }
   }
 
   message List {
@@ -120,4 +140,10 @@ message Scoreboard {
     int32 score = 5;
     int32 penalty = 6;
   }
+}
+
+message AlgorithmicCaseResult {
+  string input = 1;
+  string expected = 2;
+  string actual = 3;
 }

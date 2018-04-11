@@ -21,11 +21,11 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.*;
-import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.ADMIN;
-import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.JUDGE;
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.*;
 import static acmcsus.debugjudge.ws.AdminSocketHandler.handleA2SMessage;
 import static acmcsus.debugjudge.ws.AdminSocketHandler.subscribeNewAdmin;
 import static acmcsus.debugjudge.ws.AutoJudgeSocketHandler.handleAJ2SMessage;
+import static acmcsus.debugjudge.ws.AutoJudgeSocketHandler.lostAutoJudge;
 import static acmcsus.debugjudge.ws.AutoJudgeSocketHandler.subscribeNewAutoJudge;
 import static acmcsus.debugjudge.ws.JudgeSocketHandler.handleJ2SMessage;
 import static acmcsus.debugjudge.ws.TeamSocketHandler.handleT2SMessage;
@@ -72,9 +72,16 @@ public class SocketHandler {
     logger.info("WebSocket closed");
 
     Profile profile = sessionProfileMap.remove(user);
+
     if (profile != null) {
-      if (profile.getProfileType() == JUDGE) {
-        JudgeQueueHandler.getInstance().disconnected(profile, user);
+      switch (profile.getProfileType()) {
+        case JUDGE: {
+          JudgeSocketHandler.lostJudge(user, profile);
+        }
+        case AUTO_JUDGE: {
+          lostAutoJudge(user, profile);
+          break;
+        }
       }
 
       profileSessionMap.get(profile.getId()).remove(user);
@@ -103,7 +110,7 @@ public class SocketHandler {
           break;
         }
         case T2SMESSAGE: {
-          if (ctx.profile != null && ctx.profile.getProfileType() == Profile.ProfileType.TEAM) {
+          if (ctx.profile != null && ctx.profile.getProfileType() == TEAM) {
             handleT2SMessage(ctx);
           }
           else {
@@ -205,7 +212,7 @@ public class SocketHandler {
     for (Map.Entry<Session, Profile> entry : sessionProfileMap.entrySet()) {
       try {
         if (msg.getValueCase() == ValueCase.S2TMESSAGE) {
-          if (entry.getValue().getProfileType() == Profile.ProfileType.TEAM) {
+          if (entry.getValue().getProfileType() == TEAM) {
             sendMessage(entry.getKey(), msg);
           }
         }
@@ -253,6 +260,7 @@ public class SocketHandler {
         ctx.res = S2CMessage.newBuilder()
             .setLoginResultMessage(
                 LoginResultMessage.newBuilder()
+                    .setProfile(ctx.profile)
                     .setValue(LoginResultMessage.LoginResult.SUCCESS))
             .build();
 
@@ -273,7 +281,7 @@ public class SocketHandler {
             break;
           }
           case AUTO_JUDGE: {
-            subscribeNewAutoJudge(ctx.session);
+            subscribeNewAutoJudge(ctx.session, ctx.profile);
             break;
           }
         }

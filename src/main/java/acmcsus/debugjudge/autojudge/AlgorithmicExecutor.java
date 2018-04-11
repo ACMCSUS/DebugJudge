@@ -61,7 +61,7 @@ public class AlgorithmicExecutor implements Function<Competition.Submission, Exe
 
       {
         Process process = new ProcessBuilder()
-            .command("bash", "-c", "sleep 40")//language.getRun())
+            .command("bash", "-c", language.getRun())
             .inheritIO()
             .start();
 

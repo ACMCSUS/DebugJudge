@@ -17,8 +17,11 @@ message AJ2SMessage {
     int32 team_id = 1;
     int32 problem_id = 2;
     int64 submission_id = 3;
-    SubmissionJudgement ruling = 4;
-    string rulingMessage = 5;
+
+    repeated AlgorithmicCaseResult execution_result = 4;
+
+    SubmissionJudgement preliminary_judgement = 5;
+    string preliminary_judgement_message = 6;
   }
 }
 
