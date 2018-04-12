@@ -1,6 +1,4 @@
-import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {ApiTeamService} from "./api-team.service";
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {CodeEditorComponent} from "./codeeditor.component";
 import {acmcsus} from "./proto/dbgjdg_pb";
 import Submission = acmcsus.debugjudge.Submission;
@@ -10,33 +8,59 @@ import Problem = acmcsus.debugjudge.Problem;
   selector: 'app-judge-debug',
   entryComponents: [CodeEditorComponent],
   template: `
-      <div id="sideBySide">
+    <div id="sideBySide">
+      <div>
+        <mat-card-subtitle>Original</mat-card-subtitle>
         <app-code-editor
             [precode]="problem.debuggingProblem.precode"
             [code]="problem.debuggingProblem.code"
             [postcode]="problem.debuggingProblem.postcode"
             [readonly]="true"></app-code-editor>
+      </div>
+      <div>
+        <mat-card-subtitle>Submission</mat-card-subtitle>
         <app-code-editor
             [precode]="problem.debuggingProblem.precode"
             [code]="submission.debuggingSubmission.code"
             [postcode]="problem.debuggingProblem.postcode"
             [readonly]="true"></app-code-editor>
+      </div>
+      <div>
+        <mat-card-subtitle>Answer</mat-card-subtitle>
         <app-code-editor
             [precode]="problem.debuggingProblem.precode"
             [code]="problem.debuggingProblem.answer"
             [postcode]="problem.debuggingProblem.postcode"
             [readonly]="true"></app-code-editor>
       </div>
+    </div>
+
+    <div id="sideBySide">
+      <div>
+        <mat-card-subtitle>Original vs Submission</mat-card-subtitle>
+        <app-diff [oldString]="problem.debuggingProblem.code"
+                  [newString]="submission.debuggingSubmission.code"></app-diff>
+      </div>
+      <div>
+        <mat-card-subtitle>Original vs Answer</mat-card-subtitle>
+        <app-diff [oldString]="problem.debuggingProblem.code"
+                  [newString]="problem.debuggingProblem.answer"></app-diff>
+      </div>
+    </div>
   `,
   styles: [`
-      #sideBySide {
-        display: flex;
-        flex-direction: row;
-        align-content: stretch;
-      }
-      app-code-editor {
-        flex: 1;
-      }
+    #sideBySide {
+      display: flex;
+      flex-direction: row;
+      align-content: stretch;
+    }
+    #sideBySide div {
+      flex: 1;
+    }
+    
+    mat-card-subtitle {
+      margin-bottom: 0;
+    }
   `],
 })
 export class DebuggingJudgeComponent implements OnInit, OnDestroy {
