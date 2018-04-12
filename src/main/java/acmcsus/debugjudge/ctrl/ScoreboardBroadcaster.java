@@ -9,9 +9,14 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.*;
+import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
+import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
+// I'm sorry for the horrible code within. If I have nothing better to do I might clean. ~merrillm
 public class ScoreboardBroadcaster {
 
   private static List<Problem> problems = null;
@@ -27,11 +32,13 @@ public class ScoreboardBroadcaster {
     public Integer id;
     public Score score;
     public int place;
+    public List<Long> solveTimes;
 
-    TeamBarebones(Competition.Profile prof, Score score) {
+    TeamBarebones(Competition.Profile prof, Score score, List<Long> solveTimes) {
       this.name = prof.getName();
       this.id = prof.getId();
       this.score = score;
+      this.solveTimes = solveTimes;
     }
   }
 
@@ -53,66 +60,95 @@ public class ScoreboardBroadcaster {
           .collect(toList());
 
       Map<Integer, Score> teamScores = new HashMap<>();
+      Map<Integer, List<Long>> teamSolveTimeSeconds = new HashMap<>();
+
+      Map<Integer, Map<Integer, List<Submission>>> teamProblemSubmissions = new HashMap<>();
       Map<Integer, Map<Integer, Integer>> teamProblemSubmissionCount = new HashMap<>();
       Map<Integer, Map<Integer, Boolean>> teamProblemAcceptance = new HashMap<>();
 
-      Map<Integer, Integer> defProbSubmissionCount = new HashMap<>();
-      Map<Integer, Boolean> defProbAcceptance = new HashMap<>();
+      // Initialize maps
+      {
+        Map<Integer, List<Submission>> defProbSubmissions = new HashMap<>();
+        Map<Integer, Integer> defProbSubmissionCount = new HashMap<>();
+        Map<Integer, Boolean> defProbAcceptance = new HashMap<>();
 
-      for (Problem prob : problems) {
-        defProbSubmissionCount.put(prob.getId(), 0);
-        defProbAcceptance.put(prob.getId(), false);
+        for (Problem prob : problems) {
+          defProbSubmissions.put(prob.getId(), emptyList());
+          defProbSubmissionCount.put(prob.getId(), 0);
+          defProbAcceptance.put(prob.getId(), false);
+        }
+        for (Profile team : teams) {
+          teamProblemSubmissions.put(team.getId(), new HashMap<>(defProbSubmissions));
+          teamProblemSubmissionCount.put(team.getId(), new HashMap<>(defProbSubmissionCount));
+          teamProblemAcceptance.put(team.getId(), new HashMap<>(defProbAcceptance));
+          teamScores.put(team.getId(), new Score());
+          teamSolveTimeSeconds.put(team.getId(), Collections.emptyList());
+        }
+      }
+
+      for (Submission submission : SUBMISSION_STORE.readAll()) {
+        if (submission.getTeamId() == 0 ||
+            !teamProblemSubmissions.containsKey(submission.getTeamId())) {
+          continue;
+        }
+
+        Map<Integer, List<Submission>> problemSubmissions =
+            teamProblemSubmissions.get(submission.getTeamId());
+
+        if (problemSubmissions != null) {
+          if (!(problemSubmissions instanceof ArrayList)) {
+            problemSubmissions.put(
+                submission.getProblemId(),
+                new ArrayList<>(problemSubmissions.get(submission.getProblemId())));
+          }
+          problemSubmissions.get(submission.getProblemId()).add(submission);
+        }
       }
 
       for (Profile team : teams) {
-        teamProblemSubmissionCount.put(team.getId(), new HashMap<>(defProbSubmissionCount));
-        teamProblemAcceptance.put(team.getId(), new HashMap<>(defProbAcceptance));
-        teamScores.put(team.getId(), new Score());
-      }
+        Score score = new Score();
+        long potentialPenalty = 0;
+        List<Long> solveTimeSeconds = new ArrayList<>();
 
-      List<Submission> submissions = SUBMISSION_STORE.readAll();
+        for (Problem problem : problems) {
+          List<Submission> teamSubmissions =
+              teamProblemSubmissions.get(team.getId()).get(problem.getId());
 
-      for (Submission submission : submissions) {
-        if (submission.getTeamId() == 0 ||
-            !defProbAcceptance.containsKey(submission.getProblemId())) {
-          continue;
-        }
+          teamSubmissions.sort(comparing(Submission::getSubmissionTimeSeconds));
 
-        Score score = teamScores.get(submission.getTeamId());
+          Iterator<Submission> itr = teamSubmissions.iterator();
 
-        Map<Integer, Integer> problemCounts = teamProblemSubmissionCount.get(submission.getTeamId());
+          while (itr.hasNext()) {
+            Submission sub = itr.next();
+            potentialPenalty += sub.getSubmissionTimeSeconds()/60;
 
-        if (problemCounts == null) {
-          continue;
-        }
+            if (sub.getJudgement() == SubmissionJudgement.JUDGEMENT_SUCCESS) {
+              score.correct += 1;
+              score.penalty += potentialPenalty;
+              solveTimeSeconds.add(sub.getSubmissionTimeSeconds());
+              teamProblemAcceptance.get(team.getId()).put(problem.getId(), true);
 
-        problemCounts.put(
-            submission.getProblemId(),
-            problemCounts.get(submission.getProblemId()) + 1);
-
-        if (submission.getJudgement() == SubmissionJudgement.JUDGEMENT_SUCCESS) {
-          if (!teamProblemAcceptance.containsKey(submission.getTeamId())) {
-            teamProblemAcceptance.put(submission.getTeamId(), new HashMap<>());
+              while (itr.hasNext()) {
+                itr.next();
+                itr.remove();
+              }
+              break;
+            }
           }
-
-          Map<Integer, Boolean> problemAcceptances = teamProblemAcceptance.get(submission.getTeamId());
-          Boolean prev = problemAcceptances.put(submission.getProblemId(), true);
-
-          if (prev == null || !prev) {
-            score.correct += 1;
-          }
+          teamProblemSubmissionCount.get(team.getId()).put(problem.getId(), teamSubmissions.size());
         }
+        solveTimeSeconds.sort(reverseOrder());
+
+        teamScores.put(team.getId(), score);
+        teamSolveTimeSeconds.put(team.getId(), solveTimeSeconds);
       }
 
       List<TeamBarebones> teamBarebones = teams.stream()
-          .map(team -> new TeamBarebones(team, teamScores.get(team.getId())))
+          .map(team -> new TeamBarebones(team,
+              teamScores.get(team.getId()),
+              teamSolveTimeSeconds.get(team.getId())))
+          .sorted(ScoreboardBroadcaster::compareTeams)
           .collect(Collectors.toList());
-
-      Comparator<Score> scoreComparator = Comparator
-          .<Score, Integer>comparing(score -> score.correct).reversed()
-          .thenComparing(score -> score.penalty);
-
-      teamBarebones.sort((a, b) -> scoreComparator.compare(a.score, b.score));
 
       int place = 1;
       if (!teamBarebones.isEmpty()) {
@@ -121,7 +157,7 @@ public class ScoreboardBroadcaster {
           TeamBarebones prev = teamBarebones.get(i - 1);
           TeamBarebones cur = teamBarebones.get(i);
 
-          if (scoreComparator.compare(cur.score, prev.score) != 0) {
+          if (compareTeams(cur, prev) != 0) {
             place = i + 1;
           }
 
@@ -153,4 +189,24 @@ public class ScoreboardBroadcaster {
       e.printStackTrace();
     }
   }
+
+  private static int compareTeams(TeamBarebones a, TeamBarebones b) {
+    if (a.score.correct != b.score.correct) {
+      return -Integer.compare(a.score.correct, b.score.correct);
+    }
+    if (a.score.penalty != b.score.penalty) {
+      return Integer.compare(a.score.penalty, b.score.penalty);
+    }
+    else {
+      for (int i = 0; i < a.solveTimes.size(); i++) {
+        long aSolveTime = a.solveTimes.get(i);
+        long bSolveTime = b.solveTimes.get(i);
+        if (aSolveTime != bSolveTime) {
+          return Long.compare(aSolveTime, bSolveTime);
+        }
+      }
+    }
+    return 0;
+  }
+
 }
