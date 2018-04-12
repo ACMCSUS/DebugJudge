@@ -65,7 +65,9 @@ public class StateService {
   }
 
   public Disposable addSubmissionRulingListener(Consumer<Submission> submissionObserver, Predicate<Submission> filter) {
-    return submissionRulingSubject.subscribe(submissionObserver);
+    return submissionRulingSubject
+        .filter(filter)
+        .subscribe(submissionObserver);
   }
 
   public Disposable addJudgeProblemsListener(Consumer<List<Problem>> problemReloader) {

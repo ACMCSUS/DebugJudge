@@ -13,6 +13,7 @@ import java.util.*;
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
 import static acmcsus.debugjudge.proto.Competition.SubmissionJudgement.JUDGEMENT_UNKNOWN;
 import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
+import static com.google.protobuf.TextFormat.shortDebugString;
 import static java.lang.String.format;
 
 /**
@@ -87,11 +88,37 @@ public class JudgeQueueHandler {
     }
 
     JudgeSession judgeSession = new JudgeSession(judge, session);
+    judgeSessionMap.put(judgeSession.judge.getId(), judgeSession);
+  }
+
+  public void started(Profile judge, Session session) {
     if (session.isOpen()) {
       welcome(session, "");
     }
-    judgeSessionMap.put(judgeSession.judge.getId(), judgeSession);
-    match(judgeSession);
+    if (!judgeSessionMap.containsKey(judge.getId())) {
+      connected(judge, session);
+    }
+    match(judgeSessionMap.get(judge.getId()));
+  }
+  public void stopped(Profile judge) {
+    JudgeSession judgeSession = judgeSessionMap.get(judge.getId());
+
+    if (judgeSession == null) {
+      return;
+    }
+
+    if (judgeSession.currentSubmission != null) {
+      submissionSessionMap.remove(idForSubmission(judgeSession.currentSubmission));
+      matchOrPushBack(judgeSession.currentSubmission);
+    }
+
+    if (judgeSession.socketSession.isOpen()) {
+      unmatched(judgeSession);
+      goodbye(judgeSession.socketSession, "Stopped Judging");
+    }
+
+    waitingJudges.removeIf(jSess -> jSess.judge.getId() == judge.getId());
+    judgeSession.currentSubmission = null;
   }
 
   public void disconnected(Profile judge, Session session) {
@@ -169,19 +196,22 @@ public class JudgeQueueHandler {
   public void setJudgePreferences(Profile judge, Session session, Map<Integer, Boolean> map) {
     JudgeSession judgeSession = judgeSessionMap.get(judge.getId());
     if (judgeSession == null) {
-      kick(judge, "You need to login!");
+      connected(judge, session);
+//      kick(judge, "You need to login!");
     }
-    else {
-      judgeSession.setJudgePreferences(map);
 
-      if (judgeSession.currentSubmission == null) {
+    judgeSession = judgeSessionMap.get(judge.getId());
+    judgeSession.setJudgePreferences(map);
+
+    if (judgeSession.currentSubmission == null) {
+      if (waitingJudges.contains(judgeSession)) {
         match(judgeSession);
       }
-      else if (map.containsKey(judgeSession.currentSubmission.getProblemId())) {
-        boolean needNewProblem = !map.get(judgeSession.currentSubmission.getProblemId());
-        if (needNewProblem) {
-          defer(judgeSession.judge);
-        }
+    }
+    else if (map.containsKey(judgeSession.currentSubmission.getProblemId())) {
+      boolean needNewProblem = !map.get(judgeSession.currentSubmission.getProblemId());
+      if (needNewProblem) {
+        defer(judgeSession.judge);
       }
     }
   }

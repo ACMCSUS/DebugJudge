@@ -68,17 +68,15 @@ public class ScoreboardBroadcaster {
 
       // Initialize maps
       {
-        Map<Integer, List<Submission>> defProbSubmissions = new HashMap<>();
         Map<Integer, Integer> defProbSubmissionCount = new HashMap<>();
         Map<Integer, Boolean> defProbAcceptance = new HashMap<>();
 
         for (Problem prob : problems) {
-          defProbSubmissions.put(prob.getId(), emptyList());
           defProbSubmissionCount.put(prob.getId(), 0);
           defProbAcceptance.put(prob.getId(), false);
         }
         for (Profile team : teams) {
-          teamProblemSubmissions.put(team.getId(), new HashMap<>(defProbSubmissions));
+          teamProblemSubmissions.put(team.getId(), new HashMap<>());
           teamProblemSubmissionCount.put(team.getId(), new HashMap<>(defProbSubmissionCount));
           teamProblemAcceptance.put(team.getId(), new HashMap<>(defProbAcceptance));
           teamScores.put(team.getId(), new Score());
@@ -96,12 +94,10 @@ public class ScoreboardBroadcaster {
             teamProblemSubmissions.get(submission.getTeamId());
 
         if (problemSubmissions != null) {
-          if (!(problemSubmissions instanceof ArrayList)) {
-            problemSubmissions.put(
-                submission.getProblemId(),
-                new ArrayList<>(problemSubmissions.get(submission.getProblemId())));
-          }
-          problemSubmissions.get(submission.getProblemId()).add(submission);
+          List<Submission> submissions = problemSubmissions
+              .computeIfAbsent(submission.getProblemId(), k -> new ArrayList<>());
+
+          submissions.add(submission);
         }
       }
 
@@ -112,7 +108,7 @@ public class ScoreboardBroadcaster {
 
         for (Problem problem : problems) {
           List<Submission> teamSubmissions =
-              teamProblemSubmissions.get(team.getId()).get(problem.getId());
+              teamProblemSubmissions.get(team.getId()).getOrDefault(problem.getId(), emptyList());
 
           teamSubmissions.sort(comparing(Submission::getSubmissionTimeSeconds));
 
