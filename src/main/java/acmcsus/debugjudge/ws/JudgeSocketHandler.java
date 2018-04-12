@@ -29,11 +29,11 @@ public class JudgeSocketHandler {
 
     switch (j2SMessage.getValueCase()) {
       case STARTJUDGINGMESSAGE: {
-        judgeQueueHandler.connected(ctx.profile, ctx.session);
+        judgeQueueHandler.started(ctx.profile, ctx.session);
         break;
       }
       case STOPJUDGINGMESSAGE: {
-        judgeQueueHandler.disconnected(ctx.profile, ctx.session);
+        judgeQueueHandler.stopped(ctx.profile);
         break;
       }
       case SUBMISSIONJUDGEMENTMESSAGE: {

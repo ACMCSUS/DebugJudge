@@ -259,6 +259,9 @@ public class MessageStores {
       requireValid(profile);
 
       Profile.Builder builder = Profile.newBuilder();
+      builder.setName(profile.getName());
+      builder.setProfileType(profile.getProfileType());
+
       if (profile.getId() == 0) {
         int id = 1;
         while (Files.exists(profileDirectoryPath.resolve("prof" + id))) {
