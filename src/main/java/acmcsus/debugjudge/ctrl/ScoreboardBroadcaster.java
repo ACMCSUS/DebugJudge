@@ -103,10 +103,10 @@ public class ScoreboardBroadcaster {
 
       for (Profile team : teams) {
         Score score = new Score();
-        long potentialPenalty = 0;
         List<Long> solveTimeSeconds = new ArrayList<>();
 
         for (Problem problem : problems) {
+          long potentialPenalty = 0;
           List<Submission> teamSubmissions =
               teamProblemSubmissions.get(team.getId()).getOrDefault(problem.getId(), emptyList());
 
@@ -116,11 +116,11 @@ public class ScoreboardBroadcaster {
 
           while (itr.hasNext()) {
             Submission sub = itr.next();
-            potentialPenalty += sub.getSubmissionTimeSeconds()/60;
+            potentialPenalty += 5 + sub.getSubmissionTimeSeconds()/60;
 
             if (sub.getJudgement() == SubmissionJudgement.JUDGEMENT_SUCCESS) {
               score.correct += 1;
-              score.penalty += potentialPenalty;
+              score.penalty += potentialPenalty - 5;
               solveTimeSeconds.add(sub.getSubmissionTimeSeconds());
               teamProblemAcceptance.get(team.getId()).put(problem.getId(), true);
 

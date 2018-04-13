@@ -29,6 +29,7 @@ message J2SMessage {
     int32 problem_id = 2;
     int64 submission_id = 3;
     SubmissionJudgement ruling = 4;
+    string ruling_message = 5;
   }
   message JudgingPreferencesMessage {
     map<int32, bool> preferences = 1;

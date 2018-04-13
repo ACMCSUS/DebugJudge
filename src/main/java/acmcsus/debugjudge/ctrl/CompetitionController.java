@@ -71,7 +71,8 @@ public class CompetitionController {
   }
 
   public static long getElapsedSeconds() {
-    return stopwatch.elapsed(TimeUnit.SECONDS);
+    long ret = stopwatch.elapsed(TimeUnit.SECONDS);
+    return ret;
   }
 
 }

@@ -7334,6 +7334,7 @@
                      * @property {number|null} [problemId] SubmissionJudgementMessage problemId
                      * @property {number|Long|null} [submissionId] SubmissionJudgementMessage submissionId
                      * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] SubmissionJudgementMessage ruling
+                     * @property {string|null} [rulingMessage] SubmissionJudgementMessage rulingMessage
                      */
     
                     /**
@@ -7384,6 +7385,14 @@
                     SubmissionJudgementMessage.prototype.ruling = 0;
     
                     /**
+                     * SubmissionJudgementMessage rulingMessage.
+                     * @member {string} rulingMessage
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @instance
+                     */
+                    SubmissionJudgementMessage.prototype.rulingMessage = "";
+    
+                    /**
                      * Creates a new SubmissionJudgementMessage instance using the specified properties.
                      * @function create
                      * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
@@ -7415,6 +7424,8 @@
                             writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
                         if (message.ruling != null && message.hasOwnProperty("ruling"))
                             writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ruling);
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.rulingMessage);
                         return writer;
                     };
     
@@ -7460,6 +7471,9 @@
                                 break;
                             case 4:
                                 message.ruling = reader.int32();
+                                break;
+                            case 5:
+                                message.rulingMessage = reader.string();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -7514,6 +7528,9 @@
                             case 2:
                                 break;
                             }
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            if (!$util.isString(message.rulingMessage))
+                                return "rulingMessage: string expected";
                         return null;
                     };
     
@@ -7556,6 +7573,8 @@
                             message.ruling = 2;
                             break;
                         }
+                        if (object.rulingMessage != null)
+                            message.rulingMessage = String(object.rulingMessage);
                         return message;
                     };
     
@@ -7581,6 +7600,7 @@
                             } else
                                 object.submissionId = options.longs === String ? "0" : 0;
                             object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                            object.rulingMessage = "";
                         }
                         if (message.teamId != null && message.hasOwnProperty("teamId"))
                             object.teamId = message.teamId;
@@ -7593,6 +7613,8 @@
                                 object.submissionId = options.longs === String ? $util.Long.prototype.toString.call(message.submissionId) : options.longs === Number ? new $util.LongBits(message.submissionId.low >>> 0, message.submissionId.high >>> 0).toNumber() : message.submissionId;
                         if (message.ruling != null && message.hasOwnProperty("ruling"))
                             object.ruling = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.ruling] : message.ruling;
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            object.rulingMessage = message.rulingMessage;
                         return object;
                     };
     

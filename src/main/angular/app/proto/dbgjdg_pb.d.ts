@@ -3009,6 +3009,9 @@ export namespace acmcsus {
 
                 /** SubmissionJudgementMessage ruling */
                 ruling?: (acmcsus.debugjudge.SubmissionJudgement|null);
+
+                /** SubmissionJudgementMessage rulingMessage */
+                rulingMessage?: (string|null);
             }
 
             /** Represents a SubmissionJudgementMessage. */
@@ -3031,6 +3034,9 @@ export namespace acmcsus {
 
                 /** SubmissionJudgementMessage ruling. */
                 public ruling: acmcsus.debugjudge.SubmissionJudgement;
+
+                /** SubmissionJudgementMessage rulingMessage. */
+                public rulingMessage: string;
 
                 /**
                  * Creates a new SubmissionJudgementMessage instance using the specified properties.

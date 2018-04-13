@@ -27,7 +27,7 @@ public class DebugJudgeMain {
 
     path("/api/", ApiBaseController::baseApiPath);
 
-    before("/register", SecurityApi::judgeFilter);
+//    before("/register", SecurityApi::judgeFilter);
     get("/register", DebugJudgeMain::registerRoute);
     post("/register", SecurityApi::registerTeam);
 
@@ -42,12 +42,17 @@ public class DebugJudgeMain {
     before((req, res) -> {
       Profile profile = getProfile(req);
 
-      if (("/".equals(req.uri()) || "/index.html".equals(req.uri())) && profile == null) {
-        res.redirect("/login");
+      if (("/".equals(req.uri()) || "/index.html".equals(req.uri()))) {
+        if (profile == null) {
+          res.redirect("/login");
+          return;
+        }
+        else if (profile.getProfileType() == Profile.ProfileType.REGISTRAR) {
+          res.redirect("/register");
+          return;
+        }
       }
-      else {
-        staticHandler.consume(req.raw(), res.raw());
-      }
+      staticHandler.consume(req.raw(), res.raw());
     });
 
     init();
@@ -98,7 +103,7 @@ public class DebugJudgeMain {
   private static Object registerRoute(Request req, Response res) {
     try {
       Profile profile = SecurityApi.getProfile(req);
-      if (profile == null || profile.getProfileType() != Profile.ProfileType.JUDGE) {
+      if (profile == null || profile.getProfileType() != Profile.ProfileType.REGISTRAR) {
         res.redirect("/");
         return "";
       }
