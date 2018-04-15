@@ -102,7 +102,7 @@ public class SocketHandler {
       ctx.session = user;
       ctx.req = C2SMessage.parseFrom(inputStream);
 
-      logger.debug("Received Message: " + shortDebugString(ctx.req));
+      logger.info("Received Message: " + shortDebugString(ctx.req));
 
       switch (ctx.req.getValueCase()) {
         case LOGINMESSAGE: {
@@ -173,7 +173,7 @@ public class SocketHandler {
   }
 
   public static void sendMessage(Session session, S2CMessage msg) throws IOException {
-    logger.debug("Sent Message: {}", shortDebugString(msg));
+    logger.info("Sent Message: {}", shortDebugString(msg));
     session.getRemote().sendBytes(ByteBuffer.wrap(msg.toByteArray()));
   }
 

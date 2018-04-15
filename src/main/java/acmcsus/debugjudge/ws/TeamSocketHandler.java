@@ -28,6 +28,10 @@ public class TeamSocketHandler {
     switch (t2s.getValueCase()) {
       case SUBMISSIONCREATEMESSAGE: {
         try {
+          if (CompetitionController.getCompetitionState() != CompetitionState.STARTED) {
+            alert(ctx.session, "You cannot submit right now!");
+            break;
+          }
           Submission sent = t2s.getSubmissionCreateMessage().getSubmission();
           StateService.instance.submissionCreate(ctx.profile.getId(), sent.getProblemId(), sent);
         }

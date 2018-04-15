@@ -1114,6 +1114,9 @@
                      * @property {string|null} [fileName] AlgorithmicSubmission fileName
                      * @property {string|null} [sourceCode] AlgorithmicSubmission sourceCode
                      * @property {string|null} [language] AlgorithmicSubmission language
+                     * @property {Array.<acmcsus.debugjudge.IAlgorithmicCaseResult>|null} [executionResult] AlgorithmicSubmission executionResult
+                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [preliminaryJudgement] AlgorithmicSubmission preliminaryJudgement
+                     * @property {string|null} [preliminaryJudgementMessage] AlgorithmicSubmission preliminaryJudgementMessage
                      */
     
                     /**
@@ -1125,6 +1128,7 @@
                      * @param {acmcsus.debugjudge.Submission.IAlgorithmicSubmission=} [properties] Properties to set
                      */
                     function AlgorithmicSubmission(properties) {
+                        this.executionResult = [];
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -1156,6 +1160,30 @@
                     AlgorithmicSubmission.prototype.language = "";
     
                     /**
+                     * AlgorithmicSubmission executionResult.
+                     * @member {Array.<acmcsus.debugjudge.IAlgorithmicCaseResult>} executionResult
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.executionResult = $util.emptyArray;
+    
+                    /**
+                     * AlgorithmicSubmission preliminaryJudgement.
+                     * @member {acmcsus.debugjudge.SubmissionJudgement} preliminaryJudgement
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.preliminaryJudgement = 0;
+    
+                    /**
+                     * AlgorithmicSubmission preliminaryJudgementMessage.
+                     * @member {string} preliminaryJudgementMessage
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.preliminaryJudgementMessage = "";
+    
+                    /**
                      * Creates a new AlgorithmicSubmission instance using the specified properties.
                      * @function create
                      * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
@@ -1185,6 +1213,13 @@
                             writer.uint32(/* id 2, wireType 2 =*/18).string(message.sourceCode);
                         if (message.language != null && message.hasOwnProperty("language"))
                             writer.uint32(/* id 3, wireType 2 =*/26).string(message.language);
+                        if (message.executionResult != null && message.executionResult.length)
+                            for (var i = 0; i < message.executionResult.length; ++i)
+                                $root.acmcsus.debugjudge.AlgorithmicCaseResult.encode(message.executionResult[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            writer.uint32(/* id 5, wireType 0 =*/40).int32(message.preliminaryJudgement);
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            writer.uint32(/* id 6, wireType 2 =*/50).string(message.preliminaryJudgementMessage);
                         return writer;
                     };
     
@@ -1227,6 +1262,17 @@
                                 break;
                             case 3:
                                 message.language = reader.string();
+                                break;
+                            case 4:
+                                if (!(message.executionResult && message.executionResult.length))
+                                    message.executionResult = [];
+                                message.executionResult.push($root.acmcsus.debugjudge.AlgorithmicCaseResult.decode(reader, reader.uint32()));
+                                break;
+                            case 5:
+                                message.preliminaryJudgement = reader.int32();
+                                break;
+                            case 6:
+                                message.preliminaryJudgementMessage = reader.string();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -1272,6 +1318,27 @@
                         if (message.language != null && message.hasOwnProperty("language"))
                             if (!$util.isString(message.language))
                                 return "language: string expected";
+                        if (message.executionResult != null && message.hasOwnProperty("executionResult")) {
+                            if (!Array.isArray(message.executionResult))
+                                return "executionResult: array expected";
+                            for (var i = 0; i < message.executionResult.length; ++i) {
+                                var error = $root.acmcsus.debugjudge.AlgorithmicCaseResult.verify(message.executionResult[i]);
+                                if (error)
+                                    return "executionResult." + error;
+                            }
+                        }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            switch (message.preliminaryJudgement) {
+                            default:
+                                return "preliminaryJudgement: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                                break;
+                            }
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            if (!$util.isString(message.preliminaryJudgementMessage))
+                                return "preliminaryJudgementMessage: string expected";
                         return null;
                     };
     
@@ -1293,6 +1360,32 @@
                             message.sourceCode = String(object.sourceCode);
                         if (object.language != null)
                             message.language = String(object.language);
+                        if (object.executionResult) {
+                            if (!Array.isArray(object.executionResult))
+                                throw TypeError(".acmcsus.debugjudge.Submission.AlgorithmicSubmission.executionResult: array expected");
+                            message.executionResult = [];
+                            for (var i = 0; i < object.executionResult.length; ++i) {
+                                if (typeof object.executionResult[i] !== "object")
+                                    throw TypeError(".acmcsus.debugjudge.Submission.AlgorithmicSubmission.executionResult: object expected");
+                                message.executionResult[i] = $root.acmcsus.debugjudge.AlgorithmicCaseResult.fromObject(object.executionResult[i]);
+                            }
+                        }
+                        switch (object.preliminaryJudgement) {
+                        case "JUDGEMENT_UNKNOWN":
+                        case 0:
+                            message.preliminaryJudgement = 0;
+                            break;
+                        case "JUDGEMENT_SUCCESS":
+                        case 1:
+                            message.preliminaryJudgement = 1;
+                            break;
+                        case "JUDGEMENT_FAILURE":
+                        case 2:
+                            message.preliminaryJudgement = 2;
+                            break;
+                        }
+                        if (object.preliminaryJudgementMessage != null)
+                            message.preliminaryJudgementMessage = String(object.preliminaryJudgementMessage);
                         return message;
                     };
     
@@ -1309,10 +1402,14 @@
                         if (!options)
                             options = {};
                         var object = {};
+                        if (options.arrays || options.defaults)
+                            object.executionResult = [];
                         if (options.defaults) {
                             object.fileName = "";
                             object.sourceCode = "";
                             object.language = "";
+                            object.preliminaryJudgement = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                            object.preliminaryJudgementMessage = "";
                         }
                         if (message.fileName != null && message.hasOwnProperty("fileName"))
                             object.fileName = message.fileName;
@@ -1320,6 +1417,15 @@
                             object.sourceCode = message.sourceCode;
                         if (message.language != null && message.hasOwnProperty("language"))
                             object.language = message.language;
+                        if (message.executionResult && message.executionResult.length) {
+                            object.executionResult = [];
+                            for (var j = 0; j < message.executionResult.length; ++j)
+                                object.executionResult[j] = $root.acmcsus.debugjudge.AlgorithmicCaseResult.toObject(message.executionResult[j], options);
+                        }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            object.preliminaryJudgement = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.preliminaryJudgement] : message.preliminaryJudgement;
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            object.preliminaryJudgementMessage = message.preliminaryJudgementMessage;
                         return object;
                     };
     
@@ -3099,6 +3205,8 @@
                          * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
                          * @interface IValidatorScanner
                          * @property {number|null} [floatPrecision] ValidatorScanner floatPrecision
+                         * @property {boolean|null} [whitespaceSensitive] ValidatorScanner whitespaceSensitive
+                         * @property {boolean|null} [trailingNewlineSensitive] ValidatorScanner trailingNewlineSensitive
                          */
     
                         /**
@@ -3123,6 +3231,22 @@
                          * @instance
                          */
                         ValidatorScanner.prototype.floatPrecision = 0;
+    
+                        /**
+                         * ValidatorScanner whitespaceSensitive.
+                         * @member {boolean} whitespaceSensitive
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @instance
+                         */
+                        ValidatorScanner.prototype.whitespaceSensitive = false;
+    
+                        /**
+                         * ValidatorScanner trailingNewlineSensitive.
+                         * @member {boolean} trailingNewlineSensitive
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @instance
+                         */
+                        ValidatorScanner.prototype.trailingNewlineSensitive = false;
     
                         /**
                          * Creates a new ValidatorScanner instance using the specified properties.
@@ -3150,6 +3274,10 @@
                                 writer = $Writer.create();
                             if (message.floatPrecision != null && message.hasOwnProperty("floatPrecision"))
                                 writer.uint32(/* id 1, wireType 5 =*/13).float(message.floatPrecision);
+                            if (message.whitespaceSensitive != null && message.hasOwnProperty("whitespaceSensitive"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).bool(message.whitespaceSensitive);
+                            if (message.trailingNewlineSensitive != null && message.hasOwnProperty("trailingNewlineSensitive"))
+                                writer.uint32(/* id 3, wireType 0 =*/24).bool(message.trailingNewlineSensitive);
                             return writer;
                         };
     
@@ -3186,6 +3314,12 @@
                                 switch (tag >>> 3) {
                                 case 1:
                                     message.floatPrecision = reader.float();
+                                    break;
+                                case 2:
+                                    message.whitespaceSensitive = reader.bool();
+                                    break;
+                                case 3:
+                                    message.trailingNewlineSensitive = reader.bool();
                                     break;
                                 default:
                                     reader.skipType(tag & 7);
@@ -3225,6 +3359,12 @@
                             if (message.floatPrecision != null && message.hasOwnProperty("floatPrecision"))
                                 if (typeof message.floatPrecision !== "number")
                                     return "floatPrecision: number expected";
+                            if (message.whitespaceSensitive != null && message.hasOwnProperty("whitespaceSensitive"))
+                                if (typeof message.whitespaceSensitive !== "boolean")
+                                    return "whitespaceSensitive: boolean expected";
+                            if (message.trailingNewlineSensitive != null && message.hasOwnProperty("trailingNewlineSensitive"))
+                                if (typeof message.trailingNewlineSensitive !== "boolean")
+                                    return "trailingNewlineSensitive: boolean expected";
                             return null;
                         };
     
@@ -3242,6 +3382,10 @@
                             var message = new $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner();
                             if (object.floatPrecision != null)
                                 message.floatPrecision = Number(object.floatPrecision);
+                            if (object.whitespaceSensitive != null)
+                                message.whitespaceSensitive = Boolean(object.whitespaceSensitive);
+                            if (object.trailingNewlineSensitive != null)
+                                message.trailingNewlineSensitive = Boolean(object.trailingNewlineSensitive);
                             return message;
                         };
     
@@ -3258,10 +3402,17 @@
                             if (!options)
                                 options = {};
                             var object = {};
-                            if (options.defaults)
+                            if (options.defaults) {
                                 object.floatPrecision = 0;
+                                object.whitespaceSensitive = false;
+                                object.trailingNewlineSensitive = false;
+                            }
                             if (message.floatPrecision != null && message.hasOwnProperty("floatPrecision"))
                                 object.floatPrecision = options.json && !isFinite(message.floatPrecision) ? String(message.floatPrecision) : message.floatPrecision;
+                            if (message.whitespaceSensitive != null && message.hasOwnProperty("whitespaceSensitive"))
+                                object.whitespaceSensitive = message.whitespaceSensitive;
+                            if (message.trailingNewlineSensitive != null && message.hasOwnProperty("trailingNewlineSensitive"))
+                                object.trailingNewlineSensitive = message.trailingNewlineSensitive;
                             return object;
                         };
     
@@ -4083,6 +4234,238 @@
                 })();
     
                 return Scoreboard;
+            })();
+    
+            debugjudge.AlgorithmicCaseResult = (function() {
+    
+                /**
+                 * Properties of an AlgorithmicCaseResult.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IAlgorithmicCaseResult
+                 * @property {string|null} [input] AlgorithmicCaseResult input
+                 * @property {string|null} [expected] AlgorithmicCaseResult expected
+                 * @property {string|null} [actual] AlgorithmicCaseResult actual
+                 */
+    
+                /**
+                 * Constructs a new AlgorithmicCaseResult.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents an AlgorithmicCaseResult.
+                 * @implements IAlgorithmicCaseResult
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IAlgorithmicCaseResult=} [properties] Properties to set
+                 */
+                function AlgorithmicCaseResult(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * AlgorithmicCaseResult input.
+                 * @member {string} input
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @instance
+                 */
+                AlgorithmicCaseResult.prototype.input = "";
+    
+                /**
+                 * AlgorithmicCaseResult expected.
+                 * @member {string} expected
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @instance
+                 */
+                AlgorithmicCaseResult.prototype.expected = "";
+    
+                /**
+                 * AlgorithmicCaseResult actual.
+                 * @member {string} actual
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @instance
+                 */
+                AlgorithmicCaseResult.prototype.actual = "";
+    
+                /**
+                 * Creates a new AlgorithmicCaseResult instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @static
+                 * @param {acmcsus.debugjudge.IAlgorithmicCaseResult=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.AlgorithmicCaseResult} AlgorithmicCaseResult instance
+                 */
+                AlgorithmicCaseResult.create = function create(properties) {
+                    return new AlgorithmicCaseResult(properties);
+                };
+    
+                /**
+                 * Encodes the specified AlgorithmicCaseResult message. Does not implicitly {@link acmcsus.debugjudge.AlgorithmicCaseResult.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @static
+                 * @param {acmcsus.debugjudge.IAlgorithmicCaseResult} message AlgorithmicCaseResult message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                AlgorithmicCaseResult.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.input != null && message.hasOwnProperty("input"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.input);
+                    if (message.expected != null && message.hasOwnProperty("expected"))
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.expected);
+                    if (message.actual != null && message.hasOwnProperty("actual"))
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.actual);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified AlgorithmicCaseResult message, length delimited. Does not implicitly {@link acmcsus.debugjudge.AlgorithmicCaseResult.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @static
+                 * @param {acmcsus.debugjudge.IAlgorithmicCaseResult} message AlgorithmicCaseResult message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                AlgorithmicCaseResult.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes an AlgorithmicCaseResult message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.AlgorithmicCaseResult} AlgorithmicCaseResult
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                AlgorithmicCaseResult.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.AlgorithmicCaseResult();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.input = reader.string();
+                            break;
+                        case 2:
+                            message.expected = reader.string();
+                            break;
+                        case 3:
+                            message.actual = reader.string();
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes an AlgorithmicCaseResult message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.AlgorithmicCaseResult} AlgorithmicCaseResult
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                AlgorithmicCaseResult.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies an AlgorithmicCaseResult message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                AlgorithmicCaseResult.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.input != null && message.hasOwnProperty("input"))
+                        if (!$util.isString(message.input))
+                            return "input: string expected";
+                    if (message.expected != null && message.hasOwnProperty("expected"))
+                        if (!$util.isString(message.expected))
+                            return "expected: string expected";
+                    if (message.actual != null && message.hasOwnProperty("actual"))
+                        if (!$util.isString(message.actual))
+                            return "actual: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates an AlgorithmicCaseResult message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.AlgorithmicCaseResult} AlgorithmicCaseResult
+                 */
+                AlgorithmicCaseResult.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.AlgorithmicCaseResult)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.AlgorithmicCaseResult();
+                    if (object.input != null)
+                        message.input = String(object.input);
+                    if (object.expected != null)
+                        message.expected = String(object.expected);
+                    if (object.actual != null)
+                        message.actual = String(object.actual);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from an AlgorithmicCaseResult message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @static
+                 * @param {acmcsus.debugjudge.AlgorithmicCaseResult} message AlgorithmicCaseResult
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                AlgorithmicCaseResult.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.input = "";
+                        object.expected = "";
+                        object.actual = "";
+                    }
+                    if (message.input != null && message.hasOwnProperty("input"))
+                        object.input = message.input;
+                    if (message.expected != null && message.hasOwnProperty("expected"))
+                        object.expected = message.expected;
+                    if (message.actual != null && message.hasOwnProperty("actual"))
+                        object.actual = message.actual;
+                    return object;
+                };
+    
+                /**
+                 * Converts this AlgorithmicCaseResult to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.AlgorithmicCaseResult
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                AlgorithmicCaseResult.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                return AlgorithmicCaseResult;
             })();
     
             debugjudge.C2SMessage = (function() {
@@ -8425,6 +8808,7 @@
                      * @property {number|null} [problemId] SubmissionJudgementMessage problemId
                      * @property {number|Long|null} [submissionId] SubmissionJudgementMessage submissionId
                      * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] SubmissionJudgementMessage ruling
+                     * @property {string|null} [rulingMessage] SubmissionJudgementMessage rulingMessage
                      */
     
                     /**
@@ -8475,6 +8859,14 @@
                     SubmissionJudgementMessage.prototype.ruling = 0;
     
                     /**
+                     * SubmissionJudgementMessage rulingMessage.
+                     * @member {string} rulingMessage
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @instance
+                     */
+                    SubmissionJudgementMessage.prototype.rulingMessage = "";
+    
+                    /**
                      * Creates a new SubmissionJudgementMessage instance using the specified properties.
                      * @function create
                      * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
@@ -8506,6 +8898,8 @@
                             writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
                         if (message.ruling != null && message.hasOwnProperty("ruling"))
                             writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ruling);
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.rulingMessage);
                         return writer;
                     };
     
@@ -8551,6 +8945,9 @@
                                 break;
                             case 4:
                                 message.ruling = reader.int32();
+                                break;
+                            case 5:
+                                message.rulingMessage = reader.string();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -8605,6 +9002,9 @@
                             case 2:
                                 break;
                             }
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            if (!$util.isString(message.rulingMessage))
+                                return "rulingMessage: string expected";
                         return null;
                     };
     
@@ -8647,6 +9047,8 @@
                             message.ruling = 2;
                             break;
                         }
+                        if (object.rulingMessage != null)
+                            message.rulingMessage = String(object.rulingMessage);
                         return message;
                     };
     
@@ -8672,6 +9074,7 @@
                             } else
                                 object.submissionId = options.longs === String ? "0" : 0;
                             object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                            object.rulingMessage = "";
                         }
                         if (message.teamId != null && message.hasOwnProperty("teamId"))
                             object.teamId = message.teamId;
@@ -8684,6 +9087,8 @@
                                 object.submissionId = options.longs === String ? $util.Long.prototype.toString.call(message.submissionId) : options.longs === Number ? new $util.LongBits(message.submissionId.low >>> 0, message.submissionId.high >>> 0).toNumber() : message.submissionId;
                         if (message.ruling != null && message.hasOwnProperty("ruling"))
                             object.ruling = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.ruling] : message.ruling;
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            object.rulingMessage = message.rulingMessage;
                         return object;
                     };
     
@@ -10640,8 +11045,9 @@
                      * @property {number|null} [teamId] AutoJudgeResultMessage teamId
                      * @property {number|null} [problemId] AutoJudgeResultMessage problemId
                      * @property {number|Long|null} [submissionId] AutoJudgeResultMessage submissionId
-                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] AutoJudgeResultMessage ruling
-                     * @property {string|null} [rulingMessage] AutoJudgeResultMessage rulingMessage
+                     * @property {Array.<acmcsus.debugjudge.IAlgorithmicCaseResult>|null} [executionResult] AutoJudgeResultMessage executionResult
+                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [preliminaryJudgement] AutoJudgeResultMessage preliminaryJudgement
+                     * @property {string|null} [preliminaryJudgementMessage] AutoJudgeResultMessage preliminaryJudgementMessage
                      */
     
                     /**
@@ -10653,6 +11059,7 @@
                      * @param {acmcsus.debugjudge.AJ2SMessage.IAutoJudgeResultMessage=} [properties] Properties to set
                      */
                     function AutoJudgeResultMessage(properties) {
+                        this.executionResult = [];
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -10684,20 +11091,28 @@
                     AutoJudgeResultMessage.prototype.submissionId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
                     /**
-                     * AutoJudgeResultMessage ruling.
-                     * @member {acmcsus.debugjudge.SubmissionJudgement} ruling
+                     * AutoJudgeResultMessage executionResult.
+                     * @member {Array.<acmcsus.debugjudge.IAlgorithmicCaseResult>} executionResult
                      * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
                      * @instance
                      */
-                    AutoJudgeResultMessage.prototype.ruling = 0;
+                    AutoJudgeResultMessage.prototype.executionResult = $util.emptyArray;
     
                     /**
-                     * AutoJudgeResultMessage rulingMessage.
-                     * @member {string} rulingMessage
+                     * AutoJudgeResultMessage preliminaryJudgement.
+                     * @member {acmcsus.debugjudge.SubmissionJudgement} preliminaryJudgement
                      * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
                      * @instance
                      */
-                    AutoJudgeResultMessage.prototype.rulingMessage = "";
+                    AutoJudgeResultMessage.prototype.preliminaryJudgement = 0;
+    
+                    /**
+                     * AutoJudgeResultMessage preliminaryJudgementMessage.
+                     * @member {string} preliminaryJudgementMessage
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     */
+                    AutoJudgeResultMessage.prototype.preliminaryJudgementMessage = "";
     
                     /**
                      * Creates a new AutoJudgeResultMessage instance using the specified properties.
@@ -10729,10 +11144,13 @@
                             writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
                         if (message.submissionId != null && message.hasOwnProperty("submissionId"))
                             writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
-                        if (message.ruling != null && message.hasOwnProperty("ruling"))
-                            writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ruling);
-                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
-                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.rulingMessage);
+                        if (message.executionResult != null && message.executionResult.length)
+                            for (var i = 0; i < message.executionResult.length; ++i)
+                                $root.acmcsus.debugjudge.AlgorithmicCaseResult.encode(message.executionResult[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            writer.uint32(/* id 5, wireType 0 =*/40).int32(message.preliminaryJudgement);
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            writer.uint32(/* id 6, wireType 2 =*/50).string(message.preliminaryJudgementMessage);
                         return writer;
                     };
     
@@ -10777,10 +11195,15 @@
                                 message.submissionId = reader.int64();
                                 break;
                             case 4:
-                                message.ruling = reader.int32();
+                                if (!(message.executionResult && message.executionResult.length))
+                                    message.executionResult = [];
+                                message.executionResult.push($root.acmcsus.debugjudge.AlgorithmicCaseResult.decode(reader, reader.uint32()));
                                 break;
                             case 5:
-                                message.rulingMessage = reader.string();
+                                message.preliminaryJudgement = reader.int32();
+                                break;
+                            case 6:
+                                message.preliminaryJudgementMessage = reader.string();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -10826,18 +11249,27 @@
                         if (message.submissionId != null && message.hasOwnProperty("submissionId"))
                             if (!$util.isInteger(message.submissionId) && !(message.submissionId && $util.isInteger(message.submissionId.low) && $util.isInteger(message.submissionId.high)))
                                 return "submissionId: integer|Long expected";
-                        if (message.ruling != null && message.hasOwnProperty("ruling"))
-                            switch (message.ruling) {
+                        if (message.executionResult != null && message.hasOwnProperty("executionResult")) {
+                            if (!Array.isArray(message.executionResult))
+                                return "executionResult: array expected";
+                            for (var i = 0; i < message.executionResult.length; ++i) {
+                                var error = $root.acmcsus.debugjudge.AlgorithmicCaseResult.verify(message.executionResult[i]);
+                                if (error)
+                                    return "executionResult." + error;
+                            }
+                        }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            switch (message.preliminaryJudgement) {
                             default:
-                                return "ruling: enum value expected";
+                                return "preliminaryJudgement: enum value expected";
                             case 0:
                             case 1:
                             case 2:
                                 break;
                             }
-                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
-                            if (!$util.isString(message.rulingMessage))
-                                return "rulingMessage: string expected";
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            if (!$util.isString(message.preliminaryJudgementMessage))
+                                return "preliminaryJudgementMessage: string expected";
                         return null;
                     };
     
@@ -10866,22 +11298,32 @@
                                 message.submissionId = object.submissionId;
                             else if (typeof object.submissionId === "object")
                                 message.submissionId = new $util.LongBits(object.submissionId.low >>> 0, object.submissionId.high >>> 0).toNumber();
-                        switch (object.ruling) {
+                        if (object.executionResult) {
+                            if (!Array.isArray(object.executionResult))
+                                throw TypeError(".acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.executionResult: array expected");
+                            message.executionResult = [];
+                            for (var i = 0; i < object.executionResult.length; ++i) {
+                                if (typeof object.executionResult[i] !== "object")
+                                    throw TypeError(".acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.executionResult: object expected");
+                                message.executionResult[i] = $root.acmcsus.debugjudge.AlgorithmicCaseResult.fromObject(object.executionResult[i]);
+                            }
+                        }
+                        switch (object.preliminaryJudgement) {
                         case "JUDGEMENT_UNKNOWN":
                         case 0:
-                            message.ruling = 0;
+                            message.preliminaryJudgement = 0;
                             break;
                         case "JUDGEMENT_SUCCESS":
                         case 1:
-                            message.ruling = 1;
+                            message.preliminaryJudgement = 1;
                             break;
                         case "JUDGEMENT_FAILURE":
                         case 2:
-                            message.ruling = 2;
+                            message.preliminaryJudgement = 2;
                             break;
                         }
-                        if (object.rulingMessage != null)
-                            message.rulingMessage = String(object.rulingMessage);
+                        if (object.preliminaryJudgementMessage != null)
+                            message.preliminaryJudgementMessage = String(object.preliminaryJudgementMessage);
                         return message;
                     };
     
@@ -10898,6 +11340,8 @@
                         if (!options)
                             options = {};
                         var object = {};
+                        if (options.arrays || options.defaults)
+                            object.executionResult = [];
                         if (options.defaults) {
                             object.teamId = 0;
                             object.problemId = 0;
@@ -10906,8 +11350,8 @@
                                 object.submissionId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                             } else
                                 object.submissionId = options.longs === String ? "0" : 0;
-                            object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
-                            object.rulingMessage = "";
+                            object.preliminaryJudgement = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                            object.preliminaryJudgementMessage = "";
                         }
                         if (message.teamId != null && message.hasOwnProperty("teamId"))
                             object.teamId = message.teamId;
@@ -10918,10 +11362,15 @@
                                 object.submissionId = options.longs === String ? String(message.submissionId) : message.submissionId;
                             else
                                 object.submissionId = options.longs === String ? $util.Long.prototype.toString.call(message.submissionId) : options.longs === Number ? new $util.LongBits(message.submissionId.low >>> 0, message.submissionId.high >>> 0).toNumber() : message.submissionId;
-                        if (message.ruling != null && message.hasOwnProperty("ruling"))
-                            object.ruling = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.ruling] : message.ruling;
-                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
-                            object.rulingMessage = message.rulingMessage;
+                        if (message.executionResult && message.executionResult.length) {
+                            object.executionResult = [];
+                            for (var j = 0; j < message.executionResult.length; ++j)
+                                object.executionResult[j] = $root.acmcsus.debugjudge.AlgorithmicCaseResult.toObject(message.executionResult[j], options);
+                        }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            object.preliminaryJudgement = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.preliminaryJudgement] : message.preliminaryJudgement;
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            object.preliminaryJudgementMessage = message.preliminaryJudgementMessage;
                         return object;
                     };
     

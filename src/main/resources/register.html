@@ -79,9 +79,6 @@
         <label for="teamNameInput">Team Name</label>
         <input type="text" id="teamNameInput" name="team_name" minlength="3" maxlength="16" required />
 
-        <label for="membersInput">Member Names</label>
-        <input type="text" id="membersInput" name="members" minlength="2" maxlength="128" required />
-
         <button type="submit">Submit</button>
       </div>
 
@@ -107,7 +104,6 @@
     var errmsg = document.querySelector("#errmsg");
 
     var teamNameInput = document.querySelector("#teamNameInput");
-    var membersInput = document.querySelector("#membersInput");
 
     var teamUsername = document.querySelector("#teamUsername");
     var teamPassword = document.querySelector("#teamPassword");
@@ -125,7 +121,6 @@
         dataType: 'json',
         data: JSON.stringify({
           team_name: teamNameInput.value,
-          member_names: membersInput.value
         }),
 
         success: function(data) {

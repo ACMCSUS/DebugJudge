@@ -25,6 +25,7 @@ import {ApiAdminServiceImpl} from "./api-admin.service";
 import {ApiJudgeServiceImpl} from "./api-judge.service";
 import {DebuggingJudgeComponent} from "./debuggingjudge.component";
 import {AlgorithmicCardComponent} from "./algorithmiccard.component";
+import {DiffComponent} from "./diff.component";
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {AlgorithmicCardComponent} from "./algorithmiccard.component";
     AlgorithmicCardComponent,
     DebuggingCardComponent,
     DebuggingJudgeComponent,
+    DiffComponent,
     AdminStatusBoardComponent,
     SubmissionsViewComponent,
     SubmissionsBarComponent,

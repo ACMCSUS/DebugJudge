@@ -77,13 +77,13 @@ public class PasswordGenerator {
   }
 
   public static String randomPassword() {
-    byte[] tailBytes = new byte[2];
-    random.nextBytes(tailBytes);
+//    byte[] tailBytes = new byte[2];
+//    random.nextBytes(tailBytes);
     // -1 signum means we get a dash in the password before the hex bit.
-    String tailHex = new BigInteger(-1, tailBytes).toString(26);
+//    String tailHex = new BigInteger(-1, tailBytes).toString(26);
 
     return adjectives[random.nextInt(adjectives.length)] +
-      nouns[random.nextInt(nouns.length)] + tailHex;
+      nouns[random.nextInt(nouns.length)];// + tailHex;
   }
 
 }

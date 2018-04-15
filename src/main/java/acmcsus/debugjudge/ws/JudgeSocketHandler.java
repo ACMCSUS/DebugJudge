@@ -23,11 +23,11 @@ public class JudgeSocketHandler {
 
     switch (j2SMessage.getValueCase()) {
       case STARTJUDGINGMESSAGE: {
-        judgeQueueHandler.connected(ctx.profile, ctx.session);
+        judgeQueueHandler.started(ctx.profile, ctx.session);
         break;
       }
       case STOPJUDGINGMESSAGE: {
-        judgeQueueHandler.disconnected(ctx.profile, ctx.session);
+        judgeQueueHandler.stopped(ctx.profile);
         break;
       }
       case SUBMISSIONJUDGEMENTMESSAGE: {
@@ -36,6 +36,7 @@ public class JudgeSocketHandler {
         Long sid = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
 
         SubmissionJudgement ruling = j2SMessage.getSubmissionJudgementMessage().getRuling();
+        String message = j2SMessage.getSubmissionJudgementMessage().getRulingMessage();
 
         switch (ruling) {
           case JUDGEMENT_UNKNOWN: {
@@ -57,7 +58,7 @@ public class JudgeSocketHandler {
 
             // TODO: Judgement Messages (like "TLE" or "Excessive Output")
             StateService.instance.submissionRuling(
-                submission, ctx.profile.getId(), ruling, "lorem ipsum");
+                submission, ctx.profile.getId(), ruling, message);
             break;
           }
           default: {

@@ -23,7 +23,7 @@ apply plugin: 'com.google.protobuf'
 apply plugin: 'io.ebean'
 
 group = 'acmcsus'
-version = '1.0-SNAPSHOT'
+version = '2.0'
 
 description = """"""
 
@@ -58,15 +58,6 @@ dependencies {
   testCompile group: 'junit', name: 'junit', version:'4.12'
 }
 
-task buildApp(type: NpmTask) {
-  workingDir = file("${project.projectDir}/")
-  args = ['run-script', 'buildall']
-}
-task buildJudge(type: NpmTask) {
-  workingDir = file("${project.projectDir}/")
-  args = ['run-script', 'build-judge']
-}
-
 protobuf {
   protoc {
     artifact = 'com.google.protobuf:protoc:3.0.0'
@@ -86,7 +77,6 @@ protobuf {
   }
 }
 
-//create a single Jar with all dependencies
 task problemValidatorJar(type: Jar) {
   manifest {
     attributes 'Implementation-Title': 'Problem Validator Jar',
@@ -99,4 +89,23 @@ task problemValidatorJar(type: Jar) {
   }
   exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
   with jar
+}
+
+task hubJar(type: Jar) {
+    manifest {
+      attributes 'Implementation-Title': 'Main Jar',
+          'Implementation-Version': version,
+          'Main-Class': 'acmcsus.debugjudge.DebugJudgeMain'
+    }
+    baseName = project.name + '-hub'
+  doFirst {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  }
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+  with jar
+}
+
+task runAutoJudge(type: JavaExec) {
+  classpath sourceSets.main.runtimeClasspath
+  main = "acmcsus.debugjudge.autojudge.AutoJudgeMain"
 }

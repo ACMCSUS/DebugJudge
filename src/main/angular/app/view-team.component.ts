@@ -76,10 +76,13 @@ import {AlgorithmicCardComponent} from "./algorithmiccard.component";
     #left {
       /*width: 200px;*/
       max-width: 30%;
+      flex-direction: column;
+      align-items: stretch;
     }
 
     #left button {
       display: block;
+      width: 100%;
     }
 
     /deep/ .mat-button-wrapper, /deep/ .mat-button {
@@ -158,7 +161,7 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.problemSubscription = this.api.problems.subscribe((problems) => {
       this.problems = problems;
-      this.problems.sort((a, b) => b.orderIndex - a.orderIndex);
+      this.problems.sort((a, b) => a.orderIndex - b.orderIndex);
       this.problemClicked(this.problemIdx);
     });
 

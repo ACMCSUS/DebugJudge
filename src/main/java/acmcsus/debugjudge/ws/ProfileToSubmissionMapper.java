@@ -58,25 +58,52 @@ public class ProfileToSubmissionMapper {
     return format("%d_%d_%d", sub.getTeamId(), sub.getProblemId(), sub.getSubmissionTimeSeconds());
   }
 
-  public void connected(Profile profile, Session session) {
-    if (profileSessionMap.containsKey(profile.getId())) {
-      kick(profile, "You've started judging somewhere else!");
+  public void connected(Profile judge, Session session) {
+    if (profileSessionMap.containsKey(judge.getId())) {
+      kick(judge, "You've started judging somewhere else!");
     }
 
-    ProfileSession ProfileSession = new ProfileSession(profile, session);
+    ProfileSession judgeSession = new ProfileSession(judge, session);
+    profileSessionMap.put(judgeSession.profile.getId(), judgeSession);
+  }
+
+  public void started(Profile judge, Session session) {
     if (session.isOpen()) {
       welcome(session, "");
     }
-    profileSessionMap.put(ProfileSession.profile.getId(), ProfileSession);
-    match(ProfileSession);
+    if (!profileSessionMap.containsKey(judge.getId())) {
+      connected(judge, session);
+    }
+    match(profileSessionMap.get(judge.getId()));
+  }
+  public void stopped(Profile judge) {
+    ProfileSession profileSession = profileSessionMap.get(judge.getId());
+
+    if (profileSession == null) {
+      return;
+    }
+
+    if (profileSession.currentSubmission != null) {
+      submissionSessionMap.remove(idForSubmission(profileSession.currentSubmission));
+      matchOrPushBack(profileSession.currentSubmission);
+    }
+
+    if (profileSession.socketSession.isOpen()) {
+      unmatched(profileSession);
+      goodbye(profileSession.socketSession, "Stopped Judging");
+    }
+
+    waitingProfiles.removeIf(jSess -> jSess.profile.getId() == judge.getId());
+    profileSession.currentSubmission = null;
   }
 
-  public void disconnected(Profile profile, Session session) {
+  public void disconnected(Profile judge, Session session) {
     if (session.isOpen()) {
       goodbye(session, "");
     }
-    purge(profile);
+    purge(judge);
   }
+
 
   public void kick(Profile judge, String reason) {
     ProfileSession profileSession = profileSessionMap.get(judge.getId());
