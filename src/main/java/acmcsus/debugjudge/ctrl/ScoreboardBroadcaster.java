@@ -4,7 +4,9 @@ import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.ws.*;
+import com.google.inject.*;
 
+import javax.swing.plaf.basic.*;
 import java.time.*;
 import java.util.*;
 import java.util.stream.*;
@@ -17,11 +19,16 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 // I'm sorry for the horrible code within. If I have nothing better to do I might clean. ~merrillm
+@Singleton
 public class ScoreboardBroadcaster {
 
   private static List<Problem> problems = null;
 
-  static {
+  private BaseSocketService socketService;
+
+  @Inject
+  ScoreboardBroadcaster(BaseSocketService socketService) {
+    this.socketService = socketService;
     StateService.instance.addTeamProblemsListener(
         (problems) -> ScoreboardBroadcaster.problems = problems);
   }
@@ -47,13 +54,13 @@ public class ScoreboardBroadcaster {
     public int penalty = 0;
   }
 
-  private static Scoreboard lastScoreboard = null;
+  private Scoreboard lastScoreboard = null;
 
-  public static Scoreboard getLastScoreboard() {
+  public Scoreboard getLastScoreboard() {
     return lastScoreboard;
   }
 
-  public static void pushScoreboard() {
+  public void pushScoreboard() {
     try {
       Collection<Competition.Profile> teams = PROFILE_STORE.streamAll()
           .filter(p -> p.getProfileType() == Profile.ProfileType.TEAM)
@@ -174,7 +181,7 @@ public class ScoreboardBroadcaster {
       }
       scoreboardBuilder.setUpdateTimeMillis(Instant.now().toEpochMilli());
 
-      SocketHandler.broadcastMessage(WebSocket.S2CMessage.newBuilder()
+      socketService.broadcastMessage(WebSocket.S2CMessage.newBuilder()
           .setScoreboardUpdateMessage(WebSocket.S2CMessage.ScoreboardUpdateMessage.newBuilder()
               .setScoreboard(scoreboardBuilder))
           .build());

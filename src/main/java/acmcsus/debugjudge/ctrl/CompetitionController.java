@@ -5,20 +5,18 @@ import acmcsus.debugjudge.proto.WebSocket.*;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
 import acmcsus.debugjudge.ws.*;
 import com.google.common.base.*;
-import io.reactivex.*;
-import io.reactivex.Observable;
+import com.google.inject.*;
 import io.reactivex.disposables.*;
 import io.reactivex.functions.*;
 import io.reactivex.subjects.*;
 
 import java.time.*;
-import java.util.*;
 import java.util.concurrent.*;
 
-import static acmcsus.debugjudge.ctrl.ScoreboardBroadcaster.pushScoreboard;
 import static io.reactivex.Observable.combineLatest;
 import static io.reactivex.Observable.interval;
 
+@Singleton
 public class CompetitionController {
 
   private static BehaviorSubject<CompetitionState> competitionState = BehaviorSubject.createDefault(CompetitionState.WAITING);
@@ -42,22 +40,28 @@ public class CompetitionController {
     });
   }
 
-  public static CompetitionState getCompetitionState() {
+  public CompetitionState getCompetitionState() {
     return competitionState.getValue();
   }
 
-  static {
+  private BaseSocketService socketService;
+
+  @Inject
+  CompetitionController(BaseSocketService socketService,
+                        ScoreboardBroadcaster scoreboardBroadcaster) {
+    this.socketService = socketService;
+
     // TODO: Have the interval change periods depending on competition state. Stopped can be closer to 5 minutes.
     combineLatest(interval(30, TimeUnit.SECONDS), competitionState, (a, b) -> b)
         .filter((state) -> state != CompetitionState.WAITING)
-        .subscribe((l) -> pushScoreboard());
+        .subscribe((l) -> scoreboardBroadcaster.pushScoreboard());
   }
 
-  public static void changeCompetitionState(CompetitionState state) {
+  public void changeCompetitionState(CompetitionState state) {
     if (state != competitionState.getValue()) {
       competitionState.onNext(state);
 
-      SocketHandler.broadcastMessage(S2CMessage.newBuilder()
+      socketService.broadcastMessage(S2CMessage.newBuilder()
           .setCompetitionStateChangedMessage(CompetitionStateChangedMessage.newBuilder()
               .setState(state)
               .setTimeMillis(Instant.now().toEpochMilli())

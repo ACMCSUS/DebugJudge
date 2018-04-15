@@ -2,59 +2,21 @@ package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.*;
+import com.google.inject.*;
 import org.eclipse.jetty.websocket.api.*;
 import org.slf4j.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.*;
 
-import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 import static java.lang.String.format;
 
-public class ProfileToSubmissionMapper {
+public abstract class ProfileToSubmissionMapper {
 
   private static Logger logger = LoggerFactory.getLogger(ProfileToSubmissionMapper.class);
 
-  @FunctionalInterface
-  public interface AssignmentConsumer {
-
-    void assigned(Session session, Submission submission) throws IOException;
-
-  }
-
-  private static class ProfileSession {
-
-    private final Profile profile;
-    private final Session socketSession;
-    private Submission currentSubmission = null;
-    private Set<Integer> skipProblems = null;
-
-    private ProfileSession(Profile profile, Session socketSession) {
-      this.profile = profile;
-      this.socketSession = socketSession;
-    }
-
-    private void setProfilePreferences(Map<Integer, Boolean> profilePreferences) {
-      if (skipProblems == null) {
-        skipProblems = new HashSet<>();
-      }
-
-      for (Map.Entry<Integer, Boolean> entry : profilePreferences.entrySet()) {
-        if (!entry.getValue()) {
-          skipProblems.add(entry.getKey());
-        }
-        else {
-          skipProblems.remove(entry.getKey());
-        }
-      }
-    }
-
-    private boolean canGrade(Submission submission) {
-      return skipProblems == null
-          || !skipProblems.contains(submission.getProblemId());
-    }
-  }
+  @Inject
+  public BaseSocketService baseSocketService;
 
   private ArrayDeque<ProfileSession> waitingProfiles = new ArrayDeque<>();
   private ArrayDeque<Submission> waitingSubmissions = new ArrayDeque<>();
@@ -66,11 +28,7 @@ public class ProfileToSubmissionMapper {
     return format("%d_%d_%d", sub.getTeamId(), sub.getProblemId(), sub.getSubmissionTimeSeconds());
   }
 
-  private final AssignmentConsumer assignmentConsumer;
-
-  public ProfileToSubmissionMapper(AssignmentConsumer assignmentConsumer) {
-    this.assignmentConsumer = assignmentConsumer;
-  }
+  public abstract void assigned(Session session, Submission submission) throws IOException;
 
   public void connected(Profile judge, Session session) {
     if (profileSessionMap.containsKey(judge.getId())) {
@@ -143,7 +101,7 @@ public class ProfileToSubmissionMapper {
     }
 
     if (waitingSubmissions.isEmpty()) {
-      SocketHandler.alert(ProfileSession.socketSession,
+      baseSocketService.alert(ProfileSession.socketSession,
           "There are no other submissions in the queue!");
     }
     else {
@@ -153,7 +111,7 @@ public class ProfileToSubmissionMapper {
 
   private void welcome(Session session, String reason) {
     try {
-      sendMessage(session, Judge.S2JMessage.newBuilder()
+      baseSocketService.sendMessage(session, Judge.S2JMessage.newBuilder()
           .setJudgingStatus(Judge.S2JMessage.JudgingStatusMessage.newBuilder()
               .setJudging(true)
               .setMessage(reason)).build());
@@ -165,7 +123,7 @@ public class ProfileToSubmissionMapper {
 
   private void goodbye(Session session, String reason) {
     try {
-      sendMessage(session, Judge.S2JMessage.newBuilder()
+      baseSocketService.sendMessage(session, Judge.S2JMessage.newBuilder()
           .setJudgingStatus(Judge.S2JMessage.JudgingStatusMessage.newBuilder()
               .setJudging(false)
               .setMessage(reason)).build());
@@ -288,7 +246,7 @@ public class ProfileToSubmissionMapper {
     waitingSubmissions.removeIf(sub -> submissionId.equals(idForSubmission(sub)));
 
     try {
-      assignmentConsumer.assigned(profileSession.socketSession, profileSession.currentSubmission);
+      assigned(profileSession.socketSession, profileSession.currentSubmission);
     }
     catch (IOException e) {
       kick(profileSession.profile, "There was an error matching you with a submission.");
@@ -299,7 +257,7 @@ public class ProfileToSubmissionMapper {
   private void unmatched(ProfileSession profileSession) {
     try {
       profileSession.currentSubmission = null;
-      assignmentConsumer.assigned(profileSession.socketSession, null);
+      assigned(profileSession.socketSession, null);
       waitingProfiles.add(profileSession);
     }
     catch (IOException e) {

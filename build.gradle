@@ -30,14 +30,13 @@ description = """"""
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-mainClassName = "acmcsus.debugjudge.DebugJudgeMain"
+mainClassName = "acmcsus.debugjudge.Hub"
 
 repositories {
    maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
 
-// https://mvnrepository.com/artifact/org.eclipse.jetty.aggregate/jetty-all
   compile "io.reactivex.rxjava2:rxjava:2.1.12"
   compile "com.google.inject:guice:4.1.0"
 
@@ -95,7 +94,7 @@ task hubJar(type: Jar) {
     manifest {
       attributes 'Implementation-Title': 'Main Jar',
           'Implementation-Version': version,
-          'Main-Class': 'acmcsus.debugjudge.DebugJudgeMain'
+          'Main-Class': 'acmcsus.debugjudge.Hub'
     }
     baseName = project.name + '-hub'
   doFirst {

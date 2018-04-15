@@ -3,40 +3,44 @@ package acmcsus.debugjudge.ws;
 import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.AutoJudge.AJ2SMessage.*;
-import acmcsus.debugjudge.proto.AutoJudge.*;
-import acmcsus.debugjudge.proto.AutoJudge.S2AJMessage.*;
 import acmcsus.debugjudge.proto.Competition.*;
-import acmcsus.debugjudge.proto.Competition.Submission.*;
-import acmcsus.debugjudge.proto.WebSocket.*;
-import org.eclipse.jetty.websocket.api.*;
+import com.google.inject.*;
 import org.slf4j.*;
 
 import java.io.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
-import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
 
-public class AutoJudgeSocketHandler {
+@Singleton
+public class AutoJudgeSocketService extends ProfileSocketService {
 
-  private static Logger logger = LoggerFactory.getLogger(AutoJudgeSocketHandler.class);
+  private static Logger logger = LoggerFactory.getLogger(AutoJudgeSocketService.class);
 
-  private static ProfileToSubmissionMapper queueHandler = new ProfileToSubmissionMapper(
-      (session, submission) -> {
-        if (submission != null) {
-          sendMessage(session, S2CMessage.newBuilder()
-              .setS2AjMessage(S2AJMessage.newBuilder()
-                  .setExecuteSubmission(
-                      ExecuteSubmissionMessage.newBuilder()
-                          .setSubmission(submission))).build());
-        }
-      });
+  @Inject
+  public AutoJudgeQueueService queueHandler;
 
-  public static void registerListener() {
-    StateService.instance.addSubmissionNeedingExecutionListener(queueHandler::submitted);
+  @Inject
+  AutoJudgeSocketService(BaseSocketService baseSocketService,
+                         AutoJudgeQueueService autoJudgeQueueService) {
+    super(baseSocketService, Profile.ProfileType.AUTO_JUDGE);
+    this.queueHandler = autoJudgeQueueService;
   }
 
-  static void handleAJ2SMessage(WebSocketContext ctx) {
+  @Override
+  protected void onConnect(WebSocketContext ctx) {
+    queueHandler.connected(ctx.profile, ctx.session);
+    queueHandler.started(ctx.profile, ctx.session);
+  }
+
+  @Override
+  protected void onDisconnect(WebSocketContext ctx) {
+    queueHandler.stopped(ctx.profile);
+    queueHandler.disconnected(ctx.profile, ctx.session);
+  }
+
+  @Override
+  protected void onMessage(WebSocketContext ctx) {
     AutoJudge.AJ2SMessage a2SMessage = ctx.req.getAj2SMessage();
 
     switch (a2SMessage.getValueCase()) {
@@ -66,15 +70,5 @@ public class AutoJudgeSocketHandler {
         logger.error("WS: Backend does not recognize AJ2SMessage: {}", a2SMessage.getValueCase());
       }
     }
-  }
-
-  static void subscribeNewAutoJudge(Session session, Profile profile) {
-    queueHandler.connected(profile, session);
-    queueHandler.started(profile, session);
-  }
-
-  static void lostAutoJudge(Session session, Profile profile) {
-    queueHandler.stopped(profile);
-    queueHandler.disconnected(profile, session);
   }
 }
