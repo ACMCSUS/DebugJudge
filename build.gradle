@@ -23,7 +23,7 @@ apply plugin: 'com.google.protobuf'
 apply plugin: 'io.ebean'
 
 group = 'acmcsus'
-version = '1.0-SNAPSHOT'
+version = '2.0'
 
 description = """"""
 
@@ -41,7 +41,7 @@ dependencies {
   compile "io.reactivex.rxjava2:rxjava:2.1.12"
   compile "com.google.inject:guice:4.1.0"
 
-  compile group: 'org.eclipse.jetty.aggregate', name: 'jetty-all', version: '9.4.8.v20171121', ext: 'pom'
+  compile group: 'org.eclipse.jetty.aggregate', name: 'jetty-all', version: '9.4.8.v20171121'
   compile group: 'com.moandjiezana.toml', name: 'toml4j', version: '0.7.2'
 
   compile group: 'com.google.protobuf', name: 'protobuf-gradle-plugin', version: '0.8.4'
@@ -84,4 +84,19 @@ protobuf {
       }
     }
   }
+}
+
+//create a single Jar with all dependencies
+task hubJar(type: Jar) {
+  manifest {
+    attributes 'Implementation-Title': 'Main Jar',
+        'Implementation-Version': version,
+        'Main-Class': 'acmcsus.debugjudge.DebugJudgeMain'
+  }
+  baseName = project.name + '-hub'
+  doFirst {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  }
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+  with jar
 }

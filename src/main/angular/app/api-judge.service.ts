@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import Submission = acmcsus.debugjudge.Submission;
 import Problem = acmcsus.debugjudge.Problem;
 import C2SMessage = acmcsus.debugjudge.C2SMessage;
-import JudgingStatusMessage = acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
+import JudgingStatusMessage = acmcsus.debugjudge.S2JMessage.JudgingStatusMessage;
 import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
 
 export interface ApiJudgeService {
@@ -19,7 +19,7 @@ export interface ApiJudgeService {
   stopJudging();
 
   updatePreferences(problemWhitelist: {}): void;
-  submitJudgement(submission: Submission, judgement: SubmissionJudgement): void;
+  submitJudgement(submission: Submission, judgement: SubmissionJudgement, msg: string): void;
 }
 
 @Injectable()
@@ -83,14 +83,15 @@ export class ApiJudgeServiceImpl implements ApiJudgeService {
     }));
   }
 
-  public submitJudgement(submission: Submission, judgement: SubmissionJudgement): void {
+  public submitJudgement(sub: Submission, judgement: SubmissionJudgement, msg: string): void {
     this.apiWs.sendMessage(C2SMessage.create({
       j2sMessage: {
         submissionJudgementMessage: {
-          teamId: submission.teamId,
-          problemId: submission.problemId,
-          submissionId: submission.submissionTimeSeconds,
+          teamId: sub.teamId,
+          problemId: sub.problemId,
+          submissionId: sub.submissionTimeSeconds,
           ruling: judgement,
+          rulingMessage: msg,
         }
       }
     }));

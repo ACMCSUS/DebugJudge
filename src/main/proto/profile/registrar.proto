@@ -1,0 +1,21 @@
+syntax = 'proto3';
+
+option java_package = 'acmcsus.debugjudge.proto';
+option java_outer_classname = 'Registrar';
+
+package acmcsus.debugjudge;
+
+import "competition.proto";
+
+// Messages that only ever come from registrars.
+message R2SMessage {
+  oneof value {
+    RegisterTeamMessage message = 1;
+  }
+  message RegisterTeamMessage {
+    int32 team_id = 1;
+    int32 problem_id = 2;
+    int64 submission_id = 3;
+    SubmissionJudgement ruling = 4;
+  }
+}

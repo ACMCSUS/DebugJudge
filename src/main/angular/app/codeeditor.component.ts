@@ -20,8 +20,8 @@ import {AceEditorComponent} from 'ng2-ace-editor';
   `,
   styles: [`
     * {
-      font-size: .9em;
-      font-family: "Monospaced",monospace;
+      font-size: 12px;
+      font-family: "Roboto Mono", "Monospaced", monospace !important;
     }
     .codepane {
       border: inset 1px white;

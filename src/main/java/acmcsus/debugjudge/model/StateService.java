@@ -1,6 +1,7 @@
 package acmcsus.debugjudge.model;
 
 import acmcsus.debugjudge.ctrl.*;
+import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import io.reactivex.disposables.*;
 import io.reactivex.functions.*;
@@ -65,7 +66,9 @@ public class StateService {
   }
 
   public Disposable addSubmissionRulingListener(Consumer<Submission> submissionObserver, Predicate<Submission> filter) {
-    return submissionRulingSubject.subscribe(submissionObserver);
+    return submissionRulingSubject
+        .filter(filter)
+        .subscribe(submissionObserver);
   }
 
   public Disposable addJudgeProblemsListener(Consumer<List<Problem>> problemReloader) {
@@ -80,10 +83,10 @@ public class StateService {
     Submission.Builder builder = Submission.newBuilder();
     builder.setTeamId(teamId);
     builder.setProblemId(problemId);
-    builder.setSubmissionTimeSeconds(Instant.now().getEpochSecond());
+    builder.setSubmissionTimeSeconds(CompetitionController.getElapsedSeconds());
 
     switch (submission.getValueCase()) {
-      case DEBUGGINGSUBMISSION:
+      case DEBUGGING_SUBMISSION:
         builder.setDebuggingSubmission(submission.getDebuggingSubmission());
         break;
       default:

@@ -11,25 +11,36 @@ import Problem = acmcsus.debugjudge.Problem;
   entryComponents: [CodeEditorComponent],
   template: `
     <mat-card>
-      <mat-card-title>{{problem.title}}</mat-card-title>
+      <mat-card-title>
+        {{problem.title}}
+        <span *ngIf="solved" style="color: green">SOLVED!</span>
+      </mat-card-title>
 
       <mat-card-content>
         <div id="descriptionHtml" class="descriptionHtml"
              [innerHtml]="problem.descriptionText"></div>
-        
+
         <mat-card-title
             style="font-size: 16px; margin-top: 15px; margin-bottom: 5px">
-          Fix the code below:</mat-card-title>
-        
-        <app-code-editor
-          [precode]="problem.debuggingProblem.precode"
-          [postcode]="problem.debuggingProblem.postcode"
-        ></app-code-editor>
+          Fix the code below:
+        </mat-card-title>
+        <mat-checkbox color="primary" [(ngModel)]="showDiff">Show Diff</mat-checkbox>
+
+        <div class="sideBySide">
+          <app-code-editor
+              [readonly]="solved"
+              [precode]="problem.debuggingProblem.precode"
+              [postcode]="problem.debuggingProblem.postcode"
+          ></app-code-editor>
+          <app-diff *ngIf="showDiff"
+                    [oldString]="problem.debuggingProblem.code"
+                    [newString]="editor.code"></app-diff>
+        </div>
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-button (click)="submit();">Submit</button>
-        <button mat-button (click)="reset();">Reset</button>
+        <button mat-button (click)="submit();" [disabled]="solved">Submit</button>
+        <button mat-button (click)="reset();" [disabled]="solved">Reset</button>
       </mat-card-actions>
     </mat-card>
   `,
@@ -71,8 +82,13 @@ export class DebuggingCardComponent implements OnInit, OnDestroy {
   @Input("problem")
   problem: Problem;
 
+  @Input("solved")
+  solved = false;
+
   @ViewChild(CodeEditorComponent)
   editor: CodeEditorComponent;
+
+  showDiff = false;
 
   constructor(@Inject(HttpClient) private http: HttpClient,
               @Inject("ApiTeamService") private apiTeam: ApiTeamService) {

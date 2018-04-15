@@ -69,8 +69,8 @@ export class AdminStatusBoardComponent {
 
   constructor(private httpClient: HttpClient) {
     this.dataSource = new MatTableDataSource<StatusRow>([]);
-    this.httpClient.get<StatusRow[]>('/api/a/status')
-      .subscribe(rows => {console.log(rows);this.dataSource.data = rows;});
+    // this.httpClient.get<StatusRow[]>('/api/a/status')
+    //   .subscribe(rows => {console.log(rows);this.dataSource.data = rows;});
   }
 
   /**

@@ -8,7 +8,7 @@ import {ApiJudgeService} from "./api-judge.service";
 import {DebuggingJudgeComponent} from "./debuggingjudge.component";
 import Problem = acmcsus.debugjudge.Problem;
 import Submission = acmcsus.debugjudge.Submission;
-import JudgingStatusMessage = acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage;
+import JudgingStatusMessage = acmcsus.debugjudge.S2JMessage.JudgingStatusMessage;
 import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
 
 @Component({
@@ -47,9 +47,14 @@ import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
                   [problem]="problemMap[assignedSubmission.problemId]"
                   [submission]="assignedSubmission"></app-judge-debug>
             </div>
+            
+            <mat-select [(ngModel)]="rulingMessage" [disabled]="!assignedSubmission">
+              <mat-option [value]="'Wrong Answer'">Wrong Answer</mat-option>
+              <mat-option [value]="'Too Many Edits'">Too Many Edits</mat-option>
+              <mat-option [value]="'Not Enough Edits'">Not Enough Edits</mat-option>
+            </mat-select>
           </mat-card-content>
           <mat-card-content *ngIf="!assignedSubmission">
-            
           </mat-card-content>
           <mat-card-actions>
             <button mat-raised-button color="primary" (click)="accept()"
@@ -132,6 +137,8 @@ export class JudgeComponent implements OnInit, AfterViewInit, OnDestroy {
   assignedSubmission: Submission;
   judgingStatus: JudgingStatusMessage;
 
+  rulingMessage: string;
+
   problemSubscription: Subscription;
   assignmentSubscription: Subscription;
   judgingStatusSubscription: Subscription;
@@ -169,6 +176,7 @@ export class JudgeComponent implements OnInit, AfterViewInit, OnDestroy {
           if (assignment && assignment.problemId) {
             this.assignedSubmission = assignment;
             this.setBanner(this.assignedSubmission.problemId);
+            this.rulingMessage = 'Wrong Answer';
           }
           else {
             this.assignedSubmission = null;
@@ -214,13 +222,13 @@ export class JudgeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   accept() {
-    this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_SUCCESS);
+    this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_SUCCESS, '');
   }
   reject() {
-    this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_FAILURE);
+    this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_FAILURE, this.rulingMessage);
   }
   defer() {
-    this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_UNKNOWN);
+    this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_UNKNOWN, '');
   }
 
   setBanner(problemId: number): void {

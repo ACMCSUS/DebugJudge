@@ -23,22 +23,17 @@ public class JudgeSocketHandler {
   private static Logger logger = LoggerFactory.getLogger(JudgeSocketHandler.class);
 
   static void handleJ2SMessage(WebSocketContext ctx) {
-    C2SMessage.J2SMessage j2SMessage = ctx.req.getJ2SMessage();
+    Judge.J2SMessage j2SMessage = ctx.req.getJ2SMessage();
 
     JudgeQueueHandler judgeQueueHandler = JudgeQueueHandler.getInstance();
 
     switch (j2SMessage.getValueCase()) {
-      case CHANGECOMPETITIONSTATEMESSAGE: {
-        CompetitionController.changeCompetitionState(
-          j2SMessage.getChangeCompetitionStateMessage().getState());
-        break;
-      }
       case STARTJUDGINGMESSAGE: {
-        judgeQueueHandler.connected(ctx.profile, ctx.session);
+        judgeQueueHandler.started(ctx.profile, ctx.session);
         break;
       }
       case STOPJUDGINGMESSAGE: {
-        judgeQueueHandler.disconnected(ctx.profile, ctx.session);
+        judgeQueueHandler.stopped(ctx.profile);
         break;
       }
       case SUBMISSIONJUDGEMENTMESSAGE: {
@@ -47,6 +42,7 @@ public class JudgeSocketHandler {
         Long sid = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
 
         SubmissionJudgement ruling = j2SMessage.getSubmissionJudgementMessage().getRuling();
+        String message = j2SMessage.getSubmissionJudgementMessage().getRulingMessage();
 
         switch (ruling) {
           case JUDGEMENT_UNKNOWN: {
@@ -68,7 +64,7 @@ public class JudgeSocketHandler {
 
             // TODO: Judgement Messages (like "TLE" or "Excessive Output")
             StateService.instance.submissionRuling(
-                submission, ctx.profile.getId(), ruling, "lorem ipsum");
+                submission, ctx.profile.getId(), ruling, message);
             break;
           }
           default: {
@@ -89,22 +85,5 @@ public class JudgeSocketHandler {
         logger.error("WS: Backend does not recognize J2SMessage: {}", j2SMessage.getValueCase());
       }
     }
-  }
-
-  public static void subscribeNewJudge(Session session, Profile profile) throws IOException {
-    Consumer<List<Problem>> problemReloader =
-        (problems) -> SocketHandler.sendMessage(session, S2CMessage.newBuilder()
-            .setReloadProblemsMessage(S2CMessage.ReloadProblemsMessage.newBuilder()
-                .setProblems(Problem.List.newBuilder().addAllValue(problems))).build());
-
-    Scoreboard lastScoreboard = ScoreboardBroadcaster.getLastScoreboard();
-    if (lastScoreboard != null) {
-      sendMessage(session, WebSocket.S2CMessage.newBuilder()
-          .setScoreboardUpdateMessage(S2CMessage.ScoreboardUpdateMessage.newBuilder()
-              .setScoreboard(lastScoreboard))
-          .build());
-    }
-
-    addObserver(session, StateService.instance.addJudgeProblemsListener(problemReloader));
   }
 }

@@ -83,6 +83,7 @@
                  * @property {acmcsus.debugjudge.SubmissionJudgement|null} [judgement] Submission judgement
                  * @property {string|null} [judgementMessage] Submission judgementMessage
                  * @property {acmcsus.debugjudge.Submission.IDebuggingSubmission|null} [debuggingSubmission] Submission debuggingSubmission
+                 * @property {acmcsus.debugjudge.Submission.IDebuggingSubmission|null} [algorithmicSubmission] Submission algorithmicSubmission
                  */
     
                 /**
@@ -156,17 +157,25 @@
                  */
                 Submission.prototype.debuggingSubmission = null;
     
+                /**
+                 * Submission algorithmicSubmission.
+                 * @member {acmcsus.debugjudge.Submission.IDebuggingSubmission|null|undefined} algorithmicSubmission
+                 * @memberof acmcsus.debugjudge.Submission
+                 * @instance
+                 */
+                Submission.prototype.algorithmicSubmission = null;
+    
                 // OneOf field names bound to virtual getters and setters
                 var $oneOfFields;
     
                 /**
                  * Submission value.
-                 * @member {"debuggingSubmission"|undefined} value
+                 * @member {"debuggingSubmission"|"algorithmicSubmission"|undefined} value
                  * @memberof acmcsus.debugjudge.Submission
                  * @instance
                  */
                 Object.defineProperty(Submission.prototype, "value", {
-                    get: $util.oneOfGetter($oneOfFields = ["debuggingSubmission"]),
+                    get: $util.oneOfGetter($oneOfFields = ["debuggingSubmission", "algorithmicSubmission"]),
                     set: $util.oneOfSetter($oneOfFields)
                 });
     
@@ -208,6 +217,8 @@
                         writer.uint32(/* id 7, wireType 2 =*/58).string(message.judgementMessage);
                     if (message.debuggingSubmission != null && message.hasOwnProperty("debuggingSubmission"))
                         $root.acmcsus.debugjudge.Submission.DebuggingSubmission.encode(message.debuggingSubmission, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                    if (message.algorithmicSubmission != null && message.hasOwnProperty("algorithmicSubmission"))
+                        $root.acmcsus.debugjudge.Submission.DebuggingSubmission.encode(message.algorithmicSubmission, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
                     return writer;
                 };
     
@@ -262,6 +273,9 @@
                             break;
                         case 9:
                             message.debuggingSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.decode(reader, reader.uint32());
+                            break;
+                        case 10:
+                            message.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.decode(reader, reader.uint32());
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -331,6 +345,16 @@
                                 return "debuggingSubmission." + error;
                         }
                     }
+                    if (message.algorithmicSubmission != null && message.hasOwnProperty("algorithmicSubmission")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.verify(message.algorithmicSubmission);
+                            if (error)
+                                return "algorithmicSubmission." + error;
+                        }
+                    }
                     return null;
                 };
     
@@ -382,6 +406,11 @@
                             throw TypeError(".acmcsus.debugjudge.Submission.debuggingSubmission: object expected");
                         message.debuggingSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.fromObject(object.debuggingSubmission);
                     }
+                    if (object.algorithmicSubmission != null) {
+                        if (typeof object.algorithmicSubmission !== "object")
+                            throw TypeError(".acmcsus.debugjudge.Submission.algorithmicSubmission: object expected");
+                        message.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.fromObject(object.algorithmicSubmission);
+                    }
                     return message;
                 };
     
@@ -429,6 +458,11 @@
                         object.debuggingSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.toObject(message.debuggingSubmission, options);
                         if (options.oneofs)
                             object.value = "debuggingSubmission";
+                    }
+                    if (message.algorithmicSubmission != null && message.hasOwnProperty("algorithmicSubmission")) {
+                        object.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.toObject(message.algorithmicSubmission, options);
+                        if (options.oneofs)
+                            object.value = "algorithmicSubmission";
                     }
                     return object;
                 };
@@ -629,6 +663,238 @@
                     };
     
                     return DebuggingSubmission;
+                })();
+    
+                Submission.AlgorithmicSubmission = (function() {
+    
+                    /**
+                     * Properties of an AlgorithmicSubmission.
+                     * @memberof acmcsus.debugjudge.Submission
+                     * @interface IAlgorithmicSubmission
+                     * @property {string|null} [fileName] AlgorithmicSubmission fileName
+                     * @property {string|null} [sourceCode] AlgorithmicSubmission sourceCode
+                     * @property {string|null} [language] AlgorithmicSubmission language
+                     */
+    
+                    /**
+                     * Constructs a new AlgorithmicSubmission.
+                     * @memberof acmcsus.debugjudge.Submission
+                     * @classdesc Represents an AlgorithmicSubmission.
+                     * @implements IAlgorithmicSubmission
+                     * @constructor
+                     * @param {acmcsus.debugjudge.Submission.IAlgorithmicSubmission=} [properties] Properties to set
+                     */
+                    function AlgorithmicSubmission(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * AlgorithmicSubmission fileName.
+                     * @member {string} fileName
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.fileName = "";
+    
+                    /**
+                     * AlgorithmicSubmission sourceCode.
+                     * @member {string} sourceCode
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.sourceCode = "";
+    
+                    /**
+                     * AlgorithmicSubmission language.
+                     * @member {string} language
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.language = "";
+    
+                    /**
+                     * Creates a new AlgorithmicSubmission instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @static
+                     * @param {acmcsus.debugjudge.Submission.IAlgorithmicSubmission=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.Submission.AlgorithmicSubmission} AlgorithmicSubmission instance
+                     */
+                    AlgorithmicSubmission.create = function create(properties) {
+                        return new AlgorithmicSubmission(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified AlgorithmicSubmission message. Does not implicitly {@link acmcsus.debugjudge.Submission.AlgorithmicSubmission.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @static
+                     * @param {acmcsus.debugjudge.Submission.IAlgorithmicSubmission} message AlgorithmicSubmission message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AlgorithmicSubmission.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.fileName != null && message.hasOwnProperty("fileName"))
+                            writer.uint32(/* id 1, wireType 2 =*/10).string(message.fileName);
+                        if (message.sourceCode != null && message.hasOwnProperty("sourceCode"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.sourceCode);
+                        if (message.language != null && message.hasOwnProperty("language"))
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.language);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified AlgorithmicSubmission message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Submission.AlgorithmicSubmission.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @static
+                     * @param {acmcsus.debugjudge.Submission.IAlgorithmicSubmission} message AlgorithmicSubmission message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AlgorithmicSubmission.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an AlgorithmicSubmission message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.Submission.AlgorithmicSubmission} AlgorithmicSubmission
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AlgorithmicSubmission.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.fileName = reader.string();
+                                break;
+                            case 2:
+                                message.sourceCode = reader.string();
+                                break;
+                            case 3:
+                                message.language = reader.string();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an AlgorithmicSubmission message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.Submission.AlgorithmicSubmission} AlgorithmicSubmission
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AlgorithmicSubmission.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an AlgorithmicSubmission message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    AlgorithmicSubmission.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.fileName != null && message.hasOwnProperty("fileName"))
+                            if (!$util.isString(message.fileName))
+                                return "fileName: string expected";
+                        if (message.sourceCode != null && message.hasOwnProperty("sourceCode"))
+                            if (!$util.isString(message.sourceCode))
+                                return "sourceCode: string expected";
+                        if (message.language != null && message.hasOwnProperty("language"))
+                            if (!$util.isString(message.language))
+                                return "language: string expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an AlgorithmicSubmission message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.Submission.AlgorithmicSubmission} AlgorithmicSubmission
+                     */
+                    AlgorithmicSubmission.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission();
+                        if (object.fileName != null)
+                            message.fileName = String(object.fileName);
+                        if (object.sourceCode != null)
+                            message.sourceCode = String(object.sourceCode);
+                        if (object.language != null)
+                            message.language = String(object.language);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an AlgorithmicSubmission message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @static
+                     * @param {acmcsus.debugjudge.Submission.AlgorithmicSubmission} message AlgorithmicSubmission
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    AlgorithmicSubmission.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.fileName = "";
+                            object.sourceCode = "";
+                            object.language = "";
+                        }
+                        if (message.fileName != null && message.hasOwnProperty("fileName"))
+                            object.fileName = message.fileName;
+                        if (message.sourceCode != null && message.hasOwnProperty("sourceCode"))
+                            object.sourceCode = message.sourceCode;
+                        if (message.language != null && message.hasOwnProperty("language"))
+                            object.language = message.language;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this AlgorithmicSubmission to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    AlgorithmicSubmission.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return AlgorithmicSubmission;
                 })();
     
                 Submission.List = (function() {
@@ -1013,6 +1279,9 @@
                         case 0:
                         case 1:
                         case 2:
+                        case 3:
+                        case 4:
+                        case 5:
                             break;
                         }
                     return null;
@@ -1046,6 +1315,18 @@
                     case "ADMIN":
                     case 2:
                         message.profileType = 2;
+                        break;
+                    case "AUTO_JUDGE":
+                    case 3:
+                        message.profileType = 3;
+                        break;
+                    case "REGISTRAR":
+                    case 4:
+                        message.profileType = 4;
+                        break;
+                    case "BALLOON_RUNNER":
+                    case 5:
+                        message.profileType = 5;
                         break;
                     }
                     return message;
@@ -1096,12 +1377,18 @@
                  * @property {number} TEAM=0 TEAM value
                  * @property {number} JUDGE=1 JUDGE value
                  * @property {number} ADMIN=2 ADMIN value
+                 * @property {number} AUTO_JUDGE=3 AUTO_JUDGE value
+                 * @property {number} REGISTRAR=4 REGISTRAR value
+                 * @property {number} BALLOON_RUNNER=5 BALLOON_RUNNER value
                  */
                 Profile.ProfileType = (function() {
                     var valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "TEAM"] = 0;
                     values[valuesById[1] = "JUDGE"] = 1;
                     values[valuesById[2] = "ADMIN"] = 2;
+                    values[valuesById[3] = "AUTO_JUDGE"] = 3;
+                    values[valuesById[4] = "REGISTRAR"] = 4;
+                    values[valuesById[5] = "BALLOON_RUNNER"] = 5;
                     return values;
                 })();
     
@@ -2786,8 +3073,12 @@
                  * Properties of a C2SMessage.
                  * @memberof acmcsus.debugjudge
                  * @interface IC2SMessage
-                 * @property {acmcsus.debugjudge.C2SMessage.IT2SMessage|null} [t2sMessage] C2SMessage t2sMessage
-                 * @property {acmcsus.debugjudge.C2SMessage.IJ2SMessage|null} [j2sMessage] C2SMessage j2sMessage
+                 * @property {acmcsus.debugjudge.IT2SMessage|null} [t2sMessage] C2SMessage t2sMessage
+                 * @property {acmcsus.debugjudge.IJ2SMessage|null} [j2sMessage] C2SMessage j2sMessage
+                 * @property {acmcsus.debugjudge.IA2SMessage|null} [a2sMessage] C2SMessage a2sMessage
+                 * @property {acmcsus.debugjudge.IAJ2SMessage|null} [aj2sMessage] C2SMessage aj2sMessage
+                 * @property {acmcsus.debugjudge.IB2SMessage|null} [b2sMessage] C2SMessage b2sMessage
+                 * @property {acmcsus.debugjudge.IR2SMessage|null} [rj2sMessage] C2SMessage rj2sMessage
                  * @property {acmcsus.debugjudge.C2SMessage.ILoginMessage|null} [loginMessage] C2SMessage loginMessage
                  */
     
@@ -2808,7 +3099,7 @@
     
                 /**
                  * C2SMessage t2sMessage.
-                 * @member {acmcsus.debugjudge.C2SMessage.IT2SMessage|null|undefined} t2sMessage
+                 * @member {acmcsus.debugjudge.IT2SMessage|null|undefined} t2sMessage
                  * @memberof acmcsus.debugjudge.C2SMessage
                  * @instance
                  */
@@ -2816,11 +3107,43 @@
     
                 /**
                  * C2SMessage j2sMessage.
-                 * @member {acmcsus.debugjudge.C2SMessage.IJ2SMessage|null|undefined} j2sMessage
+                 * @member {acmcsus.debugjudge.IJ2SMessage|null|undefined} j2sMessage
                  * @memberof acmcsus.debugjudge.C2SMessage
                  * @instance
                  */
                 C2SMessage.prototype.j2sMessage = null;
+    
+                /**
+                 * C2SMessage a2sMessage.
+                 * @member {acmcsus.debugjudge.IA2SMessage|null|undefined} a2sMessage
+                 * @memberof acmcsus.debugjudge.C2SMessage
+                 * @instance
+                 */
+                C2SMessage.prototype.a2sMessage = null;
+    
+                /**
+                 * C2SMessage aj2sMessage.
+                 * @member {acmcsus.debugjudge.IAJ2SMessage|null|undefined} aj2sMessage
+                 * @memberof acmcsus.debugjudge.C2SMessage
+                 * @instance
+                 */
+                C2SMessage.prototype.aj2sMessage = null;
+    
+                /**
+                 * C2SMessage b2sMessage.
+                 * @member {acmcsus.debugjudge.IB2SMessage|null|undefined} b2sMessage
+                 * @memberof acmcsus.debugjudge.C2SMessage
+                 * @instance
+                 */
+                C2SMessage.prototype.b2sMessage = null;
+    
+                /**
+                 * C2SMessage rj2sMessage.
+                 * @member {acmcsus.debugjudge.IR2SMessage|null|undefined} rj2sMessage
+                 * @memberof acmcsus.debugjudge.C2SMessage
+                 * @instance
+                 */
+                C2SMessage.prototype.rj2sMessage = null;
     
                 /**
                  * C2SMessage loginMessage.
@@ -2835,12 +3158,12 @@
     
                 /**
                  * C2SMessage value.
-                 * @member {"t2sMessage"|"j2sMessage"|"loginMessage"|undefined} value
+                 * @member {"t2sMessage"|"j2sMessage"|"a2sMessage"|"aj2sMessage"|"b2sMessage"|"rj2sMessage"|"loginMessage"|undefined} value
                  * @memberof acmcsus.debugjudge.C2SMessage
                  * @instance
                  */
                 Object.defineProperty(C2SMessage.prototype, "value", {
-                    get: $util.oneOfGetter($oneOfFields = ["t2sMessage", "j2sMessage", "loginMessage"]),
+                    get: $util.oneOfGetter($oneOfFields = ["t2sMessage", "j2sMessage", "a2sMessage", "aj2sMessage", "b2sMessage", "rj2sMessage", "loginMessage"]),
                     set: $util.oneOfSetter($oneOfFields)
                 });
     
@@ -2869,11 +3192,19 @@
                     if (!writer)
                         writer = $Writer.create();
                     if (message.t2sMessage != null && message.hasOwnProperty("t2sMessage"))
-                        $root.acmcsus.debugjudge.C2SMessage.T2SMessage.encode(message.t2sMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        $root.acmcsus.debugjudge.T2SMessage.encode(message.t2sMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                     if (message.j2sMessage != null && message.hasOwnProperty("j2sMessage"))
-                        $root.acmcsus.debugjudge.C2SMessage.J2SMessage.encode(message.j2sMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        $root.acmcsus.debugjudge.J2SMessage.encode(message.j2sMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.a2sMessage != null && message.hasOwnProperty("a2sMessage"))
+                        $root.acmcsus.debugjudge.A2SMessage.encode(message.a2sMessage, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                    if (message.aj2sMessage != null && message.hasOwnProperty("aj2sMessage"))
+                        $root.acmcsus.debugjudge.AJ2SMessage.encode(message.aj2sMessage, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                    if (message.b2sMessage != null && message.hasOwnProperty("b2sMessage"))
+                        $root.acmcsus.debugjudge.B2SMessage.encode(message.b2sMessage, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                    if (message.rj2sMessage != null && message.hasOwnProperty("rj2sMessage"))
+                        $root.acmcsus.debugjudge.R2SMessage.encode(message.rj2sMessage, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
                     if (message.loginMessage != null && message.hasOwnProperty("loginMessage"))
-                        $root.acmcsus.debugjudge.C2SMessage.LoginMessage.encode(message.loginMessage, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                        $root.acmcsus.debugjudge.C2SMessage.LoginMessage.encode(message.loginMessage, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
                     return writer;
                 };
     
@@ -2909,12 +3240,24 @@
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
                         case 1:
-                            message.t2sMessage = $root.acmcsus.debugjudge.C2SMessage.T2SMessage.decode(reader, reader.uint32());
+                            message.t2sMessage = $root.acmcsus.debugjudge.T2SMessage.decode(reader, reader.uint32());
                             break;
                         case 2:
-                            message.j2sMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.decode(reader, reader.uint32());
+                            message.j2sMessage = $root.acmcsus.debugjudge.J2SMessage.decode(reader, reader.uint32());
+                            break;
+                        case 3:
+                            message.a2sMessage = $root.acmcsus.debugjudge.A2SMessage.decode(reader, reader.uint32());
+                            break;
+                        case 4:
+                            message.aj2sMessage = $root.acmcsus.debugjudge.AJ2SMessage.decode(reader, reader.uint32());
                             break;
                         case 5:
+                            message.b2sMessage = $root.acmcsus.debugjudge.B2SMessage.decode(reader, reader.uint32());
+                            break;
+                        case 6:
+                            message.rj2sMessage = $root.acmcsus.debugjudge.R2SMessage.decode(reader, reader.uint32());
+                            break;
+                        case 10:
                             message.loginMessage = $root.acmcsus.debugjudge.C2SMessage.LoginMessage.decode(reader, reader.uint32());
                             break;
                         default:
@@ -2956,7 +3299,7 @@
                     if (message.t2sMessage != null && message.hasOwnProperty("t2sMessage")) {
                         properties.value = 1;
                         {
-                            var error = $root.acmcsus.debugjudge.C2SMessage.T2SMessage.verify(message.t2sMessage);
+                            var error = $root.acmcsus.debugjudge.T2SMessage.verify(message.t2sMessage);
                             if (error)
                                 return "t2sMessage." + error;
                         }
@@ -2966,9 +3309,49 @@
                             return "value: multiple values";
                         properties.value = 1;
                         {
-                            var error = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.verify(message.j2sMessage);
+                            var error = $root.acmcsus.debugjudge.J2SMessage.verify(message.j2sMessage);
                             if (error)
                                 return "j2sMessage." + error;
+                        }
+                    }
+                    if (message.a2sMessage != null && message.hasOwnProperty("a2sMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.A2SMessage.verify(message.a2sMessage);
+                            if (error)
+                                return "a2sMessage." + error;
+                        }
+                    }
+                    if (message.aj2sMessage != null && message.hasOwnProperty("aj2sMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.AJ2SMessage.verify(message.aj2sMessage);
+                            if (error)
+                                return "aj2sMessage." + error;
+                        }
+                    }
+                    if (message.b2sMessage != null && message.hasOwnProperty("b2sMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.B2SMessage.verify(message.b2sMessage);
+                            if (error)
+                                return "b2sMessage." + error;
+                        }
+                    }
+                    if (message.rj2sMessage != null && message.hasOwnProperty("rj2sMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.R2SMessage.verify(message.rj2sMessage);
+                            if (error)
+                                return "rj2sMessage." + error;
                         }
                     }
                     if (message.loginMessage != null && message.hasOwnProperty("loginMessage")) {
@@ -2999,12 +3382,32 @@
                     if (object.t2sMessage != null) {
                         if (typeof object.t2sMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.C2SMessage.t2sMessage: object expected");
-                        message.t2sMessage = $root.acmcsus.debugjudge.C2SMessage.T2SMessage.fromObject(object.t2sMessage);
+                        message.t2sMessage = $root.acmcsus.debugjudge.T2SMessage.fromObject(object.t2sMessage);
                     }
                     if (object.j2sMessage != null) {
                         if (typeof object.j2sMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.C2SMessage.j2sMessage: object expected");
-                        message.j2sMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.fromObject(object.j2sMessage);
+                        message.j2sMessage = $root.acmcsus.debugjudge.J2SMessage.fromObject(object.j2sMessage);
+                    }
+                    if (object.a2sMessage != null) {
+                        if (typeof object.a2sMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.C2SMessage.a2sMessage: object expected");
+                        message.a2sMessage = $root.acmcsus.debugjudge.A2SMessage.fromObject(object.a2sMessage);
+                    }
+                    if (object.aj2sMessage != null) {
+                        if (typeof object.aj2sMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.C2SMessage.aj2sMessage: object expected");
+                        message.aj2sMessage = $root.acmcsus.debugjudge.AJ2SMessage.fromObject(object.aj2sMessage);
+                    }
+                    if (object.b2sMessage != null) {
+                        if (typeof object.b2sMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.C2SMessage.b2sMessage: object expected");
+                        message.b2sMessage = $root.acmcsus.debugjudge.B2SMessage.fromObject(object.b2sMessage);
+                    }
+                    if (object.rj2sMessage != null) {
+                        if (typeof object.rj2sMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.C2SMessage.rj2sMessage: object expected");
+                        message.rj2sMessage = $root.acmcsus.debugjudge.R2SMessage.fromObject(object.rj2sMessage);
                     }
                     if (object.loginMessage != null) {
                         if (typeof object.loginMessage !== "object")
@@ -3028,14 +3431,34 @@
                         options = {};
                     var object = {};
                     if (message.t2sMessage != null && message.hasOwnProperty("t2sMessage")) {
-                        object.t2sMessage = $root.acmcsus.debugjudge.C2SMessage.T2SMessage.toObject(message.t2sMessage, options);
+                        object.t2sMessage = $root.acmcsus.debugjudge.T2SMessage.toObject(message.t2sMessage, options);
                         if (options.oneofs)
                             object.value = "t2sMessage";
                     }
                     if (message.j2sMessage != null && message.hasOwnProperty("j2sMessage")) {
-                        object.j2sMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.toObject(message.j2sMessage, options);
+                        object.j2sMessage = $root.acmcsus.debugjudge.J2SMessage.toObject(message.j2sMessage, options);
                         if (options.oneofs)
                             object.value = "j2sMessage";
+                    }
+                    if (message.a2sMessage != null && message.hasOwnProperty("a2sMessage")) {
+                        object.a2sMessage = $root.acmcsus.debugjudge.A2SMessage.toObject(message.a2sMessage, options);
+                        if (options.oneofs)
+                            object.value = "a2sMessage";
+                    }
+                    if (message.aj2sMessage != null && message.hasOwnProperty("aj2sMessage")) {
+                        object.aj2sMessage = $root.acmcsus.debugjudge.AJ2SMessage.toObject(message.aj2sMessage, options);
+                        if (options.oneofs)
+                            object.value = "aj2sMessage";
+                    }
+                    if (message.b2sMessage != null && message.hasOwnProperty("b2sMessage")) {
+                        object.b2sMessage = $root.acmcsus.debugjudge.B2SMessage.toObject(message.b2sMessage, options);
+                        if (options.oneofs)
+                            object.value = "b2sMessage";
+                    }
+                    if (message.rj2sMessage != null && message.hasOwnProperty("rj2sMessage")) {
+                        object.rj2sMessage = $root.acmcsus.debugjudge.R2SMessage.toObject(message.rj2sMessage, options);
+                        if (options.oneofs)
+                            object.value = "rj2sMessage";
                     }
                     if (message.loginMessage != null && message.hasOwnProperty("loginMessage")) {
                         object.loginMessage = $root.acmcsus.debugjudge.C2SMessage.LoginMessage.toObject(message.loginMessage, options);
@@ -3243,1825 +3666,6 @@
                     return LoginMessage;
                 })();
     
-                C2SMessage.T2SMessage = (function() {
-    
-                    /**
-                     * Properties of a T2SMessage.
-                     * @memberof acmcsus.debugjudge.C2SMessage
-                     * @interface IT2SMessage
-                     * @property {acmcsus.debugjudge.C2SMessage.T2SMessage.ISubmissionCreateMessage|null} [submissionCreateMessage] T2SMessage submissionCreateMessage
-                     */
-    
-                    /**
-                     * Constructs a new T2SMessage.
-                     * @memberof acmcsus.debugjudge.C2SMessage
-                     * @classdesc Represents a T2SMessage.
-                     * @implements IT2SMessage
-                     * @constructor
-                     * @param {acmcsus.debugjudge.C2SMessage.IT2SMessage=} [properties] Properties to set
-                     */
-                    function T2SMessage(properties) {
-                        if (properties)
-                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                if (properties[keys[i]] != null)
-                                    this[keys[i]] = properties[keys[i]];
-                    }
-    
-                    /**
-                     * T2SMessage submissionCreateMessage.
-                     * @member {acmcsus.debugjudge.C2SMessage.T2SMessage.ISubmissionCreateMessage|null|undefined} submissionCreateMessage
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @instance
-                     */
-                    T2SMessage.prototype.submissionCreateMessage = null;
-    
-                    // OneOf field names bound to virtual getters and setters
-                    var $oneOfFields;
-    
-                    /**
-                     * T2SMessage value.
-                     * @member {"submissionCreateMessage"|undefined} value
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @instance
-                     */
-                    Object.defineProperty(T2SMessage.prototype, "value", {
-                        get: $util.oneOfGetter($oneOfFields = ["submissionCreateMessage"]),
-                        set: $util.oneOfSetter($oneOfFields)
-                    });
-    
-                    /**
-                     * Creates a new T2SMessage instance using the specified properties.
-                     * @function create
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @static
-                     * @param {acmcsus.debugjudge.C2SMessage.IT2SMessage=} [properties] Properties to set
-                     * @returns {acmcsus.debugjudge.C2SMessage.T2SMessage} T2SMessage instance
-                     */
-                    T2SMessage.create = function create(properties) {
-                        return new T2SMessage(properties);
-                    };
-    
-                    /**
-                     * Encodes the specified T2SMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.T2SMessage.verify|verify} messages.
-                     * @function encode
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @static
-                     * @param {acmcsus.debugjudge.C2SMessage.IT2SMessage} message T2SMessage message or plain object to encode
-                     * @param {$protobuf.Writer} [writer] Writer to encode to
-                     * @returns {$protobuf.Writer} Writer
-                     */
-                    T2SMessage.encode = function encode(message, writer) {
-                        if (!writer)
-                            writer = $Writer.create();
-                        if (message.submissionCreateMessage != null && message.hasOwnProperty("submissionCreateMessage"))
-                            $root.acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage.encode(message.submissionCreateMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                        return writer;
-                    };
-    
-                    /**
-                     * Encodes the specified T2SMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.T2SMessage.verify|verify} messages.
-                     * @function encodeDelimited
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @static
-                     * @param {acmcsus.debugjudge.C2SMessage.IT2SMessage} message T2SMessage message or plain object to encode
-                     * @param {$protobuf.Writer} [writer] Writer to encode to
-                     * @returns {$protobuf.Writer} Writer
-                     */
-                    T2SMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                        return this.encode(message, writer).ldelim();
-                    };
-    
-                    /**
-                     * Decodes a T2SMessage message from the specified reader or buffer.
-                     * @function decode
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @static
-                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                     * @param {number} [length] Message length if known beforehand
-                     * @returns {acmcsus.debugjudge.C2SMessage.T2SMessage} T2SMessage
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    T2SMessage.decode = function decode(reader, length) {
-                        if (!(reader instanceof $Reader))
-                            reader = $Reader.create(reader);
-                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.T2SMessage();
-                        while (reader.pos < end) {
-                            var tag = reader.uint32();
-                            switch (tag >>> 3) {
-                            case 1:
-                                message.submissionCreateMessage = $root.acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage.decode(reader, reader.uint32());
-                                break;
-                            default:
-                                reader.skipType(tag & 7);
-                                break;
-                            }
-                        }
-                        return message;
-                    };
-    
-                    /**
-                     * Decodes a T2SMessage message from the specified reader or buffer, length delimited.
-                     * @function decodeDelimited
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @static
-                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                     * @returns {acmcsus.debugjudge.C2SMessage.T2SMessage} T2SMessage
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    T2SMessage.decodeDelimited = function decodeDelimited(reader) {
-                        if (!(reader instanceof $Reader))
-                            reader = new $Reader(reader);
-                        return this.decode(reader, reader.uint32());
-                    };
-    
-                    /**
-                     * Verifies a T2SMessage message.
-                     * @function verify
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @static
-                     * @param {Object.<string,*>} message Plain object to verify
-                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                     */
-                    T2SMessage.verify = function verify(message) {
-                        if (typeof message !== "object" || message === null)
-                            return "object expected";
-                        var properties = {};
-                        if (message.submissionCreateMessage != null && message.hasOwnProperty("submissionCreateMessage")) {
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage.verify(message.submissionCreateMessage);
-                                if (error)
-                                    return "submissionCreateMessage." + error;
-                            }
-                        }
-                        return null;
-                    };
-    
-                    /**
-                     * Creates a T2SMessage message from a plain object. Also converts values to their respective internal types.
-                     * @function fromObject
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @static
-                     * @param {Object.<string,*>} object Plain object
-                     * @returns {acmcsus.debugjudge.C2SMessage.T2SMessage} T2SMessage
-                     */
-                    T2SMessage.fromObject = function fromObject(object) {
-                        if (object instanceof $root.acmcsus.debugjudge.C2SMessage.T2SMessage)
-                            return object;
-                        var message = new $root.acmcsus.debugjudge.C2SMessage.T2SMessage();
-                        if (object.submissionCreateMessage != null) {
-                            if (typeof object.submissionCreateMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.C2SMessage.T2SMessage.submissionCreateMessage: object expected");
-                            message.submissionCreateMessage = $root.acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage.fromObject(object.submissionCreateMessage);
-                        }
-                        return message;
-                    };
-    
-                    /**
-                     * Creates a plain object from a T2SMessage message. Also converts values to other types if specified.
-                     * @function toObject
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @static
-                     * @param {acmcsus.debugjudge.C2SMessage.T2SMessage} message T2SMessage
-                     * @param {$protobuf.IConversionOptions} [options] Conversion options
-                     * @returns {Object.<string,*>} Plain object
-                     */
-                    T2SMessage.toObject = function toObject(message, options) {
-                        if (!options)
-                            options = {};
-                        var object = {};
-                        if (message.submissionCreateMessage != null && message.hasOwnProperty("submissionCreateMessage")) {
-                            object.submissionCreateMessage = $root.acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage.toObject(message.submissionCreateMessage, options);
-                            if (options.oneofs)
-                                object.value = "submissionCreateMessage";
-                        }
-                        return object;
-                    };
-    
-                    /**
-                     * Converts this T2SMessage to JSON.
-                     * @function toJSON
-                     * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                     * @instance
-                     * @returns {Object.<string,*>} JSON object
-                     */
-                    T2SMessage.prototype.toJSON = function toJSON() {
-                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                    };
-    
-                    T2SMessage.SubmissionCreateMessage = (function() {
-    
-                        /**
-                         * Properties of a SubmissionCreateMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                         * @interface ISubmissionCreateMessage
-                         * @property {acmcsus.debugjudge.ISubmission|null} [submission] SubmissionCreateMessage submission
-                         */
-    
-                        /**
-                         * Constructs a new SubmissionCreateMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage
-                         * @classdesc Represents a SubmissionCreateMessage.
-                         * @implements ISubmissionCreateMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.C2SMessage.T2SMessage.ISubmissionCreateMessage=} [properties] Properties to set
-                         */
-                        function SubmissionCreateMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * SubmissionCreateMessage submission.
-                         * @member {acmcsus.debugjudge.ISubmission|null|undefined} submission
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @instance
-                         */
-                        SubmissionCreateMessage.prototype.submission = null;
-    
-                        /**
-                         * Creates a new SubmissionCreateMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.T2SMessage.ISubmissionCreateMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage} SubmissionCreateMessage instance
-                         */
-                        SubmissionCreateMessage.create = function create(properties) {
-                            return new SubmissionCreateMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified SubmissionCreateMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.T2SMessage.ISubmissionCreateMessage} message SubmissionCreateMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        SubmissionCreateMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.submission != null && message.hasOwnProperty("submission"))
-                                $root.acmcsus.debugjudge.Submission.encode(message.submission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified SubmissionCreateMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.T2SMessage.ISubmissionCreateMessage} message SubmissionCreateMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        SubmissionCreateMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a SubmissionCreateMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage} SubmissionCreateMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        SubmissionCreateMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    message.submission = $root.acmcsus.debugjudge.Submission.decode(reader, reader.uint32());
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a SubmissionCreateMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage} SubmissionCreateMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        SubmissionCreateMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a SubmissionCreateMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        SubmissionCreateMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.submission != null && message.hasOwnProperty("submission")) {
-                                var error = $root.acmcsus.debugjudge.Submission.verify(message.submission);
-                                if (error)
-                                    return "submission." + error;
-                            }
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a SubmissionCreateMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage} SubmissionCreateMessage
-                         */
-                        SubmissionCreateMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage();
-                            if (object.submission != null) {
-                                if (typeof object.submission !== "object")
-                                    throw TypeError(".acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage.submission: object expected");
-                                message.submission = $root.acmcsus.debugjudge.Submission.fromObject(object.submission);
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from a SubmissionCreateMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage} message SubmissionCreateMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        SubmissionCreateMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.defaults)
-                                object.submission = null;
-                            if (message.submission != null && message.hasOwnProperty("submission"))
-                                object.submission = $root.acmcsus.debugjudge.Submission.toObject(message.submission, options);
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this SubmissionCreateMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.C2SMessage.T2SMessage.SubmissionCreateMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        SubmissionCreateMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return SubmissionCreateMessage;
-                    })();
-    
-                    return T2SMessage;
-                })();
-    
-                C2SMessage.J2SMessage = (function() {
-    
-                    /**
-                     * Properties of a J2SMessage.
-                     * @memberof acmcsus.debugjudge.C2SMessage
-                     * @interface IJ2SMessage
-                     * @property {acmcsus.debugjudge.C2SMessage.J2SMessage.IStartJudgingMessage|null} [startJudgingMessage] J2SMessage startJudgingMessage
-                     * @property {acmcsus.debugjudge.C2SMessage.J2SMessage.IStopJudgingMessage|null} [stopJudgingMessage] J2SMessage stopJudgingMessage
-                     * @property {acmcsus.debugjudge.C2SMessage.J2SMessage.ISubmissionJudgementMessage|null} [submissionJudgementMessage] J2SMessage submissionJudgementMessage
-                     * @property {acmcsus.debugjudge.C2SMessage.J2SMessage.IJudgingPreferencesMessage|null} [judgingPreferencesMessage] J2SMessage judgingPreferencesMessage
-                     * @property {acmcsus.debugjudge.C2SMessage.J2SMessage.IChangeCompetitionStateMessage|null} [changeCompetitionStateMessage] J2SMessage changeCompetitionStateMessage
-                     */
-    
-                    /**
-                     * Constructs a new J2SMessage.
-                     * @memberof acmcsus.debugjudge.C2SMessage
-                     * @classdesc Represents a J2SMessage.
-                     * @implements IJ2SMessage
-                     * @constructor
-                     * @param {acmcsus.debugjudge.C2SMessage.IJ2SMessage=} [properties] Properties to set
-                     */
-                    function J2SMessage(properties) {
-                        if (properties)
-                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                if (properties[keys[i]] != null)
-                                    this[keys[i]] = properties[keys[i]];
-                    }
-    
-                    /**
-                     * J2SMessage startJudgingMessage.
-                     * @member {acmcsus.debugjudge.C2SMessage.J2SMessage.IStartJudgingMessage|null|undefined} startJudgingMessage
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @instance
-                     */
-                    J2SMessage.prototype.startJudgingMessage = null;
-    
-                    /**
-                     * J2SMessage stopJudgingMessage.
-                     * @member {acmcsus.debugjudge.C2SMessage.J2SMessage.IStopJudgingMessage|null|undefined} stopJudgingMessage
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @instance
-                     */
-                    J2SMessage.prototype.stopJudgingMessage = null;
-    
-                    /**
-                     * J2SMessage submissionJudgementMessage.
-                     * @member {acmcsus.debugjudge.C2SMessage.J2SMessage.ISubmissionJudgementMessage|null|undefined} submissionJudgementMessage
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @instance
-                     */
-                    J2SMessage.prototype.submissionJudgementMessage = null;
-    
-                    /**
-                     * J2SMessage judgingPreferencesMessage.
-                     * @member {acmcsus.debugjudge.C2SMessage.J2SMessage.IJudgingPreferencesMessage|null|undefined} judgingPreferencesMessage
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @instance
-                     */
-                    J2SMessage.prototype.judgingPreferencesMessage = null;
-    
-                    /**
-                     * J2SMessage changeCompetitionStateMessage.
-                     * @member {acmcsus.debugjudge.C2SMessage.J2SMessage.IChangeCompetitionStateMessage|null|undefined} changeCompetitionStateMessage
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @instance
-                     */
-                    J2SMessage.prototype.changeCompetitionStateMessage = null;
-    
-                    // OneOf field names bound to virtual getters and setters
-                    var $oneOfFields;
-    
-                    /**
-                     * J2SMessage value.
-                     * @member {"startJudgingMessage"|"stopJudgingMessage"|"submissionJudgementMessage"|"judgingPreferencesMessage"|"changeCompetitionStateMessage"|undefined} value
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @instance
-                     */
-                    Object.defineProperty(J2SMessage.prototype, "value", {
-                        get: $util.oneOfGetter($oneOfFields = ["startJudgingMessage", "stopJudgingMessage", "submissionJudgementMessage", "judgingPreferencesMessage", "changeCompetitionStateMessage"]),
-                        set: $util.oneOfSetter($oneOfFields)
-                    });
-    
-                    /**
-                     * Creates a new J2SMessage instance using the specified properties.
-                     * @function create
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @static
-                     * @param {acmcsus.debugjudge.C2SMessage.IJ2SMessage=} [properties] Properties to set
-                     * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage} J2SMessage instance
-                     */
-                    J2SMessage.create = function create(properties) {
-                        return new J2SMessage(properties);
-                    };
-    
-                    /**
-                     * Encodes the specified J2SMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.verify|verify} messages.
-                     * @function encode
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @static
-                     * @param {acmcsus.debugjudge.C2SMessage.IJ2SMessage} message J2SMessage message or plain object to encode
-                     * @param {$protobuf.Writer} [writer] Writer to encode to
-                     * @returns {$protobuf.Writer} Writer
-                     */
-                    J2SMessage.encode = function encode(message, writer) {
-                        if (!writer)
-                            writer = $Writer.create();
-                        if (message.startJudgingMessage != null && message.hasOwnProperty("startJudgingMessage"))
-                            $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage.encode(message.startJudgingMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                        if (message.stopJudgingMessage != null && message.hasOwnProperty("stopJudgingMessage"))
-                            $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage.encode(message.stopJudgingMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                        if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage"))
-                            $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage.encode(message.submissionJudgementMessage, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                        if (message.judgingPreferencesMessage != null && message.hasOwnProperty("judgingPreferencesMessage"))
-                            $root.acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage.encode(message.judgingPreferencesMessage, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                        if (message.changeCompetitionStateMessage != null && message.hasOwnProperty("changeCompetitionStateMessage"))
-                            $root.acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage.encode(message.changeCompetitionStateMessage, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
-                        return writer;
-                    };
-    
-                    /**
-                     * Encodes the specified J2SMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.verify|verify} messages.
-                     * @function encodeDelimited
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @static
-                     * @param {acmcsus.debugjudge.C2SMessage.IJ2SMessage} message J2SMessage message or plain object to encode
-                     * @param {$protobuf.Writer} [writer] Writer to encode to
-                     * @returns {$protobuf.Writer} Writer
-                     */
-                    J2SMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                        return this.encode(message, writer).ldelim();
-                    };
-    
-                    /**
-                     * Decodes a J2SMessage message from the specified reader or buffer.
-                     * @function decode
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @static
-                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                     * @param {number} [length] Message length if known beforehand
-                     * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage} J2SMessage
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    J2SMessage.decode = function decode(reader, length) {
-                        if (!(reader instanceof $Reader))
-                            reader = $Reader.create(reader);
-                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage();
-                        while (reader.pos < end) {
-                            var tag = reader.uint32();
-                            switch (tag >>> 3) {
-                            case 1:
-                                message.startJudgingMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage.decode(reader, reader.uint32());
-                                break;
-                            case 2:
-                                message.stopJudgingMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage.decode(reader, reader.uint32());
-                                break;
-                            case 3:
-                                message.submissionJudgementMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage.decode(reader, reader.uint32());
-                                break;
-                            case 4:
-                                message.judgingPreferencesMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage.decode(reader, reader.uint32());
-                                break;
-                            case 8:
-                                message.changeCompetitionStateMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage.decode(reader, reader.uint32());
-                                break;
-                            default:
-                                reader.skipType(tag & 7);
-                                break;
-                            }
-                        }
-                        return message;
-                    };
-    
-                    /**
-                     * Decodes a J2SMessage message from the specified reader or buffer, length delimited.
-                     * @function decodeDelimited
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @static
-                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                     * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage} J2SMessage
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    J2SMessage.decodeDelimited = function decodeDelimited(reader) {
-                        if (!(reader instanceof $Reader))
-                            reader = new $Reader(reader);
-                        return this.decode(reader, reader.uint32());
-                    };
-    
-                    /**
-                     * Verifies a J2SMessage message.
-                     * @function verify
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @static
-                     * @param {Object.<string,*>} message Plain object to verify
-                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                     */
-                    J2SMessage.verify = function verify(message) {
-                        if (typeof message !== "object" || message === null)
-                            return "object expected";
-                        var properties = {};
-                        if (message.startJudgingMessage != null && message.hasOwnProperty("startJudgingMessage")) {
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage.verify(message.startJudgingMessage);
-                                if (error)
-                                    return "startJudgingMessage." + error;
-                            }
-                        }
-                        if (message.stopJudgingMessage != null && message.hasOwnProperty("stopJudgingMessage")) {
-                            if (properties.value === 1)
-                                return "value: multiple values";
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage.verify(message.stopJudgingMessage);
-                                if (error)
-                                    return "stopJudgingMessage." + error;
-                            }
-                        }
-                        if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage")) {
-                            if (properties.value === 1)
-                                return "value: multiple values";
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage.verify(message.submissionJudgementMessage);
-                                if (error)
-                                    return "submissionJudgementMessage." + error;
-                            }
-                        }
-                        if (message.judgingPreferencesMessage != null && message.hasOwnProperty("judgingPreferencesMessage")) {
-                            if (properties.value === 1)
-                                return "value: multiple values";
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage.verify(message.judgingPreferencesMessage);
-                                if (error)
-                                    return "judgingPreferencesMessage." + error;
-                            }
-                        }
-                        if (message.changeCompetitionStateMessage != null && message.hasOwnProperty("changeCompetitionStateMessage")) {
-                            if (properties.value === 1)
-                                return "value: multiple values";
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage.verify(message.changeCompetitionStateMessage);
-                                if (error)
-                                    return "changeCompetitionStateMessage." + error;
-                            }
-                        }
-                        return null;
-                    };
-    
-                    /**
-                     * Creates a J2SMessage message from a plain object. Also converts values to their respective internal types.
-                     * @function fromObject
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @static
-                     * @param {Object.<string,*>} object Plain object
-                     * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage} J2SMessage
-                     */
-                    J2SMessage.fromObject = function fromObject(object) {
-                        if (object instanceof $root.acmcsus.debugjudge.C2SMessage.J2SMessage)
-                            return object;
-                        var message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage();
-                        if (object.startJudgingMessage != null) {
-                            if (typeof object.startJudgingMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.C2SMessage.J2SMessage.startJudgingMessage: object expected");
-                            message.startJudgingMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage.fromObject(object.startJudgingMessage);
-                        }
-                        if (object.stopJudgingMessage != null) {
-                            if (typeof object.stopJudgingMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.C2SMessage.J2SMessage.stopJudgingMessage: object expected");
-                            message.stopJudgingMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage.fromObject(object.stopJudgingMessage);
-                        }
-                        if (object.submissionJudgementMessage != null) {
-                            if (typeof object.submissionJudgementMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.C2SMessage.J2SMessage.submissionJudgementMessage: object expected");
-                            message.submissionJudgementMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage.fromObject(object.submissionJudgementMessage);
-                        }
-                        if (object.judgingPreferencesMessage != null) {
-                            if (typeof object.judgingPreferencesMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.C2SMessage.J2SMessage.judgingPreferencesMessage: object expected");
-                            message.judgingPreferencesMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage.fromObject(object.judgingPreferencesMessage);
-                        }
-                        if (object.changeCompetitionStateMessage != null) {
-                            if (typeof object.changeCompetitionStateMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.C2SMessage.J2SMessage.changeCompetitionStateMessage: object expected");
-                            message.changeCompetitionStateMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage.fromObject(object.changeCompetitionStateMessage);
-                        }
-                        return message;
-                    };
-    
-                    /**
-                     * Creates a plain object from a J2SMessage message. Also converts values to other types if specified.
-                     * @function toObject
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @static
-                     * @param {acmcsus.debugjudge.C2SMessage.J2SMessage} message J2SMessage
-                     * @param {$protobuf.IConversionOptions} [options] Conversion options
-                     * @returns {Object.<string,*>} Plain object
-                     */
-                    J2SMessage.toObject = function toObject(message, options) {
-                        if (!options)
-                            options = {};
-                        var object = {};
-                        if (message.startJudgingMessage != null && message.hasOwnProperty("startJudgingMessage")) {
-                            object.startJudgingMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage.toObject(message.startJudgingMessage, options);
-                            if (options.oneofs)
-                                object.value = "startJudgingMessage";
-                        }
-                        if (message.stopJudgingMessage != null && message.hasOwnProperty("stopJudgingMessage")) {
-                            object.stopJudgingMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage.toObject(message.stopJudgingMessage, options);
-                            if (options.oneofs)
-                                object.value = "stopJudgingMessage";
-                        }
-                        if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage")) {
-                            object.submissionJudgementMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage.toObject(message.submissionJudgementMessage, options);
-                            if (options.oneofs)
-                                object.value = "submissionJudgementMessage";
-                        }
-                        if (message.judgingPreferencesMessage != null && message.hasOwnProperty("judgingPreferencesMessage")) {
-                            object.judgingPreferencesMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage.toObject(message.judgingPreferencesMessage, options);
-                            if (options.oneofs)
-                                object.value = "judgingPreferencesMessage";
-                        }
-                        if (message.changeCompetitionStateMessage != null && message.hasOwnProperty("changeCompetitionStateMessage")) {
-                            object.changeCompetitionStateMessage = $root.acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage.toObject(message.changeCompetitionStateMessage, options);
-                            if (options.oneofs)
-                                object.value = "changeCompetitionStateMessage";
-                        }
-                        return object;
-                    };
-    
-                    /**
-                     * Converts this J2SMessage to JSON.
-                     * @function toJSON
-                     * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                     * @instance
-                     * @returns {Object.<string,*>} JSON object
-                     */
-                    J2SMessage.prototype.toJSON = function toJSON() {
-                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                    };
-    
-                    J2SMessage.StartJudgingMessage = (function() {
-    
-                        /**
-                         * Properties of a StartJudgingMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @interface IStartJudgingMessage
-                         */
-    
-                        /**
-                         * Constructs a new StartJudgingMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @classdesc Represents a StartJudgingMessage.
-                         * @implements IStartJudgingMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IStartJudgingMessage=} [properties] Properties to set
-                         */
-                        function StartJudgingMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * Creates a new StartJudgingMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IStartJudgingMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage} StartJudgingMessage instance
-                         */
-                        StartJudgingMessage.create = function create(properties) {
-                            return new StartJudgingMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified StartJudgingMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IStartJudgingMessage} message StartJudgingMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        StartJudgingMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified StartJudgingMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IStartJudgingMessage} message StartJudgingMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        StartJudgingMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a StartJudgingMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage} StartJudgingMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        StartJudgingMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a StartJudgingMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage} StartJudgingMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        StartJudgingMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a StartJudgingMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        StartJudgingMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a StartJudgingMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage} StartJudgingMessage
-                         */
-                        StartJudgingMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage)
-                                return object;
-                            return new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage();
-                        };
-    
-                        /**
-                         * Creates a plain object from a StartJudgingMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage} message StartJudgingMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        StartJudgingMessage.toObject = function toObject() {
-                            return {};
-                        };
-    
-                        /**
-                         * Converts this StartJudgingMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StartJudgingMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        StartJudgingMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return StartJudgingMessage;
-                    })();
-    
-                    J2SMessage.StopJudgingMessage = (function() {
-    
-                        /**
-                         * Properties of a StopJudgingMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @interface IStopJudgingMessage
-                         */
-    
-                        /**
-                         * Constructs a new StopJudgingMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @classdesc Represents a StopJudgingMessage.
-                         * @implements IStopJudgingMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IStopJudgingMessage=} [properties] Properties to set
-                         */
-                        function StopJudgingMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * Creates a new StopJudgingMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IStopJudgingMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage} StopJudgingMessage instance
-                         */
-                        StopJudgingMessage.create = function create(properties) {
-                            return new StopJudgingMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified StopJudgingMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IStopJudgingMessage} message StopJudgingMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        StopJudgingMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified StopJudgingMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IStopJudgingMessage} message StopJudgingMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        StopJudgingMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a StopJudgingMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage} StopJudgingMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        StopJudgingMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a StopJudgingMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage} StopJudgingMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        StopJudgingMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a StopJudgingMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        StopJudgingMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a StopJudgingMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage} StopJudgingMessage
-                         */
-                        StopJudgingMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage)
-                                return object;
-                            return new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage();
-                        };
-    
-                        /**
-                         * Creates a plain object from a StopJudgingMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage} message StopJudgingMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        StopJudgingMessage.toObject = function toObject() {
-                            return {};
-                        };
-    
-                        /**
-                         * Converts this StopJudgingMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.StopJudgingMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        StopJudgingMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return StopJudgingMessage;
-                    })();
-    
-                    J2SMessage.SubmissionJudgementMessage = (function() {
-    
-                        /**
-                         * Properties of a SubmissionJudgementMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @interface ISubmissionJudgementMessage
-                         * @property {number|null} [teamId] SubmissionJudgementMessage teamId
-                         * @property {number|null} [problemId] SubmissionJudgementMessage problemId
-                         * @property {number|Long|null} [submissionId] SubmissionJudgementMessage submissionId
-                         * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] SubmissionJudgementMessage ruling
-                         */
-    
-                        /**
-                         * Constructs a new SubmissionJudgementMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @classdesc Represents a SubmissionJudgementMessage.
-                         * @implements ISubmissionJudgementMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.ISubmissionJudgementMessage=} [properties] Properties to set
-                         */
-                        function SubmissionJudgementMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * SubmissionJudgementMessage teamId.
-                         * @member {number} teamId
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @instance
-                         */
-                        SubmissionJudgementMessage.prototype.teamId = 0;
-    
-                        /**
-                         * SubmissionJudgementMessage problemId.
-                         * @member {number} problemId
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @instance
-                         */
-                        SubmissionJudgementMessage.prototype.problemId = 0;
-    
-                        /**
-                         * SubmissionJudgementMessage submissionId.
-                         * @member {number|Long} submissionId
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @instance
-                         */
-                        SubmissionJudgementMessage.prototype.submissionId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-    
-                        /**
-                         * SubmissionJudgementMessage ruling.
-                         * @member {acmcsus.debugjudge.SubmissionJudgement} ruling
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @instance
-                         */
-                        SubmissionJudgementMessage.prototype.ruling = 0;
-    
-                        /**
-                         * Creates a new SubmissionJudgementMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.ISubmissionJudgementMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage} SubmissionJudgementMessage instance
-                         */
-                        SubmissionJudgementMessage.create = function create(properties) {
-                            return new SubmissionJudgementMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified SubmissionJudgementMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.ISubmissionJudgementMessage} message SubmissionJudgementMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        SubmissionJudgementMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.teamId != null && message.hasOwnProperty("teamId"))
-                                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.teamId);
-                            if (message.problemId != null && message.hasOwnProperty("problemId"))
-                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
-                            if (message.submissionId != null && message.hasOwnProperty("submissionId"))
-                                writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
-                            if (message.ruling != null && message.hasOwnProperty("ruling"))
-                                writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ruling);
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified SubmissionJudgementMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.ISubmissionJudgementMessage} message SubmissionJudgementMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        SubmissionJudgementMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a SubmissionJudgementMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage} SubmissionJudgementMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        SubmissionJudgementMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    message.teamId = reader.int32();
-                                    break;
-                                case 2:
-                                    message.problemId = reader.int32();
-                                    break;
-                                case 3:
-                                    message.submissionId = reader.int64();
-                                    break;
-                                case 4:
-                                    message.ruling = reader.int32();
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a SubmissionJudgementMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage} SubmissionJudgementMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        SubmissionJudgementMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a SubmissionJudgementMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        SubmissionJudgementMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.teamId != null && message.hasOwnProperty("teamId"))
-                                if (!$util.isInteger(message.teamId))
-                                    return "teamId: integer expected";
-                            if (message.problemId != null && message.hasOwnProperty("problemId"))
-                                if (!$util.isInteger(message.problemId))
-                                    return "problemId: integer expected";
-                            if (message.submissionId != null && message.hasOwnProperty("submissionId"))
-                                if (!$util.isInteger(message.submissionId) && !(message.submissionId && $util.isInteger(message.submissionId.low) && $util.isInteger(message.submissionId.high)))
-                                    return "submissionId: integer|Long expected";
-                            if (message.ruling != null && message.hasOwnProperty("ruling"))
-                                switch (message.ruling) {
-                                default:
-                                    return "ruling: enum value expected";
-                                case 0:
-                                case 1:
-                                case 2:
-                                    break;
-                                }
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a SubmissionJudgementMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage} SubmissionJudgementMessage
-                         */
-                        SubmissionJudgementMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage();
-                            if (object.teamId != null)
-                                message.teamId = object.teamId | 0;
-                            if (object.problemId != null)
-                                message.problemId = object.problemId | 0;
-                            if (object.submissionId != null)
-                                if ($util.Long)
-                                    (message.submissionId = $util.Long.fromValue(object.submissionId)).unsigned = false;
-                                else if (typeof object.submissionId === "string")
-                                    message.submissionId = parseInt(object.submissionId, 10);
-                                else if (typeof object.submissionId === "number")
-                                    message.submissionId = object.submissionId;
-                                else if (typeof object.submissionId === "object")
-                                    message.submissionId = new $util.LongBits(object.submissionId.low >>> 0, object.submissionId.high >>> 0).toNumber();
-                            switch (object.ruling) {
-                            case "JUDGEMENT_UNKNOWN":
-                            case 0:
-                                message.ruling = 0;
-                                break;
-                            case "JUDGEMENT_SUCCESS":
-                            case 1:
-                                message.ruling = 1;
-                                break;
-                            case "JUDGEMENT_FAILURE":
-                            case 2:
-                                message.ruling = 2;
-                                break;
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from a SubmissionJudgementMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage} message SubmissionJudgementMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        SubmissionJudgementMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.defaults) {
-                                object.teamId = 0;
-                                object.problemId = 0;
-                                if ($util.Long) {
-                                    var long = new $util.Long(0, 0, false);
-                                    object.submissionId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                                } else
-                                    object.submissionId = options.longs === String ? "0" : 0;
-                                object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
-                            }
-                            if (message.teamId != null && message.hasOwnProperty("teamId"))
-                                object.teamId = message.teamId;
-                            if (message.problemId != null && message.hasOwnProperty("problemId"))
-                                object.problemId = message.problemId;
-                            if (message.submissionId != null && message.hasOwnProperty("submissionId"))
-                                if (typeof message.submissionId === "number")
-                                    object.submissionId = options.longs === String ? String(message.submissionId) : message.submissionId;
-                                else
-                                    object.submissionId = options.longs === String ? $util.Long.prototype.toString.call(message.submissionId) : options.longs === Number ? new $util.LongBits(message.submissionId.low >>> 0, message.submissionId.high >>> 0).toNumber() : message.submissionId;
-                            if (message.ruling != null && message.hasOwnProperty("ruling"))
-                                object.ruling = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.ruling] : message.ruling;
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this SubmissionJudgementMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.SubmissionJudgementMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        SubmissionJudgementMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return SubmissionJudgementMessage;
-                    })();
-    
-                    J2SMessage.JudgingPreferencesMessage = (function() {
-    
-                        /**
-                         * Properties of a JudgingPreferencesMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @interface IJudgingPreferencesMessage
-                         * @property {Object.<string,boolean>|null} [preferences] JudgingPreferencesMessage preferences
-                         */
-    
-                        /**
-                         * Constructs a new JudgingPreferencesMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @classdesc Represents a JudgingPreferencesMessage.
-                         * @implements IJudgingPreferencesMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IJudgingPreferencesMessage=} [properties] Properties to set
-                         */
-                        function JudgingPreferencesMessage(properties) {
-                            this.preferences = {};
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * JudgingPreferencesMessage preferences.
-                         * @member {Object.<string,boolean>} preferences
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @instance
-                         */
-                        JudgingPreferencesMessage.prototype.preferences = $util.emptyObject;
-    
-                        /**
-                         * Creates a new JudgingPreferencesMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IJudgingPreferencesMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage} JudgingPreferencesMessage instance
-                         */
-                        JudgingPreferencesMessage.create = function create(properties) {
-                            return new JudgingPreferencesMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified JudgingPreferencesMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IJudgingPreferencesMessage} message JudgingPreferencesMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        JudgingPreferencesMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.preferences != null && message.hasOwnProperty("preferences"))
-                                for (var keys = Object.keys(message.preferences), i = 0; i < keys.length; ++i)
-                                    writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).bool(message.preferences[keys[i]]).ldelim();
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified JudgingPreferencesMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IJudgingPreferencesMessage} message JudgingPreferencesMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        JudgingPreferencesMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a JudgingPreferencesMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage} JudgingPreferencesMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        JudgingPreferencesMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage(), key;
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    reader.skip().pos++;
-                                    if (message.preferences === $util.emptyObject)
-                                        message.preferences = {};
-                                    key = reader.int32();
-                                    reader.pos++;
-                                    message.preferences[key] = reader.bool();
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a JudgingPreferencesMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage} JudgingPreferencesMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        JudgingPreferencesMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a JudgingPreferencesMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        JudgingPreferencesMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.preferences != null && message.hasOwnProperty("preferences")) {
-                                if (!$util.isObject(message.preferences))
-                                    return "preferences: object expected";
-                                var key = Object.keys(message.preferences);
-                                for (var i = 0; i < key.length; ++i) {
-                                    if (!$util.key32Re.test(key[i]))
-                                        return "preferences: integer key{k:int32} expected";
-                                    if (typeof message.preferences[key[i]] !== "boolean")
-                                        return "preferences: boolean{k:int32} expected";
-                                }
-                            }
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a JudgingPreferencesMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage} JudgingPreferencesMessage
-                         */
-                        JudgingPreferencesMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage();
-                            if (object.preferences) {
-                                if (typeof object.preferences !== "object")
-                                    throw TypeError(".acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage.preferences: object expected");
-                                message.preferences = {};
-                                for (var keys = Object.keys(object.preferences), i = 0; i < keys.length; ++i)
-                                    message.preferences[keys[i]] = Boolean(object.preferences[keys[i]]);
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from a JudgingPreferencesMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage} message JudgingPreferencesMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        JudgingPreferencesMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.objects || options.defaults)
-                                object.preferences = {};
-                            var keys2;
-                            if (message.preferences && (keys2 = Object.keys(message.preferences)).length) {
-                                object.preferences = {};
-                                for (var j = 0; j < keys2.length; ++j)
-                                    object.preferences[keys2[j]] = message.preferences[keys2[j]];
-                            }
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this JudgingPreferencesMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.JudgingPreferencesMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        JudgingPreferencesMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return JudgingPreferencesMessage;
-                    })();
-    
-                    J2SMessage.ChangeCompetitionStateMessage = (function() {
-    
-                        /**
-                         * Properties of a ChangeCompetitionStateMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @interface IChangeCompetitionStateMessage
-                         * @property {number|Long|null} [timeMillis] ChangeCompetitionStateMessage timeMillis
-                         * @property {acmcsus.debugjudge.CompetitionState|null} [state] ChangeCompetitionStateMessage state
-                         */
-    
-                        /**
-                         * Constructs a new ChangeCompetitionStateMessage.
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage
-                         * @classdesc Represents a ChangeCompetitionStateMessage.
-                         * @implements IChangeCompetitionStateMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IChangeCompetitionStateMessage=} [properties] Properties to set
-                         */
-                        function ChangeCompetitionStateMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * ChangeCompetitionStateMessage timeMillis.
-                         * @member {number|Long} timeMillis
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @instance
-                         */
-                        ChangeCompetitionStateMessage.prototype.timeMillis = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-    
-                        /**
-                         * ChangeCompetitionStateMessage state.
-                         * @member {acmcsus.debugjudge.CompetitionState} state
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @instance
-                         */
-                        ChangeCompetitionStateMessage.prototype.state = 0;
-    
-                        /**
-                         * Creates a new ChangeCompetitionStateMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IChangeCompetitionStateMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage} ChangeCompetitionStateMessage instance
-                         */
-                        ChangeCompetitionStateMessage.create = function create(properties) {
-                            return new ChangeCompetitionStateMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified ChangeCompetitionStateMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IChangeCompetitionStateMessage} message ChangeCompetitionStateMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        ChangeCompetitionStateMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
-                                writer.uint32(/* id 1, wireType 0 =*/8).int64(message.timeMillis);
-                            if (message.state != null && message.hasOwnProperty("state"))
-                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.state);
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified ChangeCompetitionStateMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.IChangeCompetitionStateMessage} message ChangeCompetitionStateMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        ChangeCompetitionStateMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a ChangeCompetitionStateMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage} ChangeCompetitionStateMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        ChangeCompetitionStateMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    message.timeMillis = reader.int64();
-                                    break;
-                                case 2:
-                                    message.state = reader.int32();
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a ChangeCompetitionStateMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage} ChangeCompetitionStateMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        ChangeCompetitionStateMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a ChangeCompetitionStateMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        ChangeCompetitionStateMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
-                                if (!$util.isInteger(message.timeMillis) && !(message.timeMillis && $util.isInteger(message.timeMillis.low) && $util.isInteger(message.timeMillis.high)))
-                                    return "timeMillis: integer|Long expected";
-                            if (message.state != null && message.hasOwnProperty("state"))
-                                switch (message.state) {
-                                default:
-                                    return "state: enum value expected";
-                                case 0:
-                                case 1:
-                                case 2:
-                                case 3:
-                                case 4:
-                                    break;
-                                }
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a ChangeCompetitionStateMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage} ChangeCompetitionStateMessage
-                         */
-                        ChangeCompetitionStateMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage();
-                            if (object.timeMillis != null)
-                                if ($util.Long)
-                                    (message.timeMillis = $util.Long.fromValue(object.timeMillis)).unsigned = false;
-                                else if (typeof object.timeMillis === "string")
-                                    message.timeMillis = parseInt(object.timeMillis, 10);
-                                else if (typeof object.timeMillis === "number")
-                                    message.timeMillis = object.timeMillis;
-                                else if (typeof object.timeMillis === "object")
-                                    message.timeMillis = new $util.LongBits(object.timeMillis.low >>> 0, object.timeMillis.high >>> 0).toNumber();
-                            switch (object.state) {
-                            case "UNKNOWN":
-                            case 0:
-                                message.state = 0;
-                                break;
-                            case "WAITING":
-                            case 1:
-                                message.state = 1;
-                                break;
-                            case "STARTED":
-                            case 2:
-                                message.state = 2;
-                                break;
-                            case "PAUSED":
-                            case 3:
-                                message.state = 3;
-                                break;
-                            case "STOPPED":
-                            case 4:
-                                message.state = 4;
-                                break;
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from a ChangeCompetitionStateMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage} message ChangeCompetitionStateMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        ChangeCompetitionStateMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.defaults) {
-                                if ($util.Long) {
-                                    var long = new $util.Long(0, 0, false);
-                                    object.timeMillis = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                                } else
-                                    object.timeMillis = options.longs === String ? "0" : 0;
-                                object.state = options.enums === String ? "UNKNOWN" : 0;
-                            }
-                            if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
-                                if (typeof message.timeMillis === "number")
-                                    object.timeMillis = options.longs === String ? String(message.timeMillis) : message.timeMillis;
-                                else
-                                    object.timeMillis = options.longs === String ? $util.Long.prototype.toString.call(message.timeMillis) : options.longs === Number ? new $util.LongBits(message.timeMillis.low >>> 0, message.timeMillis.high >>> 0).toNumber() : message.timeMillis;
-                            if (message.state != null && message.hasOwnProperty("state"))
-                                object.state = options.enums === String ? $root.acmcsus.debugjudge.CompetitionState[message.state] : message.state;
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this ChangeCompetitionStateMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.C2SMessage.J2SMessage.ChangeCompetitionStateMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        ChangeCompetitionStateMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return ChangeCompetitionStateMessage;
-                    })();
-    
-                    return J2SMessage;
-                })();
-    
                 return C2SMessage;
             })();
     
@@ -5071,14 +3675,18 @@
                  * Properties of a S2CMessage.
                  * @memberof acmcsus.debugjudge
                  * @interface IS2CMessage
-                 * @property {acmcsus.debugjudge.S2CMessage.IS2TMessage|null} [s2tMessage] S2CMessage s2tMessage
-                 * @property {acmcsus.debugjudge.S2CMessage.IS2JMessage|null} [s2jMessage] S2CMessage s2jMessage
+                 * @property {acmcsus.debugjudge.IS2TMessage|null} [s2tMessage] S2CMessage s2tMessage
+                 * @property {acmcsus.debugjudge.IS2JMessage|null} [s2jMessage] S2CMessage s2jMessage
+                 * @property {acmcsus.debugjudge.IS2AMessage|null} [s2aMessage] S2CMessage s2aMessage
+                 * @property {acmcsus.debugjudge.IS2AJMessage|null} [s2ajMessage] S2CMessage s2ajMessage
                  * @property {acmcsus.debugjudge.S2CMessage.IDebugMessage|null} [debugMessage] S2CMessage debugMessage
                  * @property {acmcsus.debugjudge.S2CMessage.IAlertMessage|null} [alertMessage] S2CMessage alertMessage
                  * @property {acmcsus.debugjudge.S2CMessage.ILoginResultMessage|null} [loginResultMessage] S2CMessage loginResultMessage
                  * @property {acmcsus.debugjudge.S2CMessage.INotificationMessage|null} [notificationMessage] S2CMessage notificationMessage
                  * @property {acmcsus.debugjudge.S2CMessage.ICompetitionStateChangedMessage|null} [competitionStateChangedMessage] S2CMessage competitionStateChangedMessage
                  * @property {acmcsus.debugjudge.S2CMessage.IScoreboardUpdateMessage|null} [scoreboardUpdateMessage] S2CMessage scoreboardUpdateMessage
+                 * @property {acmcsus.debugjudge.S2CMessage.IReloadSubmissionMessage|null} [reloadSubmissionMessage] S2CMessage reloadSubmissionMessage
+                 * @property {acmcsus.debugjudge.S2CMessage.IReloadSubmissionsMessage|null} [reloadSubmissionsMessage] S2CMessage reloadSubmissionsMessage
                  * @property {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null} [reloadProblemsMessage] S2CMessage reloadProblemsMessage
                  */
     
@@ -5099,7 +3707,7 @@
     
                 /**
                  * S2CMessage s2tMessage.
-                 * @member {acmcsus.debugjudge.S2CMessage.IS2TMessage|null|undefined} s2tMessage
+                 * @member {acmcsus.debugjudge.IS2TMessage|null|undefined} s2tMessage
                  * @memberof acmcsus.debugjudge.S2CMessage
                  * @instance
                  */
@@ -5107,11 +3715,27 @@
     
                 /**
                  * S2CMessage s2jMessage.
-                 * @member {acmcsus.debugjudge.S2CMessage.IS2JMessage|null|undefined} s2jMessage
+                 * @member {acmcsus.debugjudge.IS2JMessage|null|undefined} s2jMessage
                  * @memberof acmcsus.debugjudge.S2CMessage
                  * @instance
                  */
                 S2CMessage.prototype.s2jMessage = null;
+    
+                /**
+                 * S2CMessage s2aMessage.
+                 * @member {acmcsus.debugjudge.IS2AMessage|null|undefined} s2aMessage
+                 * @memberof acmcsus.debugjudge.S2CMessage
+                 * @instance
+                 */
+                S2CMessage.prototype.s2aMessage = null;
+    
+                /**
+                 * S2CMessage s2ajMessage.
+                 * @member {acmcsus.debugjudge.IS2AJMessage|null|undefined} s2ajMessage
+                 * @memberof acmcsus.debugjudge.S2CMessage
+                 * @instance
+                 */
+                S2CMessage.prototype.s2ajMessage = null;
     
                 /**
                  * S2CMessage debugMessage.
@@ -5162,6 +3786,22 @@
                 S2CMessage.prototype.scoreboardUpdateMessage = null;
     
                 /**
+                 * S2CMessage reloadSubmissionMessage.
+                 * @member {acmcsus.debugjudge.S2CMessage.IReloadSubmissionMessage|null|undefined} reloadSubmissionMessage
+                 * @memberof acmcsus.debugjudge.S2CMessage
+                 * @instance
+                 */
+                S2CMessage.prototype.reloadSubmissionMessage = null;
+    
+                /**
+                 * S2CMessage reloadSubmissionsMessage.
+                 * @member {acmcsus.debugjudge.S2CMessage.IReloadSubmissionsMessage|null|undefined} reloadSubmissionsMessage
+                 * @memberof acmcsus.debugjudge.S2CMessage
+                 * @instance
+                 */
+                S2CMessage.prototype.reloadSubmissionsMessage = null;
+    
+                /**
                  * S2CMessage reloadProblemsMessage.
                  * @member {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null|undefined} reloadProblemsMessage
                  * @memberof acmcsus.debugjudge.S2CMessage
@@ -5174,12 +3814,12 @@
     
                 /**
                  * S2CMessage value.
-                 * @member {"s2tMessage"|"s2jMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|"reloadProblemsMessage"|undefined} value
+                 * @member {"s2tMessage"|"s2jMessage"|"s2aMessage"|"s2ajMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|"reloadSubmissionMessage"|"reloadSubmissionsMessage"|"reloadProblemsMessage"|undefined} value
                  * @memberof acmcsus.debugjudge.S2CMessage
                  * @instance
                  */
                 Object.defineProperty(S2CMessage.prototype, "value", {
-                    get: $util.oneOfGetter($oneOfFields = ["s2tMessage", "s2jMessage", "debugMessage", "alertMessage", "loginResultMessage", "notificationMessage", "competitionStateChangedMessage", "scoreboardUpdateMessage", "reloadProblemsMessage"]),
+                    get: $util.oneOfGetter($oneOfFields = ["s2tMessage", "s2jMessage", "s2aMessage", "s2ajMessage", "debugMessage", "alertMessage", "loginResultMessage", "notificationMessage", "competitionStateChangedMessage", "scoreboardUpdateMessage", "reloadSubmissionMessage", "reloadSubmissionsMessage", "reloadProblemsMessage"]),
                     set: $util.oneOfSetter($oneOfFields)
                 });
     
@@ -5208,23 +3848,31 @@
                     if (!writer)
                         writer = $Writer.create();
                     if (message.s2tMessage != null && message.hasOwnProperty("s2tMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.S2TMessage.encode(message.s2tMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2TMessage.encode(message.s2tMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                     if (message.s2jMessage != null && message.hasOwnProperty("s2jMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.S2JMessage.encode(message.s2jMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2JMessage.encode(message.s2jMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.s2aMessage != null && message.hasOwnProperty("s2aMessage"))
+                        $root.acmcsus.debugjudge.S2AMessage.encode(message.s2aMessage, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                    if (message.s2ajMessage != null && message.hasOwnProperty("s2ajMessage"))
+                        $root.acmcsus.debugjudge.S2AJMessage.encode(message.s2ajMessage, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                     if (message.debugMessage != null && message.hasOwnProperty("debugMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.DebugMessage.encode(message.debugMessage, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2CMessage.DebugMessage.encode(message.debugMessage, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
                     if (message.alertMessage != null && message.hasOwnProperty("alertMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.AlertMessage.encode(message.alertMessage, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2CMessage.AlertMessage.encode(message.alertMessage, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
                     if (message.loginResultMessage != null && message.hasOwnProperty("loginResultMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.LoginResultMessage.encode(message.loginResultMessage, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2CMessage.LoginResultMessage.encode(message.loginResultMessage, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
                     if (message.notificationMessage != null && message.hasOwnProperty("notificationMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.NotificationMessage.encode(message.notificationMessage, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2CMessage.NotificationMessage.encode(message.notificationMessage, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
                     if (message.competitionStateChangedMessage != null && message.hasOwnProperty("competitionStateChangedMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.CompetitionStateChangedMessage.encode(message.competitionStateChangedMessage, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2CMessage.CompetitionStateChangedMessage.encode(message.competitionStateChangedMessage, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
                     if (message.scoreboardUpdateMessage != null && message.hasOwnProperty("scoreboardUpdateMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.encode(message.scoreboardUpdateMessage, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.encode(message.scoreboardUpdateMessage, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+                    if (message.reloadSubmissionMessage != null && message.hasOwnProperty("reloadSubmissionMessage"))
+                        $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage.encode(message.reloadSubmissionMessage, writer.uint32(/* id 23, wireType 2 =*/186).fork()).ldelim();
+                    if (message.reloadSubmissionsMessage != null && message.hasOwnProperty("reloadSubmissionsMessage"))
+                        $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.encode(message.reloadSubmissionsMessage, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
                     if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage"))
-                        $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.encode(message.reloadProblemsMessage, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                        $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.encode(message.reloadProblemsMessage, writer.uint32(/* id 25, wireType 2 =*/202).fork()).ldelim();
                     return writer;
                 };
     
@@ -5260,30 +3908,42 @@
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
                         case 1:
-                            message.s2tMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.decode(reader, reader.uint32());
+                            message.s2tMessage = $root.acmcsus.debugjudge.S2TMessage.decode(reader, reader.uint32());
                             break;
                         case 2:
-                            message.s2jMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.decode(reader, reader.uint32());
+                            message.s2jMessage = $root.acmcsus.debugjudge.S2JMessage.decode(reader, reader.uint32());
                             break;
                         case 3:
-                            message.debugMessage = $root.acmcsus.debugjudge.S2CMessage.DebugMessage.decode(reader, reader.uint32());
+                            message.s2aMessage = $root.acmcsus.debugjudge.S2AMessage.decode(reader, reader.uint32());
                             break;
                         case 4:
+                            message.s2ajMessage = $root.acmcsus.debugjudge.S2AJMessage.decode(reader, reader.uint32());
+                            break;
+                        case 17:
+                            message.debugMessage = $root.acmcsus.debugjudge.S2CMessage.DebugMessage.decode(reader, reader.uint32());
+                            break;
+                        case 18:
                             message.alertMessage = $root.acmcsus.debugjudge.S2CMessage.AlertMessage.decode(reader, reader.uint32());
                             break;
-                        case 5:
+                        case 19:
                             message.loginResultMessage = $root.acmcsus.debugjudge.S2CMessage.LoginResultMessage.decode(reader, reader.uint32());
                             break;
-                        case 6:
+                        case 20:
                             message.notificationMessage = $root.acmcsus.debugjudge.S2CMessage.NotificationMessage.decode(reader, reader.uint32());
                             break;
-                        case 7:
+                        case 21:
                             message.competitionStateChangedMessage = $root.acmcsus.debugjudge.S2CMessage.CompetitionStateChangedMessage.decode(reader, reader.uint32());
                             break;
-                        case 8:
+                        case 22:
                             message.scoreboardUpdateMessage = $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.decode(reader, reader.uint32());
                             break;
-                        case 9:
+                        case 23:
+                            message.reloadSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage.decode(reader, reader.uint32());
+                            break;
+                        case 24:
+                            message.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.decode(reader, reader.uint32());
+                            break;
+                        case 25:
                             message.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.decode(reader, reader.uint32());
                             break;
                         default:
@@ -5325,7 +3985,7 @@
                     if (message.s2tMessage != null && message.hasOwnProperty("s2tMessage")) {
                         properties.value = 1;
                         {
-                            var error = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.verify(message.s2tMessage);
+                            var error = $root.acmcsus.debugjudge.S2TMessage.verify(message.s2tMessage);
                             if (error)
                                 return "s2tMessage." + error;
                         }
@@ -5335,9 +3995,29 @@
                             return "value: multiple values";
                         properties.value = 1;
                         {
-                            var error = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.verify(message.s2jMessage);
+                            var error = $root.acmcsus.debugjudge.S2JMessage.verify(message.s2jMessage);
                             if (error)
                                 return "s2jMessage." + error;
+                        }
+                    }
+                    if (message.s2aMessage != null && message.hasOwnProperty("s2aMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2AMessage.verify(message.s2aMessage);
+                            if (error)
+                                return "s2aMessage." + error;
+                        }
+                    }
+                    if (message.s2ajMessage != null && message.hasOwnProperty("s2ajMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2AJMessage.verify(message.s2ajMessage);
+                            if (error)
+                                return "s2ajMessage." + error;
                         }
                     }
                     if (message.debugMessage != null && message.hasOwnProperty("debugMessage")) {
@@ -5400,6 +4080,26 @@
                                 return "scoreboardUpdateMessage." + error;
                         }
                     }
+                    if (message.reloadSubmissionMessage != null && message.hasOwnProperty("reloadSubmissionMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage.verify(message.reloadSubmissionMessage);
+                            if (error)
+                                return "reloadSubmissionMessage." + error;
+                        }
+                    }
+                    if (message.reloadSubmissionsMessage != null && message.hasOwnProperty("reloadSubmissionsMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.verify(message.reloadSubmissionsMessage);
+                            if (error)
+                                return "reloadSubmissionsMessage." + error;
+                        }
+                    }
                     if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage")) {
                         if (properties.value === 1)
                             return "value: multiple values";
@@ -5428,12 +4128,22 @@
                     if (object.s2tMessage != null) {
                         if (typeof object.s2tMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.S2CMessage.s2tMessage: object expected");
-                        message.s2tMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.fromObject(object.s2tMessage);
+                        message.s2tMessage = $root.acmcsus.debugjudge.S2TMessage.fromObject(object.s2tMessage);
                     }
                     if (object.s2jMessage != null) {
                         if (typeof object.s2jMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.S2CMessage.s2jMessage: object expected");
-                        message.s2jMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.fromObject(object.s2jMessage);
+                        message.s2jMessage = $root.acmcsus.debugjudge.S2JMessage.fromObject(object.s2jMessage);
+                    }
+                    if (object.s2aMessage != null) {
+                        if (typeof object.s2aMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2CMessage.s2aMessage: object expected");
+                        message.s2aMessage = $root.acmcsus.debugjudge.S2AMessage.fromObject(object.s2aMessage);
+                    }
+                    if (object.s2ajMessage != null) {
+                        if (typeof object.s2ajMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2CMessage.s2ajMessage: object expected");
+                        message.s2ajMessage = $root.acmcsus.debugjudge.S2AJMessage.fromObject(object.s2ajMessage);
                     }
                     if (object.debugMessage != null) {
                         if (typeof object.debugMessage !== "object")
@@ -5465,6 +4175,16 @@
                             throw TypeError(".acmcsus.debugjudge.S2CMessage.scoreboardUpdateMessage: object expected");
                         message.scoreboardUpdateMessage = $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.fromObject(object.scoreboardUpdateMessage);
                     }
+                    if (object.reloadSubmissionMessage != null) {
+                        if (typeof object.reloadSubmissionMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2CMessage.reloadSubmissionMessage: object expected");
+                        message.reloadSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage.fromObject(object.reloadSubmissionMessage);
+                    }
+                    if (object.reloadSubmissionsMessage != null) {
+                        if (typeof object.reloadSubmissionsMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2CMessage.reloadSubmissionsMessage: object expected");
+                        message.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.fromObject(object.reloadSubmissionsMessage);
+                    }
                     if (object.reloadProblemsMessage != null) {
                         if (typeof object.reloadProblemsMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.S2CMessage.reloadProblemsMessage: object expected");
@@ -5487,14 +4207,24 @@
                         options = {};
                     var object = {};
                     if (message.s2tMessage != null && message.hasOwnProperty("s2tMessage")) {
-                        object.s2tMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.toObject(message.s2tMessage, options);
+                        object.s2tMessage = $root.acmcsus.debugjudge.S2TMessage.toObject(message.s2tMessage, options);
                         if (options.oneofs)
                             object.value = "s2tMessage";
                     }
                     if (message.s2jMessage != null && message.hasOwnProperty("s2jMessage")) {
-                        object.s2jMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.toObject(message.s2jMessage, options);
+                        object.s2jMessage = $root.acmcsus.debugjudge.S2JMessage.toObject(message.s2jMessage, options);
                         if (options.oneofs)
                             object.value = "s2jMessage";
+                    }
+                    if (message.s2aMessage != null && message.hasOwnProperty("s2aMessage")) {
+                        object.s2aMessage = $root.acmcsus.debugjudge.S2AMessage.toObject(message.s2aMessage, options);
+                        if (options.oneofs)
+                            object.value = "s2aMessage";
+                    }
+                    if (message.s2ajMessage != null && message.hasOwnProperty("s2ajMessage")) {
+                        object.s2ajMessage = $root.acmcsus.debugjudge.S2AJMessage.toObject(message.s2ajMessage, options);
+                        if (options.oneofs)
+                            object.value = "s2ajMessage";
                     }
                     if (message.debugMessage != null && message.hasOwnProperty("debugMessage")) {
                         object.debugMessage = $root.acmcsus.debugjudge.S2CMessage.DebugMessage.toObject(message.debugMessage, options);
@@ -5525,6 +4255,16 @@
                         object.scoreboardUpdateMessage = $root.acmcsus.debugjudge.S2CMessage.ScoreboardUpdateMessage.toObject(message.scoreboardUpdateMessage, options);
                         if (options.oneofs)
                             object.value = "scoreboardUpdateMessage";
+                    }
+                    if (message.reloadSubmissionMessage != null && message.hasOwnProperty("reloadSubmissionMessage")) {
+                        object.reloadSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage.toObject(message.reloadSubmissionMessage, options);
+                        if (options.oneofs)
+                            object.value = "reloadSubmissionMessage";
+                    }
+                    if (message.reloadSubmissionsMessage != null && message.hasOwnProperty("reloadSubmissionsMessage")) {
+                        object.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.toObject(message.reloadSubmissionsMessage, options);
+                        if (options.oneofs)
+                            object.value = "reloadSubmissionsMessage";
                     }
                     if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage")) {
                         object.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.toObject(message.reloadProblemsMessage, options);
@@ -7004,25 +5744,24 @@
                     return ReloadProblemsMessage;
                 })();
     
-                S2CMessage.S2TMessage = (function() {
+                S2CMessage.ReloadSubmissionMessage = (function() {
     
                     /**
-                     * Properties of a S2TMessage.
+                     * Properties of a ReloadSubmissionMessage.
                      * @memberof acmcsus.debugjudge.S2CMessage
-                     * @interface IS2TMessage
-                     * @property {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionMessage|null} [reloadSubmissionMessage] S2TMessage reloadSubmissionMessage
-                     * @property {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage|null} [reloadSubmissionsMessage] S2TMessage reloadSubmissionsMessage
+                     * @interface IReloadSubmissionMessage
+                     * @property {acmcsus.debugjudge.ISubmission|null} [submission] ReloadSubmissionMessage submission
                      */
     
                     /**
-                     * Constructs a new S2TMessage.
+                     * Constructs a new ReloadSubmissionMessage.
                      * @memberof acmcsus.debugjudge.S2CMessage
-                     * @classdesc Represents a S2TMessage.
-                     * @implements IS2TMessage
+                     * @classdesc Represents a ReloadSubmissionMessage.
+                     * @implements IReloadSubmissionMessage
                      * @constructor
-                     * @param {acmcsus.debugjudge.S2CMessage.IS2TMessage=} [properties] Properties to set
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadSubmissionMessage=} [properties] Properties to set
                      */
-                    function S2TMessage(properties) {
+                    function ReloadSubmissionMessage(properties) {
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -7030,102 +5769,75 @@
                     }
     
                     /**
-                     * S2TMessage reloadSubmissionMessage.
-                     * @member {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionMessage|null|undefined} reloadSubmissionMessage
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * ReloadSubmissionMessage submission.
+                     * @member {acmcsus.debugjudge.ISubmission|null|undefined} submission
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @instance
                      */
-                    S2TMessage.prototype.reloadSubmissionMessage = null;
+                    ReloadSubmissionMessage.prototype.submission = null;
     
                     /**
-                     * S2TMessage reloadSubmissionsMessage.
-                     * @member {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage|null|undefined} reloadSubmissionsMessage
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                     * @instance
-                     */
-                    S2TMessage.prototype.reloadSubmissionsMessage = null;
-    
-                    // OneOf field names bound to virtual getters and setters
-                    var $oneOfFields;
-    
-                    /**
-                     * S2TMessage value.
-                     * @member {"reloadSubmissionMessage"|"reloadSubmissionsMessage"|undefined} value
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                     * @instance
-                     */
-                    Object.defineProperty(S2TMessage.prototype, "value", {
-                        get: $util.oneOfGetter($oneOfFields = ["reloadSubmissionMessage", "reloadSubmissionsMessage"]),
-                        set: $util.oneOfSetter($oneOfFields)
-                    });
-    
-                    /**
-                     * Creates a new S2TMessage instance using the specified properties.
+                     * Creates a new ReloadSubmissionMessage instance using the specified properties.
                      * @function create
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @static
-                     * @param {acmcsus.debugjudge.S2CMessage.IS2TMessage=} [properties] Properties to set
-                     * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage} S2TMessage instance
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadSubmissionMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage} ReloadSubmissionMessage instance
                      */
-                    S2TMessage.create = function create(properties) {
-                        return new S2TMessage(properties);
+                    ReloadSubmissionMessage.create = function create(properties) {
+                        return new ReloadSubmissionMessage(properties);
                     };
     
                     /**
-                     * Encodes the specified S2TMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.verify|verify} messages.
+                     * Encodes the specified ReloadSubmissionMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage.verify|verify} messages.
                      * @function encode
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @static
-                     * @param {acmcsus.debugjudge.S2CMessage.IS2TMessage} message S2TMessage message or plain object to encode
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadSubmissionMessage} message ReloadSubmissionMessage message or plain object to encode
                      * @param {$protobuf.Writer} [writer] Writer to encode to
                      * @returns {$protobuf.Writer} Writer
                      */
-                    S2TMessage.encode = function encode(message, writer) {
+                    ReloadSubmissionMessage.encode = function encode(message, writer) {
                         if (!writer)
                             writer = $Writer.create();
-                        if (message.reloadSubmissionMessage != null && message.hasOwnProperty("reloadSubmissionMessage"))
-                            $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.encode(message.reloadSubmissionMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                        if (message.reloadSubmissionsMessage != null && message.hasOwnProperty("reloadSubmissionsMessage"))
-                            $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.encode(message.reloadSubmissionsMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            $root.acmcsus.debugjudge.Submission.encode(message.submission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                         return writer;
                     };
     
                     /**
-                     * Encodes the specified S2TMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.verify|verify} messages.
+                     * Encodes the specified ReloadSubmissionMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage.verify|verify} messages.
                      * @function encodeDelimited
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @static
-                     * @param {acmcsus.debugjudge.S2CMessage.IS2TMessage} message S2TMessage message or plain object to encode
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadSubmissionMessage} message ReloadSubmissionMessage message or plain object to encode
                      * @param {$protobuf.Writer} [writer] Writer to encode to
                      * @returns {$protobuf.Writer} Writer
                      */
-                    S2TMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    ReloadSubmissionMessage.encodeDelimited = function encodeDelimited(message, writer) {
                         return this.encode(message, writer).ldelim();
                     };
     
                     /**
-                     * Decodes a S2TMessage message from the specified reader or buffer.
+                     * Decodes a ReloadSubmissionMessage message from the specified reader or buffer.
                      * @function decode
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @static
                      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
                      * @param {number} [length] Message length if known beforehand
-                     * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage} S2TMessage
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage} ReloadSubmissionMessage
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    S2TMessage.decode = function decode(reader, length) {
+                    ReloadSubmissionMessage.decode = function decode(reader, length) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
-                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2TMessage();
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
                             switch (tag >>> 3) {
                             case 1:
-                                message.reloadSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.decode(reader, reader.uint32());
-                                break;
-                            case 2:
-                                message.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.decode(reader, reader.uint32());
+                                message.submission = $root.acmcsus.debugjudge.Submission.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -7136,522 +5848,112 @@
                     };
     
                     /**
-                     * Decodes a S2TMessage message from the specified reader or buffer, length delimited.
+                     * Decodes a ReloadSubmissionMessage message from the specified reader or buffer, length delimited.
                      * @function decodeDelimited
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @static
                      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                     * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage} S2TMessage
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage} ReloadSubmissionMessage
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    S2TMessage.decodeDelimited = function decodeDelimited(reader) {
+                    ReloadSubmissionMessage.decodeDelimited = function decodeDelimited(reader) {
                         if (!(reader instanceof $Reader))
                             reader = new $Reader(reader);
                         return this.decode(reader, reader.uint32());
                     };
     
                     /**
-                     * Verifies a S2TMessage message.
+                     * Verifies a ReloadSubmissionMessage message.
                      * @function verify
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @static
                      * @param {Object.<string,*>} message Plain object to verify
                      * @returns {string|null} `null` if valid, otherwise the reason why it is not
                      */
-                    S2TMessage.verify = function verify(message) {
+                    ReloadSubmissionMessage.verify = function verify(message) {
                         if (typeof message !== "object" || message === null)
                             return "object expected";
-                        var properties = {};
-                        if (message.reloadSubmissionMessage != null && message.hasOwnProperty("reloadSubmissionMessage")) {
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.verify(message.reloadSubmissionMessage);
-                                if (error)
-                                    return "reloadSubmissionMessage." + error;
-                            }
-                        }
-                        if (message.reloadSubmissionsMessage != null && message.hasOwnProperty("reloadSubmissionsMessage")) {
-                            if (properties.value === 1)
-                                return "value: multiple values";
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.verify(message.reloadSubmissionsMessage);
-                                if (error)
-                                    return "reloadSubmissionsMessage." + error;
-                            }
+                        if (message.submission != null && message.hasOwnProperty("submission")) {
+                            var error = $root.acmcsus.debugjudge.Submission.verify(message.submission);
+                            if (error)
+                                return "submission." + error;
                         }
                         return null;
                     };
     
                     /**
-                     * Creates a S2TMessage message from a plain object. Also converts values to their respective internal types.
+                     * Creates a ReloadSubmissionMessage message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @static
                      * @param {Object.<string,*>} object Plain object
-                     * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage} S2TMessage
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage} ReloadSubmissionMessage
                      */
-                    S2TMessage.fromObject = function fromObject(object) {
-                        if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2TMessage)
+                    ReloadSubmissionMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage)
                             return object;
-                        var message = new $root.acmcsus.debugjudge.S2CMessage.S2TMessage();
-                        if (object.reloadSubmissionMessage != null) {
-                            if (typeof object.reloadSubmissionMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.S2CMessage.S2TMessage.reloadSubmissionMessage: object expected");
-                            message.reloadSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.fromObject(object.reloadSubmissionMessage);
-                        }
-                        if (object.reloadSubmissionsMessage != null) {
-                            if (typeof object.reloadSubmissionsMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.S2CMessage.S2TMessage.reloadSubmissionsMessage: object expected");
-                            message.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.fromObject(object.reloadSubmissionsMessage);
+                        var message = new $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage();
+                        if (object.submission != null) {
+                            if (typeof object.submission !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage.submission: object expected");
+                            message.submission = $root.acmcsus.debugjudge.Submission.fromObject(object.submission);
                         }
                         return message;
                     };
     
                     /**
-                     * Creates a plain object from a S2TMessage message. Also converts values to other types if specified.
+                     * Creates a plain object from a ReloadSubmissionMessage message. Also converts values to other types if specified.
                      * @function toObject
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @static
-                     * @param {acmcsus.debugjudge.S2CMessage.S2TMessage} message S2TMessage
+                     * @param {acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage} message ReloadSubmissionMessage
                      * @param {$protobuf.IConversionOptions} [options] Conversion options
                      * @returns {Object.<string,*>} Plain object
                      */
-                    S2TMessage.toObject = function toObject(message, options) {
+                    ReloadSubmissionMessage.toObject = function toObject(message, options) {
                         if (!options)
                             options = {};
                         var object = {};
-                        if (message.reloadSubmissionMessage != null && message.hasOwnProperty("reloadSubmissionMessage")) {
-                            object.reloadSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.toObject(message.reloadSubmissionMessage, options);
-                            if (options.oneofs)
-                                object.value = "reloadSubmissionMessage";
-                        }
-                        if (message.reloadSubmissionsMessage != null && message.hasOwnProperty("reloadSubmissionsMessage")) {
-                            object.reloadSubmissionsMessage = $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.toObject(message.reloadSubmissionsMessage, options);
-                            if (options.oneofs)
-                                object.value = "reloadSubmissionsMessage";
-                        }
+                        if (options.defaults)
+                            object.submission = null;
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            object.submission = $root.acmcsus.debugjudge.Submission.toObject(message.submission, options);
                         return object;
                     };
     
                     /**
-                     * Converts this S2TMessage to JSON.
+                     * Converts this ReloadSubmissionMessage to JSON.
                      * @function toJSON
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionMessage
                      * @instance
                      * @returns {Object.<string,*>} JSON object
                      */
-                    S2TMessage.prototype.toJSON = function toJSON() {
+                    ReloadSubmissionMessage.prototype.toJSON = function toJSON() {
                         return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
                     };
     
-                    S2TMessage.ReloadSubmissionMessage = (function() {
-    
-                        /**
-                         * Properties of a ReloadSubmissionMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                         * @interface IReloadSubmissionMessage
-                         * @property {acmcsus.debugjudge.ISubmission|null} [submission] ReloadSubmissionMessage submission
-                         */
-    
-                        /**
-                         * Constructs a new ReloadSubmissionMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                         * @classdesc Represents a ReloadSubmissionMessage.
-                         * @implements IReloadSubmissionMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionMessage=} [properties] Properties to set
-                         */
-                        function ReloadSubmissionMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * ReloadSubmissionMessage submission.
-                         * @member {acmcsus.debugjudge.ISubmission|null|undefined} submission
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @instance
-                         */
-                        ReloadSubmissionMessage.prototype.submission = null;
-    
-                        /**
-                         * Creates a new ReloadSubmissionMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage} ReloadSubmissionMessage instance
-                         */
-                        ReloadSubmissionMessage.create = function create(properties) {
-                            return new ReloadSubmissionMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified ReloadSubmissionMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionMessage} message ReloadSubmissionMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        ReloadSubmissionMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.submission != null && message.hasOwnProperty("submission"))
-                                $root.acmcsus.debugjudge.Submission.encode(message.submission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified ReloadSubmissionMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionMessage} message ReloadSubmissionMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        ReloadSubmissionMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a ReloadSubmissionMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage} ReloadSubmissionMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        ReloadSubmissionMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    message.submission = $root.acmcsus.debugjudge.Submission.decode(reader, reader.uint32());
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a ReloadSubmissionMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage} ReloadSubmissionMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        ReloadSubmissionMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a ReloadSubmissionMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        ReloadSubmissionMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.submission != null && message.hasOwnProperty("submission")) {
-                                var error = $root.acmcsus.debugjudge.Submission.verify(message.submission);
-                                if (error)
-                                    return "submission." + error;
-                            }
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a ReloadSubmissionMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage} ReloadSubmissionMessage
-                         */
-                        ReloadSubmissionMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage();
-                            if (object.submission != null) {
-                                if (typeof object.submission !== "object")
-                                    throw TypeError(".acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage.submission: object expected");
-                                message.submission = $root.acmcsus.debugjudge.Submission.fromObject(object.submission);
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from a ReloadSubmissionMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage} message ReloadSubmissionMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        ReloadSubmissionMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.defaults)
-                                object.submission = null;
-                            if (message.submission != null && message.hasOwnProperty("submission"))
-                                object.submission = $root.acmcsus.debugjudge.Submission.toObject(message.submission, options);
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this ReloadSubmissionMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        ReloadSubmissionMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return ReloadSubmissionMessage;
-                    })();
-    
-                    S2TMessage.ReloadSubmissionsMessage = (function() {
-    
-                        /**
-                         * Properties of a ReloadSubmissionsMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                         * @interface IReloadSubmissionsMessage
-                         * @property {acmcsus.debugjudge.Submission.IList|null} [submissions] ReloadSubmissionsMessage submissions
-                         */
-    
-                        /**
-                         * Constructs a new ReloadSubmissionsMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage
-                         * @classdesc Represents a ReloadSubmissionsMessage.
-                         * @implements IReloadSubmissionsMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage=} [properties] Properties to set
-                         */
-                        function ReloadSubmissionsMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * ReloadSubmissionsMessage submissions.
-                         * @member {acmcsus.debugjudge.Submission.IList|null|undefined} submissions
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @instance
-                         */
-                        ReloadSubmissionsMessage.prototype.submissions = null;
-    
-                        /**
-                         * Creates a new ReloadSubmissionsMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage} ReloadSubmissionsMessage instance
-                         */
-                        ReloadSubmissionsMessage.create = function create(properties) {
-                            return new ReloadSubmissionsMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified ReloadSubmissionsMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage} message ReloadSubmissionsMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        ReloadSubmissionsMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.submissions != null && message.hasOwnProperty("submissions"))
-                                $root.acmcsus.debugjudge.Submission.List.encode(message.submissions, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified ReloadSubmissionsMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.IReloadSubmissionsMessage} message ReloadSubmissionsMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        ReloadSubmissionsMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a ReloadSubmissionsMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage} ReloadSubmissionsMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        ReloadSubmissionsMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    message.submissions = $root.acmcsus.debugjudge.Submission.List.decode(reader, reader.uint32());
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a ReloadSubmissionsMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage} ReloadSubmissionsMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        ReloadSubmissionsMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a ReloadSubmissionsMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        ReloadSubmissionsMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.submissions != null && message.hasOwnProperty("submissions")) {
-                                var error = $root.acmcsus.debugjudge.Submission.List.verify(message.submissions);
-                                if (error)
-                                    return "submissions." + error;
-                            }
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a ReloadSubmissionsMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage} ReloadSubmissionsMessage
-                         */
-                        ReloadSubmissionsMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage();
-                            if (object.submissions != null) {
-                                if (typeof object.submissions !== "object")
-                                    throw TypeError(".acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage.submissions: object expected");
-                                message.submissions = $root.acmcsus.debugjudge.Submission.List.fromObject(object.submissions);
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from a ReloadSubmissionsMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage} message ReloadSubmissionsMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        ReloadSubmissionsMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.defaults)
-                                object.submissions = null;
-                            if (message.submissions != null && message.hasOwnProperty("submissions"))
-                                object.submissions = $root.acmcsus.debugjudge.Submission.List.toObject(message.submissions, options);
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this ReloadSubmissionsMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2TMessage.ReloadSubmissionsMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        ReloadSubmissionsMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return ReloadSubmissionsMessage;
-                    })();
-    
-                    return S2TMessage;
+                    return ReloadSubmissionMessage;
                 })();
     
-                S2CMessage.S2JMessage = (function() {
+                S2CMessage.ReloadSubmissionsMessage = (function() {
     
                     /**
-                     * Properties of a S2JMessage.
+                     * Properties of a ReloadSubmissionsMessage.
                      * @memberof acmcsus.debugjudge.S2CMessage
-                     * @interface IS2JMessage
-                     * @property {acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage|null} [assignedSubmissionMessage] S2JMessage assignedSubmissionMessage
-                     * @property {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage|null} [judgingStatus] S2JMessage judgingStatus
+                     * @interface IReloadSubmissionsMessage
+                     * @property {acmcsus.debugjudge.Submission.IList|null} [submissions] ReloadSubmissionsMessage submissions
                      */
     
                     /**
-                     * Constructs a new S2JMessage.
+                     * Constructs a new ReloadSubmissionsMessage.
                      * @memberof acmcsus.debugjudge.S2CMessage
-                     * @classdesc Represents a S2JMessage.
-                     * @implements IS2JMessage
+                     * @classdesc Represents a ReloadSubmissionsMessage.
+                     * @implements IReloadSubmissionsMessage
                      * @constructor
-                     * @param {acmcsus.debugjudge.S2CMessage.IS2JMessage=} [properties] Properties to set
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadSubmissionsMessage=} [properties] Properties to set
                      */
-                    function S2JMessage(properties) {
+                    function ReloadSubmissionsMessage(properties) {
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -7659,102 +5961,75 @@
                     }
     
                     /**
-                     * S2JMessage assignedSubmissionMessage.
-                     * @member {acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage|null|undefined} assignedSubmissionMessage
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * ReloadSubmissionsMessage submissions.
+                     * @member {acmcsus.debugjudge.Submission.IList|null|undefined} submissions
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @instance
                      */
-                    S2JMessage.prototype.assignedSubmissionMessage = null;
+                    ReloadSubmissionsMessage.prototype.submissions = null;
     
                     /**
-                     * S2JMessage judgingStatus.
-                     * @member {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage|null|undefined} judgingStatus
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
-                     * @instance
-                     */
-                    S2JMessage.prototype.judgingStatus = null;
-    
-                    // OneOf field names bound to virtual getters and setters
-                    var $oneOfFields;
-    
-                    /**
-                     * S2JMessage value.
-                     * @member {"assignedSubmissionMessage"|"judgingStatus"|undefined} value
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
-                     * @instance
-                     */
-                    Object.defineProperty(S2JMessage.prototype, "value", {
-                        get: $util.oneOfGetter($oneOfFields = ["assignedSubmissionMessage", "judgingStatus"]),
-                        set: $util.oneOfSetter($oneOfFields)
-                    });
-    
-                    /**
-                     * Creates a new S2JMessage instance using the specified properties.
+                     * Creates a new ReloadSubmissionsMessage instance using the specified properties.
                      * @function create
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @static
-                     * @param {acmcsus.debugjudge.S2CMessage.IS2JMessage=} [properties] Properties to set
-                     * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage} S2JMessage instance
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadSubmissionsMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage} ReloadSubmissionsMessage instance
                      */
-                    S2JMessage.create = function create(properties) {
-                        return new S2JMessage(properties);
+                    ReloadSubmissionsMessage.create = function create(properties) {
+                        return new ReloadSubmissionsMessage(properties);
                     };
     
                     /**
-                     * Encodes the specified S2JMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.verify|verify} messages.
+                     * Encodes the specified ReloadSubmissionsMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.verify|verify} messages.
                      * @function encode
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @static
-                     * @param {acmcsus.debugjudge.S2CMessage.IS2JMessage} message S2JMessage message or plain object to encode
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadSubmissionsMessage} message ReloadSubmissionsMessage message or plain object to encode
                      * @param {$protobuf.Writer} [writer] Writer to encode to
                      * @returns {$protobuf.Writer} Writer
                      */
-                    S2JMessage.encode = function encode(message, writer) {
+                    ReloadSubmissionsMessage.encode = function encode(message, writer) {
                         if (!writer)
                             writer = $Writer.create();
-                        if (message.assignedSubmissionMessage != null && message.hasOwnProperty("assignedSubmissionMessage"))
-                            $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.encode(message.assignedSubmissionMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                        if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus"))
-                            $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.encode(message.judgingStatus, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.submissions != null && message.hasOwnProperty("submissions"))
+                            $root.acmcsus.debugjudge.Submission.List.encode(message.submissions, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                         return writer;
                     };
     
                     /**
-                     * Encodes the specified S2JMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.verify|verify} messages.
+                     * Encodes the specified ReloadSubmissionsMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.verify|verify} messages.
                      * @function encodeDelimited
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @static
-                     * @param {acmcsus.debugjudge.S2CMessage.IS2JMessage} message S2JMessage message or plain object to encode
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadSubmissionsMessage} message ReloadSubmissionsMessage message or plain object to encode
                      * @param {$protobuf.Writer} [writer] Writer to encode to
                      * @returns {$protobuf.Writer} Writer
                      */
-                    S2JMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    ReloadSubmissionsMessage.encodeDelimited = function encodeDelimited(message, writer) {
                         return this.encode(message, writer).ldelim();
                     };
     
                     /**
-                     * Decodes a S2JMessage message from the specified reader or buffer.
+                     * Decodes a ReloadSubmissionsMessage message from the specified reader or buffer.
                      * @function decode
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @static
                      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
                      * @param {number} [length] Message length if known beforehand
-                     * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage} S2JMessage
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage} ReloadSubmissionsMessage
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    S2JMessage.decode = function decode(reader, length) {
+                    ReloadSubmissionsMessage.decode = function decode(reader, length) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
-                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage();
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
                             switch (tag >>> 3) {
                             case 1:
-                                message.assignedSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.decode(reader, reader.uint32());
-                                break;
-                            case 2:
-                                message.judgingStatus = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.decode(reader, reader.uint32());
+                                message.submissions = $root.acmcsus.debugjudge.Submission.List.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -7765,522 +6040,5539 @@
                     };
     
                     /**
-                     * Decodes a S2JMessage message from the specified reader or buffer, length delimited.
+                     * Decodes a ReloadSubmissionsMessage message from the specified reader or buffer, length delimited.
                      * @function decodeDelimited
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @static
                      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                     * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage} S2JMessage
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage} ReloadSubmissionsMessage
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    S2JMessage.decodeDelimited = function decodeDelimited(reader) {
+                    ReloadSubmissionsMessage.decodeDelimited = function decodeDelimited(reader) {
                         if (!(reader instanceof $Reader))
                             reader = new $Reader(reader);
                         return this.decode(reader, reader.uint32());
                     };
     
                     /**
-                     * Verifies a S2JMessage message.
+                     * Verifies a ReloadSubmissionsMessage message.
                      * @function verify
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @static
                      * @param {Object.<string,*>} message Plain object to verify
                      * @returns {string|null} `null` if valid, otherwise the reason why it is not
                      */
-                    S2JMessage.verify = function verify(message) {
+                    ReloadSubmissionsMessage.verify = function verify(message) {
                         if (typeof message !== "object" || message === null)
                             return "object expected";
-                        var properties = {};
-                        if (message.assignedSubmissionMessage != null && message.hasOwnProperty("assignedSubmissionMessage")) {
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.verify(message.assignedSubmissionMessage);
-                                if (error)
-                                    return "assignedSubmissionMessage." + error;
-                            }
-                        }
-                        if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus")) {
-                            if (properties.value === 1)
-                                return "value: multiple values";
-                            properties.value = 1;
-                            {
-                                var error = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.verify(message.judgingStatus);
-                                if (error)
-                                    return "judgingStatus." + error;
-                            }
+                        if (message.submissions != null && message.hasOwnProperty("submissions")) {
+                            var error = $root.acmcsus.debugjudge.Submission.List.verify(message.submissions);
+                            if (error)
+                                return "submissions." + error;
                         }
                         return null;
                     };
     
                     /**
-                     * Creates a S2JMessage message from a plain object. Also converts values to their respective internal types.
+                     * Creates a ReloadSubmissionsMessage message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @static
                      * @param {Object.<string,*>} object Plain object
-                     * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage} S2JMessage
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage} ReloadSubmissionsMessage
                      */
-                    S2JMessage.fromObject = function fromObject(object) {
-                        if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2JMessage)
+                    ReloadSubmissionsMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage)
                             return object;
-                        var message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage();
-                        if (object.assignedSubmissionMessage != null) {
-                            if (typeof object.assignedSubmissionMessage !== "object")
-                                throw TypeError(".acmcsus.debugjudge.S2CMessage.S2JMessage.assignedSubmissionMessage: object expected");
-                            message.assignedSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.fromObject(object.assignedSubmissionMessage);
-                        }
-                        if (object.judgingStatus != null) {
-                            if (typeof object.judgingStatus !== "object")
-                                throw TypeError(".acmcsus.debugjudge.S2CMessage.S2JMessage.judgingStatus: object expected");
-                            message.judgingStatus = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.fromObject(object.judgingStatus);
+                        var message = new $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage();
+                        if (object.submissions != null) {
+                            if (typeof object.submissions !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.submissions: object expected");
+                            message.submissions = $root.acmcsus.debugjudge.Submission.List.fromObject(object.submissions);
                         }
                         return message;
                     };
     
                     /**
-                     * Creates a plain object from a S2JMessage message. Also converts values to other types if specified.
+                     * Creates a plain object from a ReloadSubmissionsMessage message. Also converts values to other types if specified.
                      * @function toObject
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @static
-                     * @param {acmcsus.debugjudge.S2CMessage.S2JMessage} message S2JMessage
+                     * @param {acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage} message ReloadSubmissionsMessage
                      * @param {$protobuf.IConversionOptions} [options] Conversion options
                      * @returns {Object.<string,*>} Plain object
                      */
-                    S2JMessage.toObject = function toObject(message, options) {
+                    ReloadSubmissionsMessage.toObject = function toObject(message, options) {
                         if (!options)
                             options = {};
                         var object = {};
-                        if (message.assignedSubmissionMessage != null && message.hasOwnProperty("assignedSubmissionMessage")) {
-                            object.assignedSubmissionMessage = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.toObject(message.assignedSubmissionMessage, options);
-                            if (options.oneofs)
-                                object.value = "assignedSubmissionMessage";
-                        }
-                        if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus")) {
-                            object.judgingStatus = $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.toObject(message.judgingStatus, options);
-                            if (options.oneofs)
-                                object.value = "judgingStatus";
-                        }
+                        if (options.defaults)
+                            object.submissions = null;
+                        if (message.submissions != null && message.hasOwnProperty("submissions"))
+                            object.submissions = $root.acmcsus.debugjudge.Submission.List.toObject(message.submissions, options);
                         return object;
                     };
     
                     /**
-                     * Converts this S2JMessage to JSON.
+                     * Converts this ReloadSubmissionsMessage to JSON.
                      * @function toJSON
-                     * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage
                      * @instance
                      * @returns {Object.<string,*>} JSON object
                      */
-                    S2JMessage.prototype.toJSON = function toJSON() {
+                    ReloadSubmissionsMessage.prototype.toJSON = function toJSON() {
                         return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
                     };
     
-                    S2JMessage.AssignedSubmissionMessage = (function() {
-    
-                        /**
-                         * Properties of an AssignedSubmissionMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
-                         * @interface IAssignedSubmissionMessage
-                         * @property {acmcsus.debugjudge.ISubmission|null} [submission] AssignedSubmissionMessage submission
-                         */
-    
-                        /**
-                         * Constructs a new AssignedSubmissionMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
-                         * @classdesc Represents an AssignedSubmissionMessage.
-                         * @implements IAssignedSubmissionMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage=} [properties] Properties to set
-                         */
-                        function AssignedSubmissionMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * AssignedSubmissionMessage submission.
-                         * @member {acmcsus.debugjudge.ISubmission|null|undefined} submission
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @instance
-                         */
-                        AssignedSubmissionMessage.prototype.submission = null;
-    
-                        /**
-                         * Creates a new AssignedSubmissionMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage} AssignedSubmissionMessage instance
-                         */
-                        AssignedSubmissionMessage.create = function create(properties) {
-                            return new AssignedSubmissionMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified AssignedSubmissionMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage} message AssignedSubmissionMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        AssignedSubmissionMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.submission != null && message.hasOwnProperty("submission"))
-                                $root.acmcsus.debugjudge.Submission.encode(message.submission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified AssignedSubmissionMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IAssignedSubmissionMessage} message AssignedSubmissionMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        AssignedSubmissionMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes an AssignedSubmissionMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage} AssignedSubmissionMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        AssignedSubmissionMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    message.submission = $root.acmcsus.debugjudge.Submission.decode(reader, reader.uint32());
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes an AssignedSubmissionMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage} AssignedSubmissionMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        AssignedSubmissionMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies an AssignedSubmissionMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        AssignedSubmissionMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.submission != null && message.hasOwnProperty("submission")) {
-                                var error = $root.acmcsus.debugjudge.Submission.verify(message.submission);
-                                if (error)
-                                    return "submission." + error;
-                            }
-                            return null;
-                        };
-    
-                        /**
-                         * Creates an AssignedSubmissionMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage} AssignedSubmissionMessage
-                         */
-                        AssignedSubmissionMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage();
-                            if (object.submission != null) {
-                                if (typeof object.submission !== "object")
-                                    throw TypeError(".acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage.submission: object expected");
-                                message.submission = $root.acmcsus.debugjudge.Submission.fromObject(object.submission);
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from an AssignedSubmissionMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage} message AssignedSubmissionMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        AssignedSubmissionMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.defaults)
-                                object.submission = null;
-                            if (message.submission != null && message.hasOwnProperty("submission"))
-                                object.submission = $root.acmcsus.debugjudge.Submission.toObject(message.submission, options);
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this AssignedSubmissionMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.AssignedSubmissionMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        AssignedSubmissionMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return AssignedSubmissionMessage;
-                    })();
-    
-                    S2JMessage.JudgingStatusMessage = (function() {
-    
-                        /**
-                         * Properties of a JudgingStatusMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
-                         * @interface IJudgingStatusMessage
-                         * @property {boolean|null} [judging] JudgingStatusMessage judging
-                         * @property {string|null} [message] JudgingStatusMessage message
-                         */
-    
-                        /**
-                         * Constructs a new JudgingStatusMessage.
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage
-                         * @classdesc Represents a JudgingStatusMessage.
-                         * @implements IJudgingStatusMessage
-                         * @constructor
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage=} [properties] Properties to set
-                         */
-                        function JudgingStatusMessage(properties) {
-                            if (properties)
-                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                    if (properties[keys[i]] != null)
-                                        this[keys[i]] = properties[keys[i]];
-                        }
-    
-                        /**
-                         * JudgingStatusMessage judging.
-                         * @member {boolean} judging
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @instance
-                         */
-                        JudgingStatusMessage.prototype.judging = false;
-    
-                        /**
-                         * JudgingStatusMessage message.
-                         * @member {string} message
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @instance
-                         */
-                        JudgingStatusMessage.prototype.message = "";
-    
-                        /**
-                         * Creates a new JudgingStatusMessage instance using the specified properties.
-                         * @function create
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage=} [properties] Properties to set
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} JudgingStatusMessage instance
-                         */
-                        JudgingStatusMessage.create = function create(properties) {
-                            return new JudgingStatusMessage(properties);
-                        };
-    
-                        /**
-                         * Encodes the specified JudgingStatusMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.verify|verify} messages.
-                         * @function encode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage} message JudgingStatusMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        JudgingStatusMessage.encode = function encode(message, writer) {
-                            if (!writer)
-                                writer = $Writer.create();
-                            if (message.judging != null && message.hasOwnProperty("judging"))
-                                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.judging);
-                            if (message.message != null && message.hasOwnProperty("message"))
-                                writer.uint32(/* id 2, wireType 2 =*/18).string(message.message);
-                            return writer;
-                        };
-    
-                        /**
-                         * Encodes the specified JudgingStatusMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage.verify|verify} messages.
-                         * @function encodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.IJudgingStatusMessage} message JudgingStatusMessage message or plain object to encode
-                         * @param {$protobuf.Writer} [writer] Writer to encode to
-                         * @returns {$protobuf.Writer} Writer
-                         */
-                        JudgingStatusMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                            return this.encode(message, writer).ldelim();
-                        };
-    
-                        /**
-                         * Decodes a JudgingStatusMessage message from the specified reader or buffer.
-                         * @function decode
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @param {number} [length] Message length if known beforehand
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        JudgingStatusMessage.decode = function decode(reader, length) {
-                            if (!(reader instanceof $Reader))
-                                reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage();
-                            while (reader.pos < end) {
-                                var tag = reader.uint32();
-                                switch (tag >>> 3) {
-                                case 1:
-                                    message.judging = reader.bool();
-                                    break;
-                                case 2:
-                                    message.message = reader.string();
-                                    break;
-                                default:
-                                    reader.skipType(tag & 7);
-                                    break;
-                                }
-                            }
-                            return message;
-                        };
-    
-                        /**
-                         * Decodes a JudgingStatusMessage message from the specified reader or buffer, length delimited.
-                         * @function decodeDelimited
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @static
-                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
-                         * @throws {Error} If the payload is not a reader or valid buffer
-                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                         */
-                        JudgingStatusMessage.decodeDelimited = function decodeDelimited(reader) {
-                            if (!(reader instanceof $Reader))
-                                reader = new $Reader(reader);
-                            return this.decode(reader, reader.uint32());
-                        };
-    
-                        /**
-                         * Verifies a JudgingStatusMessage message.
-                         * @function verify
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @static
-                         * @param {Object.<string,*>} message Plain object to verify
-                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                         */
-                        JudgingStatusMessage.verify = function verify(message) {
-                            if (typeof message !== "object" || message === null)
-                                return "object expected";
-                            if (message.judging != null && message.hasOwnProperty("judging"))
-                                if (typeof message.judging !== "boolean")
-                                    return "judging: boolean expected";
-                            if (message.message != null && message.hasOwnProperty("message"))
-                                if (!$util.isString(message.message))
-                                    return "message: string expected";
-                            return null;
-                        };
-    
-                        /**
-                         * Creates a JudgingStatusMessage message from a plain object. Also converts values to their respective internal types.
-                         * @function fromObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @static
-                         * @param {Object.<string,*>} object Plain object
-                         * @returns {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
-                         */
-                        JudgingStatusMessage.fromObject = function fromObject(object) {
-                            if (object instanceof $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage)
-                                return object;
-                            var message = new $root.acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage();
-                            if (object.judging != null)
-                                message.judging = Boolean(object.judging);
-                            if (object.message != null)
-                                message.message = String(object.message);
-                            return message;
-                        };
-    
-                        /**
-                         * Creates a plain object from a JudgingStatusMessage message. Also converts values to other types if specified.
-                         * @function toObject
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @static
-                         * @param {acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage} message JudgingStatusMessage
-                         * @param {$protobuf.IConversionOptions} [options] Conversion options
-                         * @returns {Object.<string,*>} Plain object
-                         */
-                        JudgingStatusMessage.toObject = function toObject(message, options) {
-                            if (!options)
-                                options = {};
-                            var object = {};
-                            if (options.defaults) {
-                                object.judging = false;
-                                object.message = "";
-                            }
-                            if (message.judging != null && message.hasOwnProperty("judging"))
-                                object.judging = message.judging;
-                            if (message.message != null && message.hasOwnProperty("message"))
-                                object.message = message.message;
-                            return object;
-                        };
-    
-                        /**
-                         * Converts this JudgingStatusMessage to JSON.
-                         * @function toJSON
-                         * @memberof acmcsus.debugjudge.S2CMessage.S2JMessage.JudgingStatusMessage
-                         * @instance
-                         * @returns {Object.<string,*>} JSON object
-                         */
-                        JudgingStatusMessage.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-    
-                        return JudgingStatusMessage;
-                    })();
-    
-                    return S2JMessage;
+                    return ReloadSubmissionsMessage;
                 })();
     
                 return S2CMessage;
+            })();
+    
+            debugjudge.T2SMessage = (function() {
+    
+                /**
+                 * Properties of a T2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IT2SMessage
+                 * @property {acmcsus.debugjudge.T2SMessage.ISubmissionCreateMessage|null} [submissionCreateMessage] T2SMessage submissionCreateMessage
+                 */
+    
+                /**
+                 * Constructs a new T2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a T2SMessage.
+                 * @implements IT2SMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IT2SMessage=} [properties] Properties to set
+                 */
+                function T2SMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * T2SMessage submissionCreateMessage.
+                 * @member {acmcsus.debugjudge.T2SMessage.ISubmissionCreateMessage|null|undefined} submissionCreateMessage
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @instance
+                 */
+                T2SMessage.prototype.submissionCreateMessage = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * T2SMessage value.
+                 * @member {"submissionCreateMessage"|undefined} value
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @instance
+                 */
+                Object.defineProperty(T2SMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["submissionCreateMessage"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new T2SMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IT2SMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.T2SMessage} T2SMessage instance
+                 */
+                T2SMessage.create = function create(properties) {
+                    return new T2SMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified T2SMessage message. Does not implicitly {@link acmcsus.debugjudge.T2SMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IT2SMessage} message T2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                T2SMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.submissionCreateMessage != null && message.hasOwnProperty("submissionCreateMessage"))
+                        $root.acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage.encode(message.submissionCreateMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified T2SMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.T2SMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IT2SMessage} message T2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                T2SMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a T2SMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.T2SMessage} T2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                T2SMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.T2SMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.submissionCreateMessage = $root.acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a T2SMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.T2SMessage} T2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                T2SMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a T2SMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                T2SMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.submissionCreateMessage != null && message.hasOwnProperty("submissionCreateMessage")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage.verify(message.submissionCreateMessage);
+                            if (error)
+                                return "submissionCreateMessage." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a T2SMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.T2SMessage} T2SMessage
+                 */
+                T2SMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.T2SMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.T2SMessage();
+                    if (object.submissionCreateMessage != null) {
+                        if (typeof object.submissionCreateMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.T2SMessage.submissionCreateMessage: object expected");
+                        message.submissionCreateMessage = $root.acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage.fromObject(object.submissionCreateMessage);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a T2SMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.T2SMessage} message T2SMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                T2SMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.submissionCreateMessage != null && message.hasOwnProperty("submissionCreateMessage")) {
+                        object.submissionCreateMessage = $root.acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage.toObject(message.submissionCreateMessage, options);
+                        if (options.oneofs)
+                            object.value = "submissionCreateMessage";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this T2SMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.T2SMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                T2SMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                T2SMessage.SubmissionCreateMessage = (function() {
+    
+                    /**
+                     * Properties of a SubmissionCreateMessage.
+                     * @memberof acmcsus.debugjudge.T2SMessage
+                     * @interface ISubmissionCreateMessage
+                     * @property {acmcsus.debugjudge.ISubmission|null} [submission] SubmissionCreateMessage submission
+                     */
+    
+                    /**
+                     * Constructs a new SubmissionCreateMessage.
+                     * @memberof acmcsus.debugjudge.T2SMessage
+                     * @classdesc Represents a SubmissionCreateMessage.
+                     * @implements ISubmissionCreateMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.T2SMessage.ISubmissionCreateMessage=} [properties] Properties to set
+                     */
+                    function SubmissionCreateMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * SubmissionCreateMessage submission.
+                     * @member {acmcsus.debugjudge.ISubmission|null|undefined} submission
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @instance
+                     */
+                    SubmissionCreateMessage.prototype.submission = null;
+    
+                    /**
+                     * Creates a new SubmissionCreateMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.T2SMessage.ISubmissionCreateMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage} SubmissionCreateMessage instance
+                     */
+                    SubmissionCreateMessage.create = function create(properties) {
+                        return new SubmissionCreateMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified SubmissionCreateMessage message. Does not implicitly {@link acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.T2SMessage.ISubmissionCreateMessage} message SubmissionCreateMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    SubmissionCreateMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            $root.acmcsus.debugjudge.Submission.encode(message.submission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified SubmissionCreateMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.T2SMessage.ISubmissionCreateMessage} message SubmissionCreateMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    SubmissionCreateMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a SubmissionCreateMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage} SubmissionCreateMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    SubmissionCreateMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.submission = $root.acmcsus.debugjudge.Submission.decode(reader, reader.uint32());
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a SubmissionCreateMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage} SubmissionCreateMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    SubmissionCreateMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a SubmissionCreateMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    SubmissionCreateMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.submission != null && message.hasOwnProperty("submission")) {
+                            var error = $root.acmcsus.debugjudge.Submission.verify(message.submission);
+                            if (error)
+                                return "submission." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a SubmissionCreateMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage} SubmissionCreateMessage
+                     */
+                    SubmissionCreateMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage();
+                        if (object.submission != null) {
+                            if (typeof object.submission !== "object")
+                                throw TypeError(".acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage.submission: object expected");
+                            message.submission = $root.acmcsus.debugjudge.Submission.fromObject(object.submission);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a SubmissionCreateMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage} message SubmissionCreateMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    SubmissionCreateMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.submission = null;
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            object.submission = $root.acmcsus.debugjudge.Submission.toObject(message.submission, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this SubmissionCreateMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.T2SMessage.SubmissionCreateMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    SubmissionCreateMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return SubmissionCreateMessage;
+                })();
+    
+                return T2SMessage;
+            })();
+    
+            debugjudge.S2TMessage = (function() {
+    
+                /**
+                 * Properties of a S2TMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IS2TMessage
+                 */
+    
+                /**
+                 * Constructs a new S2TMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a S2TMessage.
+                 * @implements IS2TMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IS2TMessage=} [properties] Properties to set
+                 */
+                function S2TMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Creates a new S2TMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2TMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.S2TMessage} S2TMessage instance
+                 */
+                S2TMessage.create = function create(properties) {
+                    return new S2TMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified S2TMessage message. Does not implicitly {@link acmcsus.debugjudge.S2TMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2TMessage} message S2TMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2TMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified S2TMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2TMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2TMessage} message S2TMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2TMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a S2TMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.S2TMessage} S2TMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2TMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2TMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a S2TMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.S2TMessage} S2TMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2TMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a S2TMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                S2TMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a S2TMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.S2TMessage} S2TMessage
+                 */
+                S2TMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.S2TMessage)
+                        return object;
+                    return new $root.acmcsus.debugjudge.S2TMessage();
+                };
+    
+                /**
+                 * Creates a plain object from a S2TMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.S2TMessage} message S2TMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                S2TMessage.toObject = function toObject() {
+                    return {};
+                };
+    
+                /**
+                 * Converts this S2TMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.S2TMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                S2TMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                return S2TMessage;
+            })();
+    
+            debugjudge.J2SMessage = (function() {
+    
+                /**
+                 * Properties of a J2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IJ2SMessage
+                 * @property {acmcsus.debugjudge.J2SMessage.IStartJudgingMessage|null} [startJudgingMessage] J2SMessage startJudgingMessage
+                 * @property {acmcsus.debugjudge.J2SMessage.IStopJudgingMessage|null} [stopJudgingMessage] J2SMessage stopJudgingMessage
+                 * @property {acmcsus.debugjudge.J2SMessage.ISubmissionJudgementMessage|null} [submissionJudgementMessage] J2SMessage submissionJudgementMessage
+                 * @property {acmcsus.debugjudge.J2SMessage.IJudgingPreferencesMessage|null} [judgingPreferencesMessage] J2SMessage judgingPreferencesMessage
+                 */
+    
+                /**
+                 * Constructs a new J2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a J2SMessage.
+                 * @implements IJ2SMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IJ2SMessage=} [properties] Properties to set
+                 */
+                function J2SMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * J2SMessage startJudgingMessage.
+                 * @member {acmcsus.debugjudge.J2SMessage.IStartJudgingMessage|null|undefined} startJudgingMessage
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @instance
+                 */
+                J2SMessage.prototype.startJudgingMessage = null;
+    
+                /**
+                 * J2SMessage stopJudgingMessage.
+                 * @member {acmcsus.debugjudge.J2SMessage.IStopJudgingMessage|null|undefined} stopJudgingMessage
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @instance
+                 */
+                J2SMessage.prototype.stopJudgingMessage = null;
+    
+                /**
+                 * J2SMessage submissionJudgementMessage.
+                 * @member {acmcsus.debugjudge.J2SMessage.ISubmissionJudgementMessage|null|undefined} submissionJudgementMessage
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @instance
+                 */
+                J2SMessage.prototype.submissionJudgementMessage = null;
+    
+                /**
+                 * J2SMessage judgingPreferencesMessage.
+                 * @member {acmcsus.debugjudge.J2SMessage.IJudgingPreferencesMessage|null|undefined} judgingPreferencesMessage
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @instance
+                 */
+                J2SMessage.prototype.judgingPreferencesMessage = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * J2SMessage value.
+                 * @member {"startJudgingMessage"|"stopJudgingMessage"|"submissionJudgementMessage"|"judgingPreferencesMessage"|undefined} value
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @instance
+                 */
+                Object.defineProperty(J2SMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["startJudgingMessage", "stopJudgingMessage", "submissionJudgementMessage", "judgingPreferencesMessage"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new J2SMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IJ2SMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.J2SMessage} J2SMessage instance
+                 */
+                J2SMessage.create = function create(properties) {
+                    return new J2SMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified J2SMessage message. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IJ2SMessage} message J2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                J2SMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.startJudgingMessage != null && message.hasOwnProperty("startJudgingMessage"))
+                        $root.acmcsus.debugjudge.J2SMessage.StartJudgingMessage.encode(message.startJudgingMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.stopJudgingMessage != null && message.hasOwnProperty("stopJudgingMessage"))
+                        $root.acmcsus.debugjudge.J2SMessage.StopJudgingMessage.encode(message.stopJudgingMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage"))
+                        $root.acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage.encode(message.submissionJudgementMessage, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                    if (message.judgingPreferencesMessage != null && message.hasOwnProperty("judgingPreferencesMessage"))
+                        $root.acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage.encode(message.judgingPreferencesMessage, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified J2SMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IJ2SMessage} message J2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                J2SMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a J2SMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.J2SMessage} J2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                J2SMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.J2SMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.startJudgingMessage = $root.acmcsus.debugjudge.J2SMessage.StartJudgingMessage.decode(reader, reader.uint32());
+                            break;
+                        case 2:
+                            message.stopJudgingMessage = $root.acmcsus.debugjudge.J2SMessage.StopJudgingMessage.decode(reader, reader.uint32());
+                            break;
+                        case 3:
+                            message.submissionJudgementMessage = $root.acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage.decode(reader, reader.uint32());
+                            break;
+                        case 4:
+                            message.judgingPreferencesMessage = $root.acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a J2SMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.J2SMessage} J2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                J2SMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a J2SMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                J2SMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.startJudgingMessage != null && message.hasOwnProperty("startJudgingMessage")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.J2SMessage.StartJudgingMessage.verify(message.startJudgingMessage);
+                            if (error)
+                                return "startJudgingMessage." + error;
+                        }
+                    }
+                    if (message.stopJudgingMessage != null && message.hasOwnProperty("stopJudgingMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.J2SMessage.StopJudgingMessage.verify(message.stopJudgingMessage);
+                            if (error)
+                                return "stopJudgingMessage." + error;
+                        }
+                    }
+                    if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage.verify(message.submissionJudgementMessage);
+                            if (error)
+                                return "submissionJudgementMessage." + error;
+                        }
+                    }
+                    if (message.judgingPreferencesMessage != null && message.hasOwnProperty("judgingPreferencesMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage.verify(message.judgingPreferencesMessage);
+                            if (error)
+                                return "judgingPreferencesMessage." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a J2SMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.J2SMessage} J2SMessage
+                 */
+                J2SMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.J2SMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.J2SMessage();
+                    if (object.startJudgingMessage != null) {
+                        if (typeof object.startJudgingMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.J2SMessage.startJudgingMessage: object expected");
+                        message.startJudgingMessage = $root.acmcsus.debugjudge.J2SMessage.StartJudgingMessage.fromObject(object.startJudgingMessage);
+                    }
+                    if (object.stopJudgingMessage != null) {
+                        if (typeof object.stopJudgingMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.J2SMessage.stopJudgingMessage: object expected");
+                        message.stopJudgingMessage = $root.acmcsus.debugjudge.J2SMessage.StopJudgingMessage.fromObject(object.stopJudgingMessage);
+                    }
+                    if (object.submissionJudgementMessage != null) {
+                        if (typeof object.submissionJudgementMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.J2SMessage.submissionJudgementMessage: object expected");
+                        message.submissionJudgementMessage = $root.acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage.fromObject(object.submissionJudgementMessage);
+                    }
+                    if (object.judgingPreferencesMessage != null) {
+                        if (typeof object.judgingPreferencesMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.J2SMessage.judgingPreferencesMessage: object expected");
+                        message.judgingPreferencesMessage = $root.acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage.fromObject(object.judgingPreferencesMessage);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a J2SMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.J2SMessage} message J2SMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                J2SMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.startJudgingMessage != null && message.hasOwnProperty("startJudgingMessage")) {
+                        object.startJudgingMessage = $root.acmcsus.debugjudge.J2SMessage.StartJudgingMessage.toObject(message.startJudgingMessage, options);
+                        if (options.oneofs)
+                            object.value = "startJudgingMessage";
+                    }
+                    if (message.stopJudgingMessage != null && message.hasOwnProperty("stopJudgingMessage")) {
+                        object.stopJudgingMessage = $root.acmcsus.debugjudge.J2SMessage.StopJudgingMessage.toObject(message.stopJudgingMessage, options);
+                        if (options.oneofs)
+                            object.value = "stopJudgingMessage";
+                    }
+                    if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage")) {
+                        object.submissionJudgementMessage = $root.acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage.toObject(message.submissionJudgementMessage, options);
+                        if (options.oneofs)
+                            object.value = "submissionJudgementMessage";
+                    }
+                    if (message.judgingPreferencesMessage != null && message.hasOwnProperty("judgingPreferencesMessage")) {
+                        object.judgingPreferencesMessage = $root.acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage.toObject(message.judgingPreferencesMessage, options);
+                        if (options.oneofs)
+                            object.value = "judgingPreferencesMessage";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this J2SMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.J2SMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                J2SMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                J2SMessage.StartJudgingMessage = (function() {
+    
+                    /**
+                     * Properties of a StartJudgingMessage.
+                     * @memberof acmcsus.debugjudge.J2SMessage
+                     * @interface IStartJudgingMessage
+                     */
+    
+                    /**
+                     * Constructs a new StartJudgingMessage.
+                     * @memberof acmcsus.debugjudge.J2SMessage
+                     * @classdesc Represents a StartJudgingMessage.
+                     * @implements IStartJudgingMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.J2SMessage.IStartJudgingMessage=} [properties] Properties to set
+                     */
+                    function StartJudgingMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * Creates a new StartJudgingMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IStartJudgingMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.J2SMessage.StartJudgingMessage} StartJudgingMessage instance
+                     */
+                    StartJudgingMessage.create = function create(properties) {
+                        return new StartJudgingMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified StartJudgingMessage message. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.StartJudgingMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IStartJudgingMessage} message StartJudgingMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    StartJudgingMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified StartJudgingMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.StartJudgingMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IStartJudgingMessage} message StartJudgingMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    StartJudgingMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a StartJudgingMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.J2SMessage.StartJudgingMessage} StartJudgingMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    StartJudgingMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.J2SMessage.StartJudgingMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a StartJudgingMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.J2SMessage.StartJudgingMessage} StartJudgingMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    StartJudgingMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a StartJudgingMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    StartJudgingMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a StartJudgingMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.J2SMessage.StartJudgingMessage} StartJudgingMessage
+                     */
+                    StartJudgingMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.J2SMessage.StartJudgingMessage)
+                            return object;
+                        return new $root.acmcsus.debugjudge.J2SMessage.StartJudgingMessage();
+                    };
+    
+                    /**
+                     * Creates a plain object from a StartJudgingMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.StartJudgingMessage} message StartJudgingMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    StartJudgingMessage.toObject = function toObject() {
+                        return {};
+                    };
+    
+                    /**
+                     * Converts this StartJudgingMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.J2SMessage.StartJudgingMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    StartJudgingMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return StartJudgingMessage;
+                })();
+    
+                J2SMessage.StopJudgingMessage = (function() {
+    
+                    /**
+                     * Properties of a StopJudgingMessage.
+                     * @memberof acmcsus.debugjudge.J2SMessage
+                     * @interface IStopJudgingMessage
+                     */
+    
+                    /**
+                     * Constructs a new StopJudgingMessage.
+                     * @memberof acmcsus.debugjudge.J2SMessage
+                     * @classdesc Represents a StopJudgingMessage.
+                     * @implements IStopJudgingMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.J2SMessage.IStopJudgingMessage=} [properties] Properties to set
+                     */
+                    function StopJudgingMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * Creates a new StopJudgingMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IStopJudgingMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.J2SMessage.StopJudgingMessage} StopJudgingMessage instance
+                     */
+                    StopJudgingMessage.create = function create(properties) {
+                        return new StopJudgingMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified StopJudgingMessage message. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.StopJudgingMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IStopJudgingMessage} message StopJudgingMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    StopJudgingMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified StopJudgingMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.StopJudgingMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IStopJudgingMessage} message StopJudgingMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    StopJudgingMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a StopJudgingMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.J2SMessage.StopJudgingMessage} StopJudgingMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    StopJudgingMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.J2SMessage.StopJudgingMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a StopJudgingMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.J2SMessage.StopJudgingMessage} StopJudgingMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    StopJudgingMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a StopJudgingMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    StopJudgingMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a StopJudgingMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.J2SMessage.StopJudgingMessage} StopJudgingMessage
+                     */
+                    StopJudgingMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.J2SMessage.StopJudgingMessage)
+                            return object;
+                        return new $root.acmcsus.debugjudge.J2SMessage.StopJudgingMessage();
+                    };
+    
+                    /**
+                     * Creates a plain object from a StopJudgingMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.StopJudgingMessage} message StopJudgingMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    StopJudgingMessage.toObject = function toObject() {
+                        return {};
+                    };
+    
+                    /**
+                     * Converts this StopJudgingMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.J2SMessage.StopJudgingMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    StopJudgingMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return StopJudgingMessage;
+                })();
+    
+                J2SMessage.SubmissionJudgementMessage = (function() {
+    
+                    /**
+                     * Properties of a SubmissionJudgementMessage.
+                     * @memberof acmcsus.debugjudge.J2SMessage
+                     * @interface ISubmissionJudgementMessage
+                     * @property {number|null} [teamId] SubmissionJudgementMessage teamId
+                     * @property {number|null} [problemId] SubmissionJudgementMessage problemId
+                     * @property {number|Long|null} [submissionId] SubmissionJudgementMessage submissionId
+                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] SubmissionJudgementMessage ruling
+                     * @property {string|null} [rulingMessage] SubmissionJudgementMessage rulingMessage
+                     */
+    
+                    /**
+                     * Constructs a new SubmissionJudgementMessage.
+                     * @memberof acmcsus.debugjudge.J2SMessage
+                     * @classdesc Represents a SubmissionJudgementMessage.
+                     * @implements ISubmissionJudgementMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.J2SMessage.ISubmissionJudgementMessage=} [properties] Properties to set
+                     */
+                    function SubmissionJudgementMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * SubmissionJudgementMessage teamId.
+                     * @member {number} teamId
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @instance
+                     */
+                    SubmissionJudgementMessage.prototype.teamId = 0;
+    
+                    /**
+                     * SubmissionJudgementMessage problemId.
+                     * @member {number} problemId
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @instance
+                     */
+                    SubmissionJudgementMessage.prototype.problemId = 0;
+    
+                    /**
+                     * SubmissionJudgementMessage submissionId.
+                     * @member {number|Long} submissionId
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @instance
+                     */
+                    SubmissionJudgementMessage.prototype.submissionId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                    /**
+                     * SubmissionJudgementMessage ruling.
+                     * @member {acmcsus.debugjudge.SubmissionJudgement} ruling
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @instance
+                     */
+                    SubmissionJudgementMessage.prototype.ruling = 0;
+    
+                    /**
+                     * SubmissionJudgementMessage rulingMessage.
+                     * @member {string} rulingMessage
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @instance
+                     */
+                    SubmissionJudgementMessage.prototype.rulingMessage = "";
+    
+                    /**
+                     * Creates a new SubmissionJudgementMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.ISubmissionJudgementMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage} SubmissionJudgementMessage instance
+                     */
+                    SubmissionJudgementMessage.create = function create(properties) {
+                        return new SubmissionJudgementMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified SubmissionJudgementMessage message. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.ISubmissionJudgementMessage} message SubmissionJudgementMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    SubmissionJudgementMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.teamId);
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ruling);
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.rulingMessage);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified SubmissionJudgementMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.ISubmissionJudgementMessage} message SubmissionJudgementMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    SubmissionJudgementMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a SubmissionJudgementMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage} SubmissionJudgementMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    SubmissionJudgementMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.teamId = reader.int32();
+                                break;
+                            case 2:
+                                message.problemId = reader.int32();
+                                break;
+                            case 3:
+                                message.submissionId = reader.int64();
+                                break;
+                            case 4:
+                                message.ruling = reader.int32();
+                                break;
+                            case 5:
+                                message.rulingMessage = reader.string();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a SubmissionJudgementMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage} SubmissionJudgementMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    SubmissionJudgementMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a SubmissionJudgementMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    SubmissionJudgementMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            if (!$util.isInteger(message.teamId))
+                                return "teamId: integer expected";
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            if (!$util.isInteger(message.problemId))
+                                return "problemId: integer expected";
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            if (!$util.isInteger(message.submissionId) && !(message.submissionId && $util.isInteger(message.submissionId.low) && $util.isInteger(message.submissionId.high)))
+                                return "submissionId: integer|Long expected";
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            switch (message.ruling) {
+                            default:
+                                return "ruling: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                                break;
+                            }
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            if (!$util.isString(message.rulingMessage))
+                                return "rulingMessage: string expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a SubmissionJudgementMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage} SubmissionJudgementMessage
+                     */
+                    SubmissionJudgementMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage();
+                        if (object.teamId != null)
+                            message.teamId = object.teamId | 0;
+                        if (object.problemId != null)
+                            message.problemId = object.problemId | 0;
+                        if (object.submissionId != null)
+                            if ($util.Long)
+                                (message.submissionId = $util.Long.fromValue(object.submissionId)).unsigned = false;
+                            else if (typeof object.submissionId === "string")
+                                message.submissionId = parseInt(object.submissionId, 10);
+                            else if (typeof object.submissionId === "number")
+                                message.submissionId = object.submissionId;
+                            else if (typeof object.submissionId === "object")
+                                message.submissionId = new $util.LongBits(object.submissionId.low >>> 0, object.submissionId.high >>> 0).toNumber();
+                        switch (object.ruling) {
+                        case "JUDGEMENT_UNKNOWN":
+                        case 0:
+                            message.ruling = 0;
+                            break;
+                        case "JUDGEMENT_SUCCESS":
+                        case 1:
+                            message.ruling = 1;
+                            break;
+                        case "JUDGEMENT_FAILURE":
+                        case 2:
+                            message.ruling = 2;
+                            break;
+                        }
+                        if (object.rulingMessage != null)
+                            message.rulingMessage = String(object.rulingMessage);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a SubmissionJudgementMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage} message SubmissionJudgementMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    SubmissionJudgementMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.teamId = 0;
+                            object.problemId = 0;
+                            if ($util.Long) {
+                                var long = new $util.Long(0, 0, false);
+                                object.submissionId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                            } else
+                                object.submissionId = options.longs === String ? "0" : 0;
+                            object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                            object.rulingMessage = "";
+                        }
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            object.teamId = message.teamId;
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            object.problemId = message.problemId;
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            if (typeof message.submissionId === "number")
+                                object.submissionId = options.longs === String ? String(message.submissionId) : message.submissionId;
+                            else
+                                object.submissionId = options.longs === String ? $util.Long.prototype.toString.call(message.submissionId) : options.longs === Number ? new $util.LongBits(message.submissionId.low >>> 0, message.submissionId.high >>> 0).toNumber() : message.submissionId;
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            object.ruling = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.ruling] : message.ruling;
+                        if (message.rulingMessage != null && message.hasOwnProperty("rulingMessage"))
+                            object.rulingMessage = message.rulingMessage;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this SubmissionJudgementMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.J2SMessage.SubmissionJudgementMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    SubmissionJudgementMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return SubmissionJudgementMessage;
+                })();
+    
+                J2SMessage.JudgingPreferencesMessage = (function() {
+    
+                    /**
+                     * Properties of a JudgingPreferencesMessage.
+                     * @memberof acmcsus.debugjudge.J2SMessage
+                     * @interface IJudgingPreferencesMessage
+                     * @property {Object.<string,boolean>|null} [preferences] JudgingPreferencesMessage preferences
+                     */
+    
+                    /**
+                     * Constructs a new JudgingPreferencesMessage.
+                     * @memberof acmcsus.debugjudge.J2SMessage
+                     * @classdesc Represents a JudgingPreferencesMessage.
+                     * @implements IJudgingPreferencesMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.J2SMessage.IJudgingPreferencesMessage=} [properties] Properties to set
+                     */
+                    function JudgingPreferencesMessage(properties) {
+                        this.preferences = {};
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * JudgingPreferencesMessage preferences.
+                     * @member {Object.<string,boolean>} preferences
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @instance
+                     */
+                    JudgingPreferencesMessage.prototype.preferences = $util.emptyObject;
+    
+                    /**
+                     * Creates a new JudgingPreferencesMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IJudgingPreferencesMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage} JudgingPreferencesMessage instance
+                     */
+                    JudgingPreferencesMessage.create = function create(properties) {
+                        return new JudgingPreferencesMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified JudgingPreferencesMessage message. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IJudgingPreferencesMessage} message JudgingPreferencesMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    JudgingPreferencesMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.preferences != null && message.hasOwnProperty("preferences"))
+                            for (var keys = Object.keys(message.preferences), i = 0; i < keys.length; ++i)
+                                writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).bool(message.preferences[keys[i]]).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified JudgingPreferencesMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.IJudgingPreferencesMessage} message JudgingPreferencesMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    JudgingPreferencesMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a JudgingPreferencesMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage} JudgingPreferencesMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    JudgingPreferencesMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage(), key;
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                reader.skip().pos++;
+                                if (message.preferences === $util.emptyObject)
+                                    message.preferences = {};
+                                key = reader.int32();
+                                reader.pos++;
+                                message.preferences[key] = reader.bool();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a JudgingPreferencesMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage} JudgingPreferencesMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    JudgingPreferencesMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a JudgingPreferencesMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    JudgingPreferencesMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.preferences != null && message.hasOwnProperty("preferences")) {
+                            if (!$util.isObject(message.preferences))
+                                return "preferences: object expected";
+                            var key = Object.keys(message.preferences);
+                            for (var i = 0; i < key.length; ++i) {
+                                if (!$util.key32Re.test(key[i]))
+                                    return "preferences: integer key{k:int32} expected";
+                                if (typeof message.preferences[key[i]] !== "boolean")
+                                    return "preferences: boolean{k:int32} expected";
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a JudgingPreferencesMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage} JudgingPreferencesMessage
+                     */
+                    JudgingPreferencesMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage();
+                        if (object.preferences) {
+                            if (typeof object.preferences !== "object")
+                                throw TypeError(".acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage.preferences: object expected");
+                            message.preferences = {};
+                            for (var keys = Object.keys(object.preferences), i = 0; i < keys.length; ++i)
+                                message.preferences[keys[i]] = Boolean(object.preferences[keys[i]]);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a JudgingPreferencesMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage} message JudgingPreferencesMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    JudgingPreferencesMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.objects || options.defaults)
+                            object.preferences = {};
+                        var keys2;
+                        if (message.preferences && (keys2 = Object.keys(message.preferences)).length) {
+                            object.preferences = {};
+                            for (var j = 0; j < keys2.length; ++j)
+                                object.preferences[keys2[j]] = message.preferences[keys2[j]];
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this JudgingPreferencesMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.J2SMessage.JudgingPreferencesMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    JudgingPreferencesMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return JudgingPreferencesMessage;
+                })();
+    
+                return J2SMessage;
+            })();
+    
+            debugjudge.S2JMessage = (function() {
+    
+                /**
+                 * Properties of a S2JMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IS2JMessage
+                 * @property {acmcsus.debugjudge.S2JMessage.IAssignedSubmissionMessage|null} [assignedSubmissionMessage] S2JMessage assignedSubmissionMessage
+                 * @property {acmcsus.debugjudge.S2JMessage.IJudgingStatusMessage|null} [judgingStatus] S2JMessage judgingStatus
+                 */
+    
+                /**
+                 * Constructs a new S2JMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a S2JMessage.
+                 * @implements IS2JMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IS2JMessage=} [properties] Properties to set
+                 */
+                function S2JMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * S2JMessage assignedSubmissionMessage.
+                 * @member {acmcsus.debugjudge.S2JMessage.IAssignedSubmissionMessage|null|undefined} assignedSubmissionMessage
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @instance
+                 */
+                S2JMessage.prototype.assignedSubmissionMessage = null;
+    
+                /**
+                 * S2JMessage judgingStatus.
+                 * @member {acmcsus.debugjudge.S2JMessage.IJudgingStatusMessage|null|undefined} judgingStatus
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @instance
+                 */
+                S2JMessage.prototype.judgingStatus = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * S2JMessage value.
+                 * @member {"assignedSubmissionMessage"|"judgingStatus"|undefined} value
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @instance
+                 */
+                Object.defineProperty(S2JMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["assignedSubmissionMessage", "judgingStatus"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new S2JMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2JMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.S2JMessage} S2JMessage instance
+                 */
+                S2JMessage.create = function create(properties) {
+                    return new S2JMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified S2JMessage message. Does not implicitly {@link acmcsus.debugjudge.S2JMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2JMessage} message S2JMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2JMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.assignedSubmissionMessage != null && message.hasOwnProperty("assignedSubmissionMessage"))
+                        $root.acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage.encode(message.assignedSubmissionMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus"))
+                        $root.acmcsus.debugjudge.S2JMessage.JudgingStatusMessage.encode(message.judgingStatus, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified S2JMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2JMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2JMessage} message S2JMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2JMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a S2JMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.S2JMessage} S2JMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2JMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2JMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.assignedSubmissionMessage = $root.acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage.decode(reader, reader.uint32());
+                            break;
+                        case 2:
+                            message.judgingStatus = $root.acmcsus.debugjudge.S2JMessage.JudgingStatusMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a S2JMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.S2JMessage} S2JMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2JMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a S2JMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                S2JMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.assignedSubmissionMessage != null && message.hasOwnProperty("assignedSubmissionMessage")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage.verify(message.assignedSubmissionMessage);
+                            if (error)
+                                return "assignedSubmissionMessage." + error;
+                        }
+                    }
+                    if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2JMessage.JudgingStatusMessage.verify(message.judgingStatus);
+                            if (error)
+                                return "judgingStatus." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a S2JMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.S2JMessage} S2JMessage
+                 */
+                S2JMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.S2JMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.S2JMessage();
+                    if (object.assignedSubmissionMessage != null) {
+                        if (typeof object.assignedSubmissionMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2JMessage.assignedSubmissionMessage: object expected");
+                        message.assignedSubmissionMessage = $root.acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage.fromObject(object.assignedSubmissionMessage);
+                    }
+                    if (object.judgingStatus != null) {
+                        if (typeof object.judgingStatus !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2JMessage.judgingStatus: object expected");
+                        message.judgingStatus = $root.acmcsus.debugjudge.S2JMessage.JudgingStatusMessage.fromObject(object.judgingStatus);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a S2JMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.S2JMessage} message S2JMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                S2JMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.assignedSubmissionMessage != null && message.hasOwnProperty("assignedSubmissionMessage")) {
+                        object.assignedSubmissionMessage = $root.acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage.toObject(message.assignedSubmissionMessage, options);
+                        if (options.oneofs)
+                            object.value = "assignedSubmissionMessage";
+                    }
+                    if (message.judgingStatus != null && message.hasOwnProperty("judgingStatus")) {
+                        object.judgingStatus = $root.acmcsus.debugjudge.S2JMessage.JudgingStatusMessage.toObject(message.judgingStatus, options);
+                        if (options.oneofs)
+                            object.value = "judgingStatus";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this S2JMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.S2JMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                S2JMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                S2JMessage.AssignedSubmissionMessage = (function() {
+    
+                    /**
+                     * Properties of an AssignedSubmissionMessage.
+                     * @memberof acmcsus.debugjudge.S2JMessage
+                     * @interface IAssignedSubmissionMessage
+                     * @property {acmcsus.debugjudge.ISubmission|null} [submission] AssignedSubmissionMessage submission
+                     */
+    
+                    /**
+                     * Constructs a new AssignedSubmissionMessage.
+                     * @memberof acmcsus.debugjudge.S2JMessage
+                     * @classdesc Represents an AssignedSubmissionMessage.
+                     * @implements IAssignedSubmissionMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.S2JMessage.IAssignedSubmissionMessage=} [properties] Properties to set
+                     */
+                    function AssignedSubmissionMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * AssignedSubmissionMessage submission.
+                     * @member {acmcsus.debugjudge.ISubmission|null|undefined} submission
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @instance
+                     */
+                    AssignedSubmissionMessage.prototype.submission = null;
+    
+                    /**
+                     * Creates a new AssignedSubmissionMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2JMessage.IAssignedSubmissionMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage} AssignedSubmissionMessage instance
+                     */
+                    AssignedSubmissionMessage.create = function create(properties) {
+                        return new AssignedSubmissionMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified AssignedSubmissionMessage message. Does not implicitly {@link acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2JMessage.IAssignedSubmissionMessage} message AssignedSubmissionMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AssignedSubmissionMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            $root.acmcsus.debugjudge.Submission.encode(message.submission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified AssignedSubmissionMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2JMessage.IAssignedSubmissionMessage} message AssignedSubmissionMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AssignedSubmissionMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an AssignedSubmissionMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage} AssignedSubmissionMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AssignedSubmissionMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.submission = $root.acmcsus.debugjudge.Submission.decode(reader, reader.uint32());
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an AssignedSubmissionMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage} AssignedSubmissionMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AssignedSubmissionMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an AssignedSubmissionMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    AssignedSubmissionMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.submission != null && message.hasOwnProperty("submission")) {
+                            var error = $root.acmcsus.debugjudge.Submission.verify(message.submission);
+                            if (error)
+                                return "submission." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an AssignedSubmissionMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage} AssignedSubmissionMessage
+                     */
+                    AssignedSubmissionMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage();
+                        if (object.submission != null) {
+                            if (typeof object.submission !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage.submission: object expected");
+                            message.submission = $root.acmcsus.debugjudge.Submission.fromObject(object.submission);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an AssignedSubmissionMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage} message AssignedSubmissionMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    AssignedSubmissionMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.submission = null;
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            object.submission = $root.acmcsus.debugjudge.Submission.toObject(message.submission, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this AssignedSubmissionMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.S2JMessage.AssignedSubmissionMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    AssignedSubmissionMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return AssignedSubmissionMessage;
+                })();
+    
+                S2JMessage.JudgingStatusMessage = (function() {
+    
+                    /**
+                     * Properties of a JudgingStatusMessage.
+                     * @memberof acmcsus.debugjudge.S2JMessage
+                     * @interface IJudgingStatusMessage
+                     * @property {boolean|null} [judging] JudgingStatusMessage judging
+                     * @property {string|null} [message] JudgingStatusMessage message
+                     */
+    
+                    /**
+                     * Constructs a new JudgingStatusMessage.
+                     * @memberof acmcsus.debugjudge.S2JMessage
+                     * @classdesc Represents a JudgingStatusMessage.
+                     * @implements IJudgingStatusMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.S2JMessage.IJudgingStatusMessage=} [properties] Properties to set
+                     */
+                    function JudgingStatusMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * JudgingStatusMessage judging.
+                     * @member {boolean} judging
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @instance
+                     */
+                    JudgingStatusMessage.prototype.judging = false;
+    
+                    /**
+                     * JudgingStatusMessage message.
+                     * @member {string} message
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @instance
+                     */
+                    JudgingStatusMessage.prototype.message = "";
+    
+                    /**
+                     * Creates a new JudgingStatusMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2JMessage.IJudgingStatusMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2JMessage.JudgingStatusMessage} JudgingStatusMessage instance
+                     */
+                    JudgingStatusMessage.create = function create(properties) {
+                        return new JudgingStatusMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified JudgingStatusMessage message. Does not implicitly {@link acmcsus.debugjudge.S2JMessage.JudgingStatusMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2JMessage.IJudgingStatusMessage} message JudgingStatusMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    JudgingStatusMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.judging != null && message.hasOwnProperty("judging"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).bool(message.judging);
+                        if (message.message != null && message.hasOwnProperty("message"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.message);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified JudgingStatusMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2JMessage.JudgingStatusMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2JMessage.IJudgingStatusMessage} message JudgingStatusMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    JudgingStatusMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a JudgingStatusMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    JudgingStatusMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2JMessage.JudgingStatusMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.judging = reader.bool();
+                                break;
+                            case 2:
+                                message.message = reader.string();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a JudgingStatusMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    JudgingStatusMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a JudgingStatusMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    JudgingStatusMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.judging != null && message.hasOwnProperty("judging"))
+                            if (typeof message.judging !== "boolean")
+                                return "judging: boolean expected";
+                        if (message.message != null && message.hasOwnProperty("message"))
+                            if (!$util.isString(message.message))
+                                return "message: string expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a JudgingStatusMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.S2JMessage.JudgingStatusMessage} JudgingStatusMessage
+                     */
+                    JudgingStatusMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2JMessage.JudgingStatusMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.S2JMessage.JudgingStatusMessage();
+                        if (object.judging != null)
+                            message.judging = Boolean(object.judging);
+                        if (object.message != null)
+                            message.message = String(object.message);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a JudgingStatusMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2JMessage.JudgingStatusMessage} message JudgingStatusMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    JudgingStatusMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.judging = false;
+                            object.message = "";
+                        }
+                        if (message.judging != null && message.hasOwnProperty("judging"))
+                            object.judging = message.judging;
+                        if (message.message != null && message.hasOwnProperty("message"))
+                            object.message = message.message;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this JudgingStatusMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.S2JMessage.JudgingStatusMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    JudgingStatusMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return JudgingStatusMessage;
+                })();
+    
+                return S2JMessage;
+            })();
+    
+            debugjudge.A2SMessage = (function() {
+    
+                /**
+                 * Properties of a A2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IA2SMessage
+                 * @property {acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage|null} [changeCompetitionStateMessage] A2SMessage changeCompetitionStateMessage
+                 */
+    
+                /**
+                 * Constructs a new A2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a A2SMessage.
+                 * @implements IA2SMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IA2SMessage=} [properties] Properties to set
+                 */
+                function A2SMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * A2SMessage changeCompetitionStateMessage.
+                 * @member {acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage|null|undefined} changeCompetitionStateMessage
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @instance
+                 */
+                A2SMessage.prototype.changeCompetitionStateMessage = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * A2SMessage value.
+                 * @member {"changeCompetitionStateMessage"|undefined} value
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @instance
+                 */
+                Object.defineProperty(A2SMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["changeCompetitionStateMessage"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new A2SMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IA2SMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.A2SMessage} A2SMessage instance
+                 */
+                A2SMessage.create = function create(properties) {
+                    return new A2SMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified A2SMessage message. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IA2SMessage} message A2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                A2SMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.changeCompetitionStateMessage != null && message.hasOwnProperty("changeCompetitionStateMessage"))
+                        $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.encode(message.changeCompetitionStateMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified A2SMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IA2SMessage} message A2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                A2SMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a A2SMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.A2SMessage} A2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                A2SMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.A2SMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.changeCompetitionStateMessage = $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a A2SMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.A2SMessage} A2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                A2SMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a A2SMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                A2SMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.changeCompetitionStateMessage != null && message.hasOwnProperty("changeCompetitionStateMessage")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.verify(message.changeCompetitionStateMessage);
+                            if (error)
+                                return "changeCompetitionStateMessage." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a A2SMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.A2SMessage} A2SMessage
+                 */
+                A2SMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.A2SMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.A2SMessage();
+                    if (object.changeCompetitionStateMessage != null) {
+                        if (typeof object.changeCompetitionStateMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.A2SMessage.changeCompetitionStateMessage: object expected");
+                        message.changeCompetitionStateMessage = $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.fromObject(object.changeCompetitionStateMessage);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a A2SMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.A2SMessage} message A2SMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                A2SMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.changeCompetitionStateMessage != null && message.hasOwnProperty("changeCompetitionStateMessage")) {
+                        object.changeCompetitionStateMessage = $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.toObject(message.changeCompetitionStateMessage, options);
+                        if (options.oneofs)
+                            object.value = "changeCompetitionStateMessage";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this A2SMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                A2SMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                A2SMessage.ChangeCompetitionStateMessage = (function() {
+    
+                    /**
+                     * Properties of a ChangeCompetitionStateMessage.
+                     * @memberof acmcsus.debugjudge.A2SMessage
+                     * @interface IChangeCompetitionStateMessage
+                     * @property {number|Long|null} [timeMillis] ChangeCompetitionStateMessage timeMillis
+                     * @property {acmcsus.debugjudge.CompetitionState|null} [state] ChangeCompetitionStateMessage state
+                     */
+    
+                    /**
+                     * Constructs a new ChangeCompetitionStateMessage.
+                     * @memberof acmcsus.debugjudge.A2SMessage
+                     * @classdesc Represents a ChangeCompetitionStateMessage.
+                     * @implements IChangeCompetitionStateMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage=} [properties] Properties to set
+                     */
+                    function ChangeCompetitionStateMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * ChangeCompetitionStateMessage timeMillis.
+                     * @member {number|Long} timeMillis
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @instance
+                     */
+                    ChangeCompetitionStateMessage.prototype.timeMillis = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                    /**
+                     * ChangeCompetitionStateMessage state.
+                     * @member {acmcsus.debugjudge.CompetitionState} state
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @instance
+                     */
+                    ChangeCompetitionStateMessage.prototype.state = 0;
+    
+                    /**
+                     * Creates a new ChangeCompetitionStateMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage} ChangeCompetitionStateMessage instance
+                     */
+                    ChangeCompetitionStateMessage.create = function create(properties) {
+                        return new ChangeCompetitionStateMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified ChangeCompetitionStateMessage message. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage} message ChangeCompetitionStateMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ChangeCompetitionStateMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int64(message.timeMillis);
+                        if (message.state != null && message.hasOwnProperty("state"))
+                            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.state);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified ChangeCompetitionStateMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage} message ChangeCompetitionStateMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ChangeCompetitionStateMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a ChangeCompetitionStateMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage} ChangeCompetitionStateMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ChangeCompetitionStateMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.timeMillis = reader.int64();
+                                break;
+                            case 2:
+                                message.state = reader.int32();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a ChangeCompetitionStateMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage} ChangeCompetitionStateMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ChangeCompetitionStateMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a ChangeCompetitionStateMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    ChangeCompetitionStateMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
+                            if (!$util.isInteger(message.timeMillis) && !(message.timeMillis && $util.isInteger(message.timeMillis.low) && $util.isInteger(message.timeMillis.high)))
+                                return "timeMillis: integer|Long expected";
+                        if (message.state != null && message.hasOwnProperty("state"))
+                            switch (message.state) {
+                            default:
+                                return "state: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                                break;
+                            }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a ChangeCompetitionStateMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage} ChangeCompetitionStateMessage
+                     */
+                    ChangeCompetitionStateMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage();
+                        if (object.timeMillis != null)
+                            if ($util.Long)
+                                (message.timeMillis = $util.Long.fromValue(object.timeMillis)).unsigned = false;
+                            else if (typeof object.timeMillis === "string")
+                                message.timeMillis = parseInt(object.timeMillis, 10);
+                            else if (typeof object.timeMillis === "number")
+                                message.timeMillis = object.timeMillis;
+                            else if (typeof object.timeMillis === "object")
+                                message.timeMillis = new $util.LongBits(object.timeMillis.low >>> 0, object.timeMillis.high >>> 0).toNumber();
+                        switch (object.state) {
+                        case "UNKNOWN":
+                        case 0:
+                            message.state = 0;
+                            break;
+                        case "WAITING":
+                        case 1:
+                            message.state = 1;
+                            break;
+                        case "STARTED":
+                        case 2:
+                            message.state = 2;
+                            break;
+                        case "PAUSED":
+                        case 3:
+                            message.state = 3;
+                            break;
+                        case "STOPPED":
+                        case 4:
+                            message.state = 4;
+                            break;
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a ChangeCompetitionStateMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage} message ChangeCompetitionStateMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    ChangeCompetitionStateMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            if ($util.Long) {
+                                var long = new $util.Long(0, 0, false);
+                                object.timeMillis = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                            } else
+                                object.timeMillis = options.longs === String ? "0" : 0;
+                            object.state = options.enums === String ? "UNKNOWN" : 0;
+                        }
+                        if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
+                            if (typeof message.timeMillis === "number")
+                                object.timeMillis = options.longs === String ? String(message.timeMillis) : message.timeMillis;
+                            else
+                                object.timeMillis = options.longs === String ? $util.Long.prototype.toString.call(message.timeMillis) : options.longs === Number ? new $util.LongBits(message.timeMillis.low >>> 0, message.timeMillis.high >>> 0).toNumber() : message.timeMillis;
+                        if (message.state != null && message.hasOwnProperty("state"))
+                            object.state = options.enums === String ? $root.acmcsus.debugjudge.CompetitionState[message.state] : message.state;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this ChangeCompetitionStateMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    ChangeCompetitionStateMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return ChangeCompetitionStateMessage;
+                })();
+    
+                return A2SMessage;
+            })();
+    
+            debugjudge.S2AMessage = (function() {
+    
+                /**
+                 * Properties of a S2AMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IS2AMessage
+                 * @property {acmcsus.debugjudge.S2AMessage.IStatusAppendMessage|null} [statusAppendMessage] S2AMessage statusAppendMessage
+                 */
+    
+                /**
+                 * Constructs a new S2AMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a S2AMessage.
+                 * @implements IS2AMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IS2AMessage=} [properties] Properties to set
+                 */
+                function S2AMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * S2AMessage statusAppendMessage.
+                 * @member {acmcsus.debugjudge.S2AMessage.IStatusAppendMessage|null|undefined} statusAppendMessage
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @instance
+                 */
+                S2AMessage.prototype.statusAppendMessage = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * S2AMessage value.
+                 * @member {"statusAppendMessage"|undefined} value
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @instance
+                 */
+                Object.defineProperty(S2AMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["statusAppendMessage"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new S2AMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2AMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.S2AMessage} S2AMessage instance
+                 */
+                S2AMessage.create = function create(properties) {
+                    return new S2AMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified S2AMessage message. Does not implicitly {@link acmcsus.debugjudge.S2AMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2AMessage} message S2AMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2AMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.statusAppendMessage != null && message.hasOwnProperty("statusAppendMessage"))
+                        $root.acmcsus.debugjudge.S2AMessage.StatusAppendMessage.encode(message.statusAppendMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified S2AMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2AMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2AMessage} message S2AMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2AMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a S2AMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.S2AMessage} S2AMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2AMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2AMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.statusAppendMessage = $root.acmcsus.debugjudge.S2AMessage.StatusAppendMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a S2AMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.S2AMessage} S2AMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2AMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a S2AMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                S2AMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.statusAppendMessage != null && message.hasOwnProperty("statusAppendMessage")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2AMessage.StatusAppendMessage.verify(message.statusAppendMessage);
+                            if (error)
+                                return "statusAppendMessage." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a S2AMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.S2AMessage} S2AMessage
+                 */
+                S2AMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.S2AMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.S2AMessage();
+                    if (object.statusAppendMessage != null) {
+                        if (typeof object.statusAppendMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2AMessage.statusAppendMessage: object expected");
+                        message.statusAppendMessage = $root.acmcsus.debugjudge.S2AMessage.StatusAppendMessage.fromObject(object.statusAppendMessage);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a S2AMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.S2AMessage} message S2AMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                S2AMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.statusAppendMessage != null && message.hasOwnProperty("statusAppendMessage")) {
+                        object.statusAppendMessage = $root.acmcsus.debugjudge.S2AMessage.StatusAppendMessage.toObject(message.statusAppendMessage, options);
+                        if (options.oneofs)
+                            object.value = "statusAppendMessage";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this S2AMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.S2AMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                S2AMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                S2AMessage.StatusAppendMessage = (function() {
+    
+                    /**
+                     * Properties of a StatusAppendMessage.
+                     * @memberof acmcsus.debugjudge.S2AMessage
+                     * @interface IStatusAppendMessage
+                     * @property {string|null} [value] StatusAppendMessage value
+                     */
+    
+                    /**
+                     * Constructs a new StatusAppendMessage.
+                     * @memberof acmcsus.debugjudge.S2AMessage
+                     * @classdesc Represents a StatusAppendMessage.
+                     * @implements IStatusAppendMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.S2AMessage.IStatusAppendMessage=} [properties] Properties to set
+                     */
+                    function StatusAppendMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * StatusAppendMessage value.
+                     * @member {string} value
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @instance
+                     */
+                    StatusAppendMessage.prototype.value = "";
+    
+                    /**
+                     * Creates a new StatusAppendMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2AMessage.IStatusAppendMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2AMessage.StatusAppendMessage} StatusAppendMessage instance
+                     */
+                    StatusAppendMessage.create = function create(properties) {
+                        return new StatusAppendMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified StatusAppendMessage message. Does not implicitly {@link acmcsus.debugjudge.S2AMessage.StatusAppendMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2AMessage.IStatusAppendMessage} message StatusAppendMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    StatusAppendMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            writer.uint32(/* id 1, wireType 2 =*/10).string(message.value);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified StatusAppendMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2AMessage.StatusAppendMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2AMessage.IStatusAppendMessage} message StatusAppendMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    StatusAppendMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a StatusAppendMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.S2AMessage.StatusAppendMessage} StatusAppendMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    StatusAppendMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2AMessage.StatusAppendMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.value = reader.string();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a StatusAppendMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.S2AMessage.StatusAppendMessage} StatusAppendMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    StatusAppendMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a StatusAppendMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    StatusAppendMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            if (!$util.isString(message.value))
+                                return "value: string expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a StatusAppendMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.S2AMessage.StatusAppendMessage} StatusAppendMessage
+                     */
+                    StatusAppendMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2AMessage.StatusAppendMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.S2AMessage.StatusAppendMessage();
+                        if (object.value != null)
+                            message.value = String(object.value);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a StatusAppendMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2AMessage.StatusAppendMessage} message StatusAppendMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    StatusAppendMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.value = "";
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            object.value = message.value;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this StatusAppendMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.S2AMessage.StatusAppendMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    StatusAppendMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return StatusAppendMessage;
+                })();
+    
+                return S2AMessage;
+            })();
+    
+            debugjudge.AJ2SMessage = (function() {
+    
+                /**
+                 * Properties of a AJ2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IAJ2SMessage
+                 * @property {acmcsus.debugjudge.AJ2SMessage.IAutoJudgeResultMessage|null} [submissionJudgementMessage] AJ2SMessage submissionJudgementMessage
+                 */
+    
+                /**
+                 * Constructs a new AJ2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a AJ2SMessage.
+                 * @implements IAJ2SMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IAJ2SMessage=} [properties] Properties to set
+                 */
+                function AJ2SMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * AJ2SMessage submissionJudgementMessage.
+                 * @member {acmcsus.debugjudge.AJ2SMessage.IAutoJudgeResultMessage|null|undefined} submissionJudgementMessage
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @instance
+                 */
+                AJ2SMessage.prototype.submissionJudgementMessage = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * AJ2SMessage value.
+                 * @member {"submissionJudgementMessage"|undefined} value
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @instance
+                 */
+                Object.defineProperty(AJ2SMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["submissionJudgementMessage"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new AJ2SMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IAJ2SMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.AJ2SMessage} AJ2SMessage instance
+                 */
+                AJ2SMessage.create = function create(properties) {
+                    return new AJ2SMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified AJ2SMessage message. Does not implicitly {@link acmcsus.debugjudge.AJ2SMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IAJ2SMessage} message AJ2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                AJ2SMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage"))
+                        $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.encode(message.submissionJudgementMessage, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified AJ2SMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.AJ2SMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IAJ2SMessage} message AJ2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                AJ2SMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a AJ2SMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.AJ2SMessage} AJ2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                AJ2SMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.AJ2SMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 3:
+                            message.submissionJudgementMessage = $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a AJ2SMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.AJ2SMessage} AJ2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                AJ2SMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a AJ2SMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                AJ2SMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.verify(message.submissionJudgementMessage);
+                            if (error)
+                                return "submissionJudgementMessage." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a AJ2SMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.AJ2SMessage} AJ2SMessage
+                 */
+                AJ2SMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.AJ2SMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.AJ2SMessage();
+                    if (object.submissionJudgementMessage != null) {
+                        if (typeof object.submissionJudgementMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.AJ2SMessage.submissionJudgementMessage: object expected");
+                        message.submissionJudgementMessage = $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.fromObject(object.submissionJudgementMessage);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a AJ2SMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.AJ2SMessage} message AJ2SMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                AJ2SMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.submissionJudgementMessage != null && message.hasOwnProperty("submissionJudgementMessage")) {
+                        object.submissionJudgementMessage = $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.toObject(message.submissionJudgementMessage, options);
+                        if (options.oneofs)
+                            object.value = "submissionJudgementMessage";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this AJ2SMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.AJ2SMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                AJ2SMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                AJ2SMessage.AutoJudgeResultMessage = (function() {
+    
+                    /**
+                     * Properties of an AutoJudgeResultMessage.
+                     * @memberof acmcsus.debugjudge.AJ2SMessage
+                     * @interface IAutoJudgeResultMessage
+                     * @property {number|null} [teamId] AutoJudgeResultMessage teamId
+                     * @property {number|null} [problemId] AutoJudgeResultMessage problemId
+                     * @property {number|Long|null} [submissionId] AutoJudgeResultMessage submissionId
+                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] AutoJudgeResultMessage ruling
+                     */
+    
+                    /**
+                     * Constructs a new AutoJudgeResultMessage.
+                     * @memberof acmcsus.debugjudge.AJ2SMessage
+                     * @classdesc Represents an AutoJudgeResultMessage.
+                     * @implements IAutoJudgeResultMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.AJ2SMessage.IAutoJudgeResultMessage=} [properties] Properties to set
+                     */
+                    function AutoJudgeResultMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * AutoJudgeResultMessage teamId.
+                     * @member {number} teamId
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     */
+                    AutoJudgeResultMessage.prototype.teamId = 0;
+    
+                    /**
+                     * AutoJudgeResultMessage problemId.
+                     * @member {number} problemId
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     */
+                    AutoJudgeResultMessage.prototype.problemId = 0;
+    
+                    /**
+                     * AutoJudgeResultMessage submissionId.
+                     * @member {number|Long} submissionId
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     */
+                    AutoJudgeResultMessage.prototype.submissionId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                    /**
+                     * AutoJudgeResultMessage ruling.
+                     * @member {acmcsus.debugjudge.SubmissionJudgement} ruling
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     */
+                    AutoJudgeResultMessage.prototype.ruling = 0;
+    
+                    /**
+                     * Creates a new AutoJudgeResultMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.AJ2SMessage.IAutoJudgeResultMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage} AutoJudgeResultMessage instance
+                     */
+                    AutoJudgeResultMessage.create = function create(properties) {
+                        return new AutoJudgeResultMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified AutoJudgeResultMessage message. Does not implicitly {@link acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.AJ2SMessage.IAutoJudgeResultMessage} message AutoJudgeResultMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AutoJudgeResultMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.teamId);
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ruling);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified AutoJudgeResultMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.AJ2SMessage.IAutoJudgeResultMessage} message AutoJudgeResultMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AutoJudgeResultMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an AutoJudgeResultMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage} AutoJudgeResultMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AutoJudgeResultMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.teamId = reader.int32();
+                                break;
+                            case 2:
+                                message.problemId = reader.int32();
+                                break;
+                            case 3:
+                                message.submissionId = reader.int64();
+                                break;
+                            case 4:
+                                message.ruling = reader.int32();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an AutoJudgeResultMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage} AutoJudgeResultMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AutoJudgeResultMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an AutoJudgeResultMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    AutoJudgeResultMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            if (!$util.isInteger(message.teamId))
+                                return "teamId: integer expected";
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            if (!$util.isInteger(message.problemId))
+                                return "problemId: integer expected";
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            if (!$util.isInteger(message.submissionId) && !(message.submissionId && $util.isInteger(message.submissionId.low) && $util.isInteger(message.submissionId.high)))
+                                return "submissionId: integer|Long expected";
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            switch (message.ruling) {
+                            default:
+                                return "ruling: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                                break;
+                            }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an AutoJudgeResultMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage} AutoJudgeResultMessage
+                     */
+                    AutoJudgeResultMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage();
+                        if (object.teamId != null)
+                            message.teamId = object.teamId | 0;
+                        if (object.problemId != null)
+                            message.problemId = object.problemId | 0;
+                        if (object.submissionId != null)
+                            if ($util.Long)
+                                (message.submissionId = $util.Long.fromValue(object.submissionId)).unsigned = false;
+                            else if (typeof object.submissionId === "string")
+                                message.submissionId = parseInt(object.submissionId, 10);
+                            else if (typeof object.submissionId === "number")
+                                message.submissionId = object.submissionId;
+                            else if (typeof object.submissionId === "object")
+                                message.submissionId = new $util.LongBits(object.submissionId.low >>> 0, object.submissionId.high >>> 0).toNumber();
+                        switch (object.ruling) {
+                        case "JUDGEMENT_UNKNOWN":
+                        case 0:
+                            message.ruling = 0;
+                            break;
+                        case "JUDGEMENT_SUCCESS":
+                        case 1:
+                            message.ruling = 1;
+                            break;
+                        case "JUDGEMENT_FAILURE":
+                        case 2:
+                            message.ruling = 2;
+                            break;
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an AutoJudgeResultMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage} message AutoJudgeResultMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    AutoJudgeResultMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.teamId = 0;
+                            object.problemId = 0;
+                            if ($util.Long) {
+                                var long = new $util.Long(0, 0, false);
+                                object.submissionId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                            } else
+                                object.submissionId = options.longs === String ? "0" : 0;
+                            object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                        }
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            object.teamId = message.teamId;
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            object.problemId = message.problemId;
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            if (typeof message.submissionId === "number")
+                                object.submissionId = options.longs === String ? String(message.submissionId) : message.submissionId;
+                            else
+                                object.submissionId = options.longs === String ? $util.Long.prototype.toString.call(message.submissionId) : options.longs === Number ? new $util.LongBits(message.submissionId.low >>> 0, message.submissionId.high >>> 0).toNumber() : message.submissionId;
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            object.ruling = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.ruling] : message.ruling;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this AutoJudgeResultMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    AutoJudgeResultMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return AutoJudgeResultMessage;
+                })();
+    
+                return AJ2SMessage;
+            })();
+    
+            debugjudge.S2AJMessage = (function() {
+    
+                /**
+                 * Properties of a S2AJMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IS2AJMessage
+                 * @property {acmcsus.debugjudge.S2AJMessage.IExecuteSubmissionMessage|null} [executeSubmission] S2AJMessage executeSubmission
+                 */
+    
+                /**
+                 * Constructs a new S2AJMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a S2AJMessage.
+                 * @implements IS2AJMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IS2AJMessage=} [properties] Properties to set
+                 */
+                function S2AJMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * S2AJMessage executeSubmission.
+                 * @member {acmcsus.debugjudge.S2AJMessage.IExecuteSubmissionMessage|null|undefined} executeSubmission
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @instance
+                 */
+                S2AJMessage.prototype.executeSubmission = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * S2AJMessage value.
+                 * @member {"executeSubmission"|undefined} value
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @instance
+                 */
+                Object.defineProperty(S2AJMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["executeSubmission"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new S2AJMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2AJMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.S2AJMessage} S2AJMessage instance
+                 */
+                S2AJMessage.create = function create(properties) {
+                    return new S2AJMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified S2AJMessage message. Does not implicitly {@link acmcsus.debugjudge.S2AJMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2AJMessage} message S2AJMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2AJMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.executeSubmission != null && message.hasOwnProperty("executeSubmission"))
+                        $root.acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage.encode(message.executeSubmission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified S2AJMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2AJMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2AJMessage} message S2AJMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2AJMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a S2AJMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.S2AJMessage} S2AJMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2AJMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2AJMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.executeSubmission = $root.acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a S2AJMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.S2AJMessage} S2AJMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2AJMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a S2AJMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                S2AJMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.executeSubmission != null && message.hasOwnProperty("executeSubmission")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage.verify(message.executeSubmission);
+                            if (error)
+                                return "executeSubmission." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a S2AJMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.S2AJMessage} S2AJMessage
+                 */
+                S2AJMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.S2AJMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.S2AJMessage();
+                    if (object.executeSubmission != null) {
+                        if (typeof object.executeSubmission !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2AJMessage.executeSubmission: object expected");
+                        message.executeSubmission = $root.acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage.fromObject(object.executeSubmission);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a S2AJMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.S2AJMessage} message S2AJMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                S2AJMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.executeSubmission != null && message.hasOwnProperty("executeSubmission")) {
+                        object.executeSubmission = $root.acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage.toObject(message.executeSubmission, options);
+                        if (options.oneofs)
+                            object.value = "executeSubmission";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this S2AJMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.S2AJMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                S2AJMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                S2AJMessage.ExecuteSubmissionMessage = (function() {
+    
+                    /**
+                     * Properties of an ExecuteSubmissionMessage.
+                     * @memberof acmcsus.debugjudge.S2AJMessage
+                     * @interface IExecuteSubmissionMessage
+                     * @property {acmcsus.debugjudge.ISubmission|null} [submission] ExecuteSubmissionMessage submission
+                     */
+    
+                    /**
+                     * Constructs a new ExecuteSubmissionMessage.
+                     * @memberof acmcsus.debugjudge.S2AJMessage
+                     * @classdesc Represents an ExecuteSubmissionMessage.
+                     * @implements IExecuteSubmissionMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.S2AJMessage.IExecuteSubmissionMessage=} [properties] Properties to set
+                     */
+                    function ExecuteSubmissionMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * ExecuteSubmissionMessage submission.
+                     * @member {acmcsus.debugjudge.ISubmission|null|undefined} submission
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @instance
+                     */
+                    ExecuteSubmissionMessage.prototype.submission = null;
+    
+                    /**
+                     * Creates a new ExecuteSubmissionMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2AJMessage.IExecuteSubmissionMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage} ExecuteSubmissionMessage instance
+                     */
+                    ExecuteSubmissionMessage.create = function create(properties) {
+                        return new ExecuteSubmissionMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified ExecuteSubmissionMessage message. Does not implicitly {@link acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2AJMessage.IExecuteSubmissionMessage} message ExecuteSubmissionMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ExecuteSubmissionMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            $root.acmcsus.debugjudge.Submission.encode(message.submission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified ExecuteSubmissionMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2AJMessage.IExecuteSubmissionMessage} message ExecuteSubmissionMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ExecuteSubmissionMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an ExecuteSubmissionMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage} ExecuteSubmissionMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ExecuteSubmissionMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.submission = $root.acmcsus.debugjudge.Submission.decode(reader, reader.uint32());
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an ExecuteSubmissionMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage} ExecuteSubmissionMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ExecuteSubmissionMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an ExecuteSubmissionMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    ExecuteSubmissionMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.submission != null && message.hasOwnProperty("submission")) {
+                            var error = $root.acmcsus.debugjudge.Submission.verify(message.submission);
+                            if (error)
+                                return "submission." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an ExecuteSubmissionMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage} ExecuteSubmissionMessage
+                     */
+                    ExecuteSubmissionMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage();
+                        if (object.submission != null) {
+                            if (typeof object.submission !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage.submission: object expected");
+                            message.submission = $root.acmcsus.debugjudge.Submission.fromObject(object.submission);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an ExecuteSubmissionMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage} message ExecuteSubmissionMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    ExecuteSubmissionMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.submission = null;
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            object.submission = $root.acmcsus.debugjudge.Submission.toObject(message.submission, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this ExecuteSubmissionMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.S2AJMessage.ExecuteSubmissionMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    ExecuteSubmissionMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return ExecuteSubmissionMessage;
+                })();
+    
+                return S2AJMessage;
+            })();
+    
+            debugjudge.S2BMessage = (function() {
+    
+                /**
+                 * Properties of a S2BMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IS2BMessage
+                 * @property {acmcsus.debugjudge.S2BMessage.IExecuteSubmissionMessage|null} [executeSubmission] S2BMessage executeSubmission
+                 */
+    
+                /**
+                 * Constructs a new S2BMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a S2BMessage.
+                 * @implements IS2BMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IS2BMessage=} [properties] Properties to set
+                 */
+                function S2BMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * S2BMessage executeSubmission.
+                 * @member {acmcsus.debugjudge.S2BMessage.IExecuteSubmissionMessage|null|undefined} executeSubmission
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @instance
+                 */
+                S2BMessage.prototype.executeSubmission = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * S2BMessage value.
+                 * @member {"executeSubmission"|undefined} value
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @instance
+                 */
+                Object.defineProperty(S2BMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["executeSubmission"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new S2BMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2BMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.S2BMessage} S2BMessage instance
+                 */
+                S2BMessage.create = function create(properties) {
+                    return new S2BMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified S2BMessage message. Does not implicitly {@link acmcsus.debugjudge.S2BMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2BMessage} message S2BMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2BMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.executeSubmission != null && message.hasOwnProperty("executeSubmission"))
+                        $root.acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage.encode(message.executeSubmission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified S2BMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2BMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IS2BMessage} message S2BMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                S2BMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a S2BMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.S2BMessage} S2BMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2BMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2BMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.executeSubmission = $root.acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a S2BMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.S2BMessage} S2BMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                S2BMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a S2BMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                S2BMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.executeSubmission != null && message.hasOwnProperty("executeSubmission")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage.verify(message.executeSubmission);
+                            if (error)
+                                return "executeSubmission." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a S2BMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.S2BMessage} S2BMessage
+                 */
+                S2BMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.S2BMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.S2BMessage();
+                    if (object.executeSubmission != null) {
+                        if (typeof object.executeSubmission !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2BMessage.executeSubmission: object expected");
+                        message.executeSubmission = $root.acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage.fromObject(object.executeSubmission);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a S2BMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.S2BMessage} message S2BMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                S2BMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.executeSubmission != null && message.hasOwnProperty("executeSubmission")) {
+                        object.executeSubmission = $root.acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage.toObject(message.executeSubmission, options);
+                        if (options.oneofs)
+                            object.value = "executeSubmission";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this S2BMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.S2BMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                S2BMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                S2BMessage.ExecuteSubmissionMessage = (function() {
+    
+                    /**
+                     * Properties of an ExecuteSubmissionMessage.
+                     * @memberof acmcsus.debugjudge.S2BMessage
+                     * @interface IExecuteSubmissionMessage
+                     * @property {acmcsus.debugjudge.ISubmission|null} [submission] ExecuteSubmissionMessage submission
+                     */
+    
+                    /**
+                     * Constructs a new ExecuteSubmissionMessage.
+                     * @memberof acmcsus.debugjudge.S2BMessage
+                     * @classdesc Represents an ExecuteSubmissionMessage.
+                     * @implements IExecuteSubmissionMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.S2BMessage.IExecuteSubmissionMessage=} [properties] Properties to set
+                     */
+                    function ExecuteSubmissionMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * ExecuteSubmissionMessage submission.
+                     * @member {acmcsus.debugjudge.ISubmission|null|undefined} submission
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @instance
+                     */
+                    ExecuteSubmissionMessage.prototype.submission = null;
+    
+                    /**
+                     * Creates a new ExecuteSubmissionMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2BMessage.IExecuteSubmissionMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage} ExecuteSubmissionMessage instance
+                     */
+                    ExecuteSubmissionMessage.create = function create(properties) {
+                        return new ExecuteSubmissionMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified ExecuteSubmissionMessage message. Does not implicitly {@link acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2BMessage.IExecuteSubmissionMessage} message ExecuteSubmissionMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ExecuteSubmissionMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            $root.acmcsus.debugjudge.Submission.encode(message.submission, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified ExecuteSubmissionMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2BMessage.IExecuteSubmissionMessage} message ExecuteSubmissionMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ExecuteSubmissionMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an ExecuteSubmissionMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage} ExecuteSubmissionMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ExecuteSubmissionMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.submission = $root.acmcsus.debugjudge.Submission.decode(reader, reader.uint32());
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an ExecuteSubmissionMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage} ExecuteSubmissionMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ExecuteSubmissionMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an ExecuteSubmissionMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    ExecuteSubmissionMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.submission != null && message.hasOwnProperty("submission")) {
+                            var error = $root.acmcsus.debugjudge.Submission.verify(message.submission);
+                            if (error)
+                                return "submission." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an ExecuteSubmissionMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage} ExecuteSubmissionMessage
+                     */
+                    ExecuteSubmissionMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage();
+                        if (object.submission != null) {
+                            if (typeof object.submission !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage.submission: object expected");
+                            message.submission = $root.acmcsus.debugjudge.Submission.fromObject(object.submission);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an ExecuteSubmissionMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage} message ExecuteSubmissionMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    ExecuteSubmissionMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.submission = null;
+                        if (message.submission != null && message.hasOwnProperty("submission"))
+                            object.submission = $root.acmcsus.debugjudge.Submission.toObject(message.submission, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this ExecuteSubmissionMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.S2BMessage.ExecuteSubmissionMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    ExecuteSubmissionMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return ExecuteSubmissionMessage;
+                })();
+    
+                return S2BMessage;
+            })();
+    
+            debugjudge.B2SMessage = (function() {
+    
+                /**
+                 * Properties of a B2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IB2SMessage
+                 * @property {acmcsus.debugjudge.B2SMessage.IBalloonDeliveredMessage|null} [balloonDeliveredMessage] B2SMessage balloonDeliveredMessage
+                 */
+    
+                /**
+                 * Constructs a new B2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a B2SMessage.
+                 * @implements IB2SMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IB2SMessage=} [properties] Properties to set
+                 */
+                function B2SMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * B2SMessage balloonDeliveredMessage.
+                 * @member {acmcsus.debugjudge.B2SMessage.IBalloonDeliveredMessage|null|undefined} balloonDeliveredMessage
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @instance
+                 */
+                B2SMessage.prototype.balloonDeliveredMessage = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * B2SMessage value.
+                 * @member {"balloonDeliveredMessage"|undefined} value
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @instance
+                 */
+                Object.defineProperty(B2SMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["balloonDeliveredMessage"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new B2SMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IB2SMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.B2SMessage} B2SMessage instance
+                 */
+                B2SMessage.create = function create(properties) {
+                    return new B2SMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified B2SMessage message. Does not implicitly {@link acmcsus.debugjudge.B2SMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IB2SMessage} message B2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                B2SMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.balloonDeliveredMessage != null && message.hasOwnProperty("balloonDeliveredMessage"))
+                        $root.acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage.encode(message.balloonDeliveredMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified B2SMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.B2SMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IB2SMessage} message B2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                B2SMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a B2SMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.B2SMessage} B2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                B2SMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.B2SMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.balloonDeliveredMessage = $root.acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a B2SMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.B2SMessage} B2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                B2SMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a B2SMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                B2SMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.balloonDeliveredMessage != null && message.hasOwnProperty("balloonDeliveredMessage")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage.verify(message.balloonDeliveredMessage);
+                            if (error)
+                                return "balloonDeliveredMessage." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a B2SMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.B2SMessage} B2SMessage
+                 */
+                B2SMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.B2SMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.B2SMessage();
+                    if (object.balloonDeliveredMessage != null) {
+                        if (typeof object.balloonDeliveredMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.B2SMessage.balloonDeliveredMessage: object expected");
+                        message.balloonDeliveredMessage = $root.acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage.fromObject(object.balloonDeliveredMessage);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a B2SMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.B2SMessage} message B2SMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                B2SMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.balloonDeliveredMessage != null && message.hasOwnProperty("balloonDeliveredMessage")) {
+                        object.balloonDeliveredMessage = $root.acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage.toObject(message.balloonDeliveredMessage, options);
+                        if (options.oneofs)
+                            object.value = "balloonDeliveredMessage";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this B2SMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.B2SMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                B2SMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                B2SMessage.BalloonDeliveredMessage = (function() {
+    
+                    /**
+                     * Properties of a BalloonDeliveredMessage.
+                     * @memberof acmcsus.debugjudge.B2SMessage
+                     * @interface IBalloonDeliveredMessage
+                     * @property {number|null} [teamId] BalloonDeliveredMessage teamId
+                     * @property {number|null} [problemId] BalloonDeliveredMessage problemId
+                     */
+    
+                    /**
+                     * Constructs a new BalloonDeliveredMessage.
+                     * @memberof acmcsus.debugjudge.B2SMessage
+                     * @classdesc Represents a BalloonDeliveredMessage.
+                     * @implements IBalloonDeliveredMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.B2SMessage.IBalloonDeliveredMessage=} [properties] Properties to set
+                     */
+                    function BalloonDeliveredMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * BalloonDeliveredMessage teamId.
+                     * @member {number} teamId
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @instance
+                     */
+                    BalloonDeliveredMessage.prototype.teamId = 0;
+    
+                    /**
+                     * BalloonDeliveredMessage problemId.
+                     * @member {number} problemId
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @instance
+                     */
+                    BalloonDeliveredMessage.prototype.problemId = 0;
+    
+                    /**
+                     * Creates a new BalloonDeliveredMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.B2SMessage.IBalloonDeliveredMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage} BalloonDeliveredMessage instance
+                     */
+                    BalloonDeliveredMessage.create = function create(properties) {
+                        return new BalloonDeliveredMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified BalloonDeliveredMessage message. Does not implicitly {@link acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.B2SMessage.IBalloonDeliveredMessage} message BalloonDeliveredMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    BalloonDeliveredMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.teamId);
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified BalloonDeliveredMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.B2SMessage.IBalloonDeliveredMessage} message BalloonDeliveredMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    BalloonDeliveredMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a BalloonDeliveredMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage} BalloonDeliveredMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    BalloonDeliveredMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.teamId = reader.int32();
+                                break;
+                            case 2:
+                                message.problemId = reader.int32();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a BalloonDeliveredMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage} BalloonDeliveredMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    BalloonDeliveredMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a BalloonDeliveredMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    BalloonDeliveredMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            if (!$util.isInteger(message.teamId))
+                                return "teamId: integer expected";
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            if (!$util.isInteger(message.problemId))
+                                return "problemId: integer expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a BalloonDeliveredMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage} BalloonDeliveredMessage
+                     */
+                    BalloonDeliveredMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage();
+                        if (object.teamId != null)
+                            message.teamId = object.teamId | 0;
+                        if (object.problemId != null)
+                            message.problemId = object.problemId | 0;
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a BalloonDeliveredMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage} message BalloonDeliveredMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    BalloonDeliveredMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.teamId = 0;
+                            object.problemId = 0;
+                        }
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            object.teamId = message.teamId;
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            object.problemId = message.problemId;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this BalloonDeliveredMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.B2SMessage.BalloonDeliveredMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    BalloonDeliveredMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return BalloonDeliveredMessage;
+                })();
+    
+                return B2SMessage;
+            })();
+    
+            debugjudge.R2SMessage = (function() {
+    
+                /**
+                 * Properties of a R2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IR2SMessage
+                 * @property {acmcsus.debugjudge.R2SMessage.IRegisterTeamMessage|null} [message] R2SMessage message
+                 */
+    
+                /**
+                 * Constructs a new R2SMessage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a R2SMessage.
+                 * @implements IR2SMessage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IR2SMessage=} [properties] Properties to set
+                 */
+                function R2SMessage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * R2SMessage message.
+                 * @member {acmcsus.debugjudge.R2SMessage.IRegisterTeamMessage|null|undefined} message
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @instance
+                 */
+                R2SMessage.prototype.message = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * R2SMessage value.
+                 * @member {"message"|undefined} value
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @instance
+                 */
+                Object.defineProperty(R2SMessage.prototype, "value", {
+                    get: $util.oneOfGetter($oneOfFields = ["message"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new R2SMessage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IR2SMessage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.R2SMessage} R2SMessage instance
+                 */
+                R2SMessage.create = function create(properties) {
+                    return new R2SMessage(properties);
+                };
+    
+                /**
+                 * Encodes the specified R2SMessage message. Does not implicitly {@link acmcsus.debugjudge.R2SMessage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IR2SMessage} message R2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                R2SMessage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.message != null && message.hasOwnProperty("message"))
+                        $root.acmcsus.debugjudge.R2SMessage.RegisterTeamMessage.encode(message.message, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified R2SMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.R2SMessage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.IR2SMessage} message R2SMessage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                R2SMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a R2SMessage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.R2SMessage} R2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                R2SMessage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.R2SMessage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.message = $root.acmcsus.debugjudge.R2SMessage.RegisterTeamMessage.decode(reader, reader.uint32());
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a R2SMessage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.R2SMessage} R2SMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                R2SMessage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a R2SMessage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                R2SMessage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.message != null && message.hasOwnProperty("message")) {
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.R2SMessage.RegisterTeamMessage.verify(message.message);
+                            if (error)
+                                return "message." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a R2SMessage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.R2SMessage} R2SMessage
+                 */
+                R2SMessage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.R2SMessage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.R2SMessage();
+                    if (object.message != null) {
+                        if (typeof object.message !== "object")
+                            throw TypeError(".acmcsus.debugjudge.R2SMessage.message: object expected");
+                        message.message = $root.acmcsus.debugjudge.R2SMessage.RegisterTeamMessage.fromObject(object.message);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a R2SMessage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @static
+                 * @param {acmcsus.debugjudge.R2SMessage} message R2SMessage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                R2SMessage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.message != null && message.hasOwnProperty("message")) {
+                        object.message = $root.acmcsus.debugjudge.R2SMessage.RegisterTeamMessage.toObject(message.message, options);
+                        if (options.oneofs)
+                            object.value = "message";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this R2SMessage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.R2SMessage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                R2SMessage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                R2SMessage.RegisterTeamMessage = (function() {
+    
+                    /**
+                     * Properties of a RegisterTeamMessage.
+                     * @memberof acmcsus.debugjudge.R2SMessage
+                     * @interface IRegisterTeamMessage
+                     * @property {number|null} [teamId] RegisterTeamMessage teamId
+                     * @property {number|null} [problemId] RegisterTeamMessage problemId
+                     * @property {number|Long|null} [submissionId] RegisterTeamMessage submissionId
+                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] RegisterTeamMessage ruling
+                     */
+    
+                    /**
+                     * Constructs a new RegisterTeamMessage.
+                     * @memberof acmcsus.debugjudge.R2SMessage
+                     * @classdesc Represents a RegisterTeamMessage.
+                     * @implements IRegisterTeamMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.R2SMessage.IRegisterTeamMessage=} [properties] Properties to set
+                     */
+                    function RegisterTeamMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * RegisterTeamMessage teamId.
+                     * @member {number} teamId
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @instance
+                     */
+                    RegisterTeamMessage.prototype.teamId = 0;
+    
+                    /**
+                     * RegisterTeamMessage problemId.
+                     * @member {number} problemId
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @instance
+                     */
+                    RegisterTeamMessage.prototype.problemId = 0;
+    
+                    /**
+                     * RegisterTeamMessage submissionId.
+                     * @member {number|Long} submissionId
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @instance
+                     */
+                    RegisterTeamMessage.prototype.submissionId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                    /**
+                     * RegisterTeamMessage ruling.
+                     * @member {acmcsus.debugjudge.SubmissionJudgement} ruling
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @instance
+                     */
+                    RegisterTeamMessage.prototype.ruling = 0;
+    
+                    /**
+                     * Creates a new RegisterTeamMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.R2SMessage.IRegisterTeamMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.R2SMessage.RegisterTeamMessage} RegisterTeamMessage instance
+                     */
+                    RegisterTeamMessage.create = function create(properties) {
+                        return new RegisterTeamMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified RegisterTeamMessage message. Does not implicitly {@link acmcsus.debugjudge.R2SMessage.RegisterTeamMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.R2SMessage.IRegisterTeamMessage} message RegisterTeamMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RegisterTeamMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.teamId);
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ruling);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified RegisterTeamMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.R2SMessage.RegisterTeamMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.R2SMessage.IRegisterTeamMessage} message RegisterTeamMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RegisterTeamMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a RegisterTeamMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.R2SMessage.RegisterTeamMessage} RegisterTeamMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RegisterTeamMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.R2SMessage.RegisterTeamMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.teamId = reader.int32();
+                                break;
+                            case 2:
+                                message.problemId = reader.int32();
+                                break;
+                            case 3:
+                                message.submissionId = reader.int64();
+                                break;
+                            case 4:
+                                message.ruling = reader.int32();
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a RegisterTeamMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.R2SMessage.RegisterTeamMessage} RegisterTeamMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RegisterTeamMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a RegisterTeamMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    RegisterTeamMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            if (!$util.isInteger(message.teamId))
+                                return "teamId: integer expected";
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            if (!$util.isInteger(message.problemId))
+                                return "problemId: integer expected";
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            if (!$util.isInteger(message.submissionId) && !(message.submissionId && $util.isInteger(message.submissionId.low) && $util.isInteger(message.submissionId.high)))
+                                return "submissionId: integer|Long expected";
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            switch (message.ruling) {
+                            default:
+                                return "ruling: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                                break;
+                            }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a RegisterTeamMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.R2SMessage.RegisterTeamMessage} RegisterTeamMessage
+                     */
+                    RegisterTeamMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.R2SMessage.RegisterTeamMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.R2SMessage.RegisterTeamMessage();
+                        if (object.teamId != null)
+                            message.teamId = object.teamId | 0;
+                        if (object.problemId != null)
+                            message.problemId = object.problemId | 0;
+                        if (object.submissionId != null)
+                            if ($util.Long)
+                                (message.submissionId = $util.Long.fromValue(object.submissionId)).unsigned = false;
+                            else if (typeof object.submissionId === "string")
+                                message.submissionId = parseInt(object.submissionId, 10);
+                            else if (typeof object.submissionId === "number")
+                                message.submissionId = object.submissionId;
+                            else if (typeof object.submissionId === "object")
+                                message.submissionId = new $util.LongBits(object.submissionId.low >>> 0, object.submissionId.high >>> 0).toNumber();
+                        switch (object.ruling) {
+                        case "JUDGEMENT_UNKNOWN":
+                        case 0:
+                            message.ruling = 0;
+                            break;
+                        case "JUDGEMENT_SUCCESS":
+                        case 1:
+                            message.ruling = 1;
+                            break;
+                        case "JUDGEMENT_FAILURE":
+                        case 2:
+                            message.ruling = 2;
+                            break;
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a RegisterTeamMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.R2SMessage.RegisterTeamMessage} message RegisterTeamMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    RegisterTeamMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.teamId = 0;
+                            object.problemId = 0;
+                            if ($util.Long) {
+                                var long = new $util.Long(0, 0, false);
+                                object.submissionId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                            } else
+                                object.submissionId = options.longs === String ? "0" : 0;
+                            object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                        }
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            object.teamId = message.teamId;
+                        if (message.problemId != null && message.hasOwnProperty("problemId"))
+                            object.problemId = message.problemId;
+                        if (message.submissionId != null && message.hasOwnProperty("submissionId"))
+                            if (typeof message.submissionId === "number")
+                                object.submissionId = options.longs === String ? String(message.submissionId) : message.submissionId;
+                            else
+                                object.submissionId = options.longs === String ? $util.Long.prototype.toString.call(message.submissionId) : options.longs === Number ? new $util.LongBits(message.submissionId.low >>> 0, message.submissionId.high >>> 0).toNumber() : message.submissionId;
+                        if (message.ruling != null && message.hasOwnProperty("ruling"))
+                            object.ruling = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.ruling] : message.ruling;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this RegisterTeamMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.R2SMessage.RegisterTeamMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    RegisterTeamMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return RegisterTeamMessage;
+                })();
+    
+                return R2SMessage;
             })();
     
             return debugjudge;

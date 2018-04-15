@@ -21,7 +21,7 @@ public class SecurityApi {
   public static Object registerTeam(Request req, Response res) throws IOException {
     Profile registrar = getProfile(req);
 
-    if (registrar == null || registrar.getProfileType() != Profile.ProfileType.JUDGE) {
+    if (registrar == null || registrar.getProfileType() != Profile.ProfileType.REGISTRAR) {
       throw halt(403);
     }
 
