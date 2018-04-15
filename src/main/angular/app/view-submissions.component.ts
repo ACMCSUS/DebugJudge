@@ -32,7 +32,7 @@ import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
           </ng-container>
           <ng-container matColumnDef="submissionTime">
             <mat-header-cell *matHeaderCellDef>Submission Time</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.submissionTime || '???'}}</mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.submissionTime}}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="judgementStatus">
             <mat-header-cell *matHeaderCellDef>Judgement</mat-header-cell>
@@ -67,7 +67,7 @@ export class SubmissionsViewComponent implements AfterViewInit, OnDestroy {
   submissionsTable: MatTable<Submission>;
   dataSource = new MatTableDataSource<SubmissionTableRow>([]);
 
-  displayColumns = ['teamId', 'problemName', 'judgementStatus', 'judgementMessage'];
+  displayColumns = ['teamId', 'problemName', 'submissionTime', 'judgementStatus', 'judgementMessage'];
 
   problemNames: {};
   submissions: Submission[] = [];

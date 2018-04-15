@@ -23,7 +23,7 @@ apply plugin: 'com.google.protobuf'
 apply plugin: 'io.ebean'
 
 group = 'acmcsus'
-version = '1.0-SNAPSHOT'
+version = '2.0'
 
 description = """"""
 
@@ -89,7 +89,7 @@ protobuf {
 //create a single Jar with all dependencies
 task hubJar(type: Jar) {
   manifest {
-    attributes 'Implementation-Title': 'Problem Validator Jar',
+    attributes 'Implementation-Title': 'Main Jar',
         'Implementation-Version': version,
         'Main-Class': 'acmcsus.debugjudge.DebugJudgeMain'
   }

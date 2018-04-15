@@ -42,6 +42,7 @@ public class JudgeSocketHandler {
         Long sid = j2SMessage.getSubmissionJudgementMessage().getSubmissionId();
 
         SubmissionJudgement ruling = j2SMessage.getSubmissionJudgementMessage().getRuling();
+        String message = j2SMessage.getSubmissionJudgementMessage().getRulingMessage();
 
         switch (ruling) {
           case JUDGEMENT_UNKNOWN: {
@@ -63,7 +64,7 @@ public class JudgeSocketHandler {
 
             // TODO: Judgement Messages (like "TLE" or "Excessive Output")
             StateService.instance.submissionRuling(
-                submission, ctx.profile.getId(), ruling, "lorem ipsum");
+                submission, ctx.profile.getId(), ruling, message);
             break;
           }
           default: {
