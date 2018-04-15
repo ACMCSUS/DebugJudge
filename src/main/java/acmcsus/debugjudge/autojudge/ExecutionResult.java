@@ -8,15 +8,19 @@ import static acmcsus.debugjudge.proto.Competition.SubmissionJudgement.JUDGEMENT
 public class ExecutionResult {
 
   public static final String RUNTIME_ERROR_MESSAGE = "Runtime Error";
+  public static final String COMPILE_ERROR_MESSAGE = "Compile Error";
   public static final String UNKNOWN_LANGUAGE_MESSAGE = "Unknown Language";
+  public static final String COMPILE_TIME_EXCEEDED_MESSAGE = "Compile Time Exceeded";
   public static final String TIME_EXCEEDED_MESSAGE = "Time Limit Exceeded";
   public static final String INTERNAL_ERROR_MESSAGE = "Internal Error";
 
   public static final ExecutionResult SUCCESS_RESULT = new ExecutionResult(JUDGEMENT_SUCCESS, "");
   public static final ExecutionResult RUNTIME_ERROR_RESULT = failure(RUNTIME_ERROR_MESSAGE);
+  public static final ExecutionResult COMPILE_ERROR_RESULT = failure(COMPILE_ERROR_MESSAGE);
   public static final ExecutionResult UNKNOWN_LANGUAGE_RESULT = failure(UNKNOWN_LANGUAGE_MESSAGE);
   public static final ExecutionResult TIME_EXCEEDED_RESULT = failure(TIME_EXCEEDED_MESSAGE);
-  public static final ExecutionResult INTERNAL_ERROR_RESULT = failure(UNKNOWN_LANGUAGE_MESSAGE);
+  public static final ExecutionResult COMPILE_TIME_EXCEEDED_RESULT = failure(COMPILE_TIME_EXCEEDED_MESSAGE);
+  public static final ExecutionResult INTERNAL_ERROR_RESULT = failure(INTERNAL_ERROR_MESSAGE);
 
   public final Competition.SubmissionJudgement judgement;
   public final String judgementMessage;

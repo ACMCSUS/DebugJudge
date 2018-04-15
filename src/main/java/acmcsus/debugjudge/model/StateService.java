@@ -48,7 +48,9 @@ public class StateService {
             .collect(Collectors.toList()));
       }
     });
+  }
 
+  public void loadExisting() {
     SUBMISSION_STORE.streamAll().forEach(sub -> {
       switch (sub.getValueCase()) {
         case DEBUGGING_SUBMISSION: {

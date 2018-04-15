@@ -7,6 +7,7 @@ import org.slf4j.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.*;
 
 import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 import static java.lang.String.format;
@@ -14,6 +15,13 @@ import static java.lang.String.format;
 public class ProfileToSubmissionMapper {
 
   private static Logger logger = LoggerFactory.getLogger(ProfileToSubmissionMapper.class);
+
+  @FunctionalInterface
+  public interface AssignmentConsumer {
+
+    void assigned(Session session, Submission submission) throws IOException;
+
+  }
 
   private static class ProfileSession {
 
@@ -56,6 +64,12 @@ public class ProfileToSubmissionMapper {
 
   private static String idForSubmission(Submission sub) {
     return format("%d_%d_%d", sub.getTeamId(), sub.getProblemId(), sub.getSubmissionTimeSeconds());
+  }
+
+  private final AssignmentConsumer assignmentConsumer;
+
+  public ProfileToSubmissionMapper(AssignmentConsumer assignmentConsumer) {
+    this.assignmentConsumer = assignmentConsumer;
   }
 
   public void connected(Profile judge, Session session) {
@@ -135,13 +149,6 @@ public class ProfileToSubmissionMapper {
     else {
       match(ProfileSession);
     }
-  }
-
-  private void assigned(Session session, Submission submission) throws IOException {
-    sendMessage(session, Judge.S2JMessage.newBuilder()
-        .setAssignedSubmissionMessage(
-            Judge.S2JMessage.AssignedSubmissionMessage.newBuilder()
-                .setSubmission(submission)).build());
   }
 
   private void welcome(Session session, String reason) {
@@ -281,7 +288,7 @@ public class ProfileToSubmissionMapper {
     waitingSubmissions.removeIf(sub -> submissionId.equals(idForSubmission(sub)));
 
     try {
-      assigned(profileSession.socketSession, profileSession.currentSubmission);
+      assignmentConsumer.assigned(profileSession.socketSession, profileSession.currentSubmission);
     }
     catch (IOException e) {
       kick(profileSession.profile, "There was an error matching you with a submission.");
@@ -292,7 +299,7 @@ public class ProfileToSubmissionMapper {
   private void unmatched(ProfileSession profileSession) {
     try {
       profileSession.currentSubmission = null;
-      assigned(profileSession.socketSession, null);
+      assignmentConsumer.assigned(profileSession.socketSession, null);
       waitingProfiles.add(profileSession);
     }
     catch (IOException e) {

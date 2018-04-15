@@ -10,13 +10,22 @@ import java.io.*;
 import java.util.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 import static java.lang.String.format;
 import static spark.Spark.halt;
 
 public class JudgeSocketHandler {
 
   private static Logger logger = LoggerFactory.getLogger(JudgeSocketHandler.class);
-  private static ProfileToSubmissionMapper judgeQueueHandler = new ProfileToSubmissionMapper();
+  private static ProfileToSubmissionMapper judgeQueueHandler = new ProfileToSubmissionMapper(
+      (session, submission) -> sendMessage(session, Judge.S2JMessage.newBuilder()
+          .setAssignedSubmissionMessage(
+              Judge.S2JMessage.AssignedSubmissionMessage.newBuilder()
+                  .setSubmission(submission)).build()));
+
+  public static void registerListener() {
+    StateService.instance.addSubmissionNeedingJudgingListener(judgeQueueHandler::submitted);
+  }
 
   static void handleJ2SMessage(WebSocketContext ctx) {
     Judge.J2SMessage j2SMessage = ctx.req.getJ2SMessage();

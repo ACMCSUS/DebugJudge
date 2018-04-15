@@ -9,10 +9,12 @@ import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.webSocket;
 
+import acmcsus.debugjudge.autojudge.*;
 import acmcsus.debugjudge.ctrl.SecurityApi;
 import acmcsus.debugjudge.ctrl.api.ApiBaseController;
+import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.Competition.Profile;
-import acmcsus.debugjudge.ws.SocketHandler;
+import acmcsus.debugjudge.ws.*;
 import spark.Request;
 import spark.Response;
 import spark.staticfiles.StaticFilesConfiguration;
@@ -55,6 +57,9 @@ public class DebugJudgeMain {
       staticHandler.consume(req.raw(), res.raw());
     });
 
+    JudgeSocketHandler.registerListener();
+    AutoJudgeSocketHandler.registerListener();
+    StateService.instance.loadExisting();
     init();
   }
 

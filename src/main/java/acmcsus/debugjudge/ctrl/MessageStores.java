@@ -208,6 +208,14 @@ public class MessageStores {
       builder.clearJudgement();
       builder.clearJudgementMessage();
 
+      switch (builder.getValueCase()) {
+        case ALGORITHMIC_SUBMISSION: {
+          builder.getAlgorithmicSubmissionBuilder().clearPreliminaryJudgement();
+          builder.getAlgorithmicSubmissionBuilder().clearPreliminaryJudgementMessage();
+          break;
+        }
+      }
+
       return super.clearProtectedFields(builder.build());
     }
   }

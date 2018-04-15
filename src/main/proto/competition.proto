@@ -104,8 +104,7 @@ message Problem {
 
   message AlgorithmicProblemValue {
 
-    string sample_case_directory = 1;
-    string secret_case_directory = 2;
+    string test_case_directory = 2;
     uint64 time_limit_seconds = 3;
     uint64 memory_limit_megabytes = 4;
 
@@ -114,10 +113,17 @@ message Problem {
       ValidatorScanner validator_scanner = 6;
     }
 
+    repeated AlgorithmicTestCase test_case = 7;
+
     message ValidatorScanner {
       float float_precision = 1;
       bool whitespace_sensitive = 2;
       bool trailing_newline_sensitive = 3;
+    }
+
+    message AlgorithmicTestCase {
+      string input = 1;
+      string expected = 2;
     }
   }
 

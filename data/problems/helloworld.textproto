@@ -8,4 +8,9 @@ algorithmic_problem {
   time_limit_seconds: 5
 
   validator_scanner {}
+
+  test_case {
+    input: 'Herky\n'
+    expected: 'Hello, Herky.\n'
+  }
 }

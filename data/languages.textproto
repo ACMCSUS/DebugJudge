@@ -10,9 +10,9 @@ language {
 }
 language {
   name: 'python2'
-  run: 'python2 {{BASE_NAME}}'
+  run: 'python2 {{FILE_NAME}}'
 }
 language {
   name: 'python3'
-  run: 'python3 {{BASE_NAME}}'
+  run: 'python3 {{FILE_NAME}}'
 }

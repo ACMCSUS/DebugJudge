@@ -2,8 +2,8 @@ package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.model.*;
 import acmcsus.debugjudge.proto.*;
-import acmcsus.debugjudge.proto.AutoJudge.*;
 import acmcsus.debugjudge.proto.AutoJudge.AJ2SMessage.*;
+import acmcsus.debugjudge.proto.AutoJudge.*;
 import acmcsus.debugjudge.proto.AutoJudge.S2AJMessage.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.Competition.Submission.*;
@@ -21,9 +21,18 @@ public class AutoJudgeSocketHandler {
 
   private static Logger logger = LoggerFactory.getLogger(AutoJudgeSocketHandler.class);
 
-  private static ProfileToSubmissionMapper queueHandler = new ProfileToSubmissionMapper();
+  private static ProfileToSubmissionMapper queueHandler = new ProfileToSubmissionMapper(
+      (session, submission) -> {
+        if (submission != null) {
+          sendMessage(session, S2CMessage.newBuilder()
+              .setS2AjMessage(S2AJMessage.newBuilder()
+                  .setExecuteSubmission(
+                      ExecuteSubmissionMessage.newBuilder()
+                          .setSubmission(submission))).build());
+        }
+      });
 
-  static {
+  public static void registerListener() {
     StateService.instance.addSubmissionNeedingExecutionListener(queueHandler::submitted);
   }
 
@@ -34,15 +43,24 @@ public class AutoJudgeSocketHandler {
       case SUBMISSIONJUDGEMENTMESSAGE: {
         AutoJudgeResultMessage result = a2SMessage.getSubmissionJudgementMessage();
         try {
-          Submission.Builder submission = Submission.newBuilder(SUBMISSION_STORE.readFromPath(
-              SUBMISSION_STORE.pathForIds(
-                  result.getTeamId(), result.getProblemId(), result.getSubmissionId())));
+          Submission.Builder submissionBuilder = Submission.newBuilder(
+              SUBMISSION_STORE.readFromPath(
+                  SUBMISSION_STORE.pathForIds(
+                      result.getTeamId(), result.getProblemId(), result.getSubmissionId())));
 
-//          submission.getAlgorithmicSubmissionBuilder().
+          submissionBuilder.getAlgorithmicSubmissionBuilder()
+              .setPreliminaryJudgement(result.getPreliminaryJudgement())
+              .setPreliminaryJudgementMessage(result.getPreliminaryJudgementMessage());
+
+          Submission submission = submissionBuilder.build();
+
+          queueHandler.judged(submission);
+          StateService.instance.submissionExecuted(submission);
         }
         catch (IOException e) {
           logger.error("could not process executed submission " + shortDebugString(result));
         }
+        break;
       }
       default: {
         logger.error("WS: Backend does not recognize AJ2SMessage: {}", a2SMessage.getValueCase());
@@ -50,22 +68,13 @@ public class AutoJudgeSocketHandler {
     }
   }
 
-  static void subscribeNewAutoJudge(Session session, Profile profile) throws IOException {
-    sendMessage(session, S2CMessage.newBuilder()
-        .setS2AjMessage(S2AJMessage.newBuilder()
-            .setExecuteSubmission(ExecuteSubmissionMessage.newBuilder()
-                .setSubmission(Submission.newBuilder()
-                    .setTeamId(1)
-                    .setProblemId(1)
-                    .setAlgorithmicSubmission(AlgorithmicSubmission.newBuilder()
-                        .setLanguage("python3")
-                        .setFileName("test.py")
-                        .setSourceCode("print('hello world')")
-                    )))).build());
+  static void subscribeNewAutoJudge(Session session, Profile profile) {
     queueHandler.connected(profile, session);
+    queueHandler.started(profile, session);
   }
 
   static void lostAutoJudge(Session session, Profile profile) {
+    queueHandler.stopped(profile);
     queueHandler.disconnected(profile, session);
   }
 }
