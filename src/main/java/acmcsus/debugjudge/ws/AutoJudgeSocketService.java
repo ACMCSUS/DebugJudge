@@ -53,6 +53,8 @@ public class AutoJudgeSocketService extends ProfileSocketService {
                       result.getTeamId(), result.getProblemId(), result.getSubmissionId())));
 
           submissionBuilder.getAlgorithmicSubmissionBuilder()
+              .setCompileResult(result.getCompileResult())
+              .putAllCaseResults(result.getCaseResultsMap())
               .setPreliminaryJudgement(result.getPreliminaryJudgement())
               .setPreliminaryJudgementMessage(result.getPreliminaryJudgementMessage());
 
