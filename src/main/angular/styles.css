@@ -8,6 +8,15 @@ html, body {
   overflow-y: hidden;
 }
 
+@media print {
+  html, body {
+    margin: 0;
+    height: auto;
+    min-width: auto;
+    overflow-y: auto;
+  }
+}
+
 /deep/.mat-tab-body-content {
   overflow-y: scroll;
 }
@@ -38,4 +47,11 @@ html, body {
   line-height: 20px;
   background-size: 2px 20px;
   padding: 0 .5em;
+}
+
+@media print {
+  .no-print, .no-print-all, .no-print-all *, mat-tab-header, mat-tab-labels, mat-toolbar,
+  app-submissions-bar {
+    display: none !important;
+  }
 }

@@ -33,6 +33,9 @@ import Profile = acmcsus.debugjudge.Profile;
         <mat-tab label="Scoreboard">
           <app-scoreboard></app-scoreboard>
         </mat-tab>
+        <mat-tab label="Problems">
+          <app-problems-view></app-problems-view>
+        </mat-tab>
       </mat-tab-group>
       <app-submissions-bar></app-submissions-bar>
     </div>
@@ -60,7 +63,21 @@ import Profile = acmcsus.debugjudge.Profile;
       flex: 1 1 auto !important;
     }
     /deep/.mat-tab-body-content {
-      overflow-y: scroll !important;
+      overflow-y: scroll;
+    }
+    @media print {
+      #app-wrap {
+        height: auto;
+      }
+      /deep/.mat-tab-body-content, /deep/.mat-tab-body {
+        /*position: absolute;*/
+        /*top: 0;*/
+        /*left: 0;*/
+        width: auto;
+        height: auto;
+        float: none;
+        overflow-y: visible !important;
+      }
     }
     mat-progress-spinner {
       margin: auto;
