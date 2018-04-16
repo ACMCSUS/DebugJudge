@@ -25,6 +25,7 @@ import {ApiAdminServiceImpl} from "./api-admin.service";
 import {ApiJudgeServiceImpl} from "./api-judge.service";
 import {DebuggingJudgeComponent} from "./debuggingjudge.component";
 import {DiffComponent} from "./diff.component";
+import {ProblemsViewComponent} from "./view-problems.component";
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {DiffComponent} from "./diff.component";
     AdminStatusBoardComponent,
     SubmissionsViewComponent,
     SubmissionsBarComponent,
+    ProblemsViewComponent,
   ],
   imports: [
     BrowserModule,
