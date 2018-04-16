@@ -1,39 +1,55 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.ctrl.*;
 import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
-import acmcsus.debugjudge.proto.WebSocket.*;
-import io.reactivex.functions.*;
-import org.eclipse.jetty.websocket.api.*;
+import acmcsus.debugjudge.proto.*;
+import com.google.inject.*;
 import org.slf4j.*;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
-import static acmcsus.debugjudge.ws.SocketHandler.addObserver;
-import static acmcsus.debugjudge.ws.SocketHandler.sendMessage;
 import static java.lang.String.format;
 import static spark.Spark.halt;
 
-public class JudgeSocketHandler {
+@Singleton
+public class JudgeSocketService extends ProfileSocketService {
 
-  private static Logger logger = LoggerFactory.getLogger(JudgeSocketHandler.class);
+  private static Logger logger = LoggerFactory.getLogger(JudgeSocketService.class);
 
-  static void handleJ2SMessage(WebSocketContext ctx) {
+  public JudgeQueueService judgeQueueService;
+
+  @Inject
+  JudgeSocketService(BaseSocketService baseSocketService, JudgeQueueService judgeQueueService) {
+    super(baseSocketService, Profile.ProfileType.JUDGE);
+    this.judgeQueueService = judgeQueueService;
+    StateService.instance.addSubmissionNeedingJudgingListener(judgeQueueService::submitted);
+  }
+
+  @Override
+  protected void onConnect(WebSocketContext ctx) throws IOException {
+    onOfficialConnect(ctx);
+    onScoreboardReceiverConnect(ctx);
+  }
+
+  @Override
+  protected void onDisconnect(WebSocketContext ctx) {
+    judgeQueueService.disconnected(ctx.profile, ctx.session);
+  }
+
+  @Override
+  protected void onMessage(WebSocketContext ctx) {
     Judge.J2SMessage j2SMessage = ctx.req.getJ2SMessage();
-
-    JudgeQueueHandler judgeQueueHandler = JudgeQueueHandler.getInstance();
 
     switch (j2SMessage.getValueCase()) {
       case STARTJUDGINGMESSAGE: {
-        judgeQueueHandler.started(ctx.profile, ctx.session);
+        judgeQueueService.started(ctx.profile, ctx.session);
         break;
       }
       case STOPJUDGINGMESSAGE: {
-        judgeQueueHandler.stopped(ctx.profile);
+        judgeQueueService.stopped(ctx.profile);
         break;
       }
       case SUBMISSIONJUDGEMENTMESSAGE: {
@@ -46,7 +62,7 @@ public class JudgeSocketHandler {
 
         switch (ruling) {
           case JUDGEMENT_UNKNOWN: {
-            judgeQueueHandler.defer(ctx.profile);
+            judgeQueueService.defer(ctx.profile);
             break;
           }
           case JUDGEMENT_SUCCESS:
@@ -75,10 +91,10 @@ public class JudgeSocketHandler {
       }
       case JUDGINGPREFERENCESMESSAGE: {
         Map<Integer, Boolean> map = ctx.req.getJ2SMessage()
-          .getJudgingPreferencesMessage()
-          .getPreferencesMap();
+            .getJudgingPreferencesMessage()
+            .getPreferencesMap();
 
-        judgeQueueHandler.setJudgePreferences(ctx.profile, ctx.session, map);
+        judgeQueueService.setProfilePreferences(ctx.profile, ctx.session, map);
         break;
       }
       default: {

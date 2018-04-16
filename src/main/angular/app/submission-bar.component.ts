@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from "@angular/core";
+import {AfterViewInit, Component, Inject, OnDestroy, OnInit} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiTeamService} from "./api-team.service";
 import {Subscription} from "rxjs/Subscription";
@@ -54,7 +54,7 @@ import * as Long from "long";
     }
   `],
 })
-export class SubmissionsBarComponent implements OnInit, OnDestroy {
+export class SubmissionsBarComponent implements AfterViewInit, OnDestroy {
 
   problemNames: {};
   notifs = [];
@@ -67,7 +67,7 @@ export class SubmissionsBarComponent implements OnInit, OnDestroy {
               @Inject('ApiTeamService') private api: ApiTeamService) {
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.submissionsSubscription = this.api.submissions.subscribe(
         (subs) => {
           subs.sort((a,b) =>

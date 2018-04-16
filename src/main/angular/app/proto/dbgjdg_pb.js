@@ -34,6 +34,446 @@
              */
             var debugjudge = {};
     
+            debugjudge.ProgrammingLanguage = (function() {
+    
+                /**
+                 * Properties of a ProgrammingLanguage.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IProgrammingLanguage
+                 * @property {string|null} [name] ProgrammingLanguage name
+                 * @property {string|null} [compile] ProgrammingLanguage compile
+                 * @property {string|null} [run] ProgrammingLanguage run
+                 */
+    
+                /**
+                 * Constructs a new ProgrammingLanguage.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a ProgrammingLanguage.
+                 * @implements IProgrammingLanguage
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IProgrammingLanguage=} [properties] Properties to set
+                 */
+                function ProgrammingLanguage(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * ProgrammingLanguage name.
+                 * @member {string} name
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @instance
+                 */
+                ProgrammingLanguage.prototype.name = "";
+    
+                /**
+                 * ProgrammingLanguage compile.
+                 * @member {string} compile
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @instance
+                 */
+                ProgrammingLanguage.prototype.compile = "";
+    
+                /**
+                 * ProgrammingLanguage run.
+                 * @member {string} run
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @instance
+                 */
+                ProgrammingLanguage.prototype.run = "";
+    
+                /**
+                 * Creates a new ProgrammingLanguage instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @static
+                 * @param {acmcsus.debugjudge.IProgrammingLanguage=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.ProgrammingLanguage} ProgrammingLanguage instance
+                 */
+                ProgrammingLanguage.create = function create(properties) {
+                    return new ProgrammingLanguage(properties);
+                };
+    
+                /**
+                 * Encodes the specified ProgrammingLanguage message. Does not implicitly {@link acmcsus.debugjudge.ProgrammingLanguage.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @static
+                 * @param {acmcsus.debugjudge.IProgrammingLanguage} message ProgrammingLanguage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ProgrammingLanguage.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.name != null && message.hasOwnProperty("name"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                    if (message.compile != null && message.hasOwnProperty("compile"))
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.compile);
+                    if (message.run != null && message.hasOwnProperty("run"))
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.run);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified ProgrammingLanguage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.ProgrammingLanguage.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @static
+                 * @param {acmcsus.debugjudge.IProgrammingLanguage} message ProgrammingLanguage message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ProgrammingLanguage.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a ProgrammingLanguage message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.ProgrammingLanguage} ProgrammingLanguage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ProgrammingLanguage.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.ProgrammingLanguage();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.name = reader.string();
+                            break;
+                        case 2:
+                            message.compile = reader.string();
+                            break;
+                        case 3:
+                            message.run = reader.string();
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a ProgrammingLanguage message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.ProgrammingLanguage} ProgrammingLanguage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ProgrammingLanguage.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a ProgrammingLanguage message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                ProgrammingLanguage.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.name != null && message.hasOwnProperty("name"))
+                        if (!$util.isString(message.name))
+                            return "name: string expected";
+                    if (message.compile != null && message.hasOwnProperty("compile"))
+                        if (!$util.isString(message.compile))
+                            return "compile: string expected";
+                    if (message.run != null && message.hasOwnProperty("run"))
+                        if (!$util.isString(message.run))
+                            return "run: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a ProgrammingLanguage message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.ProgrammingLanguage} ProgrammingLanguage
+                 */
+                ProgrammingLanguage.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.ProgrammingLanguage)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.ProgrammingLanguage();
+                    if (object.name != null)
+                        message.name = String(object.name);
+                    if (object.compile != null)
+                        message.compile = String(object.compile);
+                    if (object.run != null)
+                        message.run = String(object.run);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a ProgrammingLanguage message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @static
+                 * @param {acmcsus.debugjudge.ProgrammingLanguage} message ProgrammingLanguage
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                ProgrammingLanguage.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.name = "";
+                        object.compile = "";
+                        object.run = "";
+                    }
+                    if (message.name != null && message.hasOwnProperty("name"))
+                        object.name = message.name;
+                    if (message.compile != null && message.hasOwnProperty("compile"))
+                        object.compile = message.compile;
+                    if (message.run != null && message.hasOwnProperty("run"))
+                        object.run = message.run;
+                    return object;
+                };
+    
+                /**
+                 * Converts this ProgrammingLanguage to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                ProgrammingLanguage.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                ProgrammingLanguage.List = (function() {
+    
+                    /**
+                     * Properties of a List.
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                     * @interface IList
+                     * @property {Array.<acmcsus.debugjudge.IProgrammingLanguage>|null} [language] List language
+                     */
+    
+                    /**
+                     * Constructs a new List.
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage
+                     * @classdesc Represents a List.
+                     * @implements IList
+                     * @constructor
+                     * @param {acmcsus.debugjudge.ProgrammingLanguage.IList=} [properties] Properties to set
+                     */
+                    function List(properties) {
+                        this.language = [];
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * List language.
+                     * @member {Array.<acmcsus.debugjudge.IProgrammingLanguage>} language
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @instance
+                     */
+                    List.prototype.language = $util.emptyArray;
+    
+                    /**
+                     * Creates a new List instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @static
+                     * @param {acmcsus.debugjudge.ProgrammingLanguage.IList=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.ProgrammingLanguage.List} List instance
+                     */
+                    List.create = function create(properties) {
+                        return new List(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified List message. Does not implicitly {@link acmcsus.debugjudge.ProgrammingLanguage.List.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @static
+                     * @param {acmcsus.debugjudge.ProgrammingLanguage.IList} message List message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    List.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.language != null && message.language.length)
+                            for (var i = 0; i < message.language.length; ++i)
+                                $root.acmcsus.debugjudge.ProgrammingLanguage.encode(message.language[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified List message, length delimited. Does not implicitly {@link acmcsus.debugjudge.ProgrammingLanguage.List.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @static
+                     * @param {acmcsus.debugjudge.ProgrammingLanguage.IList} message List message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    List.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a List message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.ProgrammingLanguage.List} List
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    List.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.ProgrammingLanguage.List();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                if (!(message.language && message.language.length))
+                                    message.language = [];
+                                message.language.push($root.acmcsus.debugjudge.ProgrammingLanguage.decode(reader, reader.uint32()));
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a List message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.ProgrammingLanguage.List} List
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    List.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a List message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    List.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.language != null && message.hasOwnProperty("language")) {
+                            if (!Array.isArray(message.language))
+                                return "language: array expected";
+                            for (var i = 0; i < message.language.length; ++i) {
+                                var error = $root.acmcsus.debugjudge.ProgrammingLanguage.verify(message.language[i]);
+                                if (error)
+                                    return "language." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a List message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.ProgrammingLanguage.List} List
+                     */
+                    List.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.ProgrammingLanguage.List)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.ProgrammingLanguage.List();
+                        if (object.language) {
+                            if (!Array.isArray(object.language))
+                                throw TypeError(".acmcsus.debugjudge.ProgrammingLanguage.List.language: array expected");
+                            message.language = [];
+                            for (var i = 0; i < object.language.length; ++i) {
+                                if (typeof object.language[i] !== "object")
+                                    throw TypeError(".acmcsus.debugjudge.ProgrammingLanguage.List.language: object expected");
+                                message.language[i] = $root.acmcsus.debugjudge.ProgrammingLanguage.fromObject(object.language[i]);
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a List message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @static
+                     * @param {acmcsus.debugjudge.ProgrammingLanguage.List} message List
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    List.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.arrays || options.defaults)
+                            object.language = [];
+                        if (message.language && message.language.length) {
+                            object.language = [];
+                            for (var j = 0; j < message.language.length; ++j)
+                                object.language[j] = $root.acmcsus.debugjudge.ProgrammingLanguage.toObject(message.language[j], options);
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this List to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.ProgrammingLanguage.List
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    List.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return List;
+                })();
+    
+                return ProgrammingLanguage;
+            })();
+    
             /**
              * CompetitionState enum.
              * @name acmcsus.debugjudge.CompetitionState
@@ -70,6 +510,260 @@
                 return values;
             })();
     
+            debugjudge.ExecutionResult = (function() {
+    
+                /**
+                 * Properties of an ExecutionResult.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IExecutionResult
+                 * @property {string|null} [resultOut] ExecutionResult resultOut
+                 * @property {string|null} [resultErr] ExecutionResult resultErr
+                 * @property {number|null} [exitCode] ExecutionResult exitCode
+                 * @property {number|null} [timeSeconds] ExecutionResult timeSeconds
+                 */
+    
+                /**
+                 * Constructs a new ExecutionResult.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents an ExecutionResult.
+                 * @implements IExecutionResult
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IExecutionResult=} [properties] Properties to set
+                 */
+                function ExecutionResult(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * ExecutionResult resultOut.
+                 * @member {string} resultOut
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @instance
+                 */
+                ExecutionResult.prototype.resultOut = "";
+    
+                /**
+                 * ExecutionResult resultErr.
+                 * @member {string} resultErr
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @instance
+                 */
+                ExecutionResult.prototype.resultErr = "";
+    
+                /**
+                 * ExecutionResult exitCode.
+                 * @member {number} exitCode
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @instance
+                 */
+                ExecutionResult.prototype.exitCode = 0;
+    
+                /**
+                 * ExecutionResult timeSeconds.
+                 * @member {number} timeSeconds
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @instance
+                 */
+                ExecutionResult.prototype.timeSeconds = 0;
+    
+                /**
+                 * Creates a new ExecutionResult instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @static
+                 * @param {acmcsus.debugjudge.IExecutionResult=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.ExecutionResult} ExecutionResult instance
+                 */
+                ExecutionResult.create = function create(properties) {
+                    return new ExecutionResult(properties);
+                };
+    
+                /**
+                 * Encodes the specified ExecutionResult message. Does not implicitly {@link acmcsus.debugjudge.ExecutionResult.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @static
+                 * @param {acmcsus.debugjudge.IExecutionResult} message ExecutionResult message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ExecutionResult.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.resultOut != null && message.hasOwnProperty("resultOut"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.resultOut);
+                    if (message.resultErr != null && message.hasOwnProperty("resultErr"))
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.resultErr);
+                    if (message.exitCode != null && message.hasOwnProperty("exitCode"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.exitCode);
+                    if (message.timeSeconds != null && message.hasOwnProperty("timeSeconds"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.timeSeconds);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified ExecutionResult message, length delimited. Does not implicitly {@link acmcsus.debugjudge.ExecutionResult.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @static
+                 * @param {acmcsus.debugjudge.IExecutionResult} message ExecutionResult message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ExecutionResult.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes an ExecutionResult message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.ExecutionResult} ExecutionResult
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ExecutionResult.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.ExecutionResult();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.resultOut = reader.string();
+                            break;
+                        case 2:
+                            message.resultErr = reader.string();
+                            break;
+                        case 3:
+                            message.exitCode = reader.int32();
+                            break;
+                        case 4:
+                            message.timeSeconds = reader.int32();
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes an ExecutionResult message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.ExecutionResult} ExecutionResult
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ExecutionResult.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies an ExecutionResult message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                ExecutionResult.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.resultOut != null && message.hasOwnProperty("resultOut"))
+                        if (!$util.isString(message.resultOut))
+                            return "resultOut: string expected";
+                    if (message.resultErr != null && message.hasOwnProperty("resultErr"))
+                        if (!$util.isString(message.resultErr))
+                            return "resultErr: string expected";
+                    if (message.exitCode != null && message.hasOwnProperty("exitCode"))
+                        if (!$util.isInteger(message.exitCode))
+                            return "exitCode: integer expected";
+                    if (message.timeSeconds != null && message.hasOwnProperty("timeSeconds"))
+                        if (!$util.isInteger(message.timeSeconds))
+                            return "timeSeconds: integer expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates an ExecutionResult message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.ExecutionResult} ExecutionResult
+                 */
+                ExecutionResult.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.ExecutionResult)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.ExecutionResult();
+                    if (object.resultOut != null)
+                        message.resultOut = String(object.resultOut);
+                    if (object.resultErr != null)
+                        message.resultErr = String(object.resultErr);
+                    if (object.exitCode != null)
+                        message.exitCode = object.exitCode | 0;
+                    if (object.timeSeconds != null)
+                        message.timeSeconds = object.timeSeconds | 0;
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from an ExecutionResult message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @static
+                 * @param {acmcsus.debugjudge.ExecutionResult} message ExecutionResult
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                ExecutionResult.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.resultOut = "";
+                        object.resultErr = "";
+                        object.exitCode = 0;
+                        object.timeSeconds = 0;
+                    }
+                    if (message.resultOut != null && message.hasOwnProperty("resultOut"))
+                        object.resultOut = message.resultOut;
+                    if (message.resultErr != null && message.hasOwnProperty("resultErr"))
+                        object.resultErr = message.resultErr;
+                    if (message.exitCode != null && message.hasOwnProperty("exitCode"))
+                        object.exitCode = message.exitCode;
+                    if (message.timeSeconds != null && message.hasOwnProperty("timeSeconds"))
+                        object.timeSeconds = message.timeSeconds;
+                    return object;
+                };
+    
+                /**
+                 * Converts this ExecutionResult to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.ExecutionResult
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                ExecutionResult.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                return ExecutionResult;
+            })();
+    
             debugjudge.Submission = (function() {
     
                 /**
@@ -83,7 +777,7 @@
                  * @property {acmcsus.debugjudge.SubmissionJudgement|null} [judgement] Submission judgement
                  * @property {string|null} [judgementMessage] Submission judgementMessage
                  * @property {acmcsus.debugjudge.Submission.IDebuggingSubmission|null} [debuggingSubmission] Submission debuggingSubmission
-                 * @property {acmcsus.debugjudge.Submission.IDebuggingSubmission|null} [algorithmicSubmission] Submission algorithmicSubmission
+                 * @property {acmcsus.debugjudge.Submission.IAlgorithmicSubmission|null} [algorithmicSubmission] Submission algorithmicSubmission
                  */
     
                 /**
@@ -159,7 +853,7 @@
     
                 /**
                  * Submission algorithmicSubmission.
-                 * @member {acmcsus.debugjudge.Submission.IDebuggingSubmission|null|undefined} algorithmicSubmission
+                 * @member {acmcsus.debugjudge.Submission.IAlgorithmicSubmission|null|undefined} algorithmicSubmission
                  * @memberof acmcsus.debugjudge.Submission
                  * @instance
                  */
@@ -218,7 +912,7 @@
                     if (message.debuggingSubmission != null && message.hasOwnProperty("debuggingSubmission"))
                         $root.acmcsus.debugjudge.Submission.DebuggingSubmission.encode(message.debuggingSubmission, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
                     if (message.algorithmicSubmission != null && message.hasOwnProperty("algorithmicSubmission"))
-                        $root.acmcsus.debugjudge.Submission.DebuggingSubmission.encode(message.algorithmicSubmission, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                        $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission.encode(message.algorithmicSubmission, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
                     return writer;
                 };
     
@@ -275,7 +969,7 @@
                             message.debuggingSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.decode(reader, reader.uint32());
                             break;
                         case 10:
-                            message.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.decode(reader, reader.uint32());
+                            message.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission.decode(reader, reader.uint32());
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -350,7 +1044,7 @@
                             return "value: multiple values";
                         properties.value = 1;
                         {
-                            var error = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.verify(message.algorithmicSubmission);
+                            var error = $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission.verify(message.algorithmicSubmission);
                             if (error)
                                 return "algorithmicSubmission." + error;
                         }
@@ -409,7 +1103,7 @@
                     if (object.algorithmicSubmission != null) {
                         if (typeof object.algorithmicSubmission !== "object")
                             throw TypeError(".acmcsus.debugjudge.Submission.algorithmicSubmission: object expected");
-                        message.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.fromObject(object.algorithmicSubmission);
+                        message.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission.fromObject(object.algorithmicSubmission);
                     }
                     return message;
                 };
@@ -460,7 +1154,7 @@
                             object.value = "debuggingSubmission";
                     }
                     if (message.algorithmicSubmission != null && message.hasOwnProperty("algorithmicSubmission")) {
-                        object.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.DebuggingSubmission.toObject(message.algorithmicSubmission, options);
+                        object.algorithmicSubmission = $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission.toObject(message.algorithmicSubmission, options);
                         if (options.oneofs)
                             object.value = "algorithmicSubmission";
                     }
@@ -674,6 +1368,10 @@
                      * @property {string|null} [fileName] AlgorithmicSubmission fileName
                      * @property {string|null} [sourceCode] AlgorithmicSubmission sourceCode
                      * @property {string|null} [language] AlgorithmicSubmission language
+                     * @property {acmcsus.debugjudge.IExecutionResult|null} [compileResult] AlgorithmicSubmission compileResult
+                     * @property {Object.<string,acmcsus.debugjudge.IExecutionResult>|null} [caseResults] AlgorithmicSubmission caseResults
+                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [preliminaryJudgement] AlgorithmicSubmission preliminaryJudgement
+                     * @property {string|null} [preliminaryJudgementMessage] AlgorithmicSubmission preliminaryJudgementMessage
                      */
     
                     /**
@@ -685,6 +1383,7 @@
                      * @param {acmcsus.debugjudge.Submission.IAlgorithmicSubmission=} [properties] Properties to set
                      */
                     function AlgorithmicSubmission(properties) {
+                        this.caseResults = {};
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -716,6 +1415,38 @@
                     AlgorithmicSubmission.prototype.language = "";
     
                     /**
+                     * AlgorithmicSubmission compileResult.
+                     * @member {acmcsus.debugjudge.IExecutionResult|null|undefined} compileResult
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.compileResult = null;
+    
+                    /**
+                     * AlgorithmicSubmission caseResults.
+                     * @member {Object.<string,acmcsus.debugjudge.IExecutionResult>} caseResults
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.caseResults = $util.emptyObject;
+    
+                    /**
+                     * AlgorithmicSubmission preliminaryJudgement.
+                     * @member {acmcsus.debugjudge.SubmissionJudgement} preliminaryJudgement
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.preliminaryJudgement = 0;
+    
+                    /**
+                     * AlgorithmicSubmission preliminaryJudgementMessage.
+                     * @member {string} preliminaryJudgementMessage
+                     * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
+                     * @instance
+                     */
+                    AlgorithmicSubmission.prototype.preliminaryJudgementMessage = "";
+    
+                    /**
                      * Creates a new AlgorithmicSubmission instance using the specified properties.
                      * @function create
                      * @memberof acmcsus.debugjudge.Submission.AlgorithmicSubmission
@@ -745,6 +1476,17 @@
                             writer.uint32(/* id 2, wireType 2 =*/18).string(message.sourceCode);
                         if (message.language != null && message.hasOwnProperty("language"))
                             writer.uint32(/* id 3, wireType 2 =*/26).string(message.language);
+                        if (message.compileResult != null && message.hasOwnProperty("compileResult"))
+                            $root.acmcsus.debugjudge.ExecutionResult.encode(message.compileResult, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        if (message.caseResults != null && message.hasOwnProperty("caseResults"))
+                            for (var keys = Object.keys(message.caseResults), i = 0; i < keys.length; ++i) {
+                                writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]);
+                                $root.acmcsus.debugjudge.ExecutionResult.encode(message.caseResults[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
+                            }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            writer.uint32(/* id 6, wireType 0 =*/48).int32(message.preliminaryJudgement);
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            writer.uint32(/* id 7, wireType 2 =*/58).string(message.preliminaryJudgementMessage);
                         return writer;
                     };
     
@@ -775,7 +1517,7 @@
                     AlgorithmicSubmission.decode = function decode(reader, length) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
-                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission();
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Submission.AlgorithmicSubmission(), key;
                         while (reader.pos < end) {
                             var tag = reader.uint32();
                             switch (tag >>> 3) {
@@ -787,6 +1529,23 @@
                                 break;
                             case 3:
                                 message.language = reader.string();
+                                break;
+                            case 4:
+                                message.compileResult = $root.acmcsus.debugjudge.ExecutionResult.decode(reader, reader.uint32());
+                                break;
+                            case 5:
+                                reader.skip().pos++;
+                                if (message.caseResults === $util.emptyObject)
+                                    message.caseResults = {};
+                                key = reader.int32();
+                                reader.pos++;
+                                message.caseResults[key] = $root.acmcsus.debugjudge.ExecutionResult.decode(reader, reader.uint32());
+                                break;
+                            case 6:
+                                message.preliminaryJudgement = reader.int32();
+                                break;
+                            case 7:
+                                message.preliminaryJudgementMessage = reader.string();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -832,6 +1591,37 @@
                         if (message.language != null && message.hasOwnProperty("language"))
                             if (!$util.isString(message.language))
                                 return "language: string expected";
+                        if (message.compileResult != null && message.hasOwnProperty("compileResult")) {
+                            var error = $root.acmcsus.debugjudge.ExecutionResult.verify(message.compileResult);
+                            if (error)
+                                return "compileResult." + error;
+                        }
+                        if (message.caseResults != null && message.hasOwnProperty("caseResults")) {
+                            if (!$util.isObject(message.caseResults))
+                                return "caseResults: object expected";
+                            var key = Object.keys(message.caseResults);
+                            for (var i = 0; i < key.length; ++i) {
+                                if (!$util.key32Re.test(key[i]))
+                                    return "caseResults: integer key{k:int32} expected";
+                                {
+                                    var error = $root.acmcsus.debugjudge.ExecutionResult.verify(message.caseResults[key[i]]);
+                                    if (error)
+                                        return "caseResults." + error;
+                                }
+                            }
+                        }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            switch (message.preliminaryJudgement) {
+                            default:
+                                return "preliminaryJudgement: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                                break;
+                            }
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            if (!$util.isString(message.preliminaryJudgementMessage))
+                                return "preliminaryJudgementMessage: string expected";
                         return null;
                     };
     
@@ -853,6 +1643,37 @@
                             message.sourceCode = String(object.sourceCode);
                         if (object.language != null)
                             message.language = String(object.language);
+                        if (object.compileResult != null) {
+                            if (typeof object.compileResult !== "object")
+                                throw TypeError(".acmcsus.debugjudge.Submission.AlgorithmicSubmission.compileResult: object expected");
+                            message.compileResult = $root.acmcsus.debugjudge.ExecutionResult.fromObject(object.compileResult);
+                        }
+                        if (object.caseResults) {
+                            if (typeof object.caseResults !== "object")
+                                throw TypeError(".acmcsus.debugjudge.Submission.AlgorithmicSubmission.caseResults: object expected");
+                            message.caseResults = {};
+                            for (var keys = Object.keys(object.caseResults), i = 0; i < keys.length; ++i) {
+                                if (typeof object.caseResults[keys[i]] !== "object")
+                                    throw TypeError(".acmcsus.debugjudge.Submission.AlgorithmicSubmission.caseResults: object expected");
+                                message.caseResults[keys[i]] = $root.acmcsus.debugjudge.ExecutionResult.fromObject(object.caseResults[keys[i]]);
+                            }
+                        }
+                        switch (object.preliminaryJudgement) {
+                        case "JUDGEMENT_UNKNOWN":
+                        case 0:
+                            message.preliminaryJudgement = 0;
+                            break;
+                        case "JUDGEMENT_SUCCESS":
+                        case 1:
+                            message.preliminaryJudgement = 1;
+                            break;
+                        case "JUDGEMENT_FAILURE":
+                        case 2:
+                            message.preliminaryJudgement = 2;
+                            break;
+                        }
+                        if (object.preliminaryJudgementMessage != null)
+                            message.preliminaryJudgementMessage = String(object.preliminaryJudgementMessage);
                         return message;
                     };
     
@@ -869,10 +1690,15 @@
                         if (!options)
                             options = {};
                         var object = {};
+                        if (options.objects || options.defaults)
+                            object.caseResults = {};
                         if (options.defaults) {
                             object.fileName = "";
                             object.sourceCode = "";
                             object.language = "";
+                            object.compileResult = null;
+                            object.preliminaryJudgement = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                            object.preliminaryJudgementMessage = "";
                         }
                         if (message.fileName != null && message.hasOwnProperty("fileName"))
                             object.fileName = message.fileName;
@@ -880,6 +1706,18 @@
                             object.sourceCode = message.sourceCode;
                         if (message.language != null && message.hasOwnProperty("language"))
                             object.language = message.language;
+                        if (message.compileResult != null && message.hasOwnProperty("compileResult"))
+                            object.compileResult = $root.acmcsus.debugjudge.ExecutionResult.toObject(message.compileResult, options);
+                        var keys2;
+                        if (message.caseResults && (keys2 = Object.keys(message.caseResults)).length) {
+                            object.caseResults = {};
+                            for (var j = 0; j < keys2.length; ++j)
+                                object.caseResults[keys2[j]] = $root.acmcsus.debugjudge.ExecutionResult.toObject(message.caseResults[keys2[j]], options);
+                        }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            object.preliminaryJudgement = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.preliminaryJudgement] : message.preliminaryJudgement;
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            object.preliminaryJudgementMessage = message.preliminaryJudgementMessage;
                         return object;
                     };
     
@@ -1616,6 +2454,7 @@
                  * @property {string|null} [descriptionText] Problem descriptionText
                  * @property {string|null} [descriptionFile] Problem descriptionFile
                  * @property {acmcsus.debugjudge.Problem.IDebuggingProblemValue|null} [debuggingProblem] Problem debuggingProblem
+                 * @property {acmcsus.debugjudge.Problem.IAlgorithmicProblemValue|null} [algorithmicProblem] Problem algorithmicProblem
                  */
     
                 /**
@@ -1689,6 +2528,14 @@
                  */
                 Problem.prototype.debuggingProblem = null;
     
+                /**
+                 * Problem algorithmicProblem.
+                 * @member {acmcsus.debugjudge.Problem.IAlgorithmicProblemValue|null|undefined} algorithmicProblem
+                 * @memberof acmcsus.debugjudge.Problem
+                 * @instance
+                 */
+                Problem.prototype.algorithmicProblem = null;
+    
                 // OneOf field names bound to virtual getters and setters
                 var $oneOfFields;
     
@@ -1705,12 +2552,12 @@
     
                 /**
                  * Problem value.
-                 * @member {"debuggingProblem"|undefined} value
+                 * @member {"debuggingProblem"|"algorithmicProblem"|undefined} value
                  * @memberof acmcsus.debugjudge.Problem
                  * @instance
                  */
                 Object.defineProperty(Problem.prototype, "value", {
-                    get: $util.oneOfGetter($oneOfFields = ["debuggingProblem"]),
+                    get: $util.oneOfGetter($oneOfFields = ["debuggingProblem", "algorithmicProblem"]),
                     set: $util.oneOfSetter($oneOfFields)
                 });
     
@@ -1752,6 +2599,8 @@
                         writer.uint32(/* id 8, wireType 2 =*/66).string(message.descriptionFile);
                     if (message.debuggingProblem != null && message.hasOwnProperty("debuggingProblem"))
                         $root.acmcsus.debugjudge.Problem.DebuggingProblemValue.encode(message.debuggingProblem, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                    if (message.algorithmicProblem != null && message.hasOwnProperty("algorithmicProblem"))
+                        $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.encode(message.algorithmicProblem, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
                     return writer;
                 };
     
@@ -1806,6 +2655,9 @@
                             break;
                         case 9:
                             message.debuggingProblem = $root.acmcsus.debugjudge.Problem.DebuggingProblemValue.decode(reader, reader.uint32());
+                            break;
+                        case 10:
+                            message.algorithmicProblem = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.decode(reader, reader.uint32());
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -1875,6 +2727,16 @@
                                 return "debuggingProblem." + error;
                         }
                     }
+                    if (message.algorithmicProblem != null && message.hasOwnProperty("algorithmicProblem")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.verify(message.algorithmicProblem);
+                            if (error)
+                                return "algorithmicProblem." + error;
+                        }
+                    }
                     return null;
                 };
     
@@ -1906,6 +2768,11 @@
                         if (typeof object.debuggingProblem !== "object")
                             throw TypeError(".acmcsus.debugjudge.Problem.debuggingProblem: object expected");
                         message.debuggingProblem = $root.acmcsus.debugjudge.Problem.DebuggingProblemValue.fromObject(object.debuggingProblem);
+                    }
+                    if (object.algorithmicProblem != null) {
+                        if (typeof object.algorithmicProblem !== "object")
+                            throw TypeError(".acmcsus.debugjudge.Problem.algorithmicProblem: object expected");
+                        message.algorithmicProblem = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.fromObject(object.algorithmicProblem);
                     }
                     return message;
                 };
@@ -1951,6 +2818,11 @@
                         object.debuggingProblem = $root.acmcsus.debugjudge.Problem.DebuggingProblemValue.toObject(message.debuggingProblem, options);
                         if (options.oneofs)
                             object.value = "debuggingProblem";
+                    }
+                    if (message.algorithmicProblem != null && message.hasOwnProperty("algorithmicProblem")) {
+                        object.algorithmicProblem = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.toObject(message.algorithmicProblem, options);
+                        if (options.oneofs)
+                            object.value = "algorithmicProblem";
                     }
                     return object;
                 };
@@ -2262,6 +3134,799 @@
                     };
     
                     return DebuggingProblemValue;
+                })();
+    
+                Problem.AlgorithmicProblemValue = (function() {
+    
+                    /**
+                     * Properties of an AlgorithmicProblemValue.
+                     * @memberof acmcsus.debugjudge.Problem
+                     * @interface IAlgorithmicProblemValue
+                     * @property {string|null} [testCaseDirectory] AlgorithmicProblemValue testCaseDirectory
+                     * @property {number|null} [timeLimitSeconds] AlgorithmicProblemValue timeLimitSeconds
+                     * @property {number|null} [memoryLimitMegabytes] AlgorithmicProblemValue memoryLimitMegabytes
+                     * @property {string|null} [validatorProgram] AlgorithmicProblemValue validatorProgram
+                     * @property {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner|null} [validatorScanner] AlgorithmicProblemValue validatorScanner
+                     * @property {Array.<acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase>|null} [testCase] AlgorithmicProblemValue testCase
+                     */
+    
+                    /**
+                     * Constructs a new AlgorithmicProblemValue.
+                     * @memberof acmcsus.debugjudge.Problem
+                     * @classdesc Represents an AlgorithmicProblemValue.
+                     * @implements IAlgorithmicProblemValue
+                     * @constructor
+                     * @param {acmcsus.debugjudge.Problem.IAlgorithmicProblemValue=} [properties] Properties to set
+                     */
+                    function AlgorithmicProblemValue(properties) {
+                        this.testCase = [];
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * AlgorithmicProblemValue testCaseDirectory.
+                     * @member {string} testCaseDirectory
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @instance
+                     */
+                    AlgorithmicProblemValue.prototype.testCaseDirectory = "";
+    
+                    /**
+                     * AlgorithmicProblemValue timeLimitSeconds.
+                     * @member {number} timeLimitSeconds
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @instance
+                     */
+                    AlgorithmicProblemValue.prototype.timeLimitSeconds = 0;
+    
+                    /**
+                     * AlgorithmicProblemValue memoryLimitMegabytes.
+                     * @member {number} memoryLimitMegabytes
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @instance
+                     */
+                    AlgorithmicProblemValue.prototype.memoryLimitMegabytes = 0;
+    
+                    /**
+                     * AlgorithmicProblemValue validatorProgram.
+                     * @member {string} validatorProgram
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @instance
+                     */
+                    AlgorithmicProblemValue.prototype.validatorProgram = "";
+    
+                    /**
+                     * AlgorithmicProblemValue validatorScanner.
+                     * @member {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner|null|undefined} validatorScanner
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @instance
+                     */
+                    AlgorithmicProblemValue.prototype.validatorScanner = null;
+    
+                    /**
+                     * AlgorithmicProblemValue testCase.
+                     * @member {Array.<acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase>} testCase
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @instance
+                     */
+                    AlgorithmicProblemValue.prototype.testCase = $util.emptyArray;
+    
+                    // OneOf field names bound to virtual getters and setters
+                    var $oneOfFields;
+    
+                    /**
+                     * AlgorithmicProblemValue validator.
+                     * @member {"validatorProgram"|"validatorScanner"|undefined} validator
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @instance
+                     */
+                    Object.defineProperty(AlgorithmicProblemValue.prototype, "validator", {
+                        get: $util.oneOfGetter($oneOfFields = ["validatorProgram", "validatorScanner"]),
+                        set: $util.oneOfSetter($oneOfFields)
+                    });
+    
+                    /**
+                     * Creates a new AlgorithmicProblemValue instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @static
+                     * @param {acmcsus.debugjudge.Problem.IAlgorithmicProblemValue=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue} AlgorithmicProblemValue instance
+                     */
+                    AlgorithmicProblemValue.create = function create(properties) {
+                        return new AlgorithmicProblemValue(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified AlgorithmicProblemValue message. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @static
+                     * @param {acmcsus.debugjudge.Problem.IAlgorithmicProblemValue} message AlgorithmicProblemValue message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AlgorithmicProblemValue.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.testCaseDirectory != null && message.hasOwnProperty("testCaseDirectory"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.testCaseDirectory);
+                        if (message.timeLimitSeconds != null && message.hasOwnProperty("timeLimitSeconds"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.timeLimitSeconds);
+                        if (message.memoryLimitMegabytes != null && message.hasOwnProperty("memoryLimitMegabytes"))
+                            writer.uint32(/* id 4, wireType 0 =*/32).int32(message.memoryLimitMegabytes);
+                        if (message.validatorProgram != null && message.hasOwnProperty("validatorProgram"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.validatorProgram);
+                        if (message.validatorScanner != null && message.hasOwnProperty("validatorScanner"))
+                            $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.encode(message.validatorScanner, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                        if (message.testCase != null && message.testCase.length)
+                            for (var i = 0; i < message.testCase.length; ++i)
+                                $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.encode(message.testCase[i], writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified AlgorithmicProblemValue message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @static
+                     * @param {acmcsus.debugjudge.Problem.IAlgorithmicProblemValue} message AlgorithmicProblemValue message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AlgorithmicProblemValue.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an AlgorithmicProblemValue message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue} AlgorithmicProblemValue
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AlgorithmicProblemValue.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 2:
+                                message.testCaseDirectory = reader.string();
+                                break;
+                            case 3:
+                                message.timeLimitSeconds = reader.int32();
+                                break;
+                            case 4:
+                                message.memoryLimitMegabytes = reader.int32();
+                                break;
+                            case 5:
+                                message.validatorProgram = reader.string();
+                                break;
+                            case 6:
+                                message.validatorScanner = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.decode(reader, reader.uint32());
+                                break;
+                            case 7:
+                                if (!(message.testCase && message.testCase.length))
+                                    message.testCase = [];
+                                message.testCase.push($root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.decode(reader, reader.uint32()));
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an AlgorithmicProblemValue message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue} AlgorithmicProblemValue
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AlgorithmicProblemValue.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an AlgorithmicProblemValue message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    AlgorithmicProblemValue.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        var properties = {};
+                        if (message.testCaseDirectory != null && message.hasOwnProperty("testCaseDirectory"))
+                            if (!$util.isString(message.testCaseDirectory))
+                                return "testCaseDirectory: string expected";
+                        if (message.timeLimitSeconds != null && message.hasOwnProperty("timeLimitSeconds"))
+                            if (!$util.isInteger(message.timeLimitSeconds))
+                                return "timeLimitSeconds: integer expected";
+                        if (message.memoryLimitMegabytes != null && message.hasOwnProperty("memoryLimitMegabytes"))
+                            if (!$util.isInteger(message.memoryLimitMegabytes))
+                                return "memoryLimitMegabytes: integer expected";
+                        if (message.validatorProgram != null && message.hasOwnProperty("validatorProgram")) {
+                            properties.validator = 1;
+                            if (!$util.isString(message.validatorProgram))
+                                return "validatorProgram: string expected";
+                        }
+                        if (message.validatorScanner != null && message.hasOwnProperty("validatorScanner")) {
+                            if (properties.validator === 1)
+                                return "validator: multiple values";
+                            properties.validator = 1;
+                            {
+                                var error = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.verify(message.validatorScanner);
+                                if (error)
+                                    return "validatorScanner." + error;
+                            }
+                        }
+                        if (message.testCase != null && message.hasOwnProperty("testCase")) {
+                            if (!Array.isArray(message.testCase))
+                                return "testCase: array expected";
+                            for (var i = 0; i < message.testCase.length; ++i) {
+                                var error = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.verify(message.testCase[i]);
+                                if (error)
+                                    return "testCase." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an AlgorithmicProblemValue message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue} AlgorithmicProblemValue
+                     */
+                    AlgorithmicProblemValue.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue();
+                        if (object.testCaseDirectory != null)
+                            message.testCaseDirectory = String(object.testCaseDirectory);
+                        if (object.timeLimitSeconds != null)
+                            message.timeLimitSeconds = object.timeLimitSeconds | 0;
+                        if (object.memoryLimitMegabytes != null)
+                            message.memoryLimitMegabytes = object.memoryLimitMegabytes | 0;
+                        if (object.validatorProgram != null)
+                            message.validatorProgram = String(object.validatorProgram);
+                        if (object.validatorScanner != null) {
+                            if (typeof object.validatorScanner !== "object")
+                                throw TypeError(".acmcsus.debugjudge.Problem.AlgorithmicProblemValue.validatorScanner: object expected");
+                            message.validatorScanner = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.fromObject(object.validatorScanner);
+                        }
+                        if (object.testCase) {
+                            if (!Array.isArray(object.testCase))
+                                throw TypeError(".acmcsus.debugjudge.Problem.AlgorithmicProblemValue.testCase: array expected");
+                            message.testCase = [];
+                            for (var i = 0; i < object.testCase.length; ++i) {
+                                if (typeof object.testCase[i] !== "object")
+                                    throw TypeError(".acmcsus.debugjudge.Problem.AlgorithmicProblemValue.testCase: object expected");
+                                message.testCase[i] = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.fromObject(object.testCase[i]);
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an AlgorithmicProblemValue message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @static
+                     * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue} message AlgorithmicProblemValue
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    AlgorithmicProblemValue.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.arrays || options.defaults)
+                            object.testCase = [];
+                        if (options.defaults) {
+                            object.testCaseDirectory = "";
+                            object.timeLimitSeconds = 0;
+                            object.memoryLimitMegabytes = 0;
+                        }
+                        if (message.testCaseDirectory != null && message.hasOwnProperty("testCaseDirectory"))
+                            object.testCaseDirectory = message.testCaseDirectory;
+                        if (message.timeLimitSeconds != null && message.hasOwnProperty("timeLimitSeconds"))
+                            object.timeLimitSeconds = message.timeLimitSeconds;
+                        if (message.memoryLimitMegabytes != null && message.hasOwnProperty("memoryLimitMegabytes"))
+                            object.memoryLimitMegabytes = message.memoryLimitMegabytes;
+                        if (message.validatorProgram != null && message.hasOwnProperty("validatorProgram")) {
+                            object.validatorProgram = message.validatorProgram;
+                            if (options.oneofs)
+                                object.validator = "validatorProgram";
+                        }
+                        if (message.validatorScanner != null && message.hasOwnProperty("validatorScanner")) {
+                            object.validatorScanner = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.toObject(message.validatorScanner, options);
+                            if (options.oneofs)
+                                object.validator = "validatorScanner";
+                        }
+                        if (message.testCase && message.testCase.length) {
+                            object.testCase = [];
+                            for (var j = 0; j < message.testCase.length; ++j)
+                                object.testCase[j] = $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.toObject(message.testCase[j], options);
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this AlgorithmicProblemValue to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    AlgorithmicProblemValue.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    AlgorithmicProblemValue.ValidatorScanner = (function() {
+    
+                        /**
+                         * Properties of a ValidatorScanner.
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                         * @interface IValidatorScanner
+                         * @property {number|null} [floatPrecision] ValidatorScanner floatPrecision
+                         * @property {boolean|null} [whitespaceSensitive] ValidatorScanner whitespaceSensitive
+                         * @property {boolean|null} [trailingNewlineSensitive] ValidatorScanner trailingNewlineSensitive
+                         */
+    
+                        /**
+                         * Constructs a new ValidatorScanner.
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                         * @classdesc Represents a ValidatorScanner.
+                         * @implements IValidatorScanner
+                         * @constructor
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner=} [properties] Properties to set
+                         */
+                        function ValidatorScanner(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ValidatorScanner floatPrecision.
+                         * @member {number} floatPrecision
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @instance
+                         */
+                        ValidatorScanner.prototype.floatPrecision = 0;
+    
+                        /**
+                         * ValidatorScanner whitespaceSensitive.
+                         * @member {boolean} whitespaceSensitive
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @instance
+                         */
+                        ValidatorScanner.prototype.whitespaceSensitive = false;
+    
+                        /**
+                         * ValidatorScanner trailingNewlineSensitive.
+                         * @member {boolean} trailingNewlineSensitive
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @instance
+                         */
+                        ValidatorScanner.prototype.trailingNewlineSensitive = false;
+    
+                        /**
+                         * Creates a new ValidatorScanner instance using the specified properties.
+                         * @function create
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @static
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner=} [properties] Properties to set
+                         * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner} ValidatorScanner instance
+                         */
+                        ValidatorScanner.create = function create(properties) {
+                            return new ValidatorScanner(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ValidatorScanner message. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.verify|verify} messages.
+                         * @function encode
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @static
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner} message ValidatorScanner message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ValidatorScanner.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.floatPrecision != null && message.hasOwnProperty("floatPrecision"))
+                                writer.uint32(/* id 1, wireType 5 =*/13).float(message.floatPrecision);
+                            if (message.whitespaceSensitive != null && message.hasOwnProperty("whitespaceSensitive"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).bool(message.whitespaceSensitive);
+                            if (message.trailingNewlineSensitive != null && message.hasOwnProperty("trailingNewlineSensitive"))
+                                writer.uint32(/* id 3, wireType 0 =*/24).bool(message.trailingNewlineSensitive);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ValidatorScanner message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @static
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner} message ValidatorScanner message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ValidatorScanner.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a ValidatorScanner message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner} ValidatorScanner
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ValidatorScanner.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1:
+                                    message.floatPrecision = reader.float();
+                                    break;
+                                case 2:
+                                    message.whitespaceSensitive = reader.bool();
+                                    break;
+                                case 3:
+                                    message.trailingNewlineSensitive = reader.bool();
+                                    break;
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a ValidatorScanner message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner} ValidatorScanner
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ValidatorScanner.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a ValidatorScanner message.
+                         * @function verify
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ValidatorScanner.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.floatPrecision != null && message.hasOwnProperty("floatPrecision"))
+                                if (typeof message.floatPrecision !== "number")
+                                    return "floatPrecision: number expected";
+                            if (message.whitespaceSensitive != null && message.hasOwnProperty("whitespaceSensitive"))
+                                if (typeof message.whitespaceSensitive !== "boolean")
+                                    return "whitespaceSensitive: boolean expected";
+                            if (message.trailingNewlineSensitive != null && message.hasOwnProperty("trailingNewlineSensitive"))
+                                if (typeof message.trailingNewlineSensitive !== "boolean")
+                                    return "trailingNewlineSensitive: boolean expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a ValidatorScanner message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner} ValidatorScanner
+                         */
+                        ValidatorScanner.fromObject = function fromObject(object) {
+                            if (object instanceof $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner)
+                                return object;
+                            var message = new $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner();
+                            if (object.floatPrecision != null)
+                                message.floatPrecision = Number(object.floatPrecision);
+                            if (object.whitespaceSensitive != null)
+                                message.whitespaceSensitive = Boolean(object.whitespaceSensitive);
+                            if (object.trailingNewlineSensitive != null)
+                                message.trailingNewlineSensitive = Boolean(object.trailingNewlineSensitive);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a ValidatorScanner message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @static
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner} message ValidatorScanner
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ValidatorScanner.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.floatPrecision = 0;
+                                object.whitespaceSensitive = false;
+                                object.trailingNewlineSensitive = false;
+                            }
+                            if (message.floatPrecision != null && message.hasOwnProperty("floatPrecision"))
+                                object.floatPrecision = options.json && !isFinite(message.floatPrecision) ? String(message.floatPrecision) : message.floatPrecision;
+                            if (message.whitespaceSensitive != null && message.hasOwnProperty("whitespaceSensitive"))
+                                object.whitespaceSensitive = message.whitespaceSensitive;
+                            if (message.trailingNewlineSensitive != null && message.hasOwnProperty("trailingNewlineSensitive"))
+                                object.trailingNewlineSensitive = message.trailingNewlineSensitive;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ValidatorScanner to JSON.
+                         * @function toJSON
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ValidatorScanner.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        return ValidatorScanner;
+                    })();
+    
+                    AlgorithmicProblemValue.AlgorithmicTestCase = (function() {
+    
+                        /**
+                         * Properties of an AlgorithmicTestCase.
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                         * @interface IAlgorithmicTestCase
+                         * @property {string|null} [input] AlgorithmicTestCase input
+                         * @property {string|null} [expected] AlgorithmicTestCase expected
+                         */
+    
+                        /**
+                         * Constructs a new AlgorithmicTestCase.
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue
+                         * @classdesc Represents an AlgorithmicTestCase.
+                         * @implements IAlgorithmicTestCase
+                         * @constructor
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase=} [properties] Properties to set
+                         */
+                        function AlgorithmicTestCase(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * AlgorithmicTestCase input.
+                         * @member {string} input
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @instance
+                         */
+                        AlgorithmicTestCase.prototype.input = "";
+    
+                        /**
+                         * AlgorithmicTestCase expected.
+                         * @member {string} expected
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @instance
+                         */
+                        AlgorithmicTestCase.prototype.expected = "";
+    
+                        /**
+                         * Creates a new AlgorithmicTestCase instance using the specified properties.
+                         * @function create
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @static
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase=} [properties] Properties to set
+                         * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase} AlgorithmicTestCase instance
+                         */
+                        AlgorithmicTestCase.create = function create(properties) {
+                            return new AlgorithmicTestCase(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified AlgorithmicTestCase message. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.verify|verify} messages.
+                         * @function encode
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @static
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase} message AlgorithmicTestCase message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        AlgorithmicTestCase.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.input != null && message.hasOwnProperty("input"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.input);
+                            if (message.expected != null && message.hasOwnProperty("expected"))
+                                writer.uint32(/* id 2, wireType 2 =*/18).string(message.expected);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified AlgorithmicTestCase message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @static
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase} message AlgorithmicTestCase message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        AlgorithmicTestCase.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes an AlgorithmicTestCase message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase} AlgorithmicTestCase
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        AlgorithmicTestCase.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1:
+                                    message.input = reader.string();
+                                    break;
+                                case 2:
+                                    message.expected = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes an AlgorithmicTestCase message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase} AlgorithmicTestCase
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        AlgorithmicTestCase.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies an AlgorithmicTestCase message.
+                         * @function verify
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        AlgorithmicTestCase.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.input != null && message.hasOwnProperty("input"))
+                                if (!$util.isString(message.input))
+                                    return "input: string expected";
+                            if (message.expected != null && message.hasOwnProperty("expected"))
+                                if (!$util.isString(message.expected))
+                                    return "expected: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates an AlgorithmicTestCase message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase} AlgorithmicTestCase
+                         */
+                        AlgorithmicTestCase.fromObject = function fromObject(object) {
+                            if (object instanceof $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase)
+                                return object;
+                            var message = new $root.acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase();
+                            if (object.input != null)
+                                message.input = String(object.input);
+                            if (object.expected != null)
+                                message.expected = String(object.expected);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from an AlgorithmicTestCase message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @static
+                         * @param {acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase} message AlgorithmicTestCase
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        AlgorithmicTestCase.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.input = "";
+                                object.expected = "";
+                            }
+                            if (message.input != null && message.hasOwnProperty("input"))
+                                object.input = message.input;
+                            if (message.expected != null && message.hasOwnProperty("expected"))
+                                object.expected = message.expected;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this AlgorithmicTestCase to JSON.
+                         * @function toJSON
+                         * @memberof acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        AlgorithmicTestCase.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        return AlgorithmicTestCase;
+                    })();
+    
+                    return AlgorithmicProblemValue;
                 })();
     
                 Problem.List = (function() {
@@ -3486,6 +5151,8 @@
                      * @memberof acmcsus.debugjudge.C2SMessage
                      * @interface ILoginMessage
                      * @property {string|null} [nonce] LoginMessage nonce
+                     * @property {number|null} [id] LoginMessage id
+                     * @property {string|null} [pass] LoginMessage pass
                      */
     
                     /**
@@ -3510,6 +5177,22 @@
                      * @instance
                      */
                     LoginMessage.prototype.nonce = "";
+    
+                    /**
+                     * LoginMessage id.
+                     * @member {number} id
+                     * @memberof acmcsus.debugjudge.C2SMessage.LoginMessage
+                     * @instance
+                     */
+                    LoginMessage.prototype.id = 0;
+    
+                    /**
+                     * LoginMessage pass.
+                     * @member {string} pass
+                     * @memberof acmcsus.debugjudge.C2SMessage.LoginMessage
+                     * @instance
+                     */
+                    LoginMessage.prototype.pass = "";
     
                     /**
                      * Creates a new LoginMessage instance using the specified properties.
@@ -3537,6 +5220,10 @@
                             writer = $Writer.create();
                         if (message.nonce != null && message.hasOwnProperty("nonce"))
                             writer.uint32(/* id 1, wireType 2 =*/10).string(message.nonce);
+                        if (message.id != null && message.hasOwnProperty("id"))
+                            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.id);
+                        if (message.pass != null && message.hasOwnProperty("pass"))
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.pass);
                         return writer;
                     };
     
@@ -3573,6 +5260,12 @@
                             switch (tag >>> 3) {
                             case 1:
                                 message.nonce = reader.string();
+                                break;
+                            case 2:
+                                message.id = reader.int32();
+                                break;
+                            case 3:
+                                message.pass = reader.string();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -3612,6 +5305,12 @@
                         if (message.nonce != null && message.hasOwnProperty("nonce"))
                             if (!$util.isString(message.nonce))
                                 return "nonce: string expected";
+                        if (message.id != null && message.hasOwnProperty("id"))
+                            if (!$util.isInteger(message.id))
+                                return "id: integer expected";
+                        if (message.pass != null && message.hasOwnProperty("pass"))
+                            if (!$util.isString(message.pass))
+                                return "pass: string expected";
                         return null;
                     };
     
@@ -3629,6 +5328,10 @@
                         var message = new $root.acmcsus.debugjudge.C2SMessage.LoginMessage();
                         if (object.nonce != null)
                             message.nonce = String(object.nonce);
+                        if (object.id != null)
+                            message.id = object.id | 0;
+                        if (object.pass != null)
+                            message.pass = String(object.pass);
                         return message;
                     };
     
@@ -3645,10 +5348,17 @@
                         if (!options)
                             options = {};
                         var object = {};
-                        if (options.defaults)
+                        if (options.defaults) {
                             object.nonce = "";
+                            object.id = 0;
+                            object.pass = "";
+                        }
                         if (message.nonce != null && message.hasOwnProperty("nonce"))
                             object.nonce = message.nonce;
+                        if (message.id != null && message.hasOwnProperty("id"))
+                            object.id = message.id;
+                        if (message.pass != null && message.hasOwnProperty("pass"))
+                            object.pass = message.pass;
                         return object;
                     };
     
@@ -4666,6 +6376,7 @@
                      * @memberof acmcsus.debugjudge.S2CMessage
                      * @interface ILoginResultMessage
                      * @property {acmcsus.debugjudge.S2CMessage.LoginResultMessage.LoginResult|null} [value] LoginResultMessage value
+                     * @property {acmcsus.debugjudge.IProfile|null} [profile] LoginResultMessage profile
                      */
     
                     /**
@@ -4690,6 +6401,14 @@
                      * @instance
                      */
                     LoginResultMessage.prototype.value = 0;
+    
+                    /**
+                     * LoginResultMessage profile.
+                     * @member {acmcsus.debugjudge.IProfile|null|undefined} profile
+                     * @memberof acmcsus.debugjudge.S2CMessage.LoginResultMessage
+                     * @instance
+                     */
+                    LoginResultMessage.prototype.profile = null;
     
                     /**
                      * Creates a new LoginResultMessage instance using the specified properties.
@@ -4717,6 +6436,8 @@
                             writer = $Writer.create();
                         if (message.value != null && message.hasOwnProperty("value"))
                             writer.uint32(/* id 1, wireType 0 =*/8).int32(message.value);
+                        if (message.profile != null && message.hasOwnProperty("profile"))
+                            $root.acmcsus.debugjudge.Profile.encode(message.profile, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                         return writer;
                     };
     
@@ -4753,6 +6474,9 @@
                             switch (tag >>> 3) {
                             case 1:
                                 message.value = reader.int32();
+                                break;
+                            case 2:
+                                message.profile = $root.acmcsus.debugjudge.Profile.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -4798,6 +6522,11 @@
                             case 2:
                                 break;
                             }
+                        if (message.profile != null && message.hasOwnProperty("profile")) {
+                            var error = $root.acmcsus.debugjudge.Profile.verify(message.profile);
+                            if (error)
+                                return "profile." + error;
+                        }
                         return null;
                     };
     
@@ -4827,6 +6556,11 @@
                             message.value = 2;
                             break;
                         }
+                        if (object.profile != null) {
+                            if (typeof object.profile !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2CMessage.LoginResultMessage.profile: object expected");
+                            message.profile = $root.acmcsus.debugjudge.Profile.fromObject(object.profile);
+                        }
                         return message;
                     };
     
@@ -4843,10 +6577,14 @@
                         if (!options)
                             options = {};
                         var object = {};
-                        if (options.defaults)
+                        if (options.defaults) {
                             object.value = options.enums === String ? "UNKNOWN" : 0;
+                            object.profile = null;
+                        }
                         if (message.value != null && message.hasOwnProperty("value"))
                             object.value = options.enums === String ? $root.acmcsus.debugjudge.S2CMessage.LoginResultMessage.LoginResult[message.value] : message.value;
+                        if (message.profile != null && message.hasOwnProperty("profile"))
+                            object.profile = $root.acmcsus.debugjudge.Profile.toObject(message.profile, options);
                         return object;
                     };
     
@@ -9571,7 +11309,10 @@
                      * @property {number|null} [teamId] AutoJudgeResultMessage teamId
                      * @property {number|null} [problemId] AutoJudgeResultMessage problemId
                      * @property {number|Long|null} [submissionId] AutoJudgeResultMessage submissionId
-                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [ruling] AutoJudgeResultMessage ruling
+                     * @property {acmcsus.debugjudge.IExecutionResult|null} [compileResult] AutoJudgeResultMessage compileResult
+                     * @property {Object.<string,acmcsus.debugjudge.IExecutionResult>|null} [caseResults] AutoJudgeResultMessage caseResults
+                     * @property {acmcsus.debugjudge.SubmissionJudgement|null} [preliminaryJudgement] AutoJudgeResultMessage preliminaryJudgement
+                     * @property {string|null} [preliminaryJudgementMessage] AutoJudgeResultMessage preliminaryJudgementMessage
                      */
     
                     /**
@@ -9583,6 +11324,7 @@
                      * @param {acmcsus.debugjudge.AJ2SMessage.IAutoJudgeResultMessage=} [properties] Properties to set
                      */
                     function AutoJudgeResultMessage(properties) {
+                        this.caseResults = {};
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -9614,12 +11356,36 @@
                     AutoJudgeResultMessage.prototype.submissionId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
                     /**
-                     * AutoJudgeResultMessage ruling.
-                     * @member {acmcsus.debugjudge.SubmissionJudgement} ruling
+                     * AutoJudgeResultMessage compileResult.
+                     * @member {acmcsus.debugjudge.IExecutionResult|null|undefined} compileResult
                      * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
                      * @instance
                      */
-                    AutoJudgeResultMessage.prototype.ruling = 0;
+                    AutoJudgeResultMessage.prototype.compileResult = null;
+    
+                    /**
+                     * AutoJudgeResultMessage caseResults.
+                     * @member {Object.<string,acmcsus.debugjudge.IExecutionResult>} caseResults
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     */
+                    AutoJudgeResultMessage.prototype.caseResults = $util.emptyObject;
+    
+                    /**
+                     * AutoJudgeResultMessage preliminaryJudgement.
+                     * @member {acmcsus.debugjudge.SubmissionJudgement} preliminaryJudgement
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     */
+                    AutoJudgeResultMessage.prototype.preliminaryJudgement = 0;
+    
+                    /**
+                     * AutoJudgeResultMessage preliminaryJudgementMessage.
+                     * @member {string} preliminaryJudgementMessage
+                     * @memberof acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage
+                     * @instance
+                     */
+                    AutoJudgeResultMessage.prototype.preliminaryJudgementMessage = "";
     
                     /**
                      * Creates a new AutoJudgeResultMessage instance using the specified properties.
@@ -9651,8 +11417,17 @@
                             writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
                         if (message.submissionId != null && message.hasOwnProperty("submissionId"))
                             writer.uint32(/* id 3, wireType 0 =*/24).int64(message.submissionId);
-                        if (message.ruling != null && message.hasOwnProperty("ruling"))
-                            writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ruling);
+                        if (message.compileResult != null && message.hasOwnProperty("compileResult"))
+                            $root.acmcsus.debugjudge.ExecutionResult.encode(message.compileResult, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        if (message.caseResults != null && message.hasOwnProperty("caseResults"))
+                            for (var keys = Object.keys(message.caseResults), i = 0; i < keys.length; ++i) {
+                                writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]);
+                                $root.acmcsus.debugjudge.ExecutionResult.encode(message.caseResults[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
+                            }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            writer.uint32(/* id 6, wireType 0 =*/48).int32(message.preliminaryJudgement);
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            writer.uint32(/* id 7, wireType 2 =*/58).string(message.preliminaryJudgementMessage);
                         return writer;
                     };
     
@@ -9683,7 +11458,7 @@
                     AutoJudgeResultMessage.decode = function decode(reader, length) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
-                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage();
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage(), key;
                         while (reader.pos < end) {
                             var tag = reader.uint32();
                             switch (tag >>> 3) {
@@ -9697,7 +11472,21 @@
                                 message.submissionId = reader.int64();
                                 break;
                             case 4:
-                                message.ruling = reader.int32();
+                                message.compileResult = $root.acmcsus.debugjudge.ExecutionResult.decode(reader, reader.uint32());
+                                break;
+                            case 5:
+                                reader.skip().pos++;
+                                if (message.caseResults === $util.emptyObject)
+                                    message.caseResults = {};
+                                key = reader.int32();
+                                reader.pos++;
+                                message.caseResults[key] = $root.acmcsus.debugjudge.ExecutionResult.decode(reader, reader.uint32());
+                                break;
+                            case 6:
+                                message.preliminaryJudgement = reader.int32();
+                                break;
+                            case 7:
+                                message.preliminaryJudgementMessage = reader.string();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -9743,15 +11532,37 @@
                         if (message.submissionId != null && message.hasOwnProperty("submissionId"))
                             if (!$util.isInteger(message.submissionId) && !(message.submissionId && $util.isInteger(message.submissionId.low) && $util.isInteger(message.submissionId.high)))
                                 return "submissionId: integer|Long expected";
-                        if (message.ruling != null && message.hasOwnProperty("ruling"))
-                            switch (message.ruling) {
+                        if (message.compileResult != null && message.hasOwnProperty("compileResult")) {
+                            var error = $root.acmcsus.debugjudge.ExecutionResult.verify(message.compileResult);
+                            if (error)
+                                return "compileResult." + error;
+                        }
+                        if (message.caseResults != null && message.hasOwnProperty("caseResults")) {
+                            if (!$util.isObject(message.caseResults))
+                                return "caseResults: object expected";
+                            var key = Object.keys(message.caseResults);
+                            for (var i = 0; i < key.length; ++i) {
+                                if (!$util.key32Re.test(key[i]))
+                                    return "caseResults: integer key{k:int32} expected";
+                                {
+                                    var error = $root.acmcsus.debugjudge.ExecutionResult.verify(message.caseResults[key[i]]);
+                                    if (error)
+                                        return "caseResults." + error;
+                                }
+                            }
+                        }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            switch (message.preliminaryJudgement) {
                             default:
-                                return "ruling: enum value expected";
+                                return "preliminaryJudgement: enum value expected";
                             case 0:
                             case 1:
                             case 2:
                                 break;
                             }
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            if (!$util.isString(message.preliminaryJudgementMessage))
+                                return "preliminaryJudgementMessage: string expected";
                         return null;
                     };
     
@@ -9780,20 +11591,37 @@
                                 message.submissionId = object.submissionId;
                             else if (typeof object.submissionId === "object")
                                 message.submissionId = new $util.LongBits(object.submissionId.low >>> 0, object.submissionId.high >>> 0).toNumber();
-                        switch (object.ruling) {
+                        if (object.compileResult != null) {
+                            if (typeof object.compileResult !== "object")
+                                throw TypeError(".acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.compileResult: object expected");
+                            message.compileResult = $root.acmcsus.debugjudge.ExecutionResult.fromObject(object.compileResult);
+                        }
+                        if (object.caseResults) {
+                            if (typeof object.caseResults !== "object")
+                                throw TypeError(".acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.caseResults: object expected");
+                            message.caseResults = {};
+                            for (var keys = Object.keys(object.caseResults), i = 0; i < keys.length; ++i) {
+                                if (typeof object.caseResults[keys[i]] !== "object")
+                                    throw TypeError(".acmcsus.debugjudge.AJ2SMessage.AutoJudgeResultMessage.caseResults: object expected");
+                                message.caseResults[keys[i]] = $root.acmcsus.debugjudge.ExecutionResult.fromObject(object.caseResults[keys[i]]);
+                            }
+                        }
+                        switch (object.preliminaryJudgement) {
                         case "JUDGEMENT_UNKNOWN":
                         case 0:
-                            message.ruling = 0;
+                            message.preliminaryJudgement = 0;
                             break;
                         case "JUDGEMENT_SUCCESS":
                         case 1:
-                            message.ruling = 1;
+                            message.preliminaryJudgement = 1;
                             break;
                         case "JUDGEMENT_FAILURE":
                         case 2:
-                            message.ruling = 2;
+                            message.preliminaryJudgement = 2;
                             break;
                         }
+                        if (object.preliminaryJudgementMessage != null)
+                            message.preliminaryJudgementMessage = String(object.preliminaryJudgementMessage);
                         return message;
                     };
     
@@ -9810,6 +11638,8 @@
                         if (!options)
                             options = {};
                         var object = {};
+                        if (options.objects || options.defaults)
+                            object.caseResults = {};
                         if (options.defaults) {
                             object.teamId = 0;
                             object.problemId = 0;
@@ -9818,7 +11648,9 @@
                                 object.submissionId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                             } else
                                 object.submissionId = options.longs === String ? "0" : 0;
-                            object.ruling = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                            object.compileResult = null;
+                            object.preliminaryJudgement = options.enums === String ? "JUDGEMENT_UNKNOWN" : 0;
+                            object.preliminaryJudgementMessage = "";
                         }
                         if (message.teamId != null && message.hasOwnProperty("teamId"))
                             object.teamId = message.teamId;
@@ -9829,8 +11661,18 @@
                                 object.submissionId = options.longs === String ? String(message.submissionId) : message.submissionId;
                             else
                                 object.submissionId = options.longs === String ? $util.Long.prototype.toString.call(message.submissionId) : options.longs === Number ? new $util.LongBits(message.submissionId.low >>> 0, message.submissionId.high >>> 0).toNumber() : message.submissionId;
-                        if (message.ruling != null && message.hasOwnProperty("ruling"))
-                            object.ruling = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.ruling] : message.ruling;
+                        if (message.compileResult != null && message.hasOwnProperty("compileResult"))
+                            object.compileResult = $root.acmcsus.debugjudge.ExecutionResult.toObject(message.compileResult, options);
+                        var keys2;
+                        if (message.caseResults && (keys2 = Object.keys(message.caseResults)).length) {
+                            object.caseResults = {};
+                            for (var j = 0; j < keys2.length; ++j)
+                                object.caseResults[keys2[j]] = $root.acmcsus.debugjudge.ExecutionResult.toObject(message.caseResults[keys2[j]], options);
+                        }
+                        if (message.preliminaryJudgement != null && message.hasOwnProperty("preliminaryJudgement"))
+                            object.preliminaryJudgement = options.enums === String ? $root.acmcsus.debugjudge.SubmissionJudgement[message.preliminaryJudgement] : message.preliminaryJudgement;
+                        if (message.preliminaryJudgementMessage != null && message.hasOwnProperty("preliminaryJudgementMessage"))
+                            object.preliminaryJudgementMessage = message.preliminaryJudgementMessage;
                         return object;
                     };
     

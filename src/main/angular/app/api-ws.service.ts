@@ -155,7 +155,8 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
         }
           // We know someone else takes care of these:
         case 'scoreboardUpdateMessage':
-          break;
+        case 'reloadSubmissionsMessage':
+        case 'reloadSubmissionMessage':
         case 'reloadProblemsMessage':
           break;
       }

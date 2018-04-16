@@ -1,0 +1,16 @@
+id: 4
+title: "Hello World"
+description_file: 'helloworld.html'
+order_index: 2
+color: '#55bb20'
+
+algorithmic_problem {
+  time_limit_seconds: 5
+
+  validator_scanner {}
+
+  test_case {
+    input: 'Herky\n'
+    expected: 'Hello, Herky.\n'
+  }
+}

@@ -6,6 +6,201 @@ export namespace acmcsus {
     /** Namespace debugjudge. */
     namespace debugjudge {
 
+        /** Properties of a ProgrammingLanguage. */
+        interface IProgrammingLanguage {
+
+            /** ProgrammingLanguage name */
+            name?: (string|null);
+
+            /** ProgrammingLanguage compile */
+            compile?: (string|null);
+
+            /** ProgrammingLanguage run */
+            run?: (string|null);
+        }
+
+        /** Represents a ProgrammingLanguage. */
+        class ProgrammingLanguage implements IProgrammingLanguage {
+
+            /**
+             * Constructs a new ProgrammingLanguage.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: acmcsus.debugjudge.IProgrammingLanguage);
+
+            /** ProgrammingLanguage name. */
+            public name: string;
+
+            /** ProgrammingLanguage compile. */
+            public compile: string;
+
+            /** ProgrammingLanguage run. */
+            public run: string;
+
+            /**
+             * Creates a new ProgrammingLanguage instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ProgrammingLanguage instance
+             */
+            public static create(properties?: acmcsus.debugjudge.IProgrammingLanguage): acmcsus.debugjudge.ProgrammingLanguage;
+
+            /**
+             * Encodes the specified ProgrammingLanguage message. Does not implicitly {@link acmcsus.debugjudge.ProgrammingLanguage.verify|verify} messages.
+             * @param message ProgrammingLanguage message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: acmcsus.debugjudge.IProgrammingLanguage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ProgrammingLanguage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.ProgrammingLanguage.verify|verify} messages.
+             * @param message ProgrammingLanguage message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: acmcsus.debugjudge.IProgrammingLanguage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ProgrammingLanguage message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ProgrammingLanguage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.ProgrammingLanguage;
+
+            /**
+             * Decodes a ProgrammingLanguage message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ProgrammingLanguage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.ProgrammingLanguage;
+
+            /**
+             * Verifies a ProgrammingLanguage message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ProgrammingLanguage message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ProgrammingLanguage
+             */
+            public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.ProgrammingLanguage;
+
+            /**
+             * Creates a plain object from a ProgrammingLanguage message. Also converts values to other types if specified.
+             * @param message ProgrammingLanguage
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: acmcsus.debugjudge.ProgrammingLanguage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ProgrammingLanguage to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace ProgrammingLanguage {
+
+            /** Properties of a List. */
+            interface IList {
+
+                /** List language */
+                language?: (acmcsus.debugjudge.IProgrammingLanguage[]|null);
+            }
+
+            /** Represents a List. */
+            class List implements IList {
+
+                /**
+                 * Constructs a new List.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: acmcsus.debugjudge.ProgrammingLanguage.IList);
+
+                /** List language. */
+                public language: acmcsus.debugjudge.IProgrammingLanguage[];
+
+                /**
+                 * Creates a new List instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns List instance
+                 */
+                public static create(properties?: acmcsus.debugjudge.ProgrammingLanguage.IList): acmcsus.debugjudge.ProgrammingLanguage.List;
+
+                /**
+                 * Encodes the specified List message. Does not implicitly {@link acmcsus.debugjudge.ProgrammingLanguage.List.verify|verify} messages.
+                 * @param message List message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: acmcsus.debugjudge.ProgrammingLanguage.IList, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified List message, length delimited. Does not implicitly {@link acmcsus.debugjudge.ProgrammingLanguage.List.verify|verify} messages.
+                 * @param message List message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: acmcsus.debugjudge.ProgrammingLanguage.IList, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a List message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns List
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.ProgrammingLanguage.List;
+
+                /**
+                 * Decodes a List message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns List
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.ProgrammingLanguage.List;
+
+                /**
+                 * Verifies a List message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a List message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns List
+                 */
+                public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.ProgrammingLanguage.List;
+
+                /**
+                 * Creates a plain object from a List message. Also converts values to other types if specified.
+                 * @param message List
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: acmcsus.debugjudge.ProgrammingLanguage.List, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this List to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+            }
+        }
+
         /** CompetitionState enum. */
         enum CompetitionState {
             UNKNOWN = 0,
@@ -20,6 +215,114 @@ export namespace acmcsus {
             JUDGEMENT_UNKNOWN = 0,
             JUDGEMENT_SUCCESS = 1,
             JUDGEMENT_FAILURE = 2
+        }
+
+        /** Properties of an ExecutionResult. */
+        interface IExecutionResult {
+
+            /** ExecutionResult resultOut */
+            resultOut?: (string|null);
+
+            /** ExecutionResult resultErr */
+            resultErr?: (string|null);
+
+            /** ExecutionResult exitCode */
+            exitCode?: (number|null);
+
+            /** ExecutionResult timeSeconds */
+            timeSeconds?: (number|null);
+        }
+
+        /** Represents an ExecutionResult. */
+        class ExecutionResult implements IExecutionResult {
+
+            /**
+             * Constructs a new ExecutionResult.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: acmcsus.debugjudge.IExecutionResult);
+
+            /** ExecutionResult resultOut. */
+            public resultOut: string;
+
+            /** ExecutionResult resultErr. */
+            public resultErr: string;
+
+            /** ExecutionResult exitCode. */
+            public exitCode: number;
+
+            /** ExecutionResult timeSeconds. */
+            public timeSeconds: number;
+
+            /**
+             * Creates a new ExecutionResult instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ExecutionResult instance
+             */
+            public static create(properties?: acmcsus.debugjudge.IExecutionResult): acmcsus.debugjudge.ExecutionResult;
+
+            /**
+             * Encodes the specified ExecutionResult message. Does not implicitly {@link acmcsus.debugjudge.ExecutionResult.verify|verify} messages.
+             * @param message ExecutionResult message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: acmcsus.debugjudge.IExecutionResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ExecutionResult message, length delimited. Does not implicitly {@link acmcsus.debugjudge.ExecutionResult.verify|verify} messages.
+             * @param message ExecutionResult message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: acmcsus.debugjudge.IExecutionResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an ExecutionResult message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ExecutionResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.ExecutionResult;
+
+            /**
+             * Decodes an ExecutionResult message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ExecutionResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.ExecutionResult;
+
+            /**
+             * Verifies an ExecutionResult message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an ExecutionResult message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ExecutionResult
+             */
+            public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.ExecutionResult;
+
+            /**
+             * Creates a plain object from an ExecutionResult message. Also converts values to other types if specified.
+             * @param message ExecutionResult
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: acmcsus.debugjudge.ExecutionResult, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ExecutionResult to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
         }
 
         /** Properties of a Submission. */
@@ -47,7 +350,7 @@ export namespace acmcsus {
             debuggingSubmission?: (acmcsus.debugjudge.Submission.IDebuggingSubmission|null);
 
             /** Submission algorithmicSubmission */
-            algorithmicSubmission?: (acmcsus.debugjudge.Submission.IDebuggingSubmission|null);
+            algorithmicSubmission?: (acmcsus.debugjudge.Submission.IAlgorithmicSubmission|null);
         }
 
         /** Represents a Submission. */
@@ -81,7 +384,7 @@ export namespace acmcsus {
             public debuggingSubmission?: (acmcsus.debugjudge.Submission.IDebuggingSubmission|null);
 
             /** Submission algorithmicSubmission. */
-            public algorithmicSubmission?: (acmcsus.debugjudge.Submission.IDebuggingSubmission|null);
+            public algorithmicSubmission?: (acmcsus.debugjudge.Submission.IAlgorithmicSubmission|null);
 
             /** Submission value. */
             public value?: ("debuggingSubmission"|"algorithmicSubmission");
@@ -260,6 +563,18 @@ export namespace acmcsus {
 
                 /** AlgorithmicSubmission language */
                 language?: (string|null);
+
+                /** AlgorithmicSubmission compileResult */
+                compileResult?: (acmcsus.debugjudge.IExecutionResult|null);
+
+                /** AlgorithmicSubmission caseResults */
+                caseResults?: ({ [k: string]: acmcsus.debugjudge.IExecutionResult }|null);
+
+                /** AlgorithmicSubmission preliminaryJudgement */
+                preliminaryJudgement?: (acmcsus.debugjudge.SubmissionJudgement|null);
+
+                /** AlgorithmicSubmission preliminaryJudgementMessage */
+                preliminaryJudgementMessage?: (string|null);
             }
 
             /** Represents an AlgorithmicSubmission. */
@@ -279,6 +594,18 @@ export namespace acmcsus {
 
                 /** AlgorithmicSubmission language. */
                 public language: string;
+
+                /** AlgorithmicSubmission compileResult. */
+                public compileResult?: (acmcsus.debugjudge.IExecutionResult|null);
+
+                /** AlgorithmicSubmission caseResults. */
+                public caseResults: { [k: string]: acmcsus.debugjudge.IExecutionResult };
+
+                /** AlgorithmicSubmission preliminaryJudgement. */
+                public preliminaryJudgement: acmcsus.debugjudge.SubmissionJudgement;
+
+                /** AlgorithmicSubmission preliminaryJudgementMessage. */
+                public preliminaryJudgementMessage: string;
 
                 /**
                  * Creates a new AlgorithmicSubmission instance using the specified properties.
@@ -670,6 +997,9 @@ export namespace acmcsus {
 
             /** Problem debuggingProblem */
             debuggingProblem?: (acmcsus.debugjudge.Problem.IDebuggingProblemValue|null);
+
+            /** Problem algorithmicProblem */
+            algorithmicProblem?: (acmcsus.debugjudge.Problem.IAlgorithmicProblemValue|null);
         }
 
         /** Represents a Problem. */
@@ -702,11 +1032,14 @@ export namespace acmcsus {
             /** Problem debuggingProblem. */
             public debuggingProblem?: (acmcsus.debugjudge.Problem.IDebuggingProblemValue|null);
 
+            /** Problem algorithmicProblem. */
+            public algorithmicProblem?: (acmcsus.debugjudge.Problem.IAlgorithmicProblemValue|null);
+
             /** Problem description. */
             public description?: ("descriptionText"|"descriptionFile");
 
             /** Problem value. */
-            public value?: "debuggingProblem";
+            public value?: ("debuggingProblem"|"algorithmicProblem");
 
             /**
              * Creates a new Problem instance using the specified properties.
@@ -899,6 +1232,330 @@ export namespace acmcsus {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+            }
+
+            /** Properties of an AlgorithmicProblemValue. */
+            interface IAlgorithmicProblemValue {
+
+                /** AlgorithmicProblemValue testCaseDirectory */
+                testCaseDirectory?: (string|null);
+
+                /** AlgorithmicProblemValue timeLimitSeconds */
+                timeLimitSeconds?: (number|null);
+
+                /** AlgorithmicProblemValue memoryLimitMegabytes */
+                memoryLimitMegabytes?: (number|null);
+
+                /** AlgorithmicProblemValue validatorProgram */
+                validatorProgram?: (string|null);
+
+                /** AlgorithmicProblemValue validatorScanner */
+                validatorScanner?: (acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner|null);
+
+                /** AlgorithmicProblemValue testCase */
+                testCase?: (acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase[]|null);
+            }
+
+            /** Represents an AlgorithmicProblemValue. */
+            class AlgorithmicProblemValue implements IAlgorithmicProblemValue {
+
+                /**
+                 * Constructs a new AlgorithmicProblemValue.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: acmcsus.debugjudge.Problem.IAlgorithmicProblemValue);
+
+                /** AlgorithmicProblemValue testCaseDirectory. */
+                public testCaseDirectory: string;
+
+                /** AlgorithmicProblemValue timeLimitSeconds. */
+                public timeLimitSeconds: number;
+
+                /** AlgorithmicProblemValue memoryLimitMegabytes. */
+                public memoryLimitMegabytes: number;
+
+                /** AlgorithmicProblemValue validatorProgram. */
+                public validatorProgram: string;
+
+                /** AlgorithmicProblemValue validatorScanner. */
+                public validatorScanner?: (acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner|null);
+
+                /** AlgorithmicProblemValue testCase. */
+                public testCase: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase[];
+
+                /** AlgorithmicProblemValue validator. */
+                public validator?: ("validatorProgram"|"validatorScanner");
+
+                /**
+                 * Creates a new AlgorithmicProblemValue instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns AlgorithmicProblemValue instance
+                 */
+                public static create(properties?: acmcsus.debugjudge.Problem.IAlgorithmicProblemValue): acmcsus.debugjudge.Problem.AlgorithmicProblemValue;
+
+                /**
+                 * Encodes the specified AlgorithmicProblemValue message. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.verify|verify} messages.
+                 * @param message AlgorithmicProblemValue message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: acmcsus.debugjudge.Problem.IAlgorithmicProblemValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified AlgorithmicProblemValue message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.verify|verify} messages.
+                 * @param message AlgorithmicProblemValue message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: acmcsus.debugjudge.Problem.IAlgorithmicProblemValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an AlgorithmicProblemValue message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns AlgorithmicProblemValue
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.Problem.AlgorithmicProblemValue;
+
+                /**
+                 * Decodes an AlgorithmicProblemValue message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns AlgorithmicProblemValue
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.Problem.AlgorithmicProblemValue;
+
+                /**
+                 * Verifies an AlgorithmicProblemValue message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an AlgorithmicProblemValue message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns AlgorithmicProblemValue
+                 */
+                public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.Problem.AlgorithmicProblemValue;
+
+                /**
+                 * Creates a plain object from an AlgorithmicProblemValue message. Also converts values to other types if specified.
+                 * @param message AlgorithmicProblemValue
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: acmcsus.debugjudge.Problem.AlgorithmicProblemValue, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this AlgorithmicProblemValue to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace AlgorithmicProblemValue {
+
+                /** Properties of a ValidatorScanner. */
+                interface IValidatorScanner {
+
+                    /** ValidatorScanner floatPrecision */
+                    floatPrecision?: (number|null);
+
+                    /** ValidatorScanner whitespaceSensitive */
+                    whitespaceSensitive?: (boolean|null);
+
+                    /** ValidatorScanner trailingNewlineSensitive */
+                    trailingNewlineSensitive?: (boolean|null);
+                }
+
+                /** Represents a ValidatorScanner. */
+                class ValidatorScanner implements IValidatorScanner {
+
+                    /**
+                     * Constructs a new ValidatorScanner.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner);
+
+                    /** ValidatorScanner floatPrecision. */
+                    public floatPrecision: number;
+
+                    /** ValidatorScanner whitespaceSensitive. */
+                    public whitespaceSensitive: boolean;
+
+                    /** ValidatorScanner trailingNewlineSensitive. */
+                    public trailingNewlineSensitive: boolean;
+
+                    /**
+                     * Creates a new ValidatorScanner instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ValidatorScanner instance
+                     */
+                    public static create(properties?: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner): acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner;
+
+                    /**
+                     * Encodes the specified ValidatorScanner message. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.verify|verify} messages.
+                     * @param message ValidatorScanner message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ValidatorScanner message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner.verify|verify} messages.
+                     * @param message ValidatorScanner message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IValidatorScanner, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ValidatorScanner message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ValidatorScanner
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner;
+
+                    /**
+                     * Decodes a ValidatorScanner message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ValidatorScanner
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner;
+
+                    /**
+                     * Verifies a ValidatorScanner message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ValidatorScanner message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ValidatorScanner
+                     */
+                    public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner;
+
+                    /**
+                     * Creates a plain object from a ValidatorScanner message. Also converts values to other types if specified.
+                     * @param message ValidatorScanner
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.ValidatorScanner, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ValidatorScanner to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+                }
+
+                /** Properties of an AlgorithmicTestCase. */
+                interface IAlgorithmicTestCase {
+
+                    /** AlgorithmicTestCase input */
+                    input?: (string|null);
+
+                    /** AlgorithmicTestCase expected */
+                    expected?: (string|null);
+                }
+
+                /** Represents an AlgorithmicTestCase. */
+                class AlgorithmicTestCase implements IAlgorithmicTestCase {
+
+                    /**
+                     * Constructs a new AlgorithmicTestCase.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase);
+
+                    /** AlgorithmicTestCase input. */
+                    public input: string;
+
+                    /** AlgorithmicTestCase expected. */
+                    public expected: string;
+
+                    /**
+                     * Creates a new AlgorithmicTestCase instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AlgorithmicTestCase instance
+                     */
+                    public static create(properties?: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase): acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase;
+
+                    /**
+                     * Encodes the specified AlgorithmicTestCase message. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.verify|verify} messages.
+                     * @param message AlgorithmicTestCase message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AlgorithmicTestCase message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase.verify|verify} messages.
+                     * @param message AlgorithmicTestCase message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.IAlgorithmicTestCase, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AlgorithmicTestCase message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AlgorithmicTestCase
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase;
+
+                    /**
+                     * Decodes an AlgorithmicTestCase message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AlgorithmicTestCase
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase;
+
+                    /**
+                     * Verifies an AlgorithmicTestCase message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AlgorithmicTestCase message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AlgorithmicTestCase
+                     */
+                    public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase;
+
+                    /**
+                     * Creates a plain object from an AlgorithmicTestCase message. Also converts values to other types if specified.
+                     * @param message AlgorithmicTestCase
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: acmcsus.debugjudge.Problem.AlgorithmicProblemValue.AlgorithmicTestCase, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AlgorithmicTestCase to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+                }
             }
 
             /** Properties of a List. */
@@ -1347,6 +2004,12 @@ export namespace acmcsus {
 
                 /** LoginMessage nonce */
                 nonce?: (string|null);
+
+                /** LoginMessage id */
+                id?: (number|null);
+
+                /** LoginMessage pass */
+                pass?: (string|null);
             }
 
             /** Represents a LoginMessage. */
@@ -1360,6 +2023,12 @@ export namespace acmcsus {
 
                 /** LoginMessage nonce. */
                 public nonce: string;
+
+                /** LoginMessage id. */
+                public id: number;
+
+                /** LoginMessage pass. */
+                public pass: string;
 
                 /**
                  * Creates a new LoginMessage instance using the specified properties.
@@ -1785,6 +2454,9 @@ export namespace acmcsus {
 
                 /** LoginResultMessage value */
                 value?: (acmcsus.debugjudge.S2CMessage.LoginResultMessage.LoginResult|null);
+
+                /** LoginResultMessage profile */
+                profile?: (acmcsus.debugjudge.IProfile|null);
             }
 
             /** Represents a LoginResultMessage. */
@@ -1798,6 +2470,9 @@ export namespace acmcsus {
 
                 /** LoginResultMessage value. */
                 public value: acmcsus.debugjudge.S2CMessage.LoginResultMessage.LoginResult;
+
+                /** LoginResultMessage profile. */
+                public profile?: (acmcsus.debugjudge.IProfile|null);
 
                 /**
                  * Creates a new LoginResultMessage instance using the specified properties.
@@ -3973,8 +4648,17 @@ export namespace acmcsus {
                 /** AutoJudgeResultMessage submissionId */
                 submissionId?: (number|Long|null);
 
-                /** AutoJudgeResultMessage ruling */
-                ruling?: (acmcsus.debugjudge.SubmissionJudgement|null);
+                /** AutoJudgeResultMessage compileResult */
+                compileResult?: (acmcsus.debugjudge.IExecutionResult|null);
+
+                /** AutoJudgeResultMessage caseResults */
+                caseResults?: ({ [k: string]: acmcsus.debugjudge.IExecutionResult }|null);
+
+                /** AutoJudgeResultMessage preliminaryJudgement */
+                preliminaryJudgement?: (acmcsus.debugjudge.SubmissionJudgement|null);
+
+                /** AutoJudgeResultMessage preliminaryJudgementMessage */
+                preliminaryJudgementMessage?: (string|null);
             }
 
             /** Represents an AutoJudgeResultMessage. */
@@ -3995,8 +4679,17 @@ export namespace acmcsus {
                 /** AutoJudgeResultMessage submissionId. */
                 public submissionId: (number|Long);
 
-                /** AutoJudgeResultMessage ruling. */
-                public ruling: acmcsus.debugjudge.SubmissionJudgement;
+                /** AutoJudgeResultMessage compileResult. */
+                public compileResult?: (acmcsus.debugjudge.IExecutionResult|null);
+
+                /** AutoJudgeResultMessage caseResults. */
+                public caseResults: { [k: string]: acmcsus.debugjudge.IExecutionResult };
+
+                /** AutoJudgeResultMessage preliminaryJudgement. */
+                public preliminaryJudgement: acmcsus.debugjudge.SubmissionJudgement;
+
+                /** AutoJudgeResultMessage preliminaryJudgementMessage. */
+                public preliminaryJudgementMessage: string;
 
                 /**
                  * Creates a new AutoJudgeResultMessage instance using the specified properties.

@@ -9,22 +9,27 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import spark.Request;
 
+@Deprecated
 public class ProcessBody {
 
+  @Deprecated
   public static String asString(Request req) {
     return req.body();
   }
 
+  @Deprecated
   public static JsonNode asJson(Request req) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     return mapper.readTree(req.body());
   }
 
+  @Deprecated
   public static <T> T asPojoFromJson(Request req, Class<T> clazz) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     return mapper.readerFor(clazz).readValue(req.body());
   }
 
+  @Deprecated
   public static Map<String, String> asMap(String urlEncoded, String encoding)
     throws IOException, ServletException {
     Map<String, String> map = new HashMap<>();

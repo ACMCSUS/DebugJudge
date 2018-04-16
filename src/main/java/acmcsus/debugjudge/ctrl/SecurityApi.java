@@ -3,6 +3,7 @@ package acmcsus.debugjudge.ctrl;
 import acmcsus.debugjudge.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import com.fasterxml.jackson.databind.*;
+import com.google.inject.*;
 import spark.*;
 
 import java.io.*;
@@ -14,11 +15,17 @@ import static java.lang.Integer.parseInt;
 import static java.util.Objects.requireNonNull;
 import static spark.Spark.halt;
 
+@Singleton
 public class SecurityApi {
 
-  private SecurityApi() { /* Static */ }
+  private PasswordGeneratorService passwordGenerator;
 
-  public static Object registerTeam(Request req, Response res) throws IOException {
+  @Inject
+  SecurityApi(PasswordGeneratorService passwordGenerator) {
+    this.passwordGenerator = passwordGenerator;
+  }
+
+  public Object registerTeam(Request req, Response res) throws IOException {
     Profile registrar = getProfile(req);
 
     if (registrar == null || registrar.getProfileType() != Profile.ProfileType.REGISTRAR) {
@@ -35,7 +42,7 @@ public class SecurityApi {
 
     profile = PROFILE_STORE.create(profile);
 
-    String loginSecret = PasswordGenerator.randomPassword();
+    String loginSecret = passwordGenerator.randomPassword();
     MessageStores.writeLoginSecret(profile.getId(), loginSecret);
 
     res.type("application/json");
@@ -63,7 +70,7 @@ public class SecurityApi {
     }
   }
 
-  public static String login(Request req, Response res) {
+  public String login(Request req, Response res) {
     try {
       LoginAttempt loginAttempt = new LoginAttempt(ProcessBody.asMap(req.body(), "UTF-8"));
       return login(req, res, loginAttempt);
@@ -77,7 +84,7 @@ public class SecurityApi {
     throw halt(401, "Bad Username");
   }
 
-  private static String login(Request req, Response res, LoginAttempt loginAttempt) throws IOException {
+  private String login(Request req, Response res, LoginAttempt loginAttempt) throws IOException {
     Profile profile = PROFILE_STORE.readFromPath(PROFILE_STORE.getPathForId(loginAttempt.getId()));
 
     if (profile == null || !getLoginSecret(profile.getId()).equals(loginAttempt.password)) {
@@ -89,7 +96,7 @@ public class SecurityApi {
     return "";
   }
 
-  public static String logout(Request req, Response res) {
+  public String logout(Request req, Response res) {
     req.session().attribute("profile", null);
     res.redirect("/login");
     return "";
@@ -123,6 +130,7 @@ public class SecurityApi {
     }
   }
 
+  @Deprecated
   public static void teamFilter(Request req, Response res) {
     Profile prof = getProfile(req);
     if (prof == null) {
@@ -133,6 +141,7 @@ public class SecurityApi {
     }
   }
 
+  @Deprecated
   public static void judgeFilter(Request req, Response res) {
     Profile prof = getProfile(req);
     if (prof == null) {
@@ -143,6 +152,7 @@ public class SecurityApi {
     }
   }
 
+  @Deprecated
   public static void adminFilter(Request req, Response res) {
     Profile prof = getProfile(req);
     if (prof == null) {

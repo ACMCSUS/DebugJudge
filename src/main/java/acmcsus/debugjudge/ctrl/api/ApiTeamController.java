@@ -40,7 +40,7 @@
 //  @Deprecated
 //  private static String newSubmission(Request req, Response res) {
 //    if (getCompetitionState() != CompetitionState.STARTED) {
-//      SocketHandler.alert(SecurityApi.getProfileNonNull(req), "Can't submit right now!");
+//      BaseSocketService.alert(SecurityApi.getProfileNonNull(req), "Can't submit right now!");
 //      throw halt(400);
 //    }
 //

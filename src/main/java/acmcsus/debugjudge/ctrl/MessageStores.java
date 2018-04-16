@@ -65,17 +65,14 @@ public class MessageStores {
     }
 
     public M readFromPath(Path p) throws IOException {
-      try {
-        BufferedReader reader = newBufferedReader(p);
-        M.Builder mBuilder = newBuilder();
-        TextFormat.merge(reader, mBuilder);
-        reader.close();
-        return (M) mBuilder.build();
+      if (!Files.isRegularFile(p)) {
+        throw new NoSuchFileException(p.toString());
       }
-      catch (IOException ioe) {
-        logger.error("error reading path " + p, ioe);
-        return null;
-      }
+      BufferedReader reader = newBufferedReader(p);
+      M.Builder mBuilder = newBuilder();
+      TextFormat.merge(reader, mBuilder);
+      reader.close();
+      return (M) mBuilder.build();
     }
 
     public Stream<M> streamAll() {
@@ -208,8 +205,15 @@ public class MessageStores {
       Submission.Builder builder = Submission.newBuilder(submission);
 
       builder.clearJudgeId();
-      builder.clearJudgement();
-      builder.clearJudgementMessage();
+
+      switch (builder.getValueCase()) {
+        case ALGORITHMIC_SUBMISSION: {
+          builder.getAlgorithmicSubmissionBuilder()
+              .clearCompileResult()
+              .clearCaseResults();
+          break;
+        }
+      }
 
       return super.clearProtectedFields(builder.build());
     }
@@ -267,7 +271,6 @@ public class MessageStores {
         while (Files.exists(profileDirectoryPath.resolve("prof" + id))) {
           id++;
         }
-        createDirectories(profileDirectoryPath.resolve("prof" + id + "/submissions"));
         builder.setId(id);
       }
 
@@ -304,11 +307,18 @@ public class MessageStores {
     public Problem clearProtectedFields(Problem problem) {
       Problem.Builder builder = Problem.newBuilder(problem);
 
-      if (builder.getValueCase() == Problem.ValueCase.DEBUGGING_PROBLEM) {
-        builder.getDebuggingProblemBuilder().clearAnswer();
-      }
-      else {
-        logger.warn("Did not clear answer field for problem of type: {}", builder.getValueCase());
+      switch (builder.getValueCase()) {
+        case DEBUGGING_PROBLEM: {
+          builder.getDebuggingProblemBuilder().clearAnswer();
+          break;
+        }
+        case ALGORITHMIC_PROBLEM: {
+          builder.getAlgorithmicProblemBuilder().clearValidatorProgram();
+          break;
+        }
+        default: {
+          logger.warn("Did not clear answer field for problem of type: {}", builder.getValueCase());
+        }
       }
 
       return super.clearProtectedFields(builder.build());
@@ -365,117 +375,7 @@ public class MessageStores {
     }
   }
 
-  //  public static List<Problem> getProblems() throws IOException {
-//    if (problems == null) {
-//      readProblems();
-//    }
-//    return problems;
-//  }
-//
-//  public static void readProfile(long id) {
-//    readProfile(profileDirectoryPath.resolve(format("prof%d/profile.textproto", id)));
-//  }
-//
-//  public static void readProfile(Path profilePath) {
-//    try {
-//      Profile.Builder builder = Profile.newBuilder();
-//      TextFormat.merge(newBufferedReader(profilePath), builder);
-//      profilesById.put(builder.getId(), builder.build());
-//    }
-//    catch (IOException ioexception) {
-//      logger.error("error reading profile from " + profilePath, ioexception);
-//    }
-//  }
-//
-//  public static void readProfiles() throws IOException {
-//  }
-//
-//  public static Profile getProfile(long id) throws IOException {
-//    if (!profilesById.containsKey(id)) {
-//      readProfile(id);
-//    }
-//    return profilesById.get(id);
-//  }
-//
-//  public static long createProfile(Profile profile) throws IOException {
-//
-//  }
-//
-//  public static Collection<Profile> getTeams() throws IOException {
-//    if (profilesById.isEmpty()) {
-//      readProfiles();
-//    }
-//    return profilesById.values().stream()
-//      .filter(p -> p.getProfileType() == Profile.ProfileType.TEAM)
-//      .collect(Collectors.toCollection(ArrayList::new));
-//  }
-//
-//  public static Submission[] getSubmissionsForTeam(Profile profile) throws IOException {
-//    Path teamSubDirectory = profileDirectoryPath
-//      .resolve(format("prof%d/submissions", profile.getId()));
-//    createDirectories(teamSubDirectory);
-//
-//    Stream<Path> subPaths = Files.find(teamSubDirectory, 2,
-//      (path, bfa) -> bfa.isRegularFile() && path.toFile().getName().endsWith(".textproto"));
-//
-//    return subPaths
-//      .map(FileStore::getSubmissionFromPath)
-//      .filter(Objects::nonNull)
-//      .toArray(Submission[]::new);
-//  }
-//
-//  public static Submission getSubmissionFromPath(Path path) {
-//    try {
-//      Submission.Builder builder = Submission.newBuilder();
-//      TextFormat.merge(Files.newBufferedReader(path), builder);
-//      return builder.build();
-//    }
-//    catch (IOException e) {
-//      logger.warn("Error reading submission from " + path, e);
-//      return null;
-//    }
-//  }
-//
-//  public static Submission getSubmissionFromIds(Long tid, Long pid, Long sid) {
-//    Path submissionPath = profileDirectoryPath.resolve(
-//      format("prof%d/submissions/prob%d/sub%d.textproto", tid, pid, sid));
-//
-//    return getSubmissionFromPath(submissionPath);
-//  }
-//
-//  public static String createSubmission(Submission submission) throws IOException {
-//    Path submissionPath = profileDirectoryPath.resolve(
-//      format("prof%d/submissions/prob%d/sub%d.textproto",
-//        submission.getTeamId(),
-//        submission.getProblemId(),
-//        submission.getSubmissionTimeSeconds()));
-//
-//    createDirectories(submissionPath.getParent());
-//
-////    submission(format("prof%d/prob%d/%d",
-////      submission.getTeamId(),
-////      submission.getProblemId(),
-////      submission.getSubmissionTimeMillis()));
-//
-//    BufferedWriter writer = newBufferedWriter(submissionPath);
-//    TextFormat.print(submission, writer);
-//    writer.close();
-//  }
-//
-//  public static void saveSubmission(Submission submission, Profile profile, SubmissionJudgement
-// ruling) {
-//    Path submissionPath =
-//
-//    Submission.Builder builder = Submission.newBuilder(getSubmissionFromPath(submissionPath));
-//    builder.setJudgement(ruling);
-//    builder.setJudgementMessage();
-//
-//    if (!Files.exists(submissionPath)) {
-//      throw new RuntimeException("Tried to save ruling for a submission that doesn't exist");
-//    }
-//  }
-//
-//  // TODO: Make this more secure? Not strictly necessary.
+// TODO: Make this more secure? Not strictly necessary.
   public static void writeLoginSecret(long id, String secret) throws IOException {
     Path secretPath = profileDirectoryPath.resolve(
         format("prof%d/loginSecret.txt", id));

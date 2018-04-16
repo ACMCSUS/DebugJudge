@@ -6,13 +6,12 @@ import acmcsus.debugjudge.proto.Competition.*;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
-import java.util.stream.Collectors;
+import com.google.inject.*;
 import spark.*;
 
 import java.io.*;
 import java.util.*;
 
-import static acmcsus.debugjudge.ctrl.CompetitionController.getCompetitionState;
 import static acmcsus.debugjudge.ctrl.MessageStores.PROBLEM_STORE;
 import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
 import static spark.Spark.*;
@@ -36,13 +35,17 @@ public class ApiBaseController {
     return writeForView(PROFILE_STORE.readAll().toArray(), Views.PublicView.class);
   }
 
+  @Inject
+  static CompetitionController competitionController;
+
   private static String getProblems(Request req, Response res) throws IOException {
     Profile profile = SecurityApi.getProfileNonNull(req);
 
     // TODO: This is unnecessary, useful for debugging
 //    FileStore.readProblems();
 
-    if (getCompetitionState() == CompetitionState.WAITING && profile.getProfileType() == Profile.ProfileType.TEAM) {
+    if (competitionController.getCompetitionState() == CompetitionState.WAITING &&
+        profile.getProfileType() == Profile.ProfileType.TEAM) {
       return "[]";
     }
 

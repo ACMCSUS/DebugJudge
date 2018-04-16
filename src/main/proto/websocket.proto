@@ -30,6 +30,8 @@ message C2SMessage {
 
   message LoginMessage {
     string nonce = 1;
+    int32 id = 2;
+    string pass = 3;
   }
 }
 
@@ -60,6 +62,7 @@ message S2CMessage {
   }
   message LoginResultMessage {
     LoginResult value = 1;
+    Profile profile = 2;
 
     enum LoginResult {
       UNKNOWN = 0;

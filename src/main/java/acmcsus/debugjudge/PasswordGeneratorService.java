@@ -1,23 +1,16 @@
 package acmcsus.debugjudge;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.*;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Scanner;
+import com.google.inject.*;
 
-/**
- * Created by merrillm on 4/4/17.
- */
-public class PasswordGenerator {
+import java.io.*;
+import java.security.*;
+import java.util.*;
 
-  private PasswordGenerator() { /* Static */ }
+public class PasswordGeneratorService {
 
-  private static SecureRandom random = new SecureRandom();
+  private SecureRandom random = new SecureRandom();
 
-  private static String[] adjectives = new String[]{
+  private String[] adjectives = new String[]{
     "ace", "amazing", "amber", "artificial", "awesome", "awful",
     "basic", "bendy", "bent", "blue", "burnt", "bright",
     "clear", "clueless", "computerized", "copper",
@@ -30,7 +23,7 @@ public class PasswordGenerator {
     "wacky", "wavy", "white",
   };
 
-  private static String[] nouns = new String[]{
+  private String[] nouns = new String[]{
     "Aardvark", "Academy", "Animal", "Arcade", "Assembler",
     "Barber", "Barbell", "Bell", "Bicycle", "Bingo", "Blockade",
     "Candle", "Chip", "Circle", "Coach", "Competition", "Compiler",
@@ -46,7 +39,8 @@ public class PasswordGenerator {
     "Shell", "Software",
   };
 
-  static {
+  @Inject
+  PasswordGeneratorService() {
     Map<String, String> env = System.getenv();
 
     if (env.containsKey("PASSWORD_ADJECTIVES")) {
@@ -67,7 +61,7 @@ public class PasswordGenerator {
     }
   }
 
-  private static String[] read(String path) throws IOException {
+  private String[] read(String path) throws IOException {
     Scanner scn = new Scanner(new File(path));
     ArrayList<String> tokens = new ArrayList<>();
 
@@ -76,7 +70,7 @@ public class PasswordGenerator {
     return (String[]) tokens.toArray();
   }
 
-  public static String randomPassword() {
+  public String randomPassword() {
 //    byte[] tailBytes = new byte[2];
 //    random.nextBytes(tailBytes);
     // -1 signum means we get a dash in the password before the hex bit.

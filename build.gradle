@@ -30,14 +30,13 @@ description = """"""
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-mainClassName = "acmcsus.debugjudge.DebugJudgeMain"
+mainClassName = "acmcsus.debugjudge.Hub"
 
 repositories {
    maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
 
-// https://mvnrepository.com/artifact/org.eclipse.jetty.aggregate/jetty-all
   compile "io.reactivex.rxjava2:rxjava:2.1.12"
   compile "com.google.inject:guice:4.1.0"
 
@@ -56,15 +55,6 @@ dependencies {
   compile group: 'org.apache.commons', name: 'commons-csv', version:'1.4'
 
   testCompile group: 'junit', name: 'junit', version:'4.12'
-}
-
-task buildApp(type: NpmTask) {
-  workingDir = file("${project.projectDir}/")
-  args = ['run-script', 'buildall']
-}
-task buildJudge(type: NpmTask) {
-  workingDir = file("${project.projectDir}/")
-  args = ['run-script', 'build-judge']
 }
 
 protobuf {
@@ -86,17 +76,35 @@ protobuf {
   }
 }
 
-//create a single Jar with all dependencies
-task hubJar(type: Jar) {
+task problemValidatorJar(type: Jar) {
   manifest {
-    attributes 'Implementation-Title': 'Main Jar',
+    attributes 'Implementation-Title': 'Problem Validator Jar',
         'Implementation-Version': version,
-        'Main-Class': 'acmcsus.debugjudge.DebugJudgeMain'
+        'Main-Class': 'acmcsus.debugjudge.ProblemValidator'
   }
-  baseName = project.name + '-hub'
+  baseName = project.name + '-problemvalidator'
   doFirst {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
   }
   exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
   with jar
+}
+
+task hubJar(type: Jar) {
+    manifest {
+      attributes 'Implementation-Title': 'Main Jar',
+          'Implementation-Version': version,
+          'Main-Class': 'acmcsus.debugjudge.Hub'
+    }
+    baseName = project.name + '-hub'
+  doFirst {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  }
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+  with jar
+}
+
+task runAutoJudge(type: JavaExec) {
+  classpath sourceSets.main.runtimeClasspath
+  main = "acmcsus.debugjudge.autojudge.AutoJudgeMain"
 }
