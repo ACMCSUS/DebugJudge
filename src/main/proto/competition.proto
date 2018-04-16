@@ -19,6 +19,13 @@ enum SubmissionJudgement {
   JUDGEMENT_FAILURE = 2;
 }
 
+message ExecutionResult {
+  string result_out = 1;
+  string result_err = 2;
+  int32 exit_code = 3;
+  int32 time_seconds = 4;
+}
+
 message Submission {
 
   int32 problem_id = 2;
@@ -44,10 +51,11 @@ message Submission {
     string source_code = 2;
     string language = 3;
 
-    repeated AlgorithmicCaseResult execution_result = 4;
+    ExecutionResult compile_result = 4;
+    map<int32, ExecutionResult> case_results = 5;
 
-    SubmissionJudgement preliminary_judgement = 5;
-    string preliminary_judgement_message = 6;
+    SubmissionJudgement preliminary_judgement = 6;
+    string preliminary_judgement_message = 7;
   }
 
   message List {
@@ -105,8 +113,8 @@ message Problem {
   message AlgorithmicProblemValue {
 
     string test_case_directory = 2;
-    uint64 time_limit_seconds = 3;
-    uint64 memory_limit_megabytes = 4;
+    int32 time_limit_seconds = 3;
+    int32 memory_limit_megabytes = 4;
 
     oneof validator {
       string validator_program = 5;
@@ -146,10 +154,4 @@ message Scoreboard {
     int32 score = 5;
     int32 penalty = 6;
   }
-}
-
-message AlgorithmicCaseResult {
-  string input = 1;
-  string expected = 2;
-  string actual = 3;
 }

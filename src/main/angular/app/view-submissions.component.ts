@@ -92,14 +92,22 @@ export class SubmissionsViewComponent implements AfterViewInit, OnDestroy {
       // .sort((a, b) =>
       //     Long.fromValue(b.submissionTimeSeconds).toNumber() -
       //     Long.fromValue(a.submissionTimeSeconds).toNumber())
-          .map(sub =>
-              new SubmissionTableRow(
-                  sub.teamId,
-                  this.problemNames[sub.problemId],
-                  Math.floor(Long.fromValue(sub.submissionTimeSeconds).toInt() / 60),
-                  this.judgementNames[sub.judgement],
-                  sub.judgementMessage,
-                  sub));
+          .map(sub => {
+            if (!(sub.judgementMessage && sub.judgementMessage.length) &&
+                sub.algorithmicSubmission &&
+                sub.algorithmicSubmission.preliminaryJudgementMessage) {
+              sub.judgementMessage =
+                  'Preliminary: ' + sub.algorithmicSubmission.preliminaryJudgementMessage;
+            }
+
+            return new SubmissionTableRow(
+                sub.teamId,
+                this.problemNames[sub.problemId],
+                Math.floor(Long.fromValue(sub.submissionTimeSeconds).toInt() / 60),
+                this.judgementNames[sub.judgement],
+                sub.judgementMessage,
+                sub)
+          });
 
       this.submissionsTable.renderRows();
     });

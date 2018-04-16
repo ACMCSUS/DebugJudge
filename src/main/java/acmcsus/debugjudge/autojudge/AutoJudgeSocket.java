@@ -1,6 +1,7 @@
 package acmcsus.debugjudge.autojudge;
 
 import acmcsus.debugjudge.proto.AutoJudge.*;
+import acmcsus.debugjudge.proto.AutoJudge.AJ2SMessage.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.WebSocket.*;
 import org.eclipse.jetty.websocket.api.*;
@@ -22,12 +23,12 @@ public class AutoJudgeSocket {
 
   private static final Logger logger = LoggerFactory.getLogger(AutoJudgeSocket.class);
 
-  private final Map<Submission.ValueCase, Function<Submission, ExecutionResult>> executorMap;
+  private final Map<Submission.ValueCase, Function<Submission, AutoJudgeResultMessage>> executorMap;
 
   @SuppressWarnings("unused")
   private Session session = null;
 
-  AutoJudgeSocket(Map<Submission.ValueCase, Function<Submission, ExecutionResult>> executorMap) {
+  AutoJudgeSocket(Map<Submission.ValueCase, Function<Submission, AutoJudgeResultMessage>> executorMap) {
     this.executorMap = requireNonNull(executorMap);
   }
 
@@ -113,7 +114,7 @@ public class AutoJudgeSocket {
       return;
     }
 
-    Function<Submission, ExecutionResult> executor =
+    Function<Submission, AutoJudgeResultMessage> executor =
         executorMap.get(submission.getValueCase());
 
     if (executor == null) {
@@ -121,25 +122,26 @@ public class AutoJudgeSocket {
       return;
     }
 
-    ExecutionResult result;
+    AutoJudgeResultMessage result;
 
     try {
       result = executor.apply(submission);
     }
     catch (Exception e) {
       logger.error("Error running submission " + shortDebugString(submission), e);
-      result = ExecutionResult.INTERNAL_ERROR_RESULT;
+      result = AutoJudgeResultMessage.newBuilder()
+          .setPreliminaryJudgement(SubmissionJudgement.JUDGEMENT_FAILURE)
+          .setPreliminaryJudgementMessage(PreliminaryJudgementCode.INTERNAL_ERROR_MESSAGE)
+          .build();
     }
 
-    logger.info("Submission result: {} {}", result.judgement.name(), result.judgementMessage);
+    logger.info("Submission result: {}", shortDebugString(result));
 
     sendMessage(this.session, AJ2SMessage.newBuilder()
-        .setSubmissionJudgementMessage(AJ2SMessage.AutoJudgeResultMessage.newBuilder()
+        .setSubmissionJudgementMessage(AutoJudgeResultMessage.newBuilder(result)
             .setTeamId(submission.getTeamId())
             .setProblemId(submission.getProblemId())
-            .setSubmissionId(submission.getSubmissionTimeSeconds())
-            .setPreliminaryJudgement(result.judgement)
-            .setPreliminaryJudgementMessage(result.judgementMessage)).build());
+            .setSubmissionId(submission.getSubmissionTimeSeconds())).build());
   }
 
   private static void sendMessage(Session session, AJ2SMessage msg) throws IOException {

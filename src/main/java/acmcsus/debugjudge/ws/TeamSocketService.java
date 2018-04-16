@@ -37,6 +37,8 @@ public class TeamSocketService extends ProfileSocketService {
     Consumer<Submission> submissionReloader =
         (sub) -> {
           try {
+            sub = SUBMISSION_STORE.clearProtectedFields(sub);
+
             baseSocketService.sendMessage(ctx.session, S2CMessage.newBuilder()
                 .setReloadSubmissionMessage(ReloadSubmissionMessage.newBuilder()
                     .setSubmission(sub))

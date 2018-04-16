@@ -137,7 +137,8 @@ public class StateService {
       case ALGORITHMIC_SUBMISSION:
         builder.setAlgorithmicSubmission(submission.getAlgorithmicSubmission());
         builder.getAlgorithmicSubmissionBuilder()
-            .clearExecutionResult()
+            .clearCompileResult()
+            .clearCaseResults()
             .clearPreliminaryJudgement()
             .clearPreliminaryJudgementMessage();
         break;
@@ -175,6 +176,7 @@ public class StateService {
     try {
       SUBMISSION_STORE.save(submission);
       submissionNeedingJudgingSubject.onNext(submission);
+      submissionRulingSubject.onNext(submission);
     }
     catch (IOException e) {
       logger.error("could not save submission", e);

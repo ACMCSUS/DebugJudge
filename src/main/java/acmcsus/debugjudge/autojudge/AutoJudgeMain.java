@@ -1,6 +1,8 @@
 package acmcsus.debugjudge.autojudge;
 
+import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Algorithmic.*;
+import acmcsus.debugjudge.proto.AutoJudge.AJ2SMessage.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import com.google.protobuf.*;
 import org.eclipse.jetty.websocket.api.*;
@@ -13,7 +15,6 @@ import java.util.*;
 import java.util.function.*;
 
 import static acmcsus.debugjudge.proto.Competition.Submission.ValueCase.ALGORITHMIC_SUBMISSION;
-import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class AutoJudgeMain {
@@ -27,7 +28,7 @@ public class AutoJudgeMain {
     ProgrammingLanguage.List.Builder langs = ProgrammingLanguage.List.newBuilder();
     TextFormat.merge(new FileReader("data/languages.textproto"), langs);
 
-    Map<Submission.ValueCase, Function<Submission, ExecutionResult>> executors = new HashMap<>();
+    Map<Submission.ValueCase, Function<Submission, AutoJudgeResultMessage>> executors = new HashMap<>();
     executors.put(ALGORITHMIC_SUBMISSION, new AlgorithmicExecutor(langs.build()));
 
     AutoJudgeSocket socket = new AutoJudgeSocket(executors);

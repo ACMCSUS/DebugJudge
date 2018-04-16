@@ -18,10 +18,11 @@ message AJ2SMessage {
     int32 problem_id = 2;
     int64 submission_id = 3;
 
-    repeated AlgorithmicCaseResult execution_result = 4;
+    ExecutionResult compile_result = 4;
+    map<int32, ExecutionResult> case_results = 5;
 
-    SubmissionJudgement preliminary_judgement = 5;
-    string preliminary_judgement_message = 6;
+    SubmissionJudgement preliminary_judgement = 6;
+    string preliminary_judgement_message = 7;
   }
 }
 

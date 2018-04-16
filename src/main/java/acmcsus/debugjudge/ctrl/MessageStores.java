@@ -205,13 +205,12 @@ public class MessageStores {
       Submission.Builder builder = Submission.newBuilder(submission);
 
       builder.clearJudgeId();
-      builder.clearJudgement();
-      builder.clearJudgementMessage();
 
       switch (builder.getValueCase()) {
         case ALGORITHMIC_SUBMISSION: {
-          builder.getAlgorithmicSubmissionBuilder().clearPreliminaryJudgement();
-          builder.getAlgorithmicSubmissionBuilder().clearPreliminaryJudgementMessage();
+          builder.getAlgorithmicSubmissionBuilder()
+              .clearCompileResult()
+              .clearCaseResults();
           break;
         }
       }
