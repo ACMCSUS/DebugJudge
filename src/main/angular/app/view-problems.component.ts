@@ -21,6 +21,9 @@ import Problem = acmcsus.debugjudge.Problem;
         <div class="problemDiv" *ngFor="let problem of problems">
           <mat-card>
             <mat-card-title>{{problem.title}}</mat-card-title>
+            <mat-card-subtitle *ngIf="problem.algorithmicProblem">
+              Max Runtime: {{problem.algorithmicProblem.timeLimitSeconds}} Seconds
+            </mat-card-subtitle>
             <hr/>
             <div id="descriptionHtml" class="descriptionHtml"
                  [innerHtml]="problem.descriptionText"></div>
@@ -33,6 +36,13 @@ import Problem = acmcsus.debugjudge.Problem;
     mat-card {
       margin: 10px;
       page-break-before: always;
+    }
+    /deep/p, /deep/ol, /deep/ul {
+      margin-top: 0;
+      line-height: 1.2em;
+    }
+    /deep/h4 {
+      margin-bottom: .1em;
     }
     hr {
       display: none;
@@ -57,9 +67,17 @@ import Problem = acmcsus.debugjudge.Problem;
         margin: .2in auto;
       }
       mat-card-title {
+        text-align: center;
         font-family: "Roboto Mono Light";
         font-size: 24pt;
-        line-height: 24pt;
+        line-height: 1.2em;
+        margin-bottom: 0;
+      }
+      mat-card-subtitle {
+        text-align: center;
+        font-family: "Roboto Mono Light";
+        font-size: 12pt;
+        line-height: 1.2em;
         margin-bottom: 0;
       }
       .descriptionHtml {
