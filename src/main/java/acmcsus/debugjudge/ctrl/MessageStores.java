@@ -1,13 +1,15 @@
 package acmcsus.debugjudge.ctrl;
 
 import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.proto.Competition.Problem.*;
+import acmcsus.debugjudge.proto.Competition.Problem.AlgorithmicProblemValue.*;
 import com.google.protobuf.*;
-import com.google.protobuf.Message.*;
 import org.slf4j.*;
 import spark.*;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.List;
 import java.util.*;
 import java.util.stream.*;
 
@@ -21,8 +23,9 @@ public class MessageStores {
 
   private static Logger logger = LoggerFactory.getLogger(MessageStore.class);
 
-  private static Path problemDirectoryPath = Paths.get("data/problems/");
-  private static Path profileDirectoryPath = Paths.get("data/profiles/");
+  private static Path dataDirectoryPath = Paths.get(System.getenv().getOrDefault("DATA_DIR", "data"));
+  private static Path problemDirectoryPath = dataDirectoryPath.resolve("problems/");
+  private static Path profileDirectoryPath = dataDirectoryPath.resolve("profiles/");
 
   public static final SubmissionStore SUBMISSION_STORE = new SubmissionStore();
   public static final ProfileStore PROFILE_STORE = new ProfileStore();
@@ -132,7 +135,7 @@ public class MessageStores {
   public static class SubmissionStore extends MessageStore<Submission> {
 
     @Override
-    public Builder newBuilder() {
+    public Submission.Builder newBuilder() {
       return Submission.newBuilder();
     }
 
@@ -156,7 +159,7 @@ public class MessageStores {
               p = profileDirectory.relativize(p);
               return bfa.isRegularFile() &&
                   p.getName(0).toString().matches("submissions") &&
-                  p.getName(1).toString().matches("prob\\d+") &&
+                  p.getName(1).toString().matches("prob-?\\d+") &&
                   p.getFileName().toString().matches("sub\\d+.textproto");
             });
       }
@@ -181,7 +184,7 @@ public class MessageStores {
               return bfa.isRegularFile() &&
                   p.getName(0).toString().matches("prof\\d+") &&
                   p.getName(1).toString().matches("submissions") &&
-                  p.getName(2).toString().matches("prob\\d+") &&
+                  p.getName(2).toString().matches("prob-?\\d+") &&
                   p.getFileName().toString().matches("sub\\d+.textproto");
             });
       }
@@ -196,7 +199,7 @@ public class MessageStores {
 //        (p, bfa) ->
 //          bfa.isRegularFile() &&
 //            p.getName(0).toString().matches("submissions") &&
-//            p.getName(1).toString().matches("prob\\d+") &&
+//            p.getName(1).toString().matches("prob-?\\d+") &&
 //            p.getFileName().toString().equals("sub\\d+.textproto"));
 //    }
 
@@ -222,7 +225,7 @@ public class MessageStores {
   public static class ProfileStore extends MessageStore<Profile> {
 
     @Override
-    public Builder newBuilder() {
+    public Profile.Builder newBuilder() {
       return Profile.newBuilder();
     }
 
@@ -299,7 +302,7 @@ public class MessageStores {
     }
 
     @Override
-    public Builder newBuilder() {
+    public Problem.Builder newBuilder() {
       return Problem.newBuilder();
     }
 
@@ -313,7 +316,10 @@ public class MessageStores {
           break;
         }
         case ALGORITHMIC_PROBLEM: {
-          builder.getAlgorithmicProblemBuilder().clearValidatorProgram();
+          builder.getAlgorithmicProblemBuilder()
+              .clearValidator()
+              .clearTestCase()
+              .clearTestCaseDirectory();
           break;
         }
         default: {
@@ -363,7 +369,7 @@ public class MessageStores {
             else if (chunk.startsWith("POSTCODE")) {
               debugBuilder.setPostcode(chunk.substring(chunk.indexOf('\n') + 1));
             }
-            else if (!chunk.startsWith("IGNORE")){
+            else if (!chunk.startsWith("IGNORE")) {
               logger.error("Invalid problem definition file {} for problem {}",
                   definitionFile, p);
             }
@@ -371,11 +377,52 @@ public class MessageStores {
           builder.setDebuggingProblem(debugBuilder);
         }
       }
+      else if (builder.getValueCase() == Problem.ValueCase.ALGORITHMIC_PROBLEM) {
+        AlgorithmicProblemValue.Builder algoBuilder = builder.getAlgorithmicProblemBuilder();
+
+        if (algoBuilder.getTimeLimitSeconds() == 0) {
+          algoBuilder.setTimeLimitSeconds(60);
+        }
+
+        if (algoBuilder.getMemoryLimitMegabytes() == 512) {
+          algoBuilder.setTimeLimitSeconds(60);
+        }
+
+        String testCaseDirectory = builder.getAlgorithmicProblem().getTestCaseDirectory();
+        if (!(testCaseDirectory == null || testCaseDirectory.isEmpty())) {
+          Files.find(p.getParent().resolve(testCaseDirectory), 1,
+              (casePath, bfa) -> {
+                String fileName = casePath.getFileName().toString();
+                return bfa.isRegularFile() &&
+                    fileName.endsWith(".inp") &&
+                    Files.exists(
+                        casePath.getParent().resolve(fileName.replaceAll("\\.inp\\b", ".exp")));
+              })
+              .map((casePath) -> {
+                String fileName = casePath.getFileName().toString();
+                AlgorithmicTestCase.Builder testCase = AlgorithmicTestCase.newBuilder();
+                Path expPath =
+                    casePath.getParent().resolve(fileName.replaceAll("\\.inp\\b", ".exp"));
+
+                try {
+                  testCase.setInputBytes(ByteString.copyFrom(Files.readAllBytes(casePath)));
+                  testCase.setExpectedBytes(ByteString.copyFrom(Files.readAllBytes(expPath)));
+
+                  return testCase;
+                }
+                catch (IOException e) {
+                  return null;
+                }
+              })
+              .filter(Objects::nonNull)
+              .forEach(algoBuilder::addTestCase);
+        }
+      }
       return builder.build();
     }
   }
 
-// TODO: Make this more secure? Not strictly necessary.
+  // TODO: Make this more secure? Not strictly necessary.
   public static void writeLoginSecret(long id, String secret) throws IOException {
     Path secretPath = profileDirectoryPath.resolve(
         format("prof%d/loginSecret.txt", id));
