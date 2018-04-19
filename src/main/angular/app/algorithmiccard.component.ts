@@ -23,7 +23,7 @@ import Problem = acmcsus.debugjudge.Problem;
         <!--<div class="submissiondiv">-->
         <mat-label>
           Upload Source File (Not "executable" file):
-          <input type="file" (change)="uploaded($event.target.files)">
+          <input #fileSelector type="file" (change)="uploaded($event.target.files)">
         </mat-label>
 
         <mat-select placeholder="Select Language" [(ngModel)]="language">
@@ -38,7 +38,7 @@ import Problem = acmcsus.debugjudge.Problem;
       <mat-card-actions>
         <button mat-button (click)="submit();"
                 [disabled]="solved || !(uploadedFile && language && sourceCode)">Submit</button>
-        <button mat-button (click)="debug();">Debug</button>
+        <button mat-button (click)="reset();">Reset</button>
       </mat-card-actions>
     </mat-card>
   `,
@@ -92,6 +92,9 @@ export class AlgorithmicCardComponent implements OnInit, OnDestroy {
   @Input("solved")
   solved = false;
 
+  @ViewChild('fileSelector')
+  fileSelector: any;
+
   uploadedFile: File = undefined;
   language: string = undefined;
   sourceCode: string = undefined;
@@ -116,6 +119,7 @@ export class AlgorithmicCardComponent implements OnInit, OnDestroy {
         language: this.language,
       }
     }));
+    this.reset();
   }
 
   uploaded(files: FileList): void {
@@ -136,5 +140,9 @@ export class AlgorithmicCardComponent implements OnInit, OnDestroy {
   }
 
   reset(): void {
+    this.fileSelector.nativeElement.value = "";
+    this.uploadedFile = undefined;
+    this.language = undefined;
+    this.sourceCode = undefined;
   }
 }
