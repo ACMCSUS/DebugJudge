@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.List;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessage;
 
 public abstract class ProfileSocketService {
 
@@ -38,7 +39,7 @@ public abstract class ProfileSocketService {
   protected void onScoreboardReceiverConnect(WebSocketContext ctx) throws IOException {
     Competition.Scoreboard lastScoreboard = scoreboardBroadcaster.getLastScoreboard();
     if (lastScoreboard != null) {
-      baseSocketService.sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
+      sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
           .setScoreboardUpdateMessage(WebSocket.S2CMessage.ScoreboardUpdateMessage.newBuilder()
               .setScoreboard(lastScoreboard))
           .build());
@@ -48,19 +49,19 @@ public abstract class ProfileSocketService {
   protected void onOfficialConnect(WebSocketContext ctx) throws IOException {
     Consumer<Competition.Submission> submissionReloader =
         (sub) ->
-            baseSocketService.sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
+            sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
                 .setReloadSubmissionMessage(WebSocket.S2CMessage.ReloadSubmissionMessage.newBuilder()
                     .setSubmission(sub))
                 .build());
 
     Consumer<List<Competition.Problem>> problemReloader =
         (problems) ->
-            baseSocketService.sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
+            sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
                 .setReloadProblemsMessage(WebSocket.S2CMessage.ReloadProblemsMessage.newBuilder()
                     .setProblems(Competition.Problem.List.newBuilder()
                         .addAllValue(problems))).build());
 
-    baseSocketService.sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
+    sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
         .setReloadSubmissionsMessage(WebSocket.S2CMessage.ReloadSubmissionsMessage.newBuilder()
             .setSubmissions(Competition.Submission.List.newBuilder()
                 .addAllValue(SUBMISSION_STORE.readAll())))

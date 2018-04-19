@@ -1,5 +1,6 @@
 package acmcsus.debugjudge.autojudge;
 
+import acmcsus.debugjudge.proto.Algorithmic.*;
 import acmcsus.debugjudge.proto.AutoJudge.*;
 import acmcsus.debugjudge.proto.AutoJudge.AJ2SMessage.*;
 import acmcsus.debugjudge.proto.Competition.*;
@@ -11,11 +12,10 @@ import org.slf4j.*;
 import java.io.*;
 import java.nio.*;
 import java.util.*;
-import java.util.function.*;
+import java.util.concurrent.*;
 
 import static acmcsus.debugjudge.proto.Competition.Submission.ValueCase.VALUE_NOT_SET;
 import static com.google.protobuf.TextFormat.shortDebugString;
-import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.HOURS;
 
 @WebSocket(maxTextMessageSize = 64*1024)
@@ -23,13 +23,24 @@ public class AutoJudgeSocket {
 
   private static final Logger logger = LoggerFactory.getLogger(AutoJudgeSocket.class);
 
-  private final Map<Submission.ValueCase, Function<Submission, AutoJudgeResultMessage>> executorMap;
+  private final Integer id;
+  private final String pass;
+
+  private final ConcurrentHashMap<Integer, Problem> problemMap;
+  private final ConcurrentHashMap<String, ProgrammingLanguage> languageMap;
+
+  private final AlgorithmicExecutor algorithmicExecutor;
 
   @SuppressWarnings("unused")
   private Session session = null;
 
-  AutoJudgeSocket(Map<Submission.ValueCase, Function<Submission, AutoJudgeResultMessage>> executorMap) {
-    this.executorMap = requireNonNull(executorMap);
+  AutoJudgeSocket(Integer id, String pass) {
+    this.id = id;
+    this.pass = pass;
+
+    this.problemMap = new ConcurrentHashMap<>();
+    this.languageMap = new ConcurrentHashMap<>();
+    this.algorithmicExecutor = new AlgorithmicExecutor();
   }
 
   @OnWebSocketConnect
@@ -40,7 +51,7 @@ public class AutoJudgeSocket {
 
     sendMessage(session, C2SMessage.newBuilder()
         .setLoginMessage(C2SMessage.LoginMessage.newBuilder()
-            .setId(901).setPass("pass")).build());
+            .setId(id).setPass(pass)).build());
   }
 
   @OnWebSocketClose
@@ -53,6 +64,7 @@ public class AutoJudgeSocket {
     S2CMessage msg = null;
     try {
       msg = S2CMessage.parseFrom(inputStream);
+      logger.info("Received: " + shortDebugString(msg));
 
       switch (msg.getValueCase()) {
         case S2AJMESSAGE: {
@@ -61,8 +73,36 @@ public class AutoJudgeSocket {
           switch (s2aj.getValueCase()) {
             case EXECUTESUBMISSION: {
               executeSubmission(s2aj.getExecuteSubmission());
+              break;
+            }
+            case RELOADLANGUAGESMESSAGE: {
+              HashMap<String, ProgrammingLanguage> languageMap = new HashMap<>();
+              ProgrammingLanguage.List languages = s2aj.getReloadLanguagesMessage().getValue();
+              for (ProgrammingLanguage language : languages.getLanguageList()) {
+                if (language.getName().isEmpty() || languageMap.containsKey(language.getName())) {
+                  logger.error("Languages should have a unique name assigned to them," +
+                      "conflict found for " + language.getName());
+                }
+                else {
+                  languageMap.put(language.getName(), language);
+                }
+              }
+
+              this.languageMap.putAll(languageMap);
+              this.languageMap.keySet().retainAll(languageMap.keySet());
+              break;
             }
           }
+          break;
+        }
+        case RELOADPROBLEMSMESSAGE: {
+          HashMap<Integer, Problem> problemMap = new HashMap<>();
+          Problem.List problems = msg.getReloadProblemsMessage().getProblems();
+          for (Problem problem : problems.getValueList()) {
+            problemMap.put(problem.getId(), problem);
+          }
+          this.problemMap.putAll(problemMap);
+          this.problemMap.keySet().retainAll(problemMap.keySet());
           break;
         }
         case LOGINRESULTMESSAGE: {
@@ -90,6 +130,7 @@ public class AutoJudgeSocket {
         }
         default: {
           logger.debug("Server sent ignored message: " + shortDebugString(msg));
+          break;
         }
       }
     }
@@ -114,18 +155,23 @@ public class AutoJudgeSocket {
       return;
     }
 
-    Function<Submission, AutoJudgeResultMessage> executor =
-        executorMap.get(submission.getValueCase());
-
-    if (executor == null) {
-      logger.error("No known executor for submission type: " + submission.getValueCase());
-      return;
-    }
+    Problem problem = problemMap.get(submission.getProblemId());
+    ProgrammingLanguage language =
+        this.languageMap.get(submission.getAlgorithmicSubmission().getLanguage());
 
     AutoJudgeResultMessage result;
 
     try {
-      result = executor.apply(submission);
+      switch (problem.getValueCase()) {
+        case ALGORITHMIC_PROBLEM: {
+          result = algorithmicExecutor.execute(submission, problem, language);
+          break;
+        }
+        default: {
+          logger.error("No known executor for submission type: " + submission.getValueCase());
+          return;
+        }
+      }
     }
     catch (Exception e) {
       logger.error("Error running submission " + shortDebugString(submission), e);

@@ -1,6 +1,7 @@
 package acmcsus.debugjudge.autojudge;
 
 import acmcsus.debugjudge.proto.*;
+import acmcsus.debugjudge.proto.Algorithmic.*;
 import acmcsus.debugjudge.proto.AutoJudge.AJ2SMessage.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.Competition.Problem.*;
@@ -20,33 +21,15 @@ import java.util.function.Function;
 import static acmcsus.debugjudge.ctrl.MessageStores.PROBLEM_STORE;
 import static com.google.protobuf.TextFormat.shortDebugString;
 
-public class AlgorithmicExecutor implements Function<Competition.Submission, AutoJudgeResultMessage> {
+public class AlgorithmicExecutor {
 
   private static final Logger logger = LoggerFactory.getLogger(AlgorithmicExecutor.class);
 
-  private Map<Integer, Competition.Problem> problemMap;
-  private Map<String, Algorithmic.ProgrammingLanguage> languageMap;
+  public AutoJudgeResultMessage execute(Submission submission, Problem problem,
+                                        ProgrammingLanguage language) {
 
-  public AlgorithmicExecutor(Algorithmic.ProgrammingLanguage.List languages) {
-    problemMap = new HashMap<>();
-    for (Competition.Problem problem : PROBLEM_STORE.readAll()) {
-      problemMap.put(problem.getId(), problem);
-    }
-
-    languageMap = new HashMap<>();
-    for (Algorithmic.ProgrammingLanguage language : languages.getLanguageList()) {
-      if (language.getName().isEmpty() || languageMap.containsKey(language.getName())) {
-        throw new IllegalArgumentException("Languages must have a unique name assigned to them");
-      }
-      languageMap.put(language.getName(), language);
-    }
-  }
-
-  @Override
-  public AutoJudgeResultMessage apply(Competition.Submission submission) {
     AlgorithmicSubmission algorithmicSubmission = submission.getAlgorithmicSubmission();
-
-    Algorithmic.ProgrammingLanguage language = languageMap.get(algorithmicSubmission.getLanguage());
+    AlgorithmicProblemValue algorithmicProblem = problem.getAlgorithmicProblem();
 
     AutoJudgeResultMessage.Builder resultBuilder = AutoJudgeResultMessage.newBuilder();
 
@@ -82,9 +65,6 @@ public class AlgorithmicExecutor implements Function<Competition.Submission, Aut
               .build();
         }
       }
-
-      AlgorithmicProblemValue algorithmicProblem =
-          problemMap.get(submission.getProblemId()).getAlgorithmicProblem();
 
       boolean hasErr = false;
       boolean hasTLE = false;
@@ -127,7 +107,7 @@ public class AlgorithmicExecutor implements Function<Competition.Submission, Aut
     }
   }
 
-  private static String executeCommandFormat(String command, Competition.Submission submission) {
+  private static String executeCommandFormat(String command, Submission submission) {
     String fileName = submission.getAlgorithmicSubmission().getFileName();
 
     if (!fileName.matches("\\w+.\\w+")) {

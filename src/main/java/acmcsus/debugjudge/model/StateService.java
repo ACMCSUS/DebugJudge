@@ -200,4 +200,8 @@ public class StateService {
       logger.error("could not save submission", e);
     }
   }
+
+  public List<Problem> getProblems() {
+    return judgeProblemListSubject.getValue();
+  }
 }

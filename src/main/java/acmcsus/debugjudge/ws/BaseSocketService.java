@@ -1,6 +1,7 @@
 package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.ctrl.*;
+import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.Judge.*;
 import acmcsus.debugjudge.proto.Team.*;
@@ -11,6 +12,7 @@ import io.reactivex.disposables.*;
 import io.reactivex.subjects.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.slf4j.*;
 import spark.*;
 
@@ -24,6 +26,7 @@ import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
 import static acmcsus.debugjudge.ctrl.MessageStores.getLoginSecret;
 import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.JUDGE;
 import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.TEAM;
+import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static java.lang.String.format;
 
@@ -33,7 +36,7 @@ public class BaseSocketService {
 
   private static Logger logger = LoggerFactory.getLogger(BaseSocketService.class);
 
-  private Map<Integer, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
+//  private Map<Integer, Set<Session>> profileSessionMap = new ConcurrentHashMap<>();
   private Map<Session, Profile> sessionProfileMap = new ConcurrentHashMap<>();
   private Map<String, Profile> nonceProfileMap = new ConcurrentHashMap<>();
   private Map<Session, Set<Disposable>> sessionObserversMap = new ConcurrentHashMap<>();
@@ -70,9 +73,9 @@ public class BaseSocketService {
     ctx.profile = sessionProfileMap.remove(session);
     disconnectSubject.onNext(ctx);
 
-    if (ctx.profile != null) {
-      profileSessionMap.get(ctx.profile.getId()).remove(session);
-    }
+//    if (ctx.profile != null) {
+//      profileSessionMap.get(ctx.profile.getId()).remove(session);
+//    }
 
     Set<Disposable> disposables = sessionObserversMap.remove(ctx.session);
     if (disposables != null) {
@@ -107,49 +110,37 @@ public class BaseSocketService {
     }
   }
 
-  public void sendMessage(Session session, S2TMessage msg) throws IOException {
-    sendMessage(session, S2CMessage.newBuilder().setS2TMessage(msg).build());
-  }
-
-  public void sendMessage(Session session, S2JMessage msg) throws IOException {
-    sendMessage(session, S2CMessage.newBuilder().setS2JMessage(msg).build());
-  }
-
-  public void sendMessage(Session session, S2CMessage msg) throws IOException {
-    logger.info("Sent Message: {}", shortDebugString(msg));
-    session.getRemote().sendBytes(ByteBuffer.wrap(msg.toByteArray()));
-  }
-
-  public void sendMessage(Profile profile, S2TMessage msg) {
-    sendMessage(profile.getId(), S2CMessage.newBuilder().setS2TMessage(msg).build());
-  }
-
-  public void sendMessage(Integer profileId, S2TMessage msg) {
-    sendMessage(profileId, S2CMessage.newBuilder().setS2TMessage(msg).build());
-  }
-
-  public void sendMessage(Profile profile, S2JMessage msg) {
-    sendMessage(profile.getId(), S2CMessage.newBuilder().setS2JMessage(msg).build());
-  }
-
-  public void sendMessage(Integer profileId, S2JMessage msg) {
-    sendMessage(profileId, S2CMessage.newBuilder().setS2JMessage(msg).build());
-  }
-
-  public void sendMessage(Profile profile, S2CMessage msg) {
-    sendMessage(profile.getId(), msg);
-  }
-
-  public void sendMessage(Integer profileId, S2CMessage msg) {
-    for (Session session : profileSessionMap.get(profileId)) {
-      try {
-        sendMessage(session, msg);
-      }
-      catch (IOException e) {
-        logger.error("WS: Error while sending: " + shortDebugString(msg), e);
-      }
-    }
-  }
+//
+//  public void sendMessage(Competition.Profile profile, Team.S2TMessage msg) {
+//    sendMessage(profile.getId(), S2CMessage.newBuilder().setS2TMessage(msg).build());
+//  }
+//
+//  public void sendMessage(Integer profileId, Team.S2TMessage msg) {
+//    sendMessage(profileId, S2CMessage.newBuilder().setS2TMessage(msg).build());
+//  }
+//
+//  public void sendMessage(Competition.Profile profile, Judge.S2JMessage msg) {
+//    sendMessage(profile.getId(), S2CMessage.newBuilder().setS2JMessage(msg).build());
+//  }
+//
+//  public void sendMessage(Integer profileId, Judge.S2JMessage msg) {
+//    sendMessage(profileId, S2CMessage.newBuilder().setS2JMessage(msg).build());
+//  }
+//
+//  public void sendMessage(Competition.Profile profile, S2CMessage msg) {
+//    sendMessage(profile.getId(), msg);
+//  }
+//
+//  public void sendMessage(Integer profileId, S2CMessage msg) {
+//    for (Session session : profileSessionMap.get(profileId)) {
+//      try {
+//        SocketSendMessageUtil.sendMessage(session, msg);
+//      }
+//      catch (IOException e) {
+//        logger.error("WS: Error while sending: " + shortDebugString(msg), e);
+//      }
+//    }
+//  }
 
   public void broadcastMessage(S2CMessage msg) {
     for (Map.Entry<Session, Profile> entry : sessionProfileMap.entrySet()) {
@@ -193,11 +184,11 @@ public class BaseSocketService {
       }
 
       if (ctx.profile != null) {
-        if (!profileSessionMap.containsKey(ctx.profile.getId())) {
-          profileSessionMap.put(ctx.profile.getId(), new HashSet<>());
-        }
-
-        profileSessionMap.get(ctx.profile.getId()).add(ctx.session);
+//        if (!profileSessionMap.containsKey(ctx.profile.getId())) {
+//          profileSessionMap.put(ctx.profile.getId(), new HashSet<>());
+//        }
+//
+//        profileSessionMap.get(ctx.profile.getId()).add(ctx.session);
         sessionProfileMap.put(ctx.session, ctx.profile);
 
         ctx.res = S2CMessage.newBuilder()
@@ -242,20 +233,6 @@ public class BaseSocketService {
     }
   }
 
-  public void debug(Profile profile, String message) {
-    try {
-      Set<Session> sessions = profileSessionMap.get(profile.getId());
-      if (sessions != null) {
-        for (Session session : sessions) {
-          debug(session, message);
-        }
-      }
-    }
-    catch (Exception e) {
-      logger.warn("Error while debugging " + profile.getName() + ": ", e);
-    }
-  }
-
   public void debug(Session session, String message) {
     try {
       sendMessage(session, S2CMessage.newBuilder()
@@ -271,16 +248,6 @@ public class BaseSocketService {
           .setAlertMessage(AlertMessage.newBuilder().setMessage(message)).build());
     }
     catch (Exception ignored) {
-    }
-  }
-
-  public void alert(Profile profile, String message) {
-    Set<Session> sessions = profileSessionMap.get(profile.getId());
-
-    if (sessions != null) {
-      for (Session session : sessions) {
-        alert(session, message);
-      }
     }
   }
 

@@ -36,7 +36,7 @@ public class JudgeSocketService extends ProfileSocketService {
 
   @Override
   protected void onDisconnect(WebSocketContext ctx) {
-    judgeQueueService.disconnected(ctx.profile, ctx.session);
+    judgeQueueService.disconnected(ctx.session);
   }
 
   @Override
@@ -49,7 +49,7 @@ public class JudgeSocketService extends ProfileSocketService {
         break;
       }
       case STOPJUDGINGMESSAGE: {
-        judgeQueueService.stopped(ctx.profile);
+        judgeQueueService.stopped(ctx.session);
         break;
       }
       case SUBMISSIONJUDGEMENTMESSAGE: {
@@ -62,7 +62,7 @@ public class JudgeSocketService extends ProfileSocketService {
 
         switch (ruling) {
           case JUDGEMENT_UNKNOWN: {
-            judgeQueueService.defer(ctx.profile);
+            judgeQueueService.defer(ctx.session);
             break;
           }
           case JUDGEMENT_SUCCESS:
@@ -94,7 +94,7 @@ public class JudgeSocketService extends ProfileSocketService {
             .getJudgingPreferencesMessage()
             .getPreferencesMap();
 
-        judgeQueueService.setProfilePreferences(ctx.profile, ctx.session, map);
+        judgeQueueService.setProfilePreferences(ctx.session, map);
         break;
       }
       default: {

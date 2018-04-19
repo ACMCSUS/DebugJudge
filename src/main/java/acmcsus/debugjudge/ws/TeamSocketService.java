@@ -15,6 +15,7 @@ import java.io.*;
 import java.util.*;
 
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessage;
 
 @Singleton
 public class TeamSocketService extends ProfileSocketService {
@@ -39,7 +40,7 @@ public class TeamSocketService extends ProfileSocketService {
           try {
             sub = SUBMISSION_STORE.clearProtectedFields(sub);
 
-            baseSocketService.sendMessage(ctx.session, S2CMessage.newBuilder()
+            sendMessage(ctx.session, S2CMessage.newBuilder()
                 .setReloadSubmissionMessage(ReloadSubmissionMessage.newBuilder()
                     .setSubmission(sub))
                 .build());
@@ -50,13 +51,13 @@ public class TeamSocketService extends ProfileSocketService {
         };
 
     Consumer<List<Problem>> problemReloader =
-        (problems) -> baseSocketService.sendMessage(ctx.session, S2CMessage.newBuilder()
+        (problems) -> sendMessage(ctx.session, S2CMessage.newBuilder()
             .setReloadProblemsMessage(ReloadProblemsMessage.newBuilder()
                 .setProblems(Problem.List.newBuilder().addAllValue(problems))).build());
 
     Predicate<Submission> isTeamsSubmission = (sub) -> sub.getTeamId() == teamId;
 
-    baseSocketService.sendMessage(ctx.session, S2CMessage.newBuilder()
+    sendMessage(ctx.session, S2CMessage.newBuilder()
         .setReloadSubmissionsMessage(ReloadSubmissionsMessage.newBuilder()
             .setSubmissions(Submission.List.newBuilder()
                 .addAllValue(SUBMISSION_STORE.readAll(SUBMISSION_STORE.getPathsForTeam(teamId)))))

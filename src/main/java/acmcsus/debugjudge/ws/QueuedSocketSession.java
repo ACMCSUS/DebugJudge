@@ -7,14 +7,14 @@ import org.eclipse.jetty.websocket.api.*;
 import java.util.*;
 
 @Singleton
-public class ProfileSession {
+public class QueuedSocketSession {
 
   final Competition.Profile profile;
   final Session socketSession;
   Competition.Submission currentSubmission = null;
   Set<Integer> skipProblems = null;
 
-  public ProfileSession(Competition.Profile profile, Session socketSession) {
+  public QueuedSocketSession(Competition.Profile profile, Session socketSession) {
     this.profile = profile;
     this.socketSession = socketSession;
   }

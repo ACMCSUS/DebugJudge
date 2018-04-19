@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.function.*;
 
 import static acmcsus.debugjudge.proto.Competition.Submission.ValueCase.ALGORITHMIC_SUBMISSION;
+import static java.lang.Integer.parseInt;
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class AutoJudgeMain {
@@ -25,13 +27,18 @@ public class AutoJudgeMain {
     // TODO: configuration
     URI uri = URI.create("ws://localhost:4567/ws/connect");
 
-    ProgrammingLanguage.List.Builder langs = ProgrammingLanguage.List.newBuilder();
-    TextFormat.merge(new FileReader("data/languages.textproto"), langs);
+    Integer id;
+    String pass;
 
-    Map<Submission.ValueCase, Function<Submission, AutoJudgeResultMessage>> executors = new HashMap<>();
-    executors.put(ALGORITHMIC_SUBMISSION, new AlgorithmicExecutor(langs.build()));
+    try {
+      id = parseInt(System.getenv("2pc_aj_id"));
+      pass = requireNonNull(System.getenv("2pc_aj_pass"));
+    } catch (RuntimeException re) {
+      logger.error("Could not parse credentials from env!");
+      throw re;
+    }
 
-    AutoJudgeSocket socket = new AutoJudgeSocket(executors);
+    AutoJudgeSocket socket = new AutoJudgeSocket(id, pass);
     WebSocketClient client = new WebSocketClient();
 
     while (true) {

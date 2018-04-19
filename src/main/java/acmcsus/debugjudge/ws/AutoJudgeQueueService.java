@@ -10,9 +10,11 @@ import java.io.*;
 import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
 import static acmcsus.debugjudge.proto.Competition.Submission.ValueCase.ALGORITHMIC_SUBMISSION;
 import static acmcsus.debugjudge.proto.Competition.SubmissionJudgement.JUDGEMENT_UNKNOWN;
+import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessage;
+import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessageByFuture;
 
 @Singleton
-public class AutoJudgeQueueService extends ProfileToSubmissionMapper {
+public class AutoJudgeQueueService extends SocketSessionToSubmissionMapper {
 
   @Inject
   public AutoJudgeQueueService() {
@@ -29,7 +31,7 @@ public class AutoJudgeQueueService extends ProfileToSubmissionMapper {
   @Override
   public void assigned(Session session, Competition.Submission submission) throws IOException {
     if (submission != null) {
-      baseSocketService.sendMessage(session, WebSocket.S2CMessage.newBuilder()
+      sendMessage(session, WebSocket.S2CMessage.newBuilder()
           .setS2AjMessage(AutoJudge.S2AJMessage.newBuilder()
               .setExecuteSubmission(
                   AutoJudge.S2AJMessage.ExecuteSubmissionMessage.newBuilder()
