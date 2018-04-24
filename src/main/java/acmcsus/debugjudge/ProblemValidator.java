@@ -1,14 +1,17 @@
 package acmcsus.debugjudge;
 
-import acmcsus.debugjudge.proto.*;
-import com.google.protobuf.*;
+import acmcsus.debugjudge.proto.Competition;
+import acmcsus.debugjudge.store.ProblemStore;
+import com.google.protobuf.TextFormat;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-import java.util.stream.*;
-
-import static acmcsus.debugjudge.ctrl.MessageStores.PROBLEM_STORE;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class ProblemValidator {
 
@@ -22,7 +25,7 @@ public class ProblemValidator {
         (p, bfa) ->
             bfa.isRegularFile() && p.getFileName().toString().endsWith(".textproto"));
 
-    List<Competition.Problem> problems = PROBLEM_STORE.readAll(paths);
+    List<Competition.Problem> problems = new ProblemStore().readAll(paths);
 
     System.out.printf("Successfully read %d problems.\n", problems.size());
 

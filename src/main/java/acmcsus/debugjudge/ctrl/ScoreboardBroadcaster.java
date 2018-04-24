@@ -1,37 +1,42 @@
 package acmcsus.debugjudge.ctrl;
 
-import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.*;
-import acmcsus.debugjudge.proto.Competition.*;
-import acmcsus.debugjudge.ws.*;
-import com.google.inject.*;
+import acmcsus.debugjudge.proto.Competition;
+import acmcsus.debugjudge.proto.Competition.Problem;
+import acmcsus.debugjudge.proto.Competition.Profile;
+import acmcsus.debugjudge.proto.Competition.Scoreboard;
+import acmcsus.debugjudge.proto.Competition.Submission;
+import acmcsus.debugjudge.proto.Competition.SubmissionJudgement;
+import acmcsus.debugjudge.state.StateService;
+import acmcsus.debugjudge.store.ProfileStore;
+import acmcsus.debugjudge.store.SubmissionStore;
+import acmcsus.debugjudge.ws.BaseSocketService;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 
-import javax.swing.plaf.basic.*;
-import java.time.*;
-import java.util.*;
-import java.util.stream.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
-import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
+import static io.reactivex.Observable.combineLatest;
+import static io.reactivex.Observable.interval;
+import static io.reactivex.Observable.wrap;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparing;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 
 // I'm sorry for the horrible code within. If I have nothing better to do I might clean. ~merrillm
 @Singleton
 public class ScoreboardBroadcaster {
-
-  private static List<Problem> problems = null;
-
-  private BaseSocketService socketService;
-
-  @Inject
-  ScoreboardBroadcaster(BaseSocketService socketService) {
-    this.socketService = socketService;
-    StateService.instance.addTeamProblemsListener(
-        (problems) -> ScoreboardBroadcaster.problems = problems);
-  }
 
   private static class TeamBarebones {
 
@@ -49,20 +54,40 @@ public class ScoreboardBroadcaster {
     }
   }
 
+  private static List<Problem> problems = null;
+
+  private final BehaviorSubject<Scoreboard> scoreboardSubject;
+  public final Observable<Scoreboard> scoreboard;
+
+  private ProfileStore profileStore;
+  private SubmissionStore submissionStore;
+
+  @Inject
+  ScoreboardBroadcaster(StateService stateService, ProfileStore profileStore,
+                        SubmissionStore submissionStore,
+                        CompetitionController competitionController) {
+    this.profileStore = profileStore;
+    this.submissionStore = submissionStore;
+
+    this.scoreboardSubject = BehaviorSubject.create();
+    this.scoreboard = wrap(scoreboardSubject);
+
+    stateService.publicProblemList.subscribe(
+        (problems) -> ScoreboardBroadcaster.problems = problems);
+    combineLatest(interval(30, SECONDS), competitionController.competitionState, (a, b) -> b)
+        .filter((state) -> state != Competition.CompetitionState.WAITING)
+        .subscribe((l) -> pushScoreboard());
+  }
+
   private static class Score {
     public int correct = 0;
     public int penalty = 0;
   }
 
-  private Scoreboard lastScoreboard = null;
-
-  public Scoreboard getLastScoreboard() {
-    return lastScoreboard;
-  }
-
+  // Jinkees this is like 125 lines........ sorry. ~merrillm
   public void pushScoreboard() {
     try {
-      Collection<Competition.Profile> teams = PROFILE_STORE.streamAll()
+      Collection<Competition.Profile> teams = profileStore.streamAll()
           .filter(p -> p.getProfileType() == Profile.ProfileType.TEAM)
           .collect(toList());
 
@@ -91,7 +116,7 @@ public class ScoreboardBroadcaster {
         }
       }
 
-      for (Submission submission : SUBMISSION_STORE.readAll()) {
+      for (Submission submission : submissionStore.readAll()) {
         if (submission.getTeamId() == 0 ||
             !teamProblemSubmissions.containsKey(submission.getTeamId())) {
           continue;
@@ -181,12 +206,7 @@ public class ScoreboardBroadcaster {
       }
       scoreboardBuilder.setUpdateTimeMillis(Instant.now().toEpochMilli());
 
-      socketService.broadcastMessage(WebSocket.S2CMessage.newBuilder()
-          .setScoreboardUpdateMessage(WebSocket.S2CMessage.ScoreboardUpdateMessage.newBuilder()
-              .setScoreboard(scoreboardBuilder))
-          .build());
-
-      lastScoreboard = scoreboardBuilder.build();
+      scoreboardSubject.onNext(scoreboardBuilder.build());
     }
     catch (Exception e) {
       e.printStackTrace();

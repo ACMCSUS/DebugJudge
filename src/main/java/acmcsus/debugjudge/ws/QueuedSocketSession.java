@@ -9,17 +9,17 @@ import java.util.*;
 @Singleton
 public class QueuedSocketSession {
 
-  final Competition.Profile profile;
-  final Session socketSession;
-  Competition.Submission currentSubmission = null;
-  Set<Integer> skipProblems = null;
+  public final Competition.Profile profile;
+  public final Session socketSession;
+  public Competition.Submission currentSubmission = null;
+  private Set<Integer> skipProblems = null;
 
   public QueuedSocketSession(Competition.Profile profile, Session socketSession) {
     this.profile = profile;
     this.socketSession = socketSession;
   }
 
-  void setProfilePreferences(Map<Integer, Boolean> profilePreferences) {
+  public void setProfilePreferences(Map<Integer, Boolean> profilePreferences) {
     if (skipProblems == null) {
       skipProblems = new HashSet<>();
     }
@@ -34,7 +34,7 @@ public class QueuedSocketSession {
     }
   }
 
-  boolean canGrade(Competition.Submission submission) {
+  public boolean canGrade(Competition.Submission submission) {
     return skipProblems == null
         || !skipProblems.contains(submission.getProblemId());
   }

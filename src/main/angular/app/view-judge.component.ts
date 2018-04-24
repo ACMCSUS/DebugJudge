@@ -10,10 +10,11 @@ import Problem = acmcsus.debugjudge.Problem;
 import Submission = acmcsus.debugjudge.Submission;
 import JudgingStatusMessage = acmcsus.debugjudge.S2JMessage.JudgingStatusMessage;
 import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
+import {AlgorithmicJudgeComponent} from "./algorithmicjudge.component";
 
 @Component({
   selector: 'app-judge-view',
-  entryComponents: [DebuggingJudgeComponent],
+  entryComponents: [DebuggingJudgeComponent, AlgorithmicJudgeComponent],
   template: `
     <div id="outer">
       <div id="wrapper">
@@ -46,13 +47,17 @@ import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
                   *ngSwitchCase="'debuggingSubmission'"
                   [problem]="problemMap[assignedSubmission.problemId]"
                   [submission]="assignedSubmission"></app-judge-debug>
+              <app-judge-algorithm
+                  *ngSwitchCase="'algorithmicSubmission'"
+                  [problem]="problemMap[assignedSubmission.problemId]"
+                  [submission]="assignedSubmission"></app-judge-algorithm>
             </div>
             
-            <mat-select [(ngModel)]="rulingMessage" [disabled]="!assignedSubmission">
-              <mat-option [value]="'Wrong Answer'">Wrong Answer</mat-option>
-              <mat-option [value]="'Too Many Edits'">Too Many Edits</mat-option>
-              <mat-option [value]="'Not Enough Edits'">Not Enough Edits</mat-option>
-            </mat-select>
+            <!--<mat-select [(ngModel)]="rulingMessage" [disabled]="!assignedSubmission">-->
+              <!--<mat-option [value]="'Wrong Answer'">Wrong Answer</mat-option>-->
+              <!--<mat-option [value]="'Too Many Edits'">Too Many Edits</mat-option>-->
+              <!--<mat-option [value]="'Not Enough Edits'">Not Enough Edits</mat-option>-->
+            <!--</mat-select>-->
           </mat-card-content>
           <mat-card-content *ngIf="!assignedSubmission">
           </mat-card-content>
@@ -222,10 +227,16 @@ export class JudgeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   accept() {
-    this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_SUCCESS, '');
+    this.api.submitJudgement(
+        this.assignedSubmission,
+        SubmissionJudgement.JUDGEMENT_SUCCESS,
+        'Correct Answer');
   }
   reject() {
-    this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_FAILURE, this.rulingMessage);
+    this.api.submitJudgement(
+        this.assignedSubmission,
+        SubmissionJudgement.JUDGEMENT_FAILURE,
+        this.rulingMessage);
   }
   defer() {
     this.api.submitJudgement(this.assignedSubmission, SubmissionJudgement.JUDGEMENT_UNKNOWN, '');

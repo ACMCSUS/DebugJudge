@@ -2,6 +2,7 @@ package acmcsus.debugjudge.ctrl;
 
 import acmcsus.debugjudge.*;
 import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.store.ProfileStore;
 import com.fasterxml.jackson.databind.*;
 import com.google.inject.*;
 import spark.*;
@@ -9,14 +10,16 @@ import spark.*;
 import java.io.*;
 import java.util.*;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
-import static acmcsus.debugjudge.ctrl.MessageStores.getLoginSecret;
+import static acmcsus.debugjudge.store.ProfileStore.getLoginSecret;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.requireNonNull;
 import static spark.Spark.halt;
 
 @Singleton
 public class SecurityApi {
+
+  // bad practice but I want to kill this class anyway ~merrillm
+  private static ProfileStore profileStore = new ProfileStore();
 
   private PasswordGeneratorService passwordGenerator;
 
@@ -40,10 +43,10 @@ public class SecurityApi {
     builder.setProfileType(Profile.ProfileType.TEAM);
     profile = builder.build();
 
-    profile = PROFILE_STORE.create(profile);
+    profile = profileStore.create(profile);
 
     String loginSecret = passwordGenerator.randomPassword();
-    MessageStores.writeLoginSecret(profile.getId(), loginSecret);
+    ProfileStore.writeLoginSecret(profile.getId(), loginSecret);
 
     res.type("application/json");
     return String.format("{" +
@@ -85,7 +88,7 @@ public class SecurityApi {
   }
 
   private String login(Request req, Response res, LoginAttempt loginAttempt) throws IOException {
-    Profile profile = PROFILE_STORE.readFromPath(PROFILE_STORE.getPathForId(loginAttempt.getId()));
+    Profile profile = profileStore.readFromPath(profileStore.getPathForId(loginAttempt.getId()));
 
     if (profile == null || !getLoginSecret(profile.getId()).equals(loginAttempt.password)) {
       throw halt(401, "Incorrect id number or incorrect password");
@@ -109,7 +112,7 @@ public class SecurityApi {
     }
 
     try {
-      return PROFILE_STORE.readFromPath(PROFILE_STORE.getPathForId(id));
+      return profileStore.readFromPath(profileStore.getPathForId(id));
     }
     catch (Exception e) {
       return null;

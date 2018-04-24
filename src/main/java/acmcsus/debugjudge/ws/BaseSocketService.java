@@ -1,31 +1,42 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.ctrl.*;
-import acmcsus.debugjudge.proto.*;
-import acmcsus.debugjudge.proto.Competition.*;
-import acmcsus.debugjudge.proto.Judge.*;
-import acmcsus.debugjudge.proto.Team.*;
-import acmcsus.debugjudge.proto.WebSocket.*;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
-import com.google.inject.*;
-import io.reactivex.disposables.*;
-import io.reactivex.subjects.*;
+import acmcsus.debugjudge.ctrl.SecurityApi;
+import acmcsus.debugjudge.proto.Competition.Profile;
+import acmcsus.debugjudge.proto.WebSocket.C2SMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.AlertMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.DebugMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.LoginResultMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.ValueCase;
+import acmcsus.debugjudge.store.ProblemStore;
+import acmcsus.debugjudge.store.ProfileStore;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.*;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.slf4j.*;
-import spark.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import spark.Request;
+import spark.Response;
 
-import java.io.*;
-import java.nio.*;
-import java.nio.file.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
-import static acmcsus.debugjudge.ctrl.MessageStores.getLoginSecret;
 import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.JUDGE;
 import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.TEAM;
+import static acmcsus.debugjudge.store.ProfileStore.getLoginSecret;
 import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static java.lang.String.format;
@@ -45,9 +56,11 @@ public class BaseSocketService {
   public final PublishSubject<WebSocketContext> disconnectSubject = PublishSubject.create();
   public final PublishSubject<WebSocketContext> messageSubject = PublishSubject.create();
 
-  @Inject
-  BaseSocketService() {
+  private final ProfileStore profileStore;
 
+  @Inject
+  BaseSocketService(ProfileStore profileStore) {
+    this.profileStore = profileStore;
   }
 
   public String nonceRoute(Request req, Response res) {
@@ -177,7 +190,7 @@ public class BaseSocketService {
                       .setValue(LoginResultMessage.LoginResult.FAILURE))
               .build();
         }
-        ctx.profile = PROFILE_STORE.readFromPath(PROFILE_STORE.getPathForId(msg.getId()));
+        ctx.profile = profileStore.readFromPath(profileStore.getPathForId(msg.getId()));
       }
       else if (ctx.profile == null) {
         ctx.profile = nonceProfileMap.remove(nonce);

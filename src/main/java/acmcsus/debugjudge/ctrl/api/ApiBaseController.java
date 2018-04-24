@@ -12,8 +12,6 @@ import spark.*;
 import java.io.*;
 import java.util.*;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.PROBLEM_STORE;
-import static acmcsus.debugjudge.ctrl.MessageStores.PROFILE_STORE;
 import static spark.Spark.*;
 
 public class ApiBaseController {
@@ -23,41 +21,41 @@ public class ApiBaseController {
     after("/*", (req, res) -> res.type("application/json"));
 
     get("/profile", ApiBaseController::getProfile);
-    get("/teams", ApiBaseController::getTeams);
-    get("/problems", ApiBaseController::getProblems);
+//    get("/teams", ApiBaseController::getTeams);
+//    get("/problems", ApiBaseController::getProblems);
 
 //    path("/t/", ApiTeamController::teamApiPath);
 //    path("/j/", ApiJudgeController::judgeApiPath);
 //    path("/a/", ApiAdminController::adminApiPath);
   }
 
-  private static String getTeams(Request req, Response res) throws IOException {
-    return writeForView(PROFILE_STORE.readAll().toArray(), Views.PublicView.class);
-  }
+//  private static String getTeams(Request req, Response res) throws IOException {
+//    return writeForView(PROFILE_STORE.readAll().toArray(), Views.PublicView.class);
+//  }
 
   @Inject
   static CompetitionController competitionController;
 
-  private static String getProblems(Request req, Response res) throws IOException {
-    Profile profile = SecurityApi.getProfileNonNull(req);
-
-    // TODO: This is unnecessary, useful for debugging
-//    FileStore.readProblems();
-
-    if (competitionController.getCompetitionState() == CompetitionState.WAITING &&
-        profile.getProfileType() == Profile.ProfileType.TEAM) {
-      return "[]";
-    }
-
-    List<Problem> result = PROBLEM_STORE.readAll();
-
-    if (profile.getProfileType() == Profile.ProfileType.JUDGE) {
-      return writeForJudge(result);
-    }
-    else {
-      return writeForTeam(result);
-    }
-  }
+//  private static String getProblems(Request req, Response res) throws IOException {
+//    Profile profile = SecurityApi.getProfileNonNull(req);
+//
+//    // TODO: This is unnecessary, useful for debugging
+////    FileStore.readProblems();
+//
+//    if (competitionController.getCompetitionState() == CompetitionState.WAITING &&
+//        profile.getProfileType() == Profile.ProfileType.TEAM) {
+//      return "[]";
+//    }
+//
+//    List<Problem> result = PROBLEM_STORE.readAll();
+//
+//    if (profile.getProfileType() == Profile.ProfileType.JUDGE) {
+//      return writeForJudge(result);
+//    }
+//    else {
+//      return writeForTeam(result);
+//    }
+//  }
 
   private static String getProfile(Request req, Response res) throws JsonProcessingException {
     ObjectNode jsonNode = new ObjectNode(JsonNodeFactory.instance);

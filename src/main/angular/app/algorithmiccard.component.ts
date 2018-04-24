@@ -20,24 +20,26 @@ import Problem = acmcsus.debugjudge.Problem;
         <div id="descriptionHtml" class="descriptionHtml"
              [innerHtml]="problem.descriptionText"></div>
 
-        <!--<div class="submissiondiv">-->
         <mat-label>
           Upload Source File (Not "executable" file):
           <input #fileSelector type="file" (change)="uploaded($event.target.files)">
         </mat-label>
 
-        <mat-select placeholder="Select Language" [(ngModel)]="language">
-          <mat-option value="java">java</mat-option>
-          <mat-option value="python2">python2</mat-option>
-          <mat-option value="python3">python3</mat-option>
-        </mat-select>
-        <!--</div>-->
+        <select id="langSelect" placeholder="Select Language" [(ngModel)]="language">
+          <option [value]="undefined" disabled>Select Language</option>
+          <option value="java">java</option>
+          <option value="python2">python2</option>
+          <option value="python3">python3</option>
+          <option value="c">c</option>
+          <option value="c++">c++</option>
+          <option value="rust">rust</option>
+        </select>
       </mat-card-content>
 
 
       <mat-card-actions>
         <button mat-button (click)="submit();"
-                [disabled]="solved || !(uploadedFile && language && sourceCode)">Submit</button>
+                [disabled]="!(uploadedFile && language && sourceCode)">Submit</button>
         <button mat-button (click)="reset();">Reset</button>
       </mat-card-actions>
     </mat-card>
@@ -72,6 +74,12 @@ import Problem = acmcsus.debugjudge.Problem;
 
     #submissionsCard:hover mat-card-subtitle {
       margin-bottom: inherit;
+    }
+    
+    #langSelect {
+      margin: 1em 0;
+      padding: 2px;
+      box-shadow: #666666 2px 2px 5px;
     }
 
     form {
@@ -119,6 +127,7 @@ export class AlgorithmicCardComponent implements OnInit, OnDestroy {
         language: this.language,
       }
     }));
+
     this.reset();
   }
 

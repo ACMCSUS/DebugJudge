@@ -16,6 +16,7 @@ import java.util.function.*;
 
 import static acmcsus.debugjudge.proto.Competition.Submission.ValueCase.ALGORITHMIC_SUBMISSION;
 import static java.lang.Integer.parseInt;
+import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -24,17 +25,24 @@ public class AutoJudgeMain {
   private static final Logger logger = LoggerFactory.getLogger(AutoJudgeMain.class);
 
   public static void main(String[] args) throws Exception {
-    // TODO: configuration
-    URI uri = URI.create("ws://localhost:4567/ws/connect");
+    // TODO: configuration in a file would be nice
+    String host = System.getenv("HUB_HOST");
+
+    if (isNull(host) || host.isEmpty()) {
+      logger.error("missing required env var 'HUB_HOST'");
+      System.exit(1);
+    }
+
+    URI uri = URI.create("ws://" + host + "/ws/connect");
 
     Integer id;
     String pass;
 
     try {
-      id = parseInt(System.getenv("2pc_aj_id"));
-      pass = requireNonNull(System.getenv("2pc_aj_pass"));
+      id = parseInt(System.getenv("AJ_ID"));
+      pass = requireNonNull(System.getenv("AJ_PASS"));
     } catch (RuntimeException re) {
-      logger.error("Could not parse credentials from env!");
+      logger.error("missing required env vars 'AJ_ID' and 'AJ_PASS'");
       throw re;
     }
 

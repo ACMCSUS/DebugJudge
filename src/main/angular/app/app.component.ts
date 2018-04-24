@@ -13,30 +13,35 @@ import Profile = acmcsus.debugjudge.Profile;
     <div id="app-wrap">
       <mat-toolbar color="primary">
         <mat-toolbar-row color="gray">
-          <span style="margin-right:5px">ACM CSUS Debugging Competition</span>
+          <span style="margin-right:5px">CSUS ICPC Spring 2018 | ACM@CSUS</span>
         </mat-toolbar-row>
       </mat-toolbar>
       <mat-progress-spinner [mode]="'indeterminate'" *ngIf="!profile"></mat-progress-spinner>
-      <mat-tab-group *ngIf="profile">
-        <mat-tab label="Team" *ngIf="profile.profileType === TEAM">
-          <app-team-view></app-team-view>
-        </mat-tab>
-        <mat-tab label="Judge" *ngIf="profile.profileType === JUDGE">
-          <app-judge-view></app-judge-view>
-        </mat-tab>
-        <mat-tab label="Admin" *ngIf="profile.profileType === ADMIN">
-          <app-admin-view></app-admin-view>
-        </mat-tab>
-        <mat-tab label="Submissions" *ngIf="[TEAM, JUDGE, ADMIN].indexOf(profile.profileType)>=0">
-          <app-submissions-view></app-submissions-view>
-        </mat-tab>
-        <mat-tab label="Scoreboard">
-          <app-scoreboard></app-scoreboard>
-        </mat-tab>
-        <mat-tab label="Problems">
-          <app-problems-view></app-problems-view>
-        </mat-tab>
-      </mat-tab-group>
+      <div id="tabWrap">
+        <mat-tab-group *ngIf="profile">
+          <mat-tab label="Team" *ngIf="profile.profileType === TEAM">
+            <app-team-view></app-team-view>
+          </mat-tab>
+          <mat-tab label="Judge" *ngIf="profile.profileType === JUDGE">
+            <app-judge-view></app-judge-view>
+          </mat-tab>
+          <mat-tab label="Admin" *ngIf="profile.profileType === ADMIN">
+            <app-admin-view></app-admin-view>
+          </mat-tab>
+          <mat-tab label="Balloons" *ngIf="profile.profileType === BALLOON_RUNNER">
+            <app-admin-view></app-admin-view>
+          </mat-tab>
+          <mat-tab label="Submissions" *ngIf="[TEAM, JUDGE, ADMIN].indexOf(profile.profileType)>=0">
+            <app-submissions-view></app-submissions-view>
+          </mat-tab>
+          <mat-tab label="Scoreboard">
+            <app-scoreboard></app-scoreboard>
+          </mat-tab>
+          <mat-tab label="Problems">
+            <app-problems-view></app-problems-view>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
       <app-submissions-bar></app-submissions-bar>
     </div>
   `,
@@ -48,28 +53,24 @@ import Profile = acmcsus.debugjudge.Profile;
   ],
   styles: [`
     #app-wrap {
-      height: 100%;
+      height: 100% !important;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: stretch;
     }
-    /deep/mat-tab-group {
-      flex: 1 1 auto !important;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
+
+    #tabWrap {
+      flex-grow: 1;
+      overflow: auto;
     }
-    /deep/.mat-tab-body-wrapper {
-      flex: 1 1 auto !important;
-    }
-    /deep/.mat-tab-body-content {
-      overflow-y: scroll;
-    }
+
     @media print {
       #app-wrap {
         height: auto;
       }
-      /deep/.mat-tab-body-content, /deep/.mat-tab-body {
+
+      /deep/ .mat-tab-body-content, /deep/ .mat-tab-body {
         /*position: absolute;*/
         /*top: 0;*/
         /*left: 0;*/
@@ -79,6 +80,7 @@ import Profile = acmcsus.debugjudge.Profile;
         overflow-y: visible !important;
       }
     }
+
     mat-progress-spinner {
       margin: auto;
     }
@@ -89,6 +91,7 @@ export class AppComponent {
   TEAM = Profile.ProfileType.TEAM;
   JUDGE = Profile.ProfileType.JUDGE;
   ADMIN = Profile.ProfileType.ADMIN;
+  BALLOON_RUNNER = Profile.ProfileType.BALLOON_RUNNER;
 
   profile: Profile;
 

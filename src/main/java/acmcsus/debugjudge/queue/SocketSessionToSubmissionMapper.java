@@ -1,7 +1,9 @@
-package acmcsus.debugjudge.ws;
+package acmcsus.debugjudge.queue;
 
 import acmcsus.debugjudge.proto.Competition.*;
 import acmcsus.debugjudge.proto.*;
+import acmcsus.debugjudge.ws.BaseSocketService;
+import acmcsus.debugjudge.ws.QueuedSocketSession;
 import com.google.inject.*;
 import org.eclipse.jetty.websocket.api.*;
 import org.slf4j.*;
@@ -31,14 +33,14 @@ public abstract class SocketSessionToSubmissionMapper {
 
   public abstract void assigned(Session session, Submission submission) throws IOException;
 
-  public void connected(Profile judge, Session session) {
+  public void connected(Profile profile, Session session) {
     if (profileSessionMap.containsKey(session)) {
       return;
       //kick(session, "You've started judging somewhere else!");
     }
 
-    QueuedSocketSession judgeSession = new QueuedSocketSession(judge, session);
-    profileSessionMap.put(judgeSession.socketSession, judgeSession);
+    QueuedSocketSession profileSession = new QueuedSocketSession(profile, session);
+    profileSessionMap.put(profileSession.socketSession, profileSession);
   }
 
   public void started(Profile judge, Session session) {
@@ -89,11 +91,11 @@ public abstract class SocketSessionToSubmissionMapper {
     }
   }
 
-  public void submitted(Submission submission) {
+  public void addSubmission(Submission submission) {
     match(submission);
   }
 
-  public void judged(Submission submission) {
+  public void removeSubmission(Submission submission) {
     purge(submission);
   }
 

@@ -1,16 +1,20 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.Competition.*;
-import acmcsus.debugjudge.proto.*;
-import com.google.inject.*;
-import org.slf4j.*;
+import acmcsus.debugjudge.proto.Competition.Profile;
+import acmcsus.debugjudge.proto.Competition.Submission;
+import acmcsus.debugjudge.proto.Competition.SubmissionJudgement;
+import acmcsus.debugjudge.proto.Judge;
+import acmcsus.debugjudge.queue.JudgeQueueService;
+import acmcsus.debugjudge.state.StateService;
+import acmcsus.debugjudge.store.SubmissionStore;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Map;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
 import static java.lang.String.format;
 import static spark.Spark.halt;
 
@@ -19,13 +23,13 @@ public class JudgeSocketService extends ProfileSocketService {
 
   private static Logger logger = LoggerFactory.getLogger(JudgeSocketService.class);
 
-  public JudgeQueueService judgeQueueService;
+  private JudgeQueueService judgeQueueService;
 
   @Inject
-  JudgeSocketService(BaseSocketService baseSocketService, JudgeQueueService judgeQueueService) {
-    super(baseSocketService, Profile.ProfileType.JUDGE);
+  JudgeSocketService(BaseSocketService baseSocketService, StateService stateService,
+                     JudgeQueueService judgeQueueService, SubmissionStore submissionStore) {
+    super(baseSocketService, stateService, submissionStore, Profile.ProfileType.JUDGE);
     this.judgeQueueService = judgeQueueService;
-    StateService.instance.addSubmissionNeedingJudgingListener(judgeQueueService::submitted);
   }
 
   @Override
@@ -70,7 +74,7 @@ public class JudgeSocketService extends ProfileSocketService {
             Submission submission;
 
             try {
-              submission = SUBMISSION_STORE.readFromPath(SUBMISSION_STORE.pathForIds(tid, pid, sid));
+              submission = submissionStore.readFromPath(submissionStore.pathForIds(tid, pid, sid));
             }
             catch (IOException e) {
               logger.error(format("Submission %d/%d/%d not found for judge's ruling",
@@ -78,9 +82,7 @@ public class JudgeSocketService extends ProfileSocketService {
               throw halt(400);
             }
 
-            // TODO: Judgement Messages (like "TLE" or "Excessive Output")
-            StateService.instance.submissionRuling(
-                submission, ctx.profile.getId(), ruling, message);
+            stateService.submissionRuling(submission, ctx.profile.getId(), ruling, message);
             break;
           }
           default: {
