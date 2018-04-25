@@ -14,13 +14,3 @@ message ProgrammingLanguage {
     repeated ProgrammingLanguage language = 1;
   }
 }
-
-message Resolution {
-
-  int32 team_id = 1;
-  int32 problem_id = 2;
-
-  bool solved = 3;
-  int32 penalty = 4;
-
-}
