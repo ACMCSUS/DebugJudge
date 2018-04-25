@@ -88,8 +88,6 @@ public class Hub {
       staticHandler.consume(req.raw(), res.raw());
     });
 
-
-
     init();
   }
 

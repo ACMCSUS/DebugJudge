@@ -108,3 +108,9 @@ task runAutoJudge(type: JavaExec) {
   classpath sourceSets.main.runtimeClasspath
   main = "acmcsus.debugjudge.autojudge.AutoJudgeMain"
 }
+
+task runResolver(type: JavaExec) {
+  classpath sourceSets.main.runtimeClasspath
+  main = "acmcsus.debugjudge.resolver.Resolver"
+}
+
