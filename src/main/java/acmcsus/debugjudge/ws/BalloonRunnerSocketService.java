@@ -2,6 +2,9 @@ package acmcsus.debugjudge.ws;
 
 import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.queue.BalloonQueueService;
+import acmcsus.debugjudge.state.StateService;
+import acmcsus.debugjudge.store.SubmissionStore;
 import com.google.inject.*;
 import org.slf4j.*;
 
@@ -12,20 +15,26 @@ public class BalloonRunnerSocketService extends ProfileSocketService {
 
   private static Logger logger = LoggerFactory.getLogger(BalloonRunnerSocketService.class);
 
+  private final BalloonQueueService balloonQueueService;
+
   @Inject
-  BalloonRunnerSocketService(BaseSocketService baseSocketService) {
-    super(baseSocketService, Profile.ProfileType.BALLOON_RUNNER);
+  BalloonRunnerSocketService(BaseSocketService baseSocketService, StateService stateService,
+                             SubmissionStore submissionStore,
+                             BalloonQueueService balloonQueueService) {
+    super(baseSocketService, stateService, submissionStore, Profile.ProfileType.BALLOON_RUNNER);
+    this.balloonQueueService = balloonQueueService;
   }
 
   @Override
   protected void onConnect(WebSocketContext ctx) throws IOException {
     onOfficialConnect(ctx);
     onScoreboardReceiverConnect(ctx);
+
   }
 
   @Override
   protected void onDisconnect(WebSocketContext ctx) {
-
+    balloonQueueService.disconnected(ctx.session);
   }
 
   @Override

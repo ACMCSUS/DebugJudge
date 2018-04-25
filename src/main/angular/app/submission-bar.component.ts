@@ -6,6 +6,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 
 import {acmcsus} from "./proto/dbgjdg_pb";
 import Submission = acmcsus.debugjudge.Submission;
+import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
 import * as Long from "long";
 
 @Component({
@@ -28,7 +29,7 @@ import * as Long from "long";
       <mat-chip-list>
         <mat-chip *ngFor="let notif of notifs"
                   [selected]="true"
-                  [style.backgroundColor]="notif.color">
+                  ngClass="{{notif.classes}}">
           {{problemNames[notif.problemId] || '???'}}
         </mat-chip>
         <mat-chip *ngIf="!(submissions&&submissions.length)">
@@ -42,11 +43,44 @@ import * as Long from "long";
       /*overflow-x: hidden;*/
       white-space: nowrap;
     }
+
     #submissionBar {
       background-color: #eee;
       /*width: 100%;*/
       padding: 10px;
       overflow-x: scroll;
+    }
+
+    mat-chip.unknown {
+      background: #666 !important;
+    }
+
+    mat-chip.success {
+      background: #696 !important;
+    }
+
+    mat-chip.failure {
+      background: #a66 !important;
+    }
+
+    mat-chip.pre-success {
+      background: repeating-linear-gradient(
+          45deg,
+          #476646,
+          #476646 5px,
+          #666666 5px,
+          #666666 10px
+      ) !important;
+    }
+
+    mat-chip.pre-failure {
+      background: repeating-linear-gradient(
+          45deg,
+          #665155,
+          #665155 5px,
+          #666666 5px,
+          #666666 10px
+      ) !important;
     }
 
     /deep/ .mat-chip-list-wrapper {
@@ -78,6 +112,7 @@ export class SubmissionsBarComponent implements AfterViewInit, OnDestroy {
             return {
               problemId: sub.problemId,
               color: this.colorFor(sub),
+              classes: this.classesFor(sub)
             }
           });
         });
@@ -104,6 +139,33 @@ export class SubmissionsBarComponent implements AfterViewInit, OnDestroy {
           return '#666';
       }
     }
+  }
+
+  classesFor(sub: Submission): string[] {
+    let classes = [];
+
+    if (sub.judgement === SubmissionJudgement.JUDGEMENT_UNKNOWN) {
+      if (sub.algorithmicSubmission) {
+        let algoSub = sub.algorithmicSubmission;
+        if (algoSub.preliminaryJudgement === SubmissionJudgement.JUDGEMENT_SUCCESS) {
+          classes.push('pre-success');
+        }
+        else if (algoSub.preliminaryJudgement === SubmissionJudgement.JUDGEMENT_FAILURE) {
+          classes.push('pre-failure');
+        }
+      }
+    }
+    else if (sub.judgement == SubmissionJudgement.JUDGEMENT_SUCCESS){
+      classes.push('success');
+    }
+    else if (sub.judgement == SubmissionJudgement.JUDGEMENT_FAILURE){
+      classes.push('failure')
+    }
+
+    if (classes.length === 0) {
+      classes.push('unknown');
+    }
+    return classes;
   }
 
   ngOnDestroy(): void {

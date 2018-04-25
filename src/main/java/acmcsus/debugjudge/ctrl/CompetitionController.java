@@ -1,30 +1,42 @@
 package acmcsus.debugjudge.ctrl;
 
-import acmcsus.debugjudge.proto.Competition.*;
-import acmcsus.debugjudge.proto.WebSocket.*;
-import acmcsus.debugjudge.proto.WebSocket.S2CMessage.*;
-import acmcsus.debugjudge.ws.*;
-import com.google.common.base.*;
-import com.google.inject.*;
-import io.reactivex.disposables.*;
-import io.reactivex.functions.*;
-import io.reactivex.subjects.*;
+import acmcsus.debugjudge.proto.Competition.CompetitionState;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.CompetitionStateChangedMessage;
+import acmcsus.debugjudge.ws.BaseSocketService;
+import com.google.common.base.Stopwatch;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.subjects.BehaviorSubject;
 
-import java.time.*;
-import java.util.concurrent.*;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 import static io.reactivex.Observable.combineLatest;
 import static io.reactivex.Observable.interval;
+import static io.reactivex.Observable.wrap;
 
 @Singleton
 public class CompetitionController {
 
-  private static BehaviorSubject<CompetitionState> competitionState = BehaviorSubject.createDefault(CompetitionState.WAITING);
+  private BehaviorSubject<CompetitionState> competitionStateSubject = BehaviorSubject.createDefault(CompetitionState.WAITING);
+  public Observable<CompetitionState> competitionState = wrap(competitionStateSubject);
+  private Stopwatch stopwatch = Stopwatch.createUnstarted();
 
-  private static Stopwatch stopwatch = Stopwatch.createUnstarted();
+  public CompetitionState getCompetitionState() {
+    return competitionStateSubject.getValue();
+  }
 
-  static {
-    addCompetitionStateObserver(state -> {
+  private BaseSocketService socketService;
+
+  @Inject
+  CompetitionController(BaseSocketService socketService) {
+    this.socketService = socketService;
+
+    competitionState.subscribe(state -> {
       switch (state) {
         case STARTED:
           stopwatch.start();
@@ -40,26 +52,9 @@ public class CompetitionController {
     });
   }
 
-  public CompetitionState getCompetitionState() {
-    return competitionState.getValue();
-  }
-
-  private BaseSocketService socketService;
-
-  @Inject
-  CompetitionController(BaseSocketService socketService,
-                        ScoreboardBroadcaster scoreboardBroadcaster) {
-    this.socketService = socketService;
-
-    // TODO: Have the interval change periods depending on competition state. Stopped can be closer to 5 minutes.
-    combineLatest(interval(30, TimeUnit.SECONDS), competitionState, (a, b) -> b)
-        .filter((state) -> state != CompetitionState.WAITING)
-        .subscribe((l) -> scoreboardBroadcaster.pushScoreboard());
-  }
-
   public void changeCompetitionState(CompetitionState state) {
-    if (state != competitionState.getValue()) {
-      competitionState.onNext(state);
+    if (state != competitionStateSubject.getValue()) {
+      competitionStateSubject.onNext(state);
 
       socketService.broadcastMessage(S2CMessage.newBuilder()
           .setCompetitionStateChangedMessage(CompetitionStateChangedMessage.newBuilder()
@@ -70,11 +65,7 @@ public class CompetitionController {
     }
   }
 
-  public static Disposable addCompetitionStateObserver(Consumer<CompetitionState> stateConsumer) {
-    return competitionState.subscribe(stateConsumer);
-  }
-
-  public static long getElapsedSeconds() {
+  public long getElapsedSeconds() {
     long ret = stopwatch.elapsed(TimeUnit.SECONDS);
     return ret;
   }
