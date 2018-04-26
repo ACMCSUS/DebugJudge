@@ -1,17 +1,32 @@
 package acmcsus.debugjudge;
 
-import acmcsus.debugjudge.ctrl.*;
-import acmcsus.debugjudge.ctrl.api.*;
-import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.*;
-import acmcsus.debugjudge.proto.Competition.*;
-import acmcsus.debugjudge.ws.*;
-import com.google.inject.*;
-import spark.*;
-import spark.staticfiles.*;
+import acmcsus.debugjudge.ctrl.SecurityApi;
+import acmcsus.debugjudge.ctrl.api.ApiBaseController;
+import acmcsus.debugjudge.proto.Competition.Profile;
+import acmcsus.debugjudge.state.StateService;
+import acmcsus.debugjudge.store.SubmissionStore;
+import acmcsus.debugjudge.ws.AdminSocketService;
+import acmcsus.debugjudge.ws.AutoJudgeSocketService;
+import acmcsus.debugjudge.ws.BalloonRunnerSocketService;
+import acmcsus.debugjudge.ws.BaseSocketService;
+import acmcsus.debugjudge.ws.JudgeSocketService;
+import acmcsus.debugjudge.ws.TeamSocketService;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import spark.Request;
+import spark.Response;
+import spark.staticfiles.StaticFilesConfiguration;
 
 import static acmcsus.debugjudge.ctrl.SecurityApi.getProfile;
-import static spark.Spark.*;
+import static java.lang.Integer.parseInt;
+import static spark.Spark.before;
+import static spark.Spark.get;
+import static spark.Spark.init;
+import static spark.Spark.path;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.webSocket;
 
 public class Hub {
 
@@ -23,6 +38,11 @@ public class Hub {
     injector.getInstance(BalloonRunnerSocketService.class);
     injector.getInstance(JudgeSocketService.class);
     injector.getInstance(TeamSocketService.class);
+
+    StateService stateService = injector.getInstance(StateService.class);
+    injector.getInstance(SubmissionStore.class)
+        .streamAll()
+        .forEach(stateService::submissionUpdated);
 
     Hub hub = injector.getInstance(Hub.class);
     hub.start();
@@ -38,7 +58,8 @@ public class Hub {
   }
 
   public void start() {
-    port(4567);
+    int port = parseInt(System.getenv().getOrDefault("HUB_PORT", "4567"));
+    port(port);
     webSocket("/ws/connect", socketService);
     get("/ws/nonce", socketService::nonceRoute);
 
@@ -69,7 +90,6 @@ public class Hub {
       staticHandler.consume(req.raw(), res.raw());
     });
 
-    StateService.instance.loadExisting();
     init();
   }
 

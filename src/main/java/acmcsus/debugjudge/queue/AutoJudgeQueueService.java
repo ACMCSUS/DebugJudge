@@ -1,35 +1,36 @@
-package acmcsus.debugjudge.ws;
+package acmcsus.debugjudge.queue;
 
-import acmcsus.debugjudge.model.*;
-import acmcsus.debugjudge.proto.*;
-import com.google.inject.*;
-import org.eclipse.jetty.websocket.api.*;
+import acmcsus.debugjudge.proto.AutoJudge;
+import acmcsus.debugjudge.proto.Competition;
+import acmcsus.debugjudge.proto.WebSocket;
+import acmcsus.debugjudge.store.SubmissionStore;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import org.eclipse.jetty.websocket.api.Session;
 
-import java.io.*;
+import java.io.IOException;
 
-import static acmcsus.debugjudge.ctrl.MessageStores.SUBMISSION_STORE;
 import static acmcsus.debugjudge.proto.Competition.Submission.ValueCase.ALGORITHMIC_SUBMISSION;
 import static acmcsus.debugjudge.proto.Competition.SubmissionJudgement.JUDGEMENT_UNKNOWN;
+import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessage;
 
 @Singleton
-public class AutoJudgeQueueService extends ProfileToSubmissionMapper {
+public class AutoJudgeQueueService extends SocketSessionToSubmissionMapper {
 
   @Inject
-  public AutoJudgeQueueService() {
-    StateService.instance.addSubmissionNeedingExecutionListener(this::submitted);
-
-    SUBMISSION_STORE.streamAll()
+  public AutoJudgeQueueService(SubmissionStore submissionStore) {
+    submissionStore.streamAll()
         .filter(sub ->
             sub.getValueCase() == ALGORITHMIC_SUBMISSION &&
                 sub.getJudgement() == JUDGEMENT_UNKNOWN &&
                 sub.getAlgorithmicSubmission().getPreliminaryJudgement() == JUDGEMENT_UNKNOWN)
-        .forEach(this::submitted);
+        .forEach(this::addSubmission);
   }
 
   @Override
   public void assigned(Session session, Competition.Submission submission) throws IOException {
     if (submission != null) {
-      baseSocketService.sendMessage(session, WebSocket.S2CMessage.newBuilder()
+      sendMessage(session, WebSocket.S2CMessage.newBuilder()
           .setS2AjMessage(AutoJudge.S2AJMessage.newBuilder()
               .setExecuteSubmission(
                   AutoJudge.S2AJMessage.ExecuteSubmissionMessage.newBuilder()

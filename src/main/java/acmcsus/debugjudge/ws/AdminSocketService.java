@@ -3,6 +3,8 @@ package acmcsus.debugjudge.ws;
 import acmcsus.debugjudge.ctrl.*;
 import acmcsus.debugjudge.proto.*;
 import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.state.StateService;
+import acmcsus.debugjudge.store.SubmissionStore;
 import com.google.inject.*;
 import org.slf4j.*;
 
@@ -17,8 +19,9 @@ public class AdminSocketService extends ProfileSocketService {
 
   @Inject
   AdminSocketService(BaseSocketService baseSocketService,
+                     StateService stateService, SubmissionStore submissionStore,
                      CompetitionController competitionController) {
-    super(baseSocketService, Profile.ProfileType.ADMIN);
+    super(baseSocketService, stateService, submissionStore, Profile.ProfileType.ADMIN);
     this.competitionController = competitionController;
   }
 

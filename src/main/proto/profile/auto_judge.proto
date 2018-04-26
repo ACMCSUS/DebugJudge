@@ -6,6 +6,7 @@ option java_outer_classname = 'AutoJudge';
 package acmcsus.debugjudge;
 
 import "competition.proto";
+import "algorithmic.proto";
 
 // Messages that only ever come from autojudges.
 message AJ2SMessage {
@@ -31,9 +32,14 @@ message S2AJMessage {
 
   oneof value {
     ExecuteSubmissionMessage executeSubmission = 1;
+    ReloadLanguagesMessage reloadLanguagesMessage = 2;
   }
 
   message ExecuteSubmissionMessage {
     Submission submission = 1;
+  }
+
+  message ReloadLanguagesMessage {
+    ProgrammingLanguage.List value = 1;
   }
 }
