@@ -28,13 +28,13 @@ import {AlgorithmicJudgeComponent} from "./algorithmicjudge.component";
         <mat-card id="right">
           <mat-card-title *ngIf="statusMessage&&statusMessage.length">{{statusMessage}}</mat-card-title>
           <mat-card-title *ngIf="runningStatus.running && assignedDelivery">
-            Now Judging: {{problemMap[assignedDelivery.problemId].title}}</mat-card-title>
+            Delivering For Problem: {{problemMap[assignedDelivery.problemId].title}}</mat-card-title>
           <mat-card-title *ngIf="runningStatus.running && !assignedDelivery">
             Waiting for deliveries...</mat-card-title>
           <mat-card-content *ngIf="assignedDelivery">
-            <div [ngSwitch]="assignedDelivery.value">
-              <h2>{{assignedDelivery.value.teamId}}</h2>
-              <h2>{{assignedDelivery.value.problemId}}</h2>
+            <div>
+              <h2>Team ID: {{assignedDelivery.teamId}}</h2>
+              <h2>Problem ID: {{assignedDelivery.problemId}}</h2>
             </div>
           </mat-card-content>
           <mat-card-actions>

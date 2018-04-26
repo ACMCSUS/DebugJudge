@@ -1,14 +1,20 @@
 package acmcsus.debugjudge.ws;
 
-import acmcsus.debugjudge.proto.*;
-import acmcsus.debugjudge.proto.Competition.*;
+import acmcsus.debugjudge.proto.BalloonRunner;
+import acmcsus.debugjudge.proto.Competition;
+import acmcsus.debugjudge.proto.Competition.Profile;
 import acmcsus.debugjudge.queue.BalloonQueueService;
 import acmcsus.debugjudge.state.StateService;
+import acmcsus.debugjudge.store.BalloonDeliveryStore;
 import acmcsus.debugjudge.store.SubmissionStore;
-import com.google.inject.*;
-import org.slf4j.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.IOException;
+
+import static acmcsus.debugjudge.proto.Algorithmic.BalloonDeliveries.BalloonDeliveryStatus.DELIVERED;
 
 @Singleton
 public class BalloonRunnerSocketService extends ProfileSocketService {
@@ -38,7 +44,7 @@ public class BalloonRunnerSocketService extends ProfileSocketService {
   }
 
   @Override
-  protected void onMessage(WebSocketContext ctx) {
+  protected void onMessage(WebSocketContext ctx) throws IOException {
     BalloonRunner.B2SMessage b2SMessage = ctx.req.getB2SMessage();
 
     switch (b2SMessage.getValueCase()) {
@@ -54,6 +60,18 @@ public class BalloonRunnerSocketService extends ProfileSocketService {
         Integer tid = b2SMessage.getBalloonDeliveredMessage().getTeamId();
         Integer pid = b2SMessage.getBalloonDeliveredMessage().getProblemId();
         logger.info("Delivered for {} {}\n", tid, pid);
+
+        try {
+          BalloonDeliveryStore.setDeliveryStatus(tid, pid, DELIVERED);
+        }
+        catch (IOException e) {
+          logger.error("error writing deliveries", e);
+        }
+
+        balloonQueueService.removeSubmission(Competition.Submission.newBuilder()
+            .setTeamId(tid)
+            .setProblemId(pid)
+            .build());
         
         break;
       }
