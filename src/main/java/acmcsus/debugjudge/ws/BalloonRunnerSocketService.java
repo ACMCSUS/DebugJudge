@@ -39,11 +39,26 @@ public class BalloonRunnerSocketService extends ProfileSocketService {
 
   @Override
   protected void onMessage(WebSocketContext ctx) {
-    AutoJudge.AJ2SMessage a2SMessage = ctx.req.getAj2SMessage();
+    BalloonRunner.B2SMessage b2SMessage = ctx.req.getB2SMessage();
 
-    switch (a2SMessage.getValueCase()) {
+    switch (b2SMessage.getValueCase()) {
+      case STARTRUNNINGMESSAGE: {
+        balloonQueueService.started(ctx.profile, ctx.session);
+        break;
+      }
+      case STOPRUNNINGMESSAGE: {
+        balloonQueueService.stopped(ctx.session);
+        break;
+      }
+      case BALLOONDELIVEREDMESSAGE: {
+        Integer tid = b2SMessage.getBalloonDeliveredMessage().getTeamId();
+        Integer pid = b2SMessage.getBalloonDeliveredMessage().getProblemId();
+        logger.info("Delivered for {} {}\n", tid, pid);
+        
+        break;
+      }
       default: {
-        logger.error("WS: Backend does not recognize AJ2SMessage: {}", a2SMessage.getValueCase());
+        logger.error("WS: Backend does not recognize AJ2SMessage: {}", b2SMessage.getValueCase());
       }
     }
   }

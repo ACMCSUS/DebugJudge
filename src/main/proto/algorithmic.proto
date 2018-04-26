@@ -14,3 +14,12 @@ message ProgrammingLanguage {
     repeated ProgrammingLanguage language = 1;
   }
 }
+
+message BalloonDeliveries {
+  map<int32, BalloonDeliveryStatus> deliveries = 1;
+  enum BalloonDeliveryStatus {
+    NOT_DELIVERED = 0;
+    REQUESTED = 1;
+    DELIVERED = 2;
+  }
+}

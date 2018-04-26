@@ -72,6 +72,18 @@ public class AlgorithmicStateService {
       }
       else {
         judgeQueueService.removeSubmission(submission);
+
+        if (submission.getJudgement() == JUDGEMENT_SUCCESS) {
+
+          BalloonDeliveries deliveries = BalloonDeliveryStore.getDeliveries(submission.getTeamId());
+
+          if (deliveries.getDeliveriesMap().get(submission.getProblemId()) == NOT_DELIVERED) {
+            balloonQueueService.addSubmission(Submission.newBuilder()
+              .setTeamId(submission.getTeamId())
+              .setProblemId(submission.getProblemId())
+              .build());
+          }
+        }
       }
     }
   }

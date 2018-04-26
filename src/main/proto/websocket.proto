@@ -42,6 +42,7 @@ message S2CMessage {
     S2JMessage s2jMessage = 2;
     S2AMessage s2aMessage = 3;
     S2AJMessage s2ajMessage = 4;
+    S2BMessage s2bMessage = 5;
 
     DebugMessage debugMessage = 17;
     AlertMessage alertMessage = 18;

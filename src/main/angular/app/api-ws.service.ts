@@ -9,6 +9,7 @@ import {acmcsus} from "./proto/dbgjdg_pb";
 import S2CMessage = acmcsus.debugjudge.S2CMessage;
 import S2TMessage = acmcsus.debugjudge.S2TMessage;
 import S2JMessage = acmcsus.debugjudge.S2JMessage;
+import S2BMessage = acmcsus.debugjudge.S2BMessage;
 import C2SMessage = acmcsus.debugjudge.C2SMessage;
 
 export interface ApiWebSocketService {
@@ -19,6 +20,7 @@ export interface ApiWebSocketService {
   s2cMessages: Observable<S2CMessage>;
   s2tMessages: Observable<S2TMessage>;
   s2jMessages: Observable<S2JMessage>;
+  s2bMessages: Observable<S2BMessage>;
 
   sendMessage(C2SMessage): void;
 
@@ -34,12 +36,14 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
   s2cMessages: ReplaySubject<S2CMessage>;
   s2tMessages: ReplaySubject<S2TMessage>;
   s2jMessages: ReplaySubject<S2JMessage>;
+  s2bMessages: ReplaySubject<S2BMessage>
   private webSocket: WebSocketSubject<S2CMessage>;
 
   constructor(private httpClient: HttpClient) {
     this.s2cMessages = new ReplaySubject<S2CMessage>(16);
     this.s2tMessages = new ReplaySubject<S2TMessage>(16);
     this.s2jMessages = new ReplaySubject<S2JMessage>(16);
+    this.s2bMessages = new ReplaySubject<S2BMessage>(16);
 
     this.competitionState = new BehaviorSubject(acmcsus.debugjudge.CompetitionState.WAITING);
     this.loggedInStatus = new BehaviorSubject(false);
@@ -147,6 +151,10 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
         }
         case 's2jMessage': {
           this.s2jMessages.next(S2JMessage.create(msg.s2jMessage));
+          break;
+        }
+        case 's2bMessage': {
+          this.s2bMessages.next(S2BMessage.create(msg.s2bMessage));
           break;
         }
         default: {
