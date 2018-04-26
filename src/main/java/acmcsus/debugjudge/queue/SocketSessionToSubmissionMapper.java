@@ -114,7 +114,7 @@ public abstract class SocketSessionToSubmissionMapper {
     }
   }
 
-  private void welcome(Session session, String reason) {
+  protected void welcome(Session session, String reason) {
     try {
       sendMessage(session, WebSocket.S2CMessage.newBuilder()
           .setS2JMessage(Judge.S2JMessage.newBuilder()
@@ -127,7 +127,7 @@ public abstract class SocketSessionToSubmissionMapper {
     }
   }
 
-  private void goodbye(Session session, String reason) {
+  protected void goodbye(Session session, String reason) {
     try {
       sendMessage(session, WebSocket.S2CMessage.newBuilder()
           .setS2JMessage(Judge.S2JMessage.newBuilder()

@@ -52,12 +52,12 @@ import {AlgorithmicJudgeComponent} from "./algorithmicjudge.component";
                   [problem]="problemMap[assignedSubmission.problemId]"
                   [submission]="assignedSubmission"></app-judge-algorithm>
             </div>
-            
-            <!--<mat-select [(ngModel)]="rulingMessage" [disabled]="!assignedSubmission">-->
-              <!--<mat-option [value]="'Wrong Answer'">Wrong Answer</mat-option>-->
-              <!--<mat-option [value]="'Too Many Edits'">Too Many Edits</mat-option>-->
-              <!--<mat-option [value]="'Not Enough Edits'">Not Enough Edits</mat-option>-->
-            <!--</mat-select>-->
+
+            <mat-select [(ngModel)]="rulingMessage" [disabled]="!assignedSubmission">
+              <mat-option [value]="'Wrong Answer'">Wrong Answer</mat-option>
+              <mat-option [value]="'Excessive Output'">Excessive Output</mat-option>
+              <mat-option [value]="'Not Enough Output'">Not Enough Output</mat-option>
+            </mat-select>
           </mat-card-content>
           <mat-card-content *ngIf="!assignedSubmission">
           </mat-card-content>

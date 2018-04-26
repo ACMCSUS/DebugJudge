@@ -7,24 +7,35 @@ package acmcsus.debugjudge;
 
 import "competition.proto";
 
-// Messages that are specifically for balloon runners.
-message S2BMessage {
-  oneof value {
-    BalloonAssignmentMessage balloonAssignment = 1;
-  }
-  message BalloonAssignmentMessage {
-    int32 team_id = 1;
-    int32 problem_id = 2;
-  }
-}
-
 // Messages that only ever come from balloon runners.
 message B2SMessage {
   oneof value {
     BalloonDeliveredMessage balloonDeliveredMessage = 1;
+
+    StartRunningMessage startRunningMessage = 2;
+    StopRunningMessage stopRunningMessage = 3;
   }
+
   message BalloonDeliveredMessage {
     int32 team_id = 1;
     int32 problem_id = 2;
+  }
+
+  message StartRunningMessage {}
+  message StopRunningMessage {}
+}
+
+// Messages that are specifically for balloon runners.
+message S2BMessage {
+  oneof value {
+    AssignedDeliveryMessage assignedDeliveryMessage = 1;
+    BalloonRunningStatusMessage runningStatus = 2;
+  }
+  message AssignedDeliveryMessage {
+    int32 team_id = 1;
+    int32 problem_id = 2;
+  }
+  message BalloonRunningStatusMessage {
+    bool running = 1;
   }
 }

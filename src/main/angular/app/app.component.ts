@@ -31,7 +31,7 @@ import Profile = acmcsus.debugjudge.Profile;
             <app-admin-view></app-admin-view>
           </mat-tab>
           <mat-tab label="Balloons" *ngIf="profile.profileType === BALLOON_RUNNER">
-            <app-admin-view></app-admin-view>
+            <app-balloon-view></app-balloon-view>
           </mat-tab>
           <mat-tab label="Submissions"
                    *ngIf="[TEAM, JUDGE, ADMIN].indexOf(profile.profileType)>=0">

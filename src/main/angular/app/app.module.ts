@@ -11,6 +11,7 @@ import {ScoreboardComponent} from './scoreboard.component';
 import {AdminComponent} from './view-admin.component';
 import {TeamComponent} from './view-team.component';
 import {JudgeComponent} from './view-judge.component';
+import {BalloonComponent} from './view-balloon.component';
 import {ApiTeamServiceImpl} from './api-team.service';
 import {HttpClientModule} from '@angular/common/http';
 import {CodeEditorComponent} from './codeeditor.component';
@@ -23,6 +24,7 @@ import {SubmissionsBarComponent} from "./submission-bar.component";
 import {SubmissionsViewComponent} from "./view-submissions.component";
 import {ApiAdminServiceImpl} from "./api-admin.service";
 import {ApiJudgeServiceImpl} from "./api-judge.service";
+import {ApiBalloonServiceImpl} from "./api-balloon.service";
 import {DebuggingJudgeComponent} from "./debuggingjudge.component";
 import {AlgorithmicCardComponent} from "./algorithmiccard.component";
 import {DiffComponent} from "./diff.component";
@@ -36,6 +38,7 @@ import {ResolverViewerComponent} from "./ResolverViewer";
     TeamComponent,
     JudgeComponent,
     AdminComponent,
+    BalloonComponent,
     ScoreboardComponent,
     CodeEditorComponent,
     AlgorithmicCardComponent,
@@ -65,6 +68,7 @@ import {ResolverViewerComponent} from "./ResolverViewer";
     {provide: 'ApiAdminService', useClass: ApiAdminServiceImpl},
     {provide: 'ApiJudgeService', useClass: ApiJudgeServiceImpl},
     {provide: 'ApiTeamService', useClass: ApiTeamServiceImpl},
+    {provide: 'ApiBalloonService', useClass: ApiBalloonServiceImpl},
     {provide: 'ApiWebSocketService', useClass: ApiWebSocketServiceImpl},
   ],
   bootstrap: [AppComponent],
