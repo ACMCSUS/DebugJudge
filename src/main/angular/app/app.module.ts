@@ -28,6 +28,7 @@ import {AlgorithmicCardComponent} from "./algorithmiccard.component";
 import {DiffComponent} from "./diff.component";
 import {ProblemsViewComponent} from "./view-problems.component";
 import {AlgorithmicJudgeComponent} from "./algorithmicjudge.component";
+import {ResolverViewerComponent} from "./ResolverViewer";
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import {AlgorithmicJudgeComponent} from "./algorithmicjudge.component";
     SubmissionsViewComponent,
     SubmissionsBarComponent,
     ProblemsViewComponent,
+    ResolverViewerComponent,
   ],
   imports: [
     BrowserModule,

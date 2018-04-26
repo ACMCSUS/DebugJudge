@@ -65,8 +65,12 @@ public class AutoJudgeSocketService extends ProfileSocketService {
                     .addAllLanguage(algoStateService.languageList.blockingFirst()))))
         .build());
 
-    queueHandler.connected(ctx.profile, ctx.session);
-    queueHandler.started(ctx.profile, ctx.session);
+    // TODO: This is horrible, but works for now.
+    try {
+      Thread.sleep(1000);
+      queueHandler.connected(ctx.profile, ctx.session);
+      queueHandler.started(ctx.profile, ctx.session);
+    } catch (Exception e) {}
   }
 
   @Override

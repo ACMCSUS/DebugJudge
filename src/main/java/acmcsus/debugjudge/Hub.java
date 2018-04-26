@@ -19,6 +19,7 @@ import spark.Response;
 import spark.staticfiles.StaticFilesConfiguration;
 
 import static acmcsus.debugjudge.ctrl.SecurityApi.getProfile;
+import static java.lang.Integer.parseInt;
 import static spark.Spark.before;
 import static spark.Spark.get;
 import static spark.Spark.init;
@@ -57,7 +58,8 @@ public class Hub {
   }
 
   public void start() {
-    port(4567);
+    int port = parseInt(System.getenv().getOrDefault("HUB_PORT", "4567"));
+    port(port);
     webSocket("/ws/connect", socketService);
     get("/ws/nonce", socketService::nonceRoute);
 
@@ -87,8 +89,6 @@ public class Hub {
       }
       staticHandler.consume(req.raw(), res.raw());
     });
-
-
 
     init();
   }
