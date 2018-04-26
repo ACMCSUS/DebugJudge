@@ -148,11 +148,11 @@ public class ScoreboardBroadcaster {
 
           while (itr.hasNext()) {
             Submission sub = itr.next();
-            potentialPenalty += 5 + sub.getSubmissionTimeSeconds()/60;
+            potentialPenalty += 20;
 
             if (sub.getJudgement() == SubmissionJudgement.JUDGEMENT_SUCCESS) {
               score.correct += 1;
-              score.penalty += potentialPenalty - 5;
+              score.penalty += potentialPenalty - 20 + sub.getSubmissionTimeSeconds()/60;
               solveTimeSeconds.add(sub.getSubmissionTimeSeconds());
               teamProblemAcceptance.get(team.getId()).put(problem.getId(), true);
 
