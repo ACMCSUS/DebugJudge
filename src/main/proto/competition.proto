@@ -141,6 +141,16 @@ message Problem {
   }
 }
 
+message Clarification {
+  string id  = 1;
+  int32 team_id = 2;
+  int32 problem_name = 3;
+  bool public = 4;
+
+  string message = 5;
+  string response = 6;
+}
+
 message Scoreboard {
 
   repeated ScoreboardRow row = 1;

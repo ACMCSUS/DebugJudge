@@ -44,6 +44,7 @@ public class TeamSocketService extends ProfileSocketService {
   public void onConnect(WebSocketContext ctx) throws IOException {
     final long teamId = ctx.profile.getId();
     onScoreboardReceiverConnect(ctx);
+    onClarificationReceiverConnect(ctx);
 
     Consumer<Submission> submissionReloader =
         (sub) -> {

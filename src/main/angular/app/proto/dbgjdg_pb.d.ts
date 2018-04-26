@@ -201,207 +201,6 @@ export namespace acmcsus {
             }
         }
 
-        /** Properties of a Resolution. */
-        interface IResolution {
-
-            /** Resolution teamId */
-            teamId?: (number|null);
-
-            /** Resolution problemId */
-            problemId?: (number|null);
-
-            /** Resolution solved */
-            solved?: (boolean|null);
-
-            /** Resolution penalty */
-            penalty?: (number|null);
-        }
-
-        /** Represents a Resolution. */
-        class Resolution implements IResolution {
-
-            /**
-             * Constructs a new Resolution.
-             * @param [properties] Properties to set
-             */
-            constructor(properties?: acmcsus.debugjudge.IResolution);
-
-            /** Resolution teamId. */
-            public teamId: number;
-
-            /** Resolution problemId. */
-            public problemId: number;
-
-            /** Resolution solved. */
-            public solved: boolean;
-
-            /** Resolution penalty. */
-            public penalty: number;
-
-            /**
-             * Creates a new Resolution instance using the specified properties.
-             * @param [properties] Properties to set
-             * @returns Resolution instance
-             */
-            public static create(properties?: acmcsus.debugjudge.IResolution): acmcsus.debugjudge.Resolution;
-
-            /**
-             * Encodes the specified Resolution message. Does not implicitly {@link acmcsus.debugjudge.Resolution.verify|verify} messages.
-             * @param message Resolution message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encode(message: acmcsus.debugjudge.IResolution, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Encodes the specified Resolution message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Resolution.verify|verify} messages.
-             * @param message Resolution message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encodeDelimited(message: acmcsus.debugjudge.IResolution, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Decodes a Resolution message from the specified reader or buffer.
-             * @param reader Reader or buffer to decode from
-             * @param [length] Message length if known beforehand
-             * @returns Resolution
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.Resolution;
-
-            /**
-             * Decodes a Resolution message from the specified reader or buffer, length delimited.
-             * @param reader Reader or buffer to decode from
-             * @returns Resolution
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.Resolution;
-
-            /**
-             * Verifies a Resolution message.
-             * @param message Plain object to verify
-             * @returns `null` if valid, otherwise the reason why it is not
-             */
-            public static verify(message: { [k: string]: any }): (string|null);
-
-            /**
-             * Creates a Resolution message from a plain object. Also converts values to their respective internal types.
-             * @param object Plain object
-             * @returns Resolution
-             */
-            public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.Resolution;
-
-            /**
-             * Creates a plain object from a Resolution message. Also converts values to other types if specified.
-             * @param message Resolution
-             * @param [options] Conversion options
-             * @returns Plain object
-             */
-            public static toObject(message: acmcsus.debugjudge.Resolution, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-            /**
-             * Converts this Resolution to JSON.
-             * @returns JSON object
-             */
-            public toJSON(): { [k: string]: any };
-        }
-
-        namespace Resolution {
-
-            /** Properties of a List. */
-            interface IList {
-
-                /** List resolution */
-                resolution?: (acmcsus.debugjudge.IResolution[]|null);
-            }
-
-            /** Represents a List. */
-            class List implements IList {
-
-                /**
-                 * Constructs a new List.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: acmcsus.debugjudge.Resolution.IList);
-
-                /** List resolution. */
-                public resolution: acmcsus.debugjudge.IResolution[];
-
-                /**
-                 * Creates a new List instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns List instance
-                 */
-                public static create(properties?: acmcsus.debugjudge.Resolution.IList): acmcsus.debugjudge.Resolution.List;
-
-                /**
-                 * Encodes the specified List message. Does not implicitly {@link acmcsus.debugjudge.Resolution.List.verify|verify} messages.
-                 * @param message List message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: acmcsus.debugjudge.Resolution.IList, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified List message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Resolution.List.verify|verify} messages.
-                 * @param message List message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: acmcsus.debugjudge.Resolution.IList, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a List message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns List
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.Resolution.List;
-
-                /**
-                 * Decodes a List message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns List
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.Resolution.List;
-
-                /**
-                 * Verifies a List message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a List message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns List
-                 */
-                public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.Resolution.List;
-
-                /**
-                 * Creates a plain object from a List message. Also converts values to other types if specified.
-                 * @param message List
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: acmcsus.debugjudge.Resolution.List, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this List to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-        }
-
         /** CompetitionState enum. */
         enum CompetitionState {
             UNKNOWN = 0,
@@ -1851,6 +1650,126 @@ export namespace acmcsus {
             }
         }
 
+        /** Properties of a Clarification. */
+        interface IClarification {
+
+            /** Clarification id */
+            id?: (string|null);
+
+            /** Clarification teamId */
+            teamId?: (number|null);
+
+            /** Clarification problemName */
+            problemName?: (number|null);
+
+            /** Clarification public */
+            "public"?: (boolean|null);
+
+            /** Clarification message */
+            message?: (string|null);
+
+            /** Clarification response */
+            response?: (string|null);
+        }
+
+        /** Represents a Clarification. */
+        class Clarification implements IClarification {
+
+            /**
+             * Constructs a new Clarification.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: acmcsus.debugjudge.IClarification);
+
+            /** Clarification id. */
+            public id: string;
+
+            /** Clarification teamId. */
+            public teamId: number;
+
+            /** Clarification problemName. */
+            public problemName: number;
+
+            /** Clarification public. */
+            public public: boolean;
+
+            /** Clarification message. */
+            public message: string;
+
+            /** Clarification response. */
+            public response: string;
+
+            /**
+             * Creates a new Clarification instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Clarification instance
+             */
+            public static create(properties?: acmcsus.debugjudge.IClarification): acmcsus.debugjudge.Clarification;
+
+            /**
+             * Encodes the specified Clarification message. Does not implicitly {@link acmcsus.debugjudge.Clarification.verify|verify} messages.
+             * @param message Clarification message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: acmcsus.debugjudge.IClarification, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Clarification message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Clarification.verify|verify} messages.
+             * @param message Clarification message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: acmcsus.debugjudge.IClarification, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Clarification message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Clarification
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.Clarification;
+
+            /**
+             * Decodes a Clarification message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Clarification
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.Clarification;
+
+            /**
+             * Verifies a Clarification message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Clarification message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Clarification
+             */
+            public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.Clarification;
+
+            /**
+             * Creates a plain object from a Clarification message. Also converts values to other types if specified.
+             * @param message Clarification
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: acmcsus.debugjudge.Clarification, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Clarification to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
         /** Properties of a Scoreboard. */
         interface IScoreboard {
 
@@ -1955,6 +1874,9 @@ export namespace acmcsus {
                 /** ScoreboardRow profileName */
                 profileName?: (string|null);
 
+                /** ScoreboardRow teamId */
+                teamId?: (number|null);
+
                 /** ScoreboardRow problemAttempts */
                 problemAttempts?: ({ [k: string]: number }|null);
 
@@ -1982,6 +1904,9 @@ export namespace acmcsus {
 
                 /** ScoreboardRow profileName. */
                 public profileName: string;
+
+                /** ScoreboardRow teamId. */
+                public teamId: number;
 
                 /** ScoreboardRow problemAttempts. */
                 public problemAttempts: { [k: string]: number };
@@ -2166,6 +2091,207 @@ export namespace acmcsus {
             public toJSON(): { [k: string]: any };
         }
 
+        /** Properties of a Resolution. */
+        interface IResolution {
+
+            /** Resolution teamId */
+            teamId?: (number|null);
+
+            /** Resolution problemId */
+            problemId?: (number|null);
+
+            /** Resolution solved */
+            solved?: (boolean|null);
+
+            /** Resolution penalty */
+            penalty?: (number|null);
+        }
+
+        /** Represents a Resolution. */
+        class Resolution implements IResolution {
+
+            /**
+             * Constructs a new Resolution.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: acmcsus.debugjudge.IResolution);
+
+            /** Resolution teamId. */
+            public teamId: number;
+
+            /** Resolution problemId. */
+            public problemId: number;
+
+            /** Resolution solved. */
+            public solved: boolean;
+
+            /** Resolution penalty. */
+            public penalty: number;
+
+            /**
+             * Creates a new Resolution instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Resolution instance
+             */
+            public static create(properties?: acmcsus.debugjudge.IResolution): acmcsus.debugjudge.Resolution;
+
+            /**
+             * Encodes the specified Resolution message. Does not implicitly {@link acmcsus.debugjudge.Resolution.verify|verify} messages.
+             * @param message Resolution message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: acmcsus.debugjudge.IResolution, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Resolution message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Resolution.verify|verify} messages.
+             * @param message Resolution message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: acmcsus.debugjudge.IResolution, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Resolution message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Resolution
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.Resolution;
+
+            /**
+             * Decodes a Resolution message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Resolution
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.Resolution;
+
+            /**
+             * Verifies a Resolution message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Resolution message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Resolution
+             */
+            public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.Resolution;
+
+            /**
+             * Creates a plain object from a Resolution message. Also converts values to other types if specified.
+             * @param message Resolution
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: acmcsus.debugjudge.Resolution, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Resolution to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace Resolution {
+
+            /** Properties of a List. */
+            interface IList {
+
+                /** List resolution */
+                resolution?: (acmcsus.debugjudge.IResolution[]|null);
+            }
+
+            /** Represents a List. */
+            class List implements IList {
+
+                /**
+                 * Constructs a new List.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: acmcsus.debugjudge.Resolution.IList);
+
+                /** List resolution. */
+                public resolution: acmcsus.debugjudge.IResolution[];
+
+                /**
+                 * Creates a new List instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns List instance
+                 */
+                public static create(properties?: acmcsus.debugjudge.Resolution.IList): acmcsus.debugjudge.Resolution.List;
+
+                /**
+                 * Encodes the specified List message. Does not implicitly {@link acmcsus.debugjudge.Resolution.List.verify|verify} messages.
+                 * @param message List message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: acmcsus.debugjudge.Resolution.IList, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified List message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Resolution.List.verify|verify} messages.
+                 * @param message List message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: acmcsus.debugjudge.Resolution.IList, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a List message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns List
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.Resolution.List;
+
+                /**
+                 * Decodes a List message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns List
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.Resolution.List;
+
+                /**
+                 * Verifies a List message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a List message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns List
+                 */
+                public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.Resolution.List;
+
+                /**
+                 * Creates a plain object from a List message. Also converts values to other types if specified.
+                 * @param message List
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: acmcsus.debugjudge.Resolution.List, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this List to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+            }
+        }
+
         /** Properties of a C2SMessage. */
         interface IC2SMessage {
 
@@ -2189,6 +2315,9 @@ export namespace acmcsus {
 
             /** C2SMessage loginMessage */
             loginMessage?: (acmcsus.debugjudge.C2SMessage.ILoginMessage|null);
+
+            /** C2SMessage submitClarificationMessage */
+            submitClarificationMessage?: (acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage|null);
         }
 
         /** Represents a C2SMessage. */
@@ -2221,8 +2350,11 @@ export namespace acmcsus {
             /** C2SMessage loginMessage. */
             public loginMessage?: (acmcsus.debugjudge.C2SMessage.ILoginMessage|null);
 
+            /** C2SMessage submitClarificationMessage. */
+            public submitClarificationMessage?: (acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage|null);
+
             /** C2SMessage value. */
-            public value?: ("t2sMessage"|"j2sMessage"|"a2sMessage"|"aj2sMessage"|"b2sMessage"|"rj2sMessage"|"loginMessage");
+            public value?: ("t2sMessage"|"j2sMessage"|"a2sMessage"|"aj2sMessage"|"b2sMessage"|"rj2sMessage"|"loginMessage"|"submitClarificationMessage");
 
             /**
              * Creates a new C2SMessage instance using the specified properties.
@@ -2398,6 +2530,96 @@ export namespace acmcsus {
                  */
                 public toJSON(): { [k: string]: any };
             }
+
+            /** Properties of a SubmitClarificationMessage. */
+            interface ISubmitClarificationMessage {
+
+                /** SubmitClarificationMessage clarification */
+                clarification?: (acmcsus.debugjudge.IClarification|null);
+            }
+
+            /** Represents a SubmitClarificationMessage. */
+            class SubmitClarificationMessage implements ISubmitClarificationMessage {
+
+                /**
+                 * Constructs a new SubmitClarificationMessage.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage);
+
+                /** SubmitClarificationMessage clarification. */
+                public clarification?: (acmcsus.debugjudge.IClarification|null);
+
+                /**
+                 * Creates a new SubmitClarificationMessage instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns SubmitClarificationMessage instance
+                 */
+                public static create(properties?: acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage): acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage;
+
+                /**
+                 * Encodes the specified SubmitClarificationMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.verify|verify} messages.
+                 * @param message SubmitClarificationMessage message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified SubmitClarificationMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.verify|verify} messages.
+                 * @param message SubmitClarificationMessage message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a SubmitClarificationMessage message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns SubmitClarificationMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage;
+
+                /**
+                 * Decodes a SubmitClarificationMessage message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns SubmitClarificationMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage;
+
+                /**
+                 * Verifies a SubmitClarificationMessage message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a SubmitClarificationMessage message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns SubmitClarificationMessage
+                 */
+                public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage;
+
+                /**
+                 * Creates a plain object from a SubmitClarificationMessage message. Also converts values to other types if specified.
+                 * @param message SubmitClarificationMessage
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this SubmitClarificationMessage to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+            }
         }
 
         /** Properties of a S2CMessage. */
@@ -2441,6 +2663,9 @@ export namespace acmcsus {
 
             /** S2CMessage reloadProblemsMessage */
             reloadProblemsMessage?: (acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null);
+
+            /** S2CMessage reloadClarificationMessage */
+            reloadClarificationMessage?: (acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage|null);
         }
 
         /** Represents a S2CMessage. */
@@ -2491,8 +2716,11 @@ export namespace acmcsus {
             /** S2CMessage reloadProblemsMessage. */
             public reloadProblemsMessage?: (acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null);
 
+            /** S2CMessage reloadClarificationMessage. */
+            public reloadClarificationMessage?: (acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage|null);
+
             /** S2CMessage value. */
-            public value?: ("s2tMessage"|"s2jMessage"|"s2aMessage"|"s2ajMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|"reloadSubmissionMessage"|"reloadSubmissionsMessage"|"reloadProblemsMessage");
+            public value?: ("s2tMessage"|"s2jMessage"|"s2aMessage"|"s2ajMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|"reloadSubmissionMessage"|"reloadSubmissionsMessage"|"reloadProblemsMessage"|"reloadClarificationMessage");
 
             /**
              * Creates a new S2CMessage instance using the specified properties.
@@ -3411,6 +3639,96 @@ export namespace acmcsus {
 
                 /**
                  * Converts this ReloadSubmissionsMessage to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+            }
+
+            /** Properties of a ReloadClarificationMessage. */
+            interface IReloadClarificationMessage {
+
+                /** ReloadClarificationMessage clarification */
+                clarification?: (acmcsus.debugjudge.IClarification|null);
+            }
+
+            /** Represents a ReloadClarificationMessage. */
+            class ReloadClarificationMessage implements IReloadClarificationMessage {
+
+                /**
+                 * Constructs a new ReloadClarificationMessage.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage);
+
+                /** ReloadClarificationMessage clarification. */
+                public clarification?: (acmcsus.debugjudge.IClarification|null);
+
+                /**
+                 * Creates a new ReloadClarificationMessage instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns ReloadClarificationMessage instance
+                 */
+                public static create(properties?: acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage): acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage;
+
+                /**
+                 * Encodes the specified ReloadClarificationMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.verify|verify} messages.
+                 * @param message ReloadClarificationMessage message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified ReloadClarificationMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.verify|verify} messages.
+                 * @param message ReloadClarificationMessage message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a ReloadClarificationMessage message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns ReloadClarificationMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage;
+
+                /**
+                 * Decodes a ReloadClarificationMessage message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns ReloadClarificationMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage;
+
+                /**
+                 * Verifies a ReloadClarificationMessage message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a ReloadClarificationMessage message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns ReloadClarificationMessage
+                 */
+                public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage;
+
+                /**
+                 * Creates a plain object from a ReloadClarificationMessage message. Also converts values to other types if specified.
+                 * @param message ReloadClarificationMessage
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this ReloadClarificationMessage to JSON.
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };

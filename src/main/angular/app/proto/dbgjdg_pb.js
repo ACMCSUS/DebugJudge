@@ -474,468 +474,6 @@
                 return ProgrammingLanguage;
             })();
     
-            debugjudge.Resolution = (function() {
-    
-                /**
-                 * Properties of a Resolution.
-                 * @memberof acmcsus.debugjudge
-                 * @interface IResolution
-                 * @property {number|null} [teamId] Resolution teamId
-                 * @property {number|null} [problemId] Resolution problemId
-                 * @property {boolean|null} [solved] Resolution solved
-                 * @property {number|null} [penalty] Resolution penalty
-                 */
-    
-                /**
-                 * Constructs a new Resolution.
-                 * @memberof acmcsus.debugjudge
-                 * @classdesc Represents a Resolution.
-                 * @implements IResolution
-                 * @constructor
-                 * @param {acmcsus.debugjudge.IResolution=} [properties] Properties to set
-                 */
-                function Resolution(properties) {
-                    if (properties)
-                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                            if (properties[keys[i]] != null)
-                                this[keys[i]] = properties[keys[i]];
-                }
-    
-                /**
-                 * Resolution teamId.
-                 * @member {number} teamId
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @instance
-                 */
-                Resolution.prototype.teamId = 0;
-    
-                /**
-                 * Resolution problemId.
-                 * @member {number} problemId
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @instance
-                 */
-                Resolution.prototype.problemId = 0;
-    
-                /**
-                 * Resolution solved.
-                 * @member {boolean} solved
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @instance
-                 */
-                Resolution.prototype.solved = false;
-    
-                /**
-                 * Resolution penalty.
-                 * @member {number} penalty
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @instance
-                 */
-                Resolution.prototype.penalty = 0;
-    
-                /**
-                 * Creates a new Resolution instance using the specified properties.
-                 * @function create
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @static
-                 * @param {acmcsus.debugjudge.IResolution=} [properties] Properties to set
-                 * @returns {acmcsus.debugjudge.Resolution} Resolution instance
-                 */
-                Resolution.create = function create(properties) {
-                    return new Resolution(properties);
-                };
-    
-                /**
-                 * Encodes the specified Resolution message. Does not implicitly {@link acmcsus.debugjudge.Resolution.verify|verify} messages.
-                 * @function encode
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @static
-                 * @param {acmcsus.debugjudge.IResolution} message Resolution message or plain object to encode
-                 * @param {$protobuf.Writer} [writer] Writer to encode to
-                 * @returns {$protobuf.Writer} Writer
-                 */
-                Resolution.encode = function encode(message, writer) {
-                    if (!writer)
-                        writer = $Writer.create();
-                    if (message.teamId != null && message.hasOwnProperty("teamId"))
-                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.teamId);
-                    if (message.problemId != null && message.hasOwnProperty("problemId"))
-                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
-                    if (message.solved != null && message.hasOwnProperty("solved"))
-                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.solved);
-                    if (message.penalty != null && message.hasOwnProperty("penalty"))
-                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.penalty);
-                    return writer;
-                };
-    
-                /**
-                 * Encodes the specified Resolution message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Resolution.verify|verify} messages.
-                 * @function encodeDelimited
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @static
-                 * @param {acmcsus.debugjudge.IResolution} message Resolution message or plain object to encode
-                 * @param {$protobuf.Writer} [writer] Writer to encode to
-                 * @returns {$protobuf.Writer} Writer
-                 */
-                Resolution.encodeDelimited = function encodeDelimited(message, writer) {
-                    return this.encode(message, writer).ldelim();
-                };
-    
-                /**
-                 * Decodes a Resolution message from the specified reader or buffer.
-                 * @function decode
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @static
-                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                 * @param {number} [length] Message length if known beforehand
-                 * @returns {acmcsus.debugjudge.Resolution} Resolution
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                Resolution.decode = function decode(reader, length) {
-                    if (!(reader instanceof $Reader))
-                        reader = $Reader.create(reader);
-                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Resolution();
-                    while (reader.pos < end) {
-                        var tag = reader.uint32();
-                        switch (tag >>> 3) {
-                        case 1:
-                            message.teamId = reader.int32();
-                            break;
-                        case 2:
-                            message.problemId = reader.int32();
-                            break;
-                        case 3:
-                            message.solved = reader.bool();
-                            break;
-                        case 4:
-                            message.penalty = reader.int32();
-                            break;
-                        default:
-                            reader.skipType(tag & 7);
-                            break;
-                        }
-                    }
-                    return message;
-                };
-    
-                /**
-                 * Decodes a Resolution message from the specified reader or buffer, length delimited.
-                 * @function decodeDelimited
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @static
-                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                 * @returns {acmcsus.debugjudge.Resolution} Resolution
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                Resolution.decodeDelimited = function decodeDelimited(reader) {
-                    if (!(reader instanceof $Reader))
-                        reader = new $Reader(reader);
-                    return this.decode(reader, reader.uint32());
-                };
-    
-                /**
-                 * Verifies a Resolution message.
-                 * @function verify
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @static
-                 * @param {Object.<string,*>} message Plain object to verify
-                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                 */
-                Resolution.verify = function verify(message) {
-                    if (typeof message !== "object" || message === null)
-                        return "object expected";
-                    if (message.teamId != null && message.hasOwnProperty("teamId"))
-                        if (!$util.isInteger(message.teamId))
-                            return "teamId: integer expected";
-                    if (message.problemId != null && message.hasOwnProperty("problemId"))
-                        if (!$util.isInteger(message.problemId))
-                            return "problemId: integer expected";
-                    if (message.solved != null && message.hasOwnProperty("solved"))
-                        if (typeof message.solved !== "boolean")
-                            return "solved: boolean expected";
-                    if (message.penalty != null && message.hasOwnProperty("penalty"))
-                        if (!$util.isInteger(message.penalty))
-                            return "penalty: integer expected";
-                    return null;
-                };
-    
-                /**
-                 * Creates a Resolution message from a plain object. Also converts values to their respective internal types.
-                 * @function fromObject
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @static
-                 * @param {Object.<string,*>} object Plain object
-                 * @returns {acmcsus.debugjudge.Resolution} Resolution
-                 */
-                Resolution.fromObject = function fromObject(object) {
-                    if (object instanceof $root.acmcsus.debugjudge.Resolution)
-                        return object;
-                    var message = new $root.acmcsus.debugjudge.Resolution();
-                    if (object.teamId != null)
-                        message.teamId = object.teamId | 0;
-                    if (object.problemId != null)
-                        message.problemId = object.problemId | 0;
-                    if (object.solved != null)
-                        message.solved = Boolean(object.solved);
-                    if (object.penalty != null)
-                        message.penalty = object.penalty | 0;
-                    return message;
-                };
-    
-                /**
-                 * Creates a plain object from a Resolution message. Also converts values to other types if specified.
-                 * @function toObject
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @static
-                 * @param {acmcsus.debugjudge.Resolution} message Resolution
-                 * @param {$protobuf.IConversionOptions} [options] Conversion options
-                 * @returns {Object.<string,*>} Plain object
-                 */
-                Resolution.toObject = function toObject(message, options) {
-                    if (!options)
-                        options = {};
-                    var object = {};
-                    if (options.defaults) {
-                        object.teamId = 0;
-                        object.problemId = 0;
-                        object.solved = false;
-                        object.penalty = 0;
-                    }
-                    if (message.teamId != null && message.hasOwnProperty("teamId"))
-                        object.teamId = message.teamId;
-                    if (message.problemId != null && message.hasOwnProperty("problemId"))
-                        object.problemId = message.problemId;
-                    if (message.solved != null && message.hasOwnProperty("solved"))
-                        object.solved = message.solved;
-                    if (message.penalty != null && message.hasOwnProperty("penalty"))
-                        object.penalty = message.penalty;
-                    return object;
-                };
-    
-                /**
-                 * Converts this Resolution to JSON.
-                 * @function toJSON
-                 * @memberof acmcsus.debugjudge.Resolution
-                 * @instance
-                 * @returns {Object.<string,*>} JSON object
-                 */
-                Resolution.prototype.toJSON = function toJSON() {
-                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                };
-    
-                Resolution.List = (function() {
-    
-                    /**
-                     * Properties of a List.
-                     * @memberof acmcsus.debugjudge.Resolution
-                     * @interface IList
-                     * @property {Array.<acmcsus.debugjudge.IResolution>|null} [resolution] List resolution
-                     */
-    
-                    /**
-                     * Constructs a new List.
-                     * @memberof acmcsus.debugjudge.Resolution
-                     * @classdesc Represents a List.
-                     * @implements IList
-                     * @constructor
-                     * @param {acmcsus.debugjudge.Resolution.IList=} [properties] Properties to set
-                     */
-                    function List(properties) {
-                        this.resolution = [];
-                        if (properties)
-                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                if (properties[keys[i]] != null)
-                                    this[keys[i]] = properties[keys[i]];
-                    }
-    
-                    /**
-                     * List resolution.
-                     * @member {Array.<acmcsus.debugjudge.IResolution>} resolution
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @instance
-                     */
-                    List.prototype.resolution = $util.emptyArray;
-    
-                    /**
-                     * Creates a new List instance using the specified properties.
-                     * @function create
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @static
-                     * @param {acmcsus.debugjudge.Resolution.IList=} [properties] Properties to set
-                     * @returns {acmcsus.debugjudge.Resolution.List} List instance
-                     */
-                    List.create = function create(properties) {
-                        return new List(properties);
-                    };
-    
-                    /**
-                     * Encodes the specified List message. Does not implicitly {@link acmcsus.debugjudge.Resolution.List.verify|verify} messages.
-                     * @function encode
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @static
-                     * @param {acmcsus.debugjudge.Resolution.IList} message List message or plain object to encode
-                     * @param {$protobuf.Writer} [writer] Writer to encode to
-                     * @returns {$protobuf.Writer} Writer
-                     */
-                    List.encode = function encode(message, writer) {
-                        if (!writer)
-                            writer = $Writer.create();
-                        if (message.resolution != null && message.resolution.length)
-                            for (var i = 0; i < message.resolution.length; ++i)
-                                $root.acmcsus.debugjudge.Resolution.encode(message.resolution[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                        return writer;
-                    };
-    
-                    /**
-                     * Encodes the specified List message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Resolution.List.verify|verify} messages.
-                     * @function encodeDelimited
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @static
-                     * @param {acmcsus.debugjudge.Resolution.IList} message List message or plain object to encode
-                     * @param {$protobuf.Writer} [writer] Writer to encode to
-                     * @returns {$protobuf.Writer} Writer
-                     */
-                    List.encodeDelimited = function encodeDelimited(message, writer) {
-                        return this.encode(message, writer).ldelim();
-                    };
-    
-                    /**
-                     * Decodes a List message from the specified reader or buffer.
-                     * @function decode
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @static
-                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                     * @param {number} [length] Message length if known beforehand
-                     * @returns {acmcsus.debugjudge.Resolution.List} List
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    List.decode = function decode(reader, length) {
-                        if (!(reader instanceof $Reader))
-                            reader = $Reader.create(reader);
-                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Resolution.List();
-                        while (reader.pos < end) {
-                            var tag = reader.uint32();
-                            switch (tag >>> 3) {
-                            case 1:
-                                if (!(message.resolution && message.resolution.length))
-                                    message.resolution = [];
-                                message.resolution.push($root.acmcsus.debugjudge.Resolution.decode(reader, reader.uint32()));
-                                break;
-                            default:
-                                reader.skipType(tag & 7);
-                                break;
-                            }
-                        }
-                        return message;
-                    };
-    
-                    /**
-                     * Decodes a List message from the specified reader or buffer, length delimited.
-                     * @function decodeDelimited
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @static
-                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                     * @returns {acmcsus.debugjudge.Resolution.List} List
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    List.decodeDelimited = function decodeDelimited(reader) {
-                        if (!(reader instanceof $Reader))
-                            reader = new $Reader(reader);
-                        return this.decode(reader, reader.uint32());
-                    };
-    
-                    /**
-                     * Verifies a List message.
-                     * @function verify
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @static
-                     * @param {Object.<string,*>} message Plain object to verify
-                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                     */
-                    List.verify = function verify(message) {
-                        if (typeof message !== "object" || message === null)
-                            return "object expected";
-                        if (message.resolution != null && message.hasOwnProperty("resolution")) {
-                            if (!Array.isArray(message.resolution))
-                                return "resolution: array expected";
-                            for (var i = 0; i < message.resolution.length; ++i) {
-                                var error = $root.acmcsus.debugjudge.Resolution.verify(message.resolution[i]);
-                                if (error)
-                                    return "resolution." + error;
-                            }
-                        }
-                        return null;
-                    };
-    
-                    /**
-                     * Creates a List message from a plain object. Also converts values to their respective internal types.
-                     * @function fromObject
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @static
-                     * @param {Object.<string,*>} object Plain object
-                     * @returns {acmcsus.debugjudge.Resolution.List} List
-                     */
-                    List.fromObject = function fromObject(object) {
-                        if (object instanceof $root.acmcsus.debugjudge.Resolution.List)
-                            return object;
-                        var message = new $root.acmcsus.debugjudge.Resolution.List();
-                        if (object.resolution) {
-                            if (!Array.isArray(object.resolution))
-                                throw TypeError(".acmcsus.debugjudge.Resolution.List.resolution: array expected");
-                            message.resolution = [];
-                            for (var i = 0; i < object.resolution.length; ++i) {
-                                if (typeof object.resolution[i] !== "object")
-                                    throw TypeError(".acmcsus.debugjudge.Resolution.List.resolution: object expected");
-                                message.resolution[i] = $root.acmcsus.debugjudge.Resolution.fromObject(object.resolution[i]);
-                            }
-                        }
-                        return message;
-                    };
-    
-                    /**
-                     * Creates a plain object from a List message. Also converts values to other types if specified.
-                     * @function toObject
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @static
-                     * @param {acmcsus.debugjudge.Resolution.List} message List
-                     * @param {$protobuf.IConversionOptions} [options] Conversion options
-                     * @returns {Object.<string,*>} Plain object
-                     */
-                    List.toObject = function toObject(message, options) {
-                        if (!options)
-                            options = {};
-                        var object = {};
-                        if (options.arrays || options.defaults)
-                            object.resolution = [];
-                        if (message.resolution && message.resolution.length) {
-                            object.resolution = [];
-                            for (var j = 0; j < message.resolution.length; ++j)
-                                object.resolution[j] = $root.acmcsus.debugjudge.Resolution.toObject(message.resolution[j], options);
-                        }
-                        return object;
-                    };
-    
-                    /**
-                     * Converts this List to JSON.
-                     * @function toJSON
-                     * @memberof acmcsus.debugjudge.Resolution.List
-                     * @instance
-                     * @returns {Object.<string,*>} JSON object
-                     */
-                    List.prototype.toJSON = function toJSON() {
-                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                    };
-    
-                    return List;
-                })();
-    
-                return Resolution;
-            })();
-    
             /**
              * CompetitionState enum.
              * @name acmcsus.debugjudge.CompetitionState
@@ -4609,6 +4147,304 @@
                 return Problem;
             })();
     
+            debugjudge.Clarification = (function() {
+    
+                /**
+                 * Properties of a Clarification.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IClarification
+                 * @property {string|null} [id] Clarification id
+                 * @property {number|null} [teamId] Clarification teamId
+                 * @property {number|null} [problemName] Clarification problemName
+                 * @property {boolean|null} ["public"] Clarification public
+                 * @property {string|null} [message] Clarification message
+                 * @property {string|null} [response] Clarification response
+                 */
+    
+                /**
+                 * Constructs a new Clarification.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a Clarification.
+                 * @implements IClarification
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IClarification=} [properties] Properties to set
+                 */
+                function Clarification(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Clarification id.
+                 * @member {string} id
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @instance
+                 */
+                Clarification.prototype.id = "";
+    
+                /**
+                 * Clarification teamId.
+                 * @member {number} teamId
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @instance
+                 */
+                Clarification.prototype.teamId = 0;
+    
+                /**
+                 * Clarification problemName.
+                 * @member {number} problemName
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @instance
+                 */
+                Clarification.prototype.problemName = 0;
+    
+                /**
+                 * Clarification public.
+                 * @member {boolean} public
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @instance
+                 */
+                Clarification.prototype["public"] = false;
+    
+                /**
+                 * Clarification message.
+                 * @member {string} message
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @instance
+                 */
+                Clarification.prototype.message = "";
+    
+                /**
+                 * Clarification response.
+                 * @member {string} response
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @instance
+                 */
+                Clarification.prototype.response = "";
+    
+                /**
+                 * Creates a new Clarification instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @static
+                 * @param {acmcsus.debugjudge.IClarification=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.Clarification} Clarification instance
+                 */
+                Clarification.create = function create(properties) {
+                    return new Clarification(properties);
+                };
+    
+                /**
+                 * Encodes the specified Clarification message. Does not implicitly {@link acmcsus.debugjudge.Clarification.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @static
+                 * @param {acmcsus.debugjudge.IClarification} message Clarification message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Clarification.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.id != null && message.hasOwnProperty("id"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                    if (message.teamId != null && message.hasOwnProperty("teamId"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.teamId);
+                    if (message.problemName != null && message.hasOwnProperty("problemName"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.problemName);
+                    if (message["public"] != null && message.hasOwnProperty("public"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).bool(message["public"]);
+                    if (message.message != null && message.hasOwnProperty("message"))
+                        writer.uint32(/* id 5, wireType 2 =*/42).string(message.message);
+                    if (message.response != null && message.hasOwnProperty("response"))
+                        writer.uint32(/* id 6, wireType 2 =*/50).string(message.response);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Clarification message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Clarification.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @static
+                 * @param {acmcsus.debugjudge.IClarification} message Clarification message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Clarification.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Clarification message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.Clarification} Clarification
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Clarification.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Clarification();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.id = reader.string();
+                            break;
+                        case 2:
+                            message.teamId = reader.int32();
+                            break;
+                        case 3:
+                            message.problemName = reader.int32();
+                            break;
+                        case 4:
+                            message["public"] = reader.bool();
+                            break;
+                        case 5:
+                            message.message = reader.string();
+                            break;
+                        case 6:
+                            message.response = reader.string();
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Clarification message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.Clarification} Clarification
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Clarification.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Clarification message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Clarification.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.id != null && message.hasOwnProperty("id"))
+                        if (!$util.isString(message.id))
+                            return "id: string expected";
+                    if (message.teamId != null && message.hasOwnProperty("teamId"))
+                        if (!$util.isInteger(message.teamId))
+                            return "teamId: integer expected";
+                    if (message.problemName != null && message.hasOwnProperty("problemName"))
+                        if (!$util.isInteger(message.problemName))
+                            return "problemName: integer expected";
+                    if (message["public"] != null && message.hasOwnProperty("public"))
+                        if (typeof message["public"] !== "boolean")
+                            return "public: boolean expected";
+                    if (message.message != null && message.hasOwnProperty("message"))
+                        if (!$util.isString(message.message))
+                            return "message: string expected";
+                    if (message.response != null && message.hasOwnProperty("response"))
+                        if (!$util.isString(message.response))
+                            return "response: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Clarification message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.Clarification} Clarification
+                 */
+                Clarification.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.Clarification)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.Clarification();
+                    if (object.id != null)
+                        message.id = String(object.id);
+                    if (object.teamId != null)
+                        message.teamId = object.teamId | 0;
+                    if (object.problemName != null)
+                        message.problemName = object.problemName | 0;
+                    if (object["public"] != null)
+                        message["public"] = Boolean(object["public"]);
+                    if (object.message != null)
+                        message.message = String(object.message);
+                    if (object.response != null)
+                        message.response = String(object.response);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Clarification message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @static
+                 * @param {acmcsus.debugjudge.Clarification} message Clarification
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Clarification.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.id = "";
+                        object.teamId = 0;
+                        object.problemName = 0;
+                        object["public"] = false;
+                        object.message = "";
+                        object.response = "";
+                    }
+                    if (message.id != null && message.hasOwnProperty("id"))
+                        object.id = message.id;
+                    if (message.teamId != null && message.hasOwnProperty("teamId"))
+                        object.teamId = message.teamId;
+                    if (message.problemName != null && message.hasOwnProperty("problemName"))
+                        object.problemName = message.problemName;
+                    if (message["public"] != null && message.hasOwnProperty("public"))
+                        object["public"] = message["public"];
+                    if (message.message != null && message.hasOwnProperty("message"))
+                        object.message = message.message;
+                    if (message.response != null && message.hasOwnProperty("response"))
+                        object.response = message.response;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Clarification to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.Clarification
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Clarification.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                return Clarification;
+            })();
+    
             debugjudge.Scoreboard = (function() {
     
                 /**
@@ -4858,6 +4694,7 @@
                      * @memberof acmcsus.debugjudge.Scoreboard
                      * @interface IScoreboardRow
                      * @property {string|null} [profileName] ScoreboardRow profileName
+                     * @property {number|null} [teamId] ScoreboardRow teamId
                      * @property {Object.<string,number>|null} [problemAttempts] ScoreboardRow problemAttempts
                      * @property {Object.<string,boolean>|null} [problemCompletions] ScoreboardRow problemCompletions
                      * @property {number|null} [place] ScoreboardRow place
@@ -4889,6 +4726,14 @@
                      * @instance
                      */
                     ScoreboardRow.prototype.profileName = "";
+    
+                    /**
+                     * ScoreboardRow teamId.
+                     * @member {number} teamId
+                     * @memberof acmcsus.debugjudge.Scoreboard.ScoreboardRow
+                     * @instance
+                     */
+                    ScoreboardRow.prototype.teamId = 0;
     
                     /**
                      * ScoreboardRow problemAttempts.
@@ -4968,6 +4813,8 @@
                             writer.uint32(/* id 5, wireType 0 =*/40).int32(message.score);
                         if (message.penalty != null && message.hasOwnProperty("penalty"))
                             writer.uint32(/* id 6, wireType 0 =*/48).int32(message.penalty);
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            writer.uint32(/* id 7, wireType 0 =*/56).int32(message.teamId);
                         return writer;
                     };
     
@@ -5004,6 +4851,9 @@
                             switch (tag >>> 3) {
                             case 1:
                                 message.profileName = reader.string();
+                                break;
+                            case 7:
+                                message.teamId = reader.int32();
                                 break;
                             case 2:
                                 reader.skip().pos++;
@@ -5068,6 +4918,9 @@
                         if (message.profileName != null && message.hasOwnProperty("profileName"))
                             if (!$util.isString(message.profileName))
                                 return "profileName: string expected";
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            if (!$util.isInteger(message.teamId))
+                                return "teamId: integer expected";
                         if (message.problemAttempts != null && message.hasOwnProperty("problemAttempts")) {
                             if (!$util.isObject(message.problemAttempts))
                                 return "problemAttempts: object expected";
@@ -5116,6 +4969,8 @@
                         var message = new $root.acmcsus.debugjudge.Scoreboard.ScoreboardRow();
                         if (object.profileName != null)
                             message.profileName = String(object.profileName);
+                        if (object.teamId != null)
+                            message.teamId = object.teamId | 0;
                         if (object.problemAttempts) {
                             if (typeof object.problemAttempts !== "object")
                                 throw TypeError(".acmcsus.debugjudge.Scoreboard.ScoreboardRow.problemAttempts: object expected");
@@ -5161,6 +5016,7 @@
                             object.place = 0;
                             object.score = 0;
                             object.penalty = 0;
+                            object.teamId = 0;
                         }
                         if (message.profileName != null && message.hasOwnProperty("profileName"))
                             object.profileName = message.profileName;
@@ -5181,6 +5037,8 @@
                             object.score = message.score;
                         if (message.penalty != null && message.hasOwnProperty("penalty"))
                             object.penalty = message.penalty;
+                        if (message.teamId != null && message.hasOwnProperty("teamId"))
+                            object.teamId = message.teamId;
                         return object;
                     };
     
@@ -5437,6 +5295,468 @@
                 return FreezeState;
             })();
     
+            debugjudge.Resolution = (function() {
+    
+                /**
+                 * Properties of a Resolution.
+                 * @memberof acmcsus.debugjudge
+                 * @interface IResolution
+                 * @property {number|null} [teamId] Resolution teamId
+                 * @property {number|null} [problemId] Resolution problemId
+                 * @property {boolean|null} [solved] Resolution solved
+                 * @property {number|null} [penalty] Resolution penalty
+                 */
+    
+                /**
+                 * Constructs a new Resolution.
+                 * @memberof acmcsus.debugjudge
+                 * @classdesc Represents a Resolution.
+                 * @implements IResolution
+                 * @constructor
+                 * @param {acmcsus.debugjudge.IResolution=} [properties] Properties to set
+                 */
+                function Resolution(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Resolution teamId.
+                 * @member {number} teamId
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @instance
+                 */
+                Resolution.prototype.teamId = 0;
+    
+                /**
+                 * Resolution problemId.
+                 * @member {number} problemId
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @instance
+                 */
+                Resolution.prototype.problemId = 0;
+    
+                /**
+                 * Resolution solved.
+                 * @member {boolean} solved
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @instance
+                 */
+                Resolution.prototype.solved = false;
+    
+                /**
+                 * Resolution penalty.
+                 * @member {number} penalty
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @instance
+                 */
+                Resolution.prototype.penalty = 0;
+    
+                /**
+                 * Creates a new Resolution instance using the specified properties.
+                 * @function create
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @static
+                 * @param {acmcsus.debugjudge.IResolution=} [properties] Properties to set
+                 * @returns {acmcsus.debugjudge.Resolution} Resolution instance
+                 */
+                Resolution.create = function create(properties) {
+                    return new Resolution(properties);
+                };
+    
+                /**
+                 * Encodes the specified Resolution message. Does not implicitly {@link acmcsus.debugjudge.Resolution.verify|verify} messages.
+                 * @function encode
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @static
+                 * @param {acmcsus.debugjudge.IResolution} message Resolution message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Resolution.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.teamId != null && message.hasOwnProperty("teamId"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.teamId);
+                    if (message.problemId != null && message.hasOwnProperty("problemId"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.problemId);
+                    if (message.solved != null && message.hasOwnProperty("solved"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.solved);
+                    if (message.penalty != null && message.hasOwnProperty("penalty"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.penalty);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Resolution message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Resolution.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @static
+                 * @param {acmcsus.debugjudge.IResolution} message Resolution message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Resolution.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Resolution message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {acmcsus.debugjudge.Resolution} Resolution
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Resolution.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Resolution();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.teamId = reader.int32();
+                            break;
+                        case 2:
+                            message.problemId = reader.int32();
+                            break;
+                        case 3:
+                            message.solved = reader.bool();
+                            break;
+                        case 4:
+                            message.penalty = reader.int32();
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Resolution message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {acmcsus.debugjudge.Resolution} Resolution
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Resolution.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Resolution message.
+                 * @function verify
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Resolution.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.teamId != null && message.hasOwnProperty("teamId"))
+                        if (!$util.isInteger(message.teamId))
+                            return "teamId: integer expected";
+                    if (message.problemId != null && message.hasOwnProperty("problemId"))
+                        if (!$util.isInteger(message.problemId))
+                            return "problemId: integer expected";
+                    if (message.solved != null && message.hasOwnProperty("solved"))
+                        if (typeof message.solved !== "boolean")
+                            return "solved: boolean expected";
+                    if (message.penalty != null && message.hasOwnProperty("penalty"))
+                        if (!$util.isInteger(message.penalty))
+                            return "penalty: integer expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Resolution message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {acmcsus.debugjudge.Resolution} Resolution
+                 */
+                Resolution.fromObject = function fromObject(object) {
+                    if (object instanceof $root.acmcsus.debugjudge.Resolution)
+                        return object;
+                    var message = new $root.acmcsus.debugjudge.Resolution();
+                    if (object.teamId != null)
+                        message.teamId = object.teamId | 0;
+                    if (object.problemId != null)
+                        message.problemId = object.problemId | 0;
+                    if (object.solved != null)
+                        message.solved = Boolean(object.solved);
+                    if (object.penalty != null)
+                        message.penalty = object.penalty | 0;
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Resolution message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @static
+                 * @param {acmcsus.debugjudge.Resolution} message Resolution
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Resolution.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.teamId = 0;
+                        object.problemId = 0;
+                        object.solved = false;
+                        object.penalty = 0;
+                    }
+                    if (message.teamId != null && message.hasOwnProperty("teamId"))
+                        object.teamId = message.teamId;
+                    if (message.problemId != null && message.hasOwnProperty("problemId"))
+                        object.problemId = message.problemId;
+                    if (message.solved != null && message.hasOwnProperty("solved"))
+                        object.solved = message.solved;
+                    if (message.penalty != null && message.hasOwnProperty("penalty"))
+                        object.penalty = message.penalty;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Resolution to JSON.
+                 * @function toJSON
+                 * @memberof acmcsus.debugjudge.Resolution
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Resolution.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                Resolution.List = (function() {
+    
+                    /**
+                     * Properties of a List.
+                     * @memberof acmcsus.debugjudge.Resolution
+                     * @interface IList
+                     * @property {Array.<acmcsus.debugjudge.IResolution>|null} [resolution] List resolution
+                     */
+    
+                    /**
+                     * Constructs a new List.
+                     * @memberof acmcsus.debugjudge.Resolution
+                     * @classdesc Represents a List.
+                     * @implements IList
+                     * @constructor
+                     * @param {acmcsus.debugjudge.Resolution.IList=} [properties] Properties to set
+                     */
+                    function List(properties) {
+                        this.resolution = [];
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * List resolution.
+                     * @member {Array.<acmcsus.debugjudge.IResolution>} resolution
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @instance
+                     */
+                    List.prototype.resolution = $util.emptyArray;
+    
+                    /**
+                     * Creates a new List instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @static
+                     * @param {acmcsus.debugjudge.Resolution.IList=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.Resolution.List} List instance
+                     */
+                    List.create = function create(properties) {
+                        return new List(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified List message. Does not implicitly {@link acmcsus.debugjudge.Resolution.List.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @static
+                     * @param {acmcsus.debugjudge.Resolution.IList} message List message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    List.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.resolution != null && message.resolution.length)
+                            for (var i = 0; i < message.resolution.length; ++i)
+                                $root.acmcsus.debugjudge.Resolution.encode(message.resolution[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified List message, length delimited. Does not implicitly {@link acmcsus.debugjudge.Resolution.List.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @static
+                     * @param {acmcsus.debugjudge.Resolution.IList} message List message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    List.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a List message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.Resolution.List} List
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    List.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.Resolution.List();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                if (!(message.resolution && message.resolution.length))
+                                    message.resolution = [];
+                                message.resolution.push($root.acmcsus.debugjudge.Resolution.decode(reader, reader.uint32()));
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a List message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.Resolution.List} List
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    List.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a List message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    List.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.resolution != null && message.hasOwnProperty("resolution")) {
+                            if (!Array.isArray(message.resolution))
+                                return "resolution: array expected";
+                            for (var i = 0; i < message.resolution.length; ++i) {
+                                var error = $root.acmcsus.debugjudge.Resolution.verify(message.resolution[i]);
+                                if (error)
+                                    return "resolution." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a List message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.Resolution.List} List
+                     */
+                    List.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.Resolution.List)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.Resolution.List();
+                        if (object.resolution) {
+                            if (!Array.isArray(object.resolution))
+                                throw TypeError(".acmcsus.debugjudge.Resolution.List.resolution: array expected");
+                            message.resolution = [];
+                            for (var i = 0; i < object.resolution.length; ++i) {
+                                if (typeof object.resolution[i] !== "object")
+                                    throw TypeError(".acmcsus.debugjudge.Resolution.List.resolution: object expected");
+                                message.resolution[i] = $root.acmcsus.debugjudge.Resolution.fromObject(object.resolution[i]);
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a List message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @static
+                     * @param {acmcsus.debugjudge.Resolution.List} message List
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    List.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.arrays || options.defaults)
+                            object.resolution = [];
+                        if (message.resolution && message.resolution.length) {
+                            object.resolution = [];
+                            for (var j = 0; j < message.resolution.length; ++j)
+                                object.resolution[j] = $root.acmcsus.debugjudge.Resolution.toObject(message.resolution[j], options);
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this List to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.Resolution.List
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    List.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return List;
+                })();
+    
+                return Resolution;
+            })();
+    
             debugjudge.C2SMessage = (function() {
     
                 /**
@@ -5450,6 +5770,7 @@
                  * @property {acmcsus.debugjudge.IB2SMessage|null} [b2sMessage] C2SMessage b2sMessage
                  * @property {acmcsus.debugjudge.IR2SMessage|null} [rj2sMessage] C2SMessage rj2sMessage
                  * @property {acmcsus.debugjudge.C2SMessage.ILoginMessage|null} [loginMessage] C2SMessage loginMessage
+                 * @property {acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage|null} [submitClarificationMessage] C2SMessage submitClarificationMessage
                  */
     
                 /**
@@ -5523,17 +5844,25 @@
                  */
                 C2SMessage.prototype.loginMessage = null;
     
+                /**
+                 * C2SMessage submitClarificationMessage.
+                 * @member {acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage|null|undefined} submitClarificationMessage
+                 * @memberof acmcsus.debugjudge.C2SMessage
+                 * @instance
+                 */
+                C2SMessage.prototype.submitClarificationMessage = null;
+    
                 // OneOf field names bound to virtual getters and setters
                 var $oneOfFields;
     
                 /**
                  * C2SMessage value.
-                 * @member {"t2sMessage"|"j2sMessage"|"a2sMessage"|"aj2sMessage"|"b2sMessage"|"rj2sMessage"|"loginMessage"|undefined} value
+                 * @member {"t2sMessage"|"j2sMessage"|"a2sMessage"|"aj2sMessage"|"b2sMessage"|"rj2sMessage"|"loginMessage"|"submitClarificationMessage"|undefined} value
                  * @memberof acmcsus.debugjudge.C2SMessage
                  * @instance
                  */
                 Object.defineProperty(C2SMessage.prototype, "value", {
-                    get: $util.oneOfGetter($oneOfFields = ["t2sMessage", "j2sMessage", "a2sMessage", "aj2sMessage", "b2sMessage", "rj2sMessage", "loginMessage"]),
+                    get: $util.oneOfGetter($oneOfFields = ["t2sMessage", "j2sMessage", "a2sMessage", "aj2sMessage", "b2sMessage", "rj2sMessage", "loginMessage", "submitClarificationMessage"]),
                     set: $util.oneOfSetter($oneOfFields)
                 });
     
@@ -5575,6 +5904,8 @@
                         $root.acmcsus.debugjudge.R2SMessage.encode(message.rj2sMessage, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
                     if (message.loginMessage != null && message.hasOwnProperty("loginMessage"))
                         $root.acmcsus.debugjudge.C2SMessage.LoginMessage.encode(message.loginMessage, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                    if (message.submitClarificationMessage != null && message.hasOwnProperty("submitClarificationMessage"))
+                        $root.acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.encode(message.submitClarificationMessage, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
                     return writer;
                 };
     
@@ -5629,6 +5960,9 @@
                             break;
                         case 10:
                             message.loginMessage = $root.acmcsus.debugjudge.C2SMessage.LoginMessage.decode(reader, reader.uint32());
+                            break;
+                        case 11:
+                            message.submitClarificationMessage = $root.acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.decode(reader, reader.uint32());
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -5734,6 +6068,16 @@
                                 return "loginMessage." + error;
                         }
                     }
+                    if (message.submitClarificationMessage != null && message.hasOwnProperty("submitClarificationMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.verify(message.submitClarificationMessage);
+                            if (error)
+                                return "submitClarificationMessage." + error;
+                        }
+                    }
                     return null;
                 };
     
@@ -5783,6 +6127,11 @@
                         if (typeof object.loginMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.C2SMessage.loginMessage: object expected");
                         message.loginMessage = $root.acmcsus.debugjudge.C2SMessage.LoginMessage.fromObject(object.loginMessage);
+                    }
+                    if (object.submitClarificationMessage != null) {
+                        if (typeof object.submitClarificationMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.C2SMessage.submitClarificationMessage: object expected");
+                        message.submitClarificationMessage = $root.acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.fromObject(object.submitClarificationMessage);
                     }
                     return message;
                 };
@@ -5834,6 +6183,11 @@
                         object.loginMessage = $root.acmcsus.debugjudge.C2SMessage.LoginMessage.toObject(message.loginMessage, options);
                         if (options.oneofs)
                             object.value = "loginMessage";
+                    }
+                    if (message.submitClarificationMessage != null && message.hasOwnProperty("submitClarificationMessage")) {
+                        object.submitClarificationMessage = $root.acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.toObject(message.submitClarificationMessage, options);
+                        if (options.oneofs)
+                            object.value = "submitClarificationMessage";
                     }
                     return object;
                 };
@@ -6081,6 +6435,198 @@
                     return LoginMessage;
                 })();
     
+                C2SMessage.SubmitClarificationMessage = (function() {
+    
+                    /**
+                     * Properties of a SubmitClarificationMessage.
+                     * @memberof acmcsus.debugjudge.C2SMessage
+                     * @interface ISubmitClarificationMessage
+                     * @property {acmcsus.debugjudge.IClarification|null} [clarification] SubmitClarificationMessage clarification
+                     */
+    
+                    /**
+                     * Constructs a new SubmitClarificationMessage.
+                     * @memberof acmcsus.debugjudge.C2SMessage
+                     * @classdesc Represents a SubmitClarificationMessage.
+                     * @implements ISubmitClarificationMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage=} [properties] Properties to set
+                     */
+                    function SubmitClarificationMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * SubmitClarificationMessage clarification.
+                     * @member {acmcsus.debugjudge.IClarification|null|undefined} clarification
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @instance
+                     */
+                    SubmitClarificationMessage.prototype.clarification = null;
+    
+                    /**
+                     * Creates a new SubmitClarificationMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage} SubmitClarificationMessage instance
+                     */
+                    SubmitClarificationMessage.create = function create(properties) {
+                        return new SubmitClarificationMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified SubmitClarificationMessage message. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage} message SubmitClarificationMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    SubmitClarificationMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.clarification != null && message.hasOwnProperty("clarification"))
+                            $root.acmcsus.debugjudge.Clarification.encode(message.clarification, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified SubmitClarificationMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.C2SMessage.ISubmitClarificationMessage} message SubmitClarificationMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    SubmitClarificationMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a SubmitClarificationMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage} SubmitClarificationMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    SubmitClarificationMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.clarification = $root.acmcsus.debugjudge.Clarification.decode(reader, reader.uint32());
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a SubmitClarificationMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage} SubmitClarificationMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    SubmitClarificationMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a SubmitClarificationMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    SubmitClarificationMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.clarification != null && message.hasOwnProperty("clarification")) {
+                            var error = $root.acmcsus.debugjudge.Clarification.verify(message.clarification);
+                            if (error)
+                                return "clarification." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a SubmitClarificationMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage} SubmitClarificationMessage
+                     */
+                    SubmitClarificationMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage();
+                        if (object.clarification != null) {
+                            if (typeof object.clarification !== "object")
+                                throw TypeError(".acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage.clarification: object expected");
+                            message.clarification = $root.acmcsus.debugjudge.Clarification.fromObject(object.clarification);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a SubmitClarificationMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage} message SubmitClarificationMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    SubmitClarificationMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.clarification = null;
+                        if (message.clarification != null && message.hasOwnProperty("clarification"))
+                            object.clarification = $root.acmcsus.debugjudge.Clarification.toObject(message.clarification, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this SubmitClarificationMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.C2SMessage.SubmitClarificationMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    SubmitClarificationMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return SubmitClarificationMessage;
+                })();
+    
                 return C2SMessage;
             })();
     
@@ -6103,6 +6649,7 @@
                  * @property {acmcsus.debugjudge.S2CMessage.IReloadSubmissionMessage|null} [reloadSubmissionMessage] S2CMessage reloadSubmissionMessage
                  * @property {acmcsus.debugjudge.S2CMessage.IReloadSubmissionsMessage|null} [reloadSubmissionsMessage] S2CMessage reloadSubmissionsMessage
                  * @property {acmcsus.debugjudge.S2CMessage.IReloadProblemsMessage|null} [reloadProblemsMessage] S2CMessage reloadProblemsMessage
+                 * @property {acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage|null} [reloadClarificationMessage] S2CMessage reloadClarificationMessage
                  */
     
                 /**
@@ -6224,17 +6771,25 @@
                  */
                 S2CMessage.prototype.reloadProblemsMessage = null;
     
+                /**
+                 * S2CMessage reloadClarificationMessage.
+                 * @member {acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage|null|undefined} reloadClarificationMessage
+                 * @memberof acmcsus.debugjudge.S2CMessage
+                 * @instance
+                 */
+                S2CMessage.prototype.reloadClarificationMessage = null;
+    
                 // OneOf field names bound to virtual getters and setters
                 var $oneOfFields;
     
                 /**
                  * S2CMessage value.
-                 * @member {"s2tMessage"|"s2jMessage"|"s2aMessage"|"s2ajMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|"reloadSubmissionMessage"|"reloadSubmissionsMessage"|"reloadProblemsMessage"|undefined} value
+                 * @member {"s2tMessage"|"s2jMessage"|"s2aMessage"|"s2ajMessage"|"debugMessage"|"alertMessage"|"loginResultMessage"|"notificationMessage"|"competitionStateChangedMessage"|"scoreboardUpdateMessage"|"reloadSubmissionMessage"|"reloadSubmissionsMessage"|"reloadProblemsMessage"|"reloadClarificationMessage"|undefined} value
                  * @memberof acmcsus.debugjudge.S2CMessage
                  * @instance
                  */
                 Object.defineProperty(S2CMessage.prototype, "value", {
-                    get: $util.oneOfGetter($oneOfFields = ["s2tMessage", "s2jMessage", "s2aMessage", "s2ajMessage", "debugMessage", "alertMessage", "loginResultMessage", "notificationMessage", "competitionStateChangedMessage", "scoreboardUpdateMessage", "reloadSubmissionMessage", "reloadSubmissionsMessage", "reloadProblemsMessage"]),
+                    get: $util.oneOfGetter($oneOfFields = ["s2tMessage", "s2jMessage", "s2aMessage", "s2ajMessage", "debugMessage", "alertMessage", "loginResultMessage", "notificationMessage", "competitionStateChangedMessage", "scoreboardUpdateMessage", "reloadSubmissionMessage", "reloadSubmissionsMessage", "reloadProblemsMessage", "reloadClarificationMessage"]),
                     set: $util.oneOfSetter($oneOfFields)
                 });
     
@@ -6288,6 +6843,8 @@
                         $root.acmcsus.debugjudge.S2CMessage.ReloadSubmissionsMessage.encode(message.reloadSubmissionsMessage, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
                     if (message.reloadProblemsMessage != null && message.hasOwnProperty("reloadProblemsMessage"))
                         $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.encode(message.reloadProblemsMessage, writer.uint32(/* id 25, wireType 2 =*/202).fork()).ldelim();
+                    if (message.reloadClarificationMessage != null && message.hasOwnProperty("reloadClarificationMessage"))
+                        $root.acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.encode(message.reloadClarificationMessage, writer.uint32(/* id 26, wireType 2 =*/210).fork()).ldelim();
                     return writer;
                 };
     
@@ -6360,6 +6917,9 @@
                             break;
                         case 25:
                             message.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.decode(reader, reader.uint32());
+                            break;
+                        case 26:
+                            message.reloadClarificationMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.decode(reader, reader.uint32());
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -6525,6 +7085,16 @@
                                 return "reloadProblemsMessage." + error;
                         }
                     }
+                    if (message.reloadClarificationMessage != null && message.hasOwnProperty("reloadClarificationMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.verify(message.reloadClarificationMessage);
+                            if (error)
+                                return "reloadClarificationMessage." + error;
+                        }
+                    }
                     return null;
                 };
     
@@ -6604,6 +7174,11 @@
                         if (typeof object.reloadProblemsMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.S2CMessage.reloadProblemsMessage: object expected");
                         message.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.fromObject(object.reloadProblemsMessage);
+                    }
+                    if (object.reloadClarificationMessage != null) {
+                        if (typeof object.reloadClarificationMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.S2CMessage.reloadClarificationMessage: object expected");
+                        message.reloadClarificationMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.fromObject(object.reloadClarificationMessage);
                     }
                     return message;
                 };
@@ -6685,6 +7260,11 @@
                         object.reloadProblemsMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadProblemsMessage.toObject(message.reloadProblemsMessage, options);
                         if (options.oneofs)
                             object.value = "reloadProblemsMessage";
+                    }
+                    if (message.reloadClarificationMessage != null && message.hasOwnProperty("reloadClarificationMessage")) {
+                        object.reloadClarificationMessage = $root.acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.toObject(message.reloadClarificationMessage, options);
+                        if (options.oneofs)
+                            object.value = "reloadClarificationMessage";
                     }
                     return object;
                 };
@@ -8569,6 +9149,198 @@
                     };
     
                     return ReloadSubmissionsMessage;
+                })();
+    
+                S2CMessage.ReloadClarificationMessage = (function() {
+    
+                    /**
+                     * Properties of a ReloadClarificationMessage.
+                     * @memberof acmcsus.debugjudge.S2CMessage
+                     * @interface IReloadClarificationMessage
+                     * @property {acmcsus.debugjudge.IClarification|null} [clarification] ReloadClarificationMessage clarification
+                     */
+    
+                    /**
+                     * Constructs a new ReloadClarificationMessage.
+                     * @memberof acmcsus.debugjudge.S2CMessage
+                     * @classdesc Represents a ReloadClarificationMessage.
+                     * @implements IReloadClarificationMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage=} [properties] Properties to set
+                     */
+                    function ReloadClarificationMessage(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * ReloadClarificationMessage clarification.
+                     * @member {acmcsus.debugjudge.IClarification|null|undefined} clarification
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @instance
+                     */
+                    ReloadClarificationMessage.prototype.clarification = null;
+    
+                    /**
+                     * Creates a new ReloadClarificationMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage} ReloadClarificationMessage instance
+                     */
+                    ReloadClarificationMessage.create = function create(properties) {
+                        return new ReloadClarificationMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified ReloadClarificationMessage message. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage} message ReloadClarificationMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ReloadClarificationMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.clarification != null && message.hasOwnProperty("clarification"))
+                            $root.acmcsus.debugjudge.Clarification.encode(message.clarification, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified ReloadClarificationMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2CMessage.IReloadClarificationMessage} message ReloadClarificationMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    ReloadClarificationMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a ReloadClarificationMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage} ReloadClarificationMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ReloadClarificationMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                message.clarification = $root.acmcsus.debugjudge.Clarification.decode(reader, reader.uint32());
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a ReloadClarificationMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage} ReloadClarificationMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ReloadClarificationMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a ReloadClarificationMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    ReloadClarificationMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.clarification != null && message.hasOwnProperty("clarification")) {
+                            var error = $root.acmcsus.debugjudge.Clarification.verify(message.clarification);
+                            if (error)
+                                return "clarification." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a ReloadClarificationMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage} ReloadClarificationMessage
+                     */
+                    ReloadClarificationMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage();
+                        if (object.clarification != null) {
+                            if (typeof object.clarification !== "object")
+                                throw TypeError(".acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage.clarification: object expected");
+                            message.clarification = $root.acmcsus.debugjudge.Clarification.fromObject(object.clarification);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a ReloadClarificationMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage} message ReloadClarificationMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    ReloadClarificationMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.clarification = null;
+                        if (message.clarification != null && message.hasOwnProperty("clarification"))
+                            object.clarification = $root.acmcsus.debugjudge.Clarification.toObject(message.clarification, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this ReloadClarificationMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.S2CMessage.ReloadClarificationMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    ReloadClarificationMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    return ReloadClarificationMessage;
                 })();
     
                 return S2CMessage;

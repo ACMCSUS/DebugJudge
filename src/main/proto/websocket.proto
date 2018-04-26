@@ -26,12 +26,18 @@ message C2SMessage {
 
     LoginMessage loginMessage = 10;
 
+    SubmitClarificationMessage submitClarificationMessage = 11;
+
   }
 
   message LoginMessage {
     string nonce = 1;
     int32 id = 2;
     string pass = 3;
+  }
+
+  message SubmitClarificationMessage {
+    Clarification clarification = 1;
   }
 }
 
@@ -52,6 +58,7 @@ message S2CMessage {
     ReloadSubmissionMessage reloadSubmissionMessage = 23;
     ReloadSubmissionsMessage reloadSubmissionsMessage = 24;
     ReloadProblemsMessage reloadProblemsMessage = 25;
+    ReloadClarificationMessage reloadClarificationMessage = 26;
   }
 
   message DebugMessage {
@@ -102,5 +109,9 @@ message S2CMessage {
   // Make known creation/changes to all submissions
   message ReloadSubmissionsMessage {
     Submission.List submissions = 1;
+  }
+
+  message ReloadClarificationMessage {
+    Clarification clarification = 1;
   }
 }

@@ -1,28 +1,39 @@
 package acmcsus.debugjudge.state;
 
 import acmcsus.debugjudge.ctrl.CompetitionController;
+import acmcsus.debugjudge.proto.Competition;
+import acmcsus.debugjudge.proto.Competition.Clarification;
 import acmcsus.debugjudge.proto.Competition.CompetitionState;
 import acmcsus.debugjudge.proto.Competition.Problem;
+import acmcsus.debugjudge.proto.Competition.Profile;
 import acmcsus.debugjudge.proto.Competition.Submission;
 import acmcsus.debugjudge.proto.Competition.SubmissionJudgement;
+import acmcsus.debugjudge.store.ClarificationStore;
 import acmcsus.debugjudge.store.ProblemStore;
 import acmcsus.debugjudge.store.SubmissionStore;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.protobuf.ByteString;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
+import org.codehaus.classworlds.ClassRealmAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.ADMIN;
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.JUDGE;
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.TEAM;
 import static io.reactivex.Observable.combineLatest;
 import static io.reactivex.Observable.wrap;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 import static spark.Spark.halt;
 
 @Singleton
@@ -42,16 +53,25 @@ public class StateService {
   private final Observable<List<Problem>> publicProblemListSubject;
   public final Observable<List<Problem>> publicProblemList;
 
+  private final PublishSubject<Clarification> clarificationUpdateSubject;
+  public final Observable<Clarification> clarificationUpdates;
+
+  private final BehaviorSubject<List<Clarification>> clarificationListSubject;
+  public final Observable<List<Clarification>> clarificationList;
+
   private final CompetitionController competitionController;
   private final SubmissionStore submissionStore;
   private final ProblemStore problemStore;
+  private final ClarificationStore clarificationStore;
 
   @Inject
   private StateService(CompetitionController competitionController,
-                       SubmissionStore submissionStore, ProblemStore problemStore) {
+                       SubmissionStore submissionStore, ProblemStore problemStore,
+                       ClarificationStore clarificationStore) {
     this.competitionController = competitionController;
     this.submissionStore = submissionStore;
     this.problemStore = problemStore;
+    this.clarificationStore = clarificationStore;
 
     secretProblemListSubject = BehaviorSubject.createDefault(problemStore.readAll());
     publicProblemListSubject = combineLatest(
@@ -65,6 +85,12 @@ public class StateService {
     submissionUpdateSubject = PublishSubject.create();
     submissionCreates = wrap(submissionCreateSubject);
     submissionUpdates = wrap(submissionUpdateSubject);
+
+    clarificationUpdateSubject = PublishSubject.create();
+    clarificationUpdates = wrap(clarificationUpdateSubject);
+
+    this.clarificationListSubject = BehaviorSubject.createDefault(clarificationStore.readAll());
+    this.clarificationList = wrap(this.clarificationListSubject);
   }
 
   public void submissionUpdated(Submission submission) {
@@ -153,5 +179,26 @@ public class StateService {
     return filterPublicProblemList(
         getPublicProblems(),
         competitionController.getCompetitionState());
+  }
+
+  public void submitClarification(Profile sender, Clarification clarification) throws IOException {
+    requireNonNull(sender);
+
+    if (sender.getProfileType() == TEAM) {
+      Clarification.Builder clarBuilder = Clarification.newBuilder(clarification);
+      clarBuilder.setId(UUID.randomUUID().toString());
+      clarBuilder.setTeamId(sender.getId());
+      clarBuilder.setResponseBytes(ByteString.EMPTY);
+      clarBuilder.setPublic(false);
+      clarificationUpdated(clarBuilder.build());
+    }
+    else if (sender.getProfileType() == JUDGE || sender.getProfileType() == ADMIN) {
+      clarificationUpdated(clarification);
+    }
+  }
+
+  private void clarificationUpdated(Clarification clarification) throws IOException {
+    clarificationStore.save(clarification);
+    clarificationUpdateSubject.onNext(clarification);
   }
 }

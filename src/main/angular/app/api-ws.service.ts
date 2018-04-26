@@ -158,6 +158,7 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
         case 'reloadSubmissionsMessage':
         case 'reloadSubmissionMessage':
         case 'reloadProblemsMessage':
+        case 'reloadClarificationMessage':
           break;
       }
 

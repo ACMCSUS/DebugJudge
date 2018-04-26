@@ -7,6 +7,7 @@ import {acmcsus} from "./proto/dbgjdg_pb";
 import Submission = acmcsus.debugjudge.Submission;
 import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
 import Problem = acmcsus.debugjudge.Problem;
+import Clarification = acmcsus.debugjudge.Clarification;
 import C2SMessage = acmcsus.debugjudge.C2SMessage;
 import {combineLatest} from "rxjs/observable/combineLatest";
 
@@ -16,7 +17,8 @@ export interface ApiTeamService {
   problems: Observable<Problem[]>;
   solvedProblems: Observable<{[p: number]: boolean}>;
 
-  submit(debuggingSubmission: Submission): void;
+  submit(submission: Submission): void;
+  submitClar(clar: Clarification): void;
 
 }
 
@@ -89,6 +91,10 @@ export class ApiTeamServiceImpl implements ApiTeamService {
         }
       }
     }));
+  }
+
+  submitClar(clar: Clarification): void {
+
   }
 
 }
