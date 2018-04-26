@@ -17,8 +17,10 @@ import Profile = acmcsus.debugjudge.Profile;
         </mat-toolbar-row>
       </mat-toolbar>
       <mat-progress-spinner [mode]="'indeterminate'" *ngIf="!profile"></mat-progress-spinner>
-      <div id="tabWrap">
-        <mat-tab-group *ngIf="profile">
+      <app-resolver-viewer
+          *ngIf="profile && profile.profileType === RESOLVER_VIEWER"></app-resolver-viewer>
+      <div id="tabWrap" *ngIf="profile && profile.profileType !== RESOLVER_VIEWER">
+        <mat-tab-group>
           <mat-tab label="Team" *ngIf="profile.profileType === TEAM">
             <app-team-view></app-team-view>
           </mat-tab>
@@ -31,7 +33,8 @@ import Profile = acmcsus.debugjudge.Profile;
           <mat-tab label="Balloons" *ngIf="profile.profileType === BALLOON_RUNNER">
             <app-admin-view></app-admin-view>
           </mat-tab>
-          <mat-tab label="Submissions" *ngIf="[TEAM, JUDGE, ADMIN].indexOf(profile.profileType)>=0">
+          <mat-tab label="Submissions"
+                   *ngIf="[TEAM, JUDGE, ADMIN].indexOf(profile.profileType)>=0">
             <app-submissions-view></app-submissions-view>
           </mat-tab>
           <mat-tab label="Scoreboard">
@@ -92,12 +95,16 @@ export class AppComponent {
   JUDGE = Profile.ProfileType.JUDGE;
   ADMIN = Profile.ProfileType.ADMIN;
   BALLOON_RUNNER = Profile.ProfileType.BALLOON_RUNNER;
+  RESOLVER_VIEWER = Profile.ProfileType.RESOLVER_VIEWER;
 
   profile: Profile;
 
   constructor(private httpClient: HttpClient) {
     this.httpClient.get<Profile>('/api/profile')
-      .subscribe(p => {this.profile = p; console.log(p)});
+        .subscribe(p => {
+          this.profile = p;
+          console.log(p)
+        });
   }
 
 }
