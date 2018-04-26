@@ -149,7 +149,7 @@ message Scoreboard {
   message ScoreboardRow {
     string profile_name = 1;
     int32 team_id = 7;
-    
+
     map<int32, int32> problem_attempts = 2;
     map<int32, bool> problem_completions = 3;
 

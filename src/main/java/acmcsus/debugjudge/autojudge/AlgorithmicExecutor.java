@@ -146,6 +146,9 @@ public class AlgorithmicExecutor {
     File tmpOut = File.createTempFile("exec_out", "txt");
     File tmpErr = File.createTempFile("exec_err", "txt");
 
+    File inpFile = File.createTempFile("exec_inp", "txt");
+    Files.write(inpFile.toPath(), input == null ? new byte[0] : input);
+
     if (maxSeconds == 0) {
       maxSeconds = 60;
     }
@@ -156,10 +159,11 @@ public class AlgorithmicExecutor {
       Process process = new ProcessBuilder()
           .command("bash", "-c", command)
           .directory(directory)
+          .redirectInput(inpFile)
           .redirectOutput(tmpOut)
           .redirectError(tmpErr)
           .start();
-
+/*
       try {
         if (input != null) {
           process.getOutputStream().write(input);
@@ -170,7 +174,7 @@ public class AlgorithmicExecutor {
       catch (IOException ioe) {
         logger.error("error writing input to process", ioe);
       }
-
+*/
       if (!process.waitFor(maxSeconds, TimeUnit.SECONDS)) {
         process.destroyForcibly();
         result.setTimeSeconds(-1);
@@ -187,6 +191,7 @@ public class AlgorithmicExecutor {
         .setResultOutBytes(ByteString.copyFrom(Files.readAllBytes(tmpOut.toPath())))
         .setResultErrBytes(ByteString.copyFrom(Files.readAllBytes(tmpErr.toPath())));
 
+    inpFile.delete();
     tmpOut.delete();
     tmpErr.delete();
 

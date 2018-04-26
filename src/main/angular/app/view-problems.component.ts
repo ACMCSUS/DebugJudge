@@ -88,7 +88,7 @@ import Problem = acmcsus.debugjudge.Problem;
       .descriptionHtml * {
         flex: 0;
       }
-      /deep/.descriptionHtml .descriptionIO {
+      /deep/.descriptionHtml .descriptionIO:first-of-type {
         margin-top: auto;
       }
     }

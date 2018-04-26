@@ -129,7 +129,7 @@ public class ResolutionStepper implements Iterator<Resolution> {
             .setSolved(solved)
             .setPenalty(solved ? penalty : 0)
             .build();
-        
+
         if (solved) {
           team.solvedProblems.add(problemId);
         }

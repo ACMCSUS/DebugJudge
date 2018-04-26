@@ -18,7 +18,7 @@ import static acmcsus.debugjudge.proto.Competition.Submission.ValueCase.VALUE_NO
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static java.util.concurrent.TimeUnit.HOURS;
 
-@WebSocket(maxTextMessageSize = 64*1024)
+@WebSocket(maxBinaryMessageSize = 2048*1024)
 public class AutoJudgeSocket {
 
   private static final Logger logger = LoggerFactory.getLogger(AutoJudgeSocket.class);
