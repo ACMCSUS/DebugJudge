@@ -133,6 +133,7 @@ export class AlgorithmicCardComponent implements OnInit, OnDestroy {
 
   uploaded(files: FileList): void {
     this.uploadedFile = files[0];
+    alert(this.uploadedFile.size);
 
     let reader = new FileReader();
     reader.onload = () => {

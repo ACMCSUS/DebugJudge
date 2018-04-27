@@ -1,36 +1,23 @@
-import {AfterViewInit, Component, Inject, OnDestroy, OnInit} from "@angular/core";
+import {AfterViewInit, Component, Inject, OnDestroy} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiTeamService} from "./api-team.service";
-import {Subscription} from "rxjs/Subscription";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {Observable} from "rxjs/Observable";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 import {acmcsus} from "./proto/dbgjdg_pb";
+import * as Long from "long";
 import Submission = acmcsus.debugjudge.Submission;
 import SubmissionJudgement = acmcsus.debugjudge.SubmissionJudgement;
-import * as Long from "long";
 
 @Component({
   selector: 'app-submissions-bar',
-  // animations: [
-  //   trigger('animateBar', [
-  //     state('in', style({transform: 'scale(1)'})),
-  //     transition('void => *', [
-  //       style({transform: 'scale(0)'}),
-  //       animate('1s ease')
-  //     ]),
-  //     transition('* => void', [
-  //       animate('1s ease',
-  //           style({transform: 'scale(0)'}))
-  //     ])
-  //   ])
-  // ],
   template: `
     <mat-card id="submissionBar">
       <mat-chip-list>
-        <mat-chip *ngFor="let notif of notifs"
+        <mat-chip *ngFor="let notif of ((notifs|async)||[])"
                   [selected]="true"
                   ngClass="{{notif.classes}}">
-          {{problemNames[notif.problemId] || '???'}}
+          {{notif.text}}
         </mat-chip>
         <mat-chip *ngIf="!(submissions&&submissions.length)">
           Notifications will arrive here.
@@ -88,41 +75,58 @@ import * as Long from "long";
     }
   `],
 })
-export class SubmissionsBarComponent implements AfterViewInit, OnDestroy {
+export class SubmissionsBarComponent implements AfterViewInit {
 
   problemNames: {};
-  notifs = [];
+  notifs: Observable<Notification[]>;
   submissions: Submission[];
-
-  problemSubscription: Subscription;
-  submissionsSubscription: Subscription;
 
   constructor(@Inject(HttpClient) private httpClient: HttpClient,
               @Inject('ApiTeamService') private api: ApiTeamService) {
   }
 
   ngAfterViewInit(): void {
-    this.submissionsSubscription = this.api.submissions.subscribe(
-        (subs) => {
-          subs.sort((a,b) =>
+    this.notifs = combineLatest(this.api.submissions, this.api.problems,
+        (subs, probs) => {
+          this.problemNames = {};
+          for (let problem of probs) {
+            this.problemNames[problem.id] = problem.title;
+          }
+          subs.sort((a, b) =>
               Long.fromValue(b.submissionTimeSeconds).toNumber() -
               Long.fromValue(a.submissionTimeSeconds).toNumber());
           this.submissions = subs;
-          this.notifs = subs.map(sub => {
+          return subs.map(sub => {
             return {
-              problemId: sub.problemId,
+              text: this.textFor(sub),
               color: this.colorFor(sub),
               classes: this.classesFor(sub)
             }
           });
         });
+  }
 
-    this.problemSubscription = this.api.problems.subscribe((problems) => {
-      this.problemNames = {}
-      for (let problem of problems) {
-        this.problemNames[problem.id] = problem.title;
+  textFor(notif: Submission): string {
+    let str = this.problemNames[notif.problemId] || '???';
+
+    if (notif.judgement === SubmissionJudgement.JUDGEMENT_SUCCESS) {
+      str += ' (SUCCESS)';
+    }
+    else if (notif.judgement === SubmissionJudgement.JUDGEMENT_FAILURE) {
+      str += ' (FAILURE)';
+    }
+    else {
+      if (notif.value == 'algorithmicSubmission') {
+        let algoSub = notif.algorithmicSubmission;
+        if (algoSub.preliminaryJudgement === SubmissionJudgement.JUDGEMENT_SUCCESS) {
+          str += ' (PRELIM: SUCCESS)';
+        }
+        else if (algoSub.preliminaryJudgement === SubmissionJudgement.JUDGEMENT_FAILURE) {
+          str += ' (PRELIM: FAILURE)';
+        }
       }
-    });
+    }
+    return str;
   }
 
   colorFor(sub: Submission): string {
@@ -155,10 +159,10 @@ export class SubmissionsBarComponent implements AfterViewInit, OnDestroy {
         }
       }
     }
-    else if (sub.judgement == SubmissionJudgement.JUDGEMENT_SUCCESS){
+    else if (sub.judgement == SubmissionJudgement.JUDGEMENT_SUCCESS) {
       classes.push('success');
     }
-    else if (sub.judgement == SubmissionJudgement.JUDGEMENT_FAILURE){
+    else if (sub.judgement == SubmissionJudgement.JUDGEMENT_FAILURE) {
       classes.push('failure')
     }
 
@@ -167,8 +171,10 @@ export class SubmissionsBarComponent implements AfterViewInit, OnDestroy {
     }
     return classes;
   }
+}
 
-  ngOnDestroy(): void {
-    this.submissionsSubscription.unsubscribe();
-  }
+class Notification {
+  text: string;
+  color: string;
+  classes: string[];
 }

@@ -43,7 +43,7 @@ import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static java.lang.String.format;
 
-@WebSocket
+@WebSocket(maxBinaryMessageSize = 2048*1024)
 @Singleton
 public class BaseSocketService {
 
