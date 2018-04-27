@@ -94,6 +94,7 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
       },
       closeObserver: {
         next: (event: Event) => {
+          console.log(event)
           this.loggedInStatus.next(false);
           this.connect();
         }
