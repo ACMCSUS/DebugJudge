@@ -85,6 +85,7 @@ message S2CMessage {
   message CompetitionStateChangedMessage {
     int64 time_millis = 1;
     CompetitionState state = 2;
+    int64 competition_seconds = 3;
   }
 
   message ScoreboardUpdateMessage {

@@ -1,11 +1,11 @@
 package acmcsus.debugjudge.ws;
 
+import acmcsus.debugjudge.ctrl.CompetitionController;
 import acmcsus.debugjudge.proto.Algorithmic;
 import acmcsus.debugjudge.proto.AutoJudge;
 import acmcsus.debugjudge.proto.AutoJudge.AJ2SMessage.AutoJudgeResultMessage;
 import acmcsus.debugjudge.proto.AutoJudge.S2AJMessage.ReloadLanguagesMessage;
 import acmcsus.debugjudge.proto.Competition.Problem;
-import acmcsus.debugjudge.proto.Competition.Profile;
 import acmcsus.debugjudge.proto.Competition.Submission;
 import acmcsus.debugjudge.proto.WebSocket;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage.ReloadProblemsMessage;
@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.AUTO_JUDGE;
 import static acmcsus.debugjudge.ws.SocketSendMessageUtil.sendMessage;
 import static com.google.protobuf.TextFormat.shortDebugString;
 
@@ -36,8 +37,9 @@ public class AutoJudgeSocketService extends ProfileSocketService {
                          StateService stateService,
                          AlgorithmicStateService algoStateService,
                          AutoJudgeQueueService autoJudgeQueueService,
-                         SubmissionStore submissionStore) {
-    super(baseSocketService, stateService, submissionStore, Profile.ProfileType.AUTO_JUDGE);
+                         SubmissionStore submissionStore,
+                         CompetitionController competitionController) {
+    super(baseSocketService, stateService, submissionStore, competitionController, AUTO_JUDGE);
     this.algoStateService = algoStateService;
     this.queueHandler = autoJudgeQueueService;
   }

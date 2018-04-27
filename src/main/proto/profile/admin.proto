@@ -11,10 +11,19 @@ import "competition.proto";
 message A2SMessage {
   oneof value {
     ChangeCompetitionStateMessage changeCompetitionStateMessage = 1;
+    SetSchedulingMessage setSchedulingMessage = 2;
   }
   message ChangeCompetitionStateMessage {
     int64 time_millis = 1;
     CompetitionState state = 2;
+  }
+  message SetSchedulingMessage {
+    repeated ScheduleEvent event = 1;
+
+    message ScheduleEvent {
+      int64 time_millis = 1;
+      CompetitionState state = 2;
+    }
   }
 }
 

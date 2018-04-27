@@ -14,6 +14,9 @@ import Profile = acmcsus.debugjudge.Profile;
       <mat-toolbar color="primary">
         <mat-toolbar-row color="gray">
           <span style="margin-right:5px">CSUS ICPC Spring 2018 | ACM@CSUS</span>
+          <span id="toolbarSpacer"></span>
+          <app-countdown></app-countdown>
+          <a mat-button href="/logout">Logout</a>
         </mat-toolbar-row>
       </mat-toolbar>
       <mat-progress-spinner [mode]="'indeterminate'" *ngIf="!profile"></mat-progress-spinner>
@@ -40,9 +43,9 @@ import Profile = acmcsus.debugjudge.Profile;
           <mat-tab label="Scoreboard">
             <app-scoreboard></app-scoreboard>
           </mat-tab>
-          <mat-tab label="Problems">
-            <app-problems-view></app-problems-view>
-          </mat-tab>
+          <!--<mat-tab label="Problems">-->
+            <!--<app-problems-view></app-problems-view>-->
+          <!--</mat-tab>-->
         </mat-tab-group>
       </div>
       <app-submissions-bar></app-submissions-bar>
@@ -66,6 +69,20 @@ import Profile = acmcsus.debugjudge.Profile;
     #tabWrap {
       flex-grow: 1;
       overflow: auto;
+    }
+    
+    mat-toolbar-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    
+    mat-toolbar-row span {
+      flex: 0 0 auto;
+    }
+    
+    mat-toolbar-row #toolbarSpacer {
+      flex: 1 1 auto;
     }
 
     @media print {

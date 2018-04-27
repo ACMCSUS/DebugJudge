@@ -75,7 +75,7 @@ public class ScoreboardBroadcaster {
     stateService.publicProblemList.subscribe(
         (problems) -> ScoreboardBroadcaster.problems = problems);
     combineLatest(interval(30, SECONDS), competitionController.competitionState, (a, b) -> b)
-        .filter((state) -> state != Competition.CompetitionState.WAITING)
+        .filter((state) -> state.getState() != Competition.CompetitionState.WAITING)
         .subscribe((l) -> pushScoreboard());
   }
 

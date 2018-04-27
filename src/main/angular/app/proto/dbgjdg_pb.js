@@ -7861,6 +7861,7 @@
                      * @interface ICompetitionStateChangedMessage
                      * @property {number|Long|null} [timeMillis] CompetitionStateChangedMessage timeMillis
                      * @property {acmcsus.debugjudge.CompetitionState|null} [state] CompetitionStateChangedMessage state
+                     * @property {number|Long|null} [competitionSeconds] CompetitionStateChangedMessage competitionSeconds
                      */
     
                     /**
@@ -7895,6 +7896,14 @@
                     CompetitionStateChangedMessage.prototype.state = 0;
     
                     /**
+                     * CompetitionStateChangedMessage competitionSeconds.
+                     * @member {number|Long} competitionSeconds
+                     * @memberof acmcsus.debugjudge.S2CMessage.CompetitionStateChangedMessage
+                     * @instance
+                     */
+                    CompetitionStateChangedMessage.prototype.competitionSeconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                    /**
                      * Creates a new CompetitionStateChangedMessage instance using the specified properties.
                      * @function create
                      * @memberof acmcsus.debugjudge.S2CMessage.CompetitionStateChangedMessage
@@ -7922,6 +7931,8 @@
                             writer.uint32(/* id 1, wireType 0 =*/8).int64(message.timeMillis);
                         if (message.state != null && message.hasOwnProperty("state"))
                             writer.uint32(/* id 2, wireType 0 =*/16).int32(message.state);
+                        if (message.competitionSeconds != null && message.hasOwnProperty("competitionSeconds"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int64(message.competitionSeconds);
                         return writer;
                     };
     
@@ -7961,6 +7972,9 @@
                                 break;
                             case 2:
                                 message.state = reader.int32();
+                                break;
+                            case 3:
+                                message.competitionSeconds = reader.int64();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -8011,6 +8025,9 @@
                             case 4:
                                 break;
                             }
+                        if (message.competitionSeconds != null && message.hasOwnProperty("competitionSeconds"))
+                            if (!$util.isInteger(message.competitionSeconds) && !(message.competitionSeconds && $util.isInteger(message.competitionSeconds.low) && $util.isInteger(message.competitionSeconds.high)))
+                                return "competitionSeconds: integer|Long expected";
                         return null;
                     };
     
@@ -8057,6 +8074,15 @@
                             message.state = 4;
                             break;
                         }
+                        if (object.competitionSeconds != null)
+                            if ($util.Long)
+                                (message.competitionSeconds = $util.Long.fromValue(object.competitionSeconds)).unsigned = false;
+                            else if (typeof object.competitionSeconds === "string")
+                                message.competitionSeconds = parseInt(object.competitionSeconds, 10);
+                            else if (typeof object.competitionSeconds === "number")
+                                message.competitionSeconds = object.competitionSeconds;
+                            else if (typeof object.competitionSeconds === "object")
+                                message.competitionSeconds = new $util.LongBits(object.competitionSeconds.low >>> 0, object.competitionSeconds.high >>> 0).toNumber();
                         return message;
                     };
     
@@ -8080,6 +8106,11 @@
                             } else
                                 object.timeMillis = options.longs === String ? "0" : 0;
                             object.state = options.enums === String ? "UNKNOWN" : 0;
+                            if ($util.Long) {
+                                var long = new $util.Long(0, 0, false);
+                                object.competitionSeconds = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                            } else
+                                object.competitionSeconds = options.longs === String ? "0" : 0;
                         }
                         if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
                             if (typeof message.timeMillis === "number")
@@ -8088,6 +8119,11 @@
                                 object.timeMillis = options.longs === String ? $util.Long.prototype.toString.call(message.timeMillis) : options.longs === Number ? new $util.LongBits(message.timeMillis.low >>> 0, message.timeMillis.high >>> 0).toNumber() : message.timeMillis;
                         if (message.state != null && message.hasOwnProperty("state"))
                             object.state = options.enums === String ? $root.acmcsus.debugjudge.CompetitionState[message.state] : message.state;
+                        if (message.competitionSeconds != null && message.hasOwnProperty("competitionSeconds"))
+                            if (typeof message.competitionSeconds === "number")
+                                object.competitionSeconds = options.longs === String ? String(message.competitionSeconds) : message.competitionSeconds;
+                            else
+                                object.competitionSeconds = options.longs === String ? $util.Long.prototype.toString.call(message.competitionSeconds) : options.longs === Number ? new $util.LongBits(message.competitionSeconds.low >>> 0, message.competitionSeconds.high >>> 0).toNumber() : message.competitionSeconds;
                         return object;
                     };
     
@@ -11245,6 +11281,7 @@
                  * @memberof acmcsus.debugjudge
                  * @interface IA2SMessage
                  * @property {acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage|null} [changeCompetitionStateMessage] A2SMessage changeCompetitionStateMessage
+                 * @property {acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage|null} [setSchedulingMessage] A2SMessage setSchedulingMessage
                  */
     
                 /**
@@ -11270,17 +11307,25 @@
                  */
                 A2SMessage.prototype.changeCompetitionStateMessage = null;
     
+                /**
+                 * A2SMessage setSchedulingMessage.
+                 * @member {acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage|null|undefined} setSchedulingMessage
+                 * @memberof acmcsus.debugjudge.A2SMessage
+                 * @instance
+                 */
+                A2SMessage.prototype.setSchedulingMessage = null;
+    
                 // OneOf field names bound to virtual getters and setters
                 var $oneOfFields;
     
                 /**
                  * A2SMessage value.
-                 * @member {"changeCompetitionStateMessage"|undefined} value
+                 * @member {"changeCompetitionStateMessage"|"setSchedulingMessage"|undefined} value
                  * @memberof acmcsus.debugjudge.A2SMessage
                  * @instance
                  */
                 Object.defineProperty(A2SMessage.prototype, "value", {
-                    get: $util.oneOfGetter($oneOfFields = ["changeCompetitionStateMessage"]),
+                    get: $util.oneOfGetter($oneOfFields = ["changeCompetitionStateMessage", "setSchedulingMessage"]),
                     set: $util.oneOfSetter($oneOfFields)
                 });
     
@@ -11310,6 +11355,8 @@
                         writer = $Writer.create();
                     if (message.changeCompetitionStateMessage != null && message.hasOwnProperty("changeCompetitionStateMessage"))
                         $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.encode(message.changeCompetitionStateMessage, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.setSchedulingMessage != null && message.hasOwnProperty("setSchedulingMessage"))
+                        $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.encode(message.setSchedulingMessage, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                     return writer;
                 };
     
@@ -11346,6 +11393,9 @@
                         switch (tag >>> 3) {
                         case 1:
                             message.changeCompetitionStateMessage = $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.decode(reader, reader.uint32());
+                            break;
+                        case 2:
+                            message.setSchedulingMessage = $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.decode(reader, reader.uint32());
                             break;
                         default:
                             reader.skipType(tag & 7);
@@ -11391,6 +11441,16 @@
                                 return "changeCompetitionStateMessage." + error;
                         }
                     }
+                    if (message.setSchedulingMessage != null && message.hasOwnProperty("setSchedulingMessage")) {
+                        if (properties.value === 1)
+                            return "value: multiple values";
+                        properties.value = 1;
+                        {
+                            var error = $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.verify(message.setSchedulingMessage);
+                            if (error)
+                                return "setSchedulingMessage." + error;
+                        }
+                    }
                     return null;
                 };
     
@@ -11410,6 +11470,11 @@
                         if (typeof object.changeCompetitionStateMessage !== "object")
                             throw TypeError(".acmcsus.debugjudge.A2SMessage.changeCompetitionStateMessage: object expected");
                         message.changeCompetitionStateMessage = $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.fromObject(object.changeCompetitionStateMessage);
+                    }
+                    if (object.setSchedulingMessage != null) {
+                        if (typeof object.setSchedulingMessage !== "object")
+                            throw TypeError(".acmcsus.debugjudge.A2SMessage.setSchedulingMessage: object expected");
+                        message.setSchedulingMessage = $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.fromObject(object.setSchedulingMessage);
                     }
                     return message;
                 };
@@ -11431,6 +11496,11 @@
                         object.changeCompetitionStateMessage = $root.acmcsus.debugjudge.A2SMessage.ChangeCompetitionStateMessage.toObject(message.changeCompetitionStateMessage, options);
                         if (options.oneofs)
                             object.value = "changeCompetitionStateMessage";
+                    }
+                    if (message.setSchedulingMessage != null && message.hasOwnProperty("setSchedulingMessage")) {
+                        object.setSchedulingMessage = $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.toObject(message.setSchedulingMessage, options);
+                        if (options.oneofs)
+                            object.value = "setSchedulingMessage";
                     }
                     return object;
                 };
@@ -11696,6 +11766,466 @@
                     };
     
                     return ChangeCompetitionStateMessage;
+                })();
+    
+                A2SMessage.SetSchedulingMessage = (function() {
+    
+                    /**
+                     * Properties of a SetSchedulingMessage.
+                     * @memberof acmcsus.debugjudge.A2SMessage
+                     * @interface ISetSchedulingMessage
+                     * @property {Array.<acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent>|null} [event] SetSchedulingMessage event
+                     */
+    
+                    /**
+                     * Constructs a new SetSchedulingMessage.
+                     * @memberof acmcsus.debugjudge.A2SMessage
+                     * @classdesc Represents a SetSchedulingMessage.
+                     * @implements ISetSchedulingMessage
+                     * @constructor
+                     * @param {acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage=} [properties] Properties to set
+                     */
+                    function SetSchedulingMessage(properties) {
+                        this.event = [];
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * SetSchedulingMessage event.
+                     * @member {Array.<acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent>} event
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @instance
+                     */
+                    SetSchedulingMessage.prototype.event = $util.emptyArray;
+    
+                    /**
+                     * Creates a new SetSchedulingMessage instance using the specified properties.
+                     * @function create
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage=} [properties] Properties to set
+                     * @returns {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage} SetSchedulingMessage instance
+                     */
+                    SetSchedulingMessage.create = function create(properties) {
+                        return new SetSchedulingMessage(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified SetSchedulingMessage message. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.verify|verify} messages.
+                     * @function encode
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage} message SetSchedulingMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    SetSchedulingMessage.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.event != null && message.event.length)
+                            for (var i = 0; i < message.event.length; ++i)
+                                $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.encode(message.event[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified SetSchedulingMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage} message SetSchedulingMessage message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    SetSchedulingMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a SetSchedulingMessage message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage} SetSchedulingMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    SetSchedulingMessage.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1:
+                                if (!(message.event && message.event.length))
+                                    message.event = [];
+                                message.event.push($root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.decode(reader, reader.uint32()));
+                                break;
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a SetSchedulingMessage message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage} SetSchedulingMessage
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    SetSchedulingMessage.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a SetSchedulingMessage message.
+                     * @function verify
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    SetSchedulingMessage.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.event != null && message.hasOwnProperty("event")) {
+                            if (!Array.isArray(message.event))
+                                return "event: array expected";
+                            for (var i = 0; i < message.event.length; ++i) {
+                                var error = $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.verify(message.event[i]);
+                                if (error)
+                                    return "event." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a SetSchedulingMessage message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage} SetSchedulingMessage
+                     */
+                    SetSchedulingMessage.fromObject = function fromObject(object) {
+                        if (object instanceof $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage)
+                            return object;
+                        var message = new $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage();
+                        if (object.event) {
+                            if (!Array.isArray(object.event))
+                                throw TypeError(".acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.event: array expected");
+                            message.event = [];
+                            for (var i = 0; i < object.event.length; ++i) {
+                                if (typeof object.event[i] !== "object")
+                                    throw TypeError(".acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.event: object expected");
+                                message.event[i] = $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.fromObject(object.event[i]);
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a SetSchedulingMessage message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @static
+                     * @param {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage} message SetSchedulingMessage
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    SetSchedulingMessage.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.arrays || options.defaults)
+                            object.event = [];
+                        if (message.event && message.event.length) {
+                            object.event = [];
+                            for (var j = 0; j < message.event.length; ++j)
+                                object.event[j] = $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.toObject(message.event[j], options);
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this SetSchedulingMessage to JSON.
+                     * @function toJSON
+                     * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    SetSchedulingMessage.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    SetSchedulingMessage.ScheduleEvent = (function() {
+    
+                        /**
+                         * Properties of a ScheduleEvent.
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                         * @interface IScheduleEvent
+                         * @property {number|Long|null} [timeMillis] ScheduleEvent timeMillis
+                         * @property {acmcsus.debugjudge.CompetitionState|null} [state] ScheduleEvent state
+                         */
+    
+                        /**
+                         * Constructs a new ScheduleEvent.
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage
+                         * @classdesc Represents a ScheduleEvent.
+                         * @implements IScheduleEvent
+                         * @constructor
+                         * @param {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent=} [properties] Properties to set
+                         */
+                        function ScheduleEvent(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ScheduleEvent timeMillis.
+                         * @member {number|Long} timeMillis
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @instance
+                         */
+                        ScheduleEvent.prototype.timeMillis = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                        /**
+                         * ScheduleEvent state.
+                         * @member {acmcsus.debugjudge.CompetitionState} state
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @instance
+                         */
+                        ScheduleEvent.prototype.state = 0;
+    
+                        /**
+                         * Creates a new ScheduleEvent instance using the specified properties.
+                         * @function create
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @static
+                         * @param {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent=} [properties] Properties to set
+                         * @returns {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent} ScheduleEvent instance
+                         */
+                        ScheduleEvent.create = function create(properties) {
+                            return new ScheduleEvent(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ScheduleEvent message. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.verify|verify} messages.
+                         * @function encode
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @static
+                         * @param {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent} message ScheduleEvent message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ScheduleEvent.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
+                                writer.uint32(/* id 1, wireType 0 =*/8).int64(message.timeMillis);
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.state);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ScheduleEvent message, length delimited. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @static
+                         * @param {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent} message ScheduleEvent message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ScheduleEvent.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a ScheduleEvent message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent} ScheduleEvent
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ScheduleEvent.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1:
+                                    message.timeMillis = reader.int64();
+                                    break;
+                                case 2:
+                                    message.state = reader.int32();
+                                    break;
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a ScheduleEvent message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent} ScheduleEvent
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ScheduleEvent.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a ScheduleEvent message.
+                         * @function verify
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ScheduleEvent.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
+                                if (!$util.isInteger(message.timeMillis) && !(message.timeMillis && $util.isInteger(message.timeMillis.low) && $util.isInteger(message.timeMillis.high)))
+                                    return "timeMillis: integer|Long expected";
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                switch (message.state) {
+                                default:
+                                    return "state: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                    break;
+                                }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a ScheduleEvent message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent} ScheduleEvent
+                         */
+                        ScheduleEvent.fromObject = function fromObject(object) {
+                            if (object instanceof $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent)
+                                return object;
+                            var message = new $root.acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent();
+                            if (object.timeMillis != null)
+                                if ($util.Long)
+                                    (message.timeMillis = $util.Long.fromValue(object.timeMillis)).unsigned = false;
+                                else if (typeof object.timeMillis === "string")
+                                    message.timeMillis = parseInt(object.timeMillis, 10);
+                                else if (typeof object.timeMillis === "number")
+                                    message.timeMillis = object.timeMillis;
+                                else if (typeof object.timeMillis === "object")
+                                    message.timeMillis = new $util.LongBits(object.timeMillis.low >>> 0, object.timeMillis.high >>> 0).toNumber();
+                            switch (object.state) {
+                            case "UNKNOWN":
+                            case 0:
+                                message.state = 0;
+                                break;
+                            case "WAITING":
+                            case 1:
+                                message.state = 1;
+                                break;
+                            case "STARTED":
+                            case 2:
+                                message.state = 2;
+                                break;
+                            case "PAUSED":
+                            case 3:
+                                message.state = 3;
+                                break;
+                            case "STOPPED":
+                            case 4:
+                                message.state = 4;
+                                break;
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a ScheduleEvent message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @static
+                         * @param {acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent} message ScheduleEvent
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ScheduleEvent.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                if ($util.Long) {
+                                    var long = new $util.Long(0, 0, false);
+                                    object.timeMillis = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                                } else
+                                    object.timeMillis = options.longs === String ? "0" : 0;
+                                object.state = options.enums === String ? "UNKNOWN" : 0;
+                            }
+                            if (message.timeMillis != null && message.hasOwnProperty("timeMillis"))
+                                if (typeof message.timeMillis === "number")
+                                    object.timeMillis = options.longs === String ? String(message.timeMillis) : message.timeMillis;
+                                else
+                                    object.timeMillis = options.longs === String ? $util.Long.prototype.toString.call(message.timeMillis) : options.longs === Number ? new $util.LongBits(message.timeMillis.low >>> 0, message.timeMillis.high >>> 0).toNumber() : message.timeMillis;
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                object.state = options.enums === String ? $root.acmcsus.debugjudge.CompetitionState[message.state] : message.state;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ScheduleEvent to JSON.
+                         * @function toJSON
+                         * @memberof acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ScheduleEvent.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        return ScheduleEvent;
+                    })();
+    
+                    return SetSchedulingMessage;
                 })();
     
                 return A2SMessage;

@@ -3080,6 +3080,9 @@ export namespace acmcsus {
 
                 /** CompetitionStateChangedMessage state */
                 state?: (acmcsus.debugjudge.CompetitionState|null);
+
+                /** CompetitionStateChangedMessage competitionSeconds */
+                competitionSeconds?: (number|Long|null);
             }
 
             /** Represents a CompetitionStateChangedMessage. */
@@ -3096,6 +3099,9 @@ export namespace acmcsus {
 
                 /** CompetitionStateChangedMessage state. */
                 public state: acmcsus.debugjudge.CompetitionState;
+
+                /** CompetitionStateChangedMessage competitionSeconds. */
+                public competitionSeconds: (number|Long);
 
                 /**
                  * Creates a new CompetitionStateChangedMessage instance using the specified properties.
@@ -4578,6 +4584,9 @@ export namespace acmcsus {
 
             /** A2SMessage changeCompetitionStateMessage */
             changeCompetitionStateMessage?: (acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage|null);
+
+            /** A2SMessage setSchedulingMessage */
+            setSchedulingMessage?: (acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage|null);
         }
 
         /** Represents a A2SMessage. */
@@ -4592,8 +4601,11 @@ export namespace acmcsus {
             /** A2SMessage changeCompetitionStateMessage. */
             public changeCompetitionStateMessage?: (acmcsus.debugjudge.A2SMessage.IChangeCompetitionStateMessage|null);
 
+            /** A2SMessage setSchedulingMessage. */
+            public setSchedulingMessage?: (acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage|null);
+
             /** A2SMessage value. */
-            public value?: "changeCompetitionStateMessage";
+            public value?: ("changeCompetitionStateMessage"|"setSchedulingMessage");
 
             /**
              * Creates a new A2SMessage instance using the specified properties.
@@ -4762,6 +4774,195 @@ export namespace acmcsus {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+            }
+
+            /** Properties of a SetSchedulingMessage. */
+            interface ISetSchedulingMessage {
+
+                /** SetSchedulingMessage event */
+                event?: (acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent[]|null);
+            }
+
+            /** Represents a SetSchedulingMessage. */
+            class SetSchedulingMessage implements ISetSchedulingMessage {
+
+                /**
+                 * Constructs a new SetSchedulingMessage.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage);
+
+                /** SetSchedulingMessage event. */
+                public event: acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent[];
+
+                /**
+                 * Creates a new SetSchedulingMessage instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns SetSchedulingMessage instance
+                 */
+                public static create(properties?: acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage): acmcsus.debugjudge.A2SMessage.SetSchedulingMessage;
+
+                /**
+                 * Encodes the specified SetSchedulingMessage message. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.verify|verify} messages.
+                 * @param message SetSchedulingMessage message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified SetSchedulingMessage message, length delimited. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.verify|verify} messages.
+                 * @param message SetSchedulingMessage message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: acmcsus.debugjudge.A2SMessage.ISetSchedulingMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a SetSchedulingMessage message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns SetSchedulingMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.A2SMessage.SetSchedulingMessage;
+
+                /**
+                 * Decodes a SetSchedulingMessage message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns SetSchedulingMessage
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.A2SMessage.SetSchedulingMessage;
+
+                /**
+                 * Verifies a SetSchedulingMessage message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a SetSchedulingMessage message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns SetSchedulingMessage
+                 */
+                public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.A2SMessage.SetSchedulingMessage;
+
+                /**
+                 * Creates a plain object from a SetSchedulingMessage message. Also converts values to other types if specified.
+                 * @param message SetSchedulingMessage
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: acmcsus.debugjudge.A2SMessage.SetSchedulingMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this SetSchedulingMessage to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace SetSchedulingMessage {
+
+                /** Properties of a ScheduleEvent. */
+                interface IScheduleEvent {
+
+                    /** ScheduleEvent timeMillis */
+                    timeMillis?: (number|Long|null);
+
+                    /** ScheduleEvent state */
+                    state?: (acmcsus.debugjudge.CompetitionState|null);
+                }
+
+                /** Represents a ScheduleEvent. */
+                class ScheduleEvent implements IScheduleEvent {
+
+                    /**
+                     * Constructs a new ScheduleEvent.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent);
+
+                    /** ScheduleEvent timeMillis. */
+                    public timeMillis: (number|Long);
+
+                    /** ScheduleEvent state. */
+                    public state: acmcsus.debugjudge.CompetitionState;
+
+                    /**
+                     * Creates a new ScheduleEvent instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ScheduleEvent instance
+                     */
+                    public static create(properties?: acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent): acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent;
+
+                    /**
+                     * Encodes the specified ScheduleEvent message. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.verify|verify} messages.
+                     * @param message ScheduleEvent message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ScheduleEvent message, length delimited. Does not implicitly {@link acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent.verify|verify} messages.
+                     * @param message ScheduleEvent message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.IScheduleEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ScheduleEvent message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ScheduleEvent
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent;
+
+                    /**
+                     * Decodes a ScheduleEvent message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ScheduleEvent
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent;
+
+                    /**
+                     * Verifies a ScheduleEvent message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ScheduleEvent message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ScheduleEvent
+                     */
+                    public static fromObject(object: { [k: string]: any }): acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent;
+
+                    /**
+                     * Creates a plain object from a ScheduleEvent message. Also converts values to other types if specified.
+                     * @param message ScheduleEvent
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: acmcsus.debugjudge.A2SMessage.SetSchedulingMessage.ScheduleEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ScheduleEvent to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+                }
             }
         }
 

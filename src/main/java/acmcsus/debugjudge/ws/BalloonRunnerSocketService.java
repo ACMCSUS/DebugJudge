@@ -1,5 +1,6 @@
 package acmcsus.debugjudge.ws;
 
+import acmcsus.debugjudge.ctrl.CompetitionController;
 import acmcsus.debugjudge.proto.BalloonRunner;
 import acmcsus.debugjudge.proto.Competition;
 import acmcsus.debugjudge.proto.Competition.Profile;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 import static acmcsus.debugjudge.proto.Algorithmic.BalloonDeliveries.BalloonDeliveryStatus.DELIVERED;
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.BALLOON_RUNNER;
 
 @Singleton
 public class BalloonRunnerSocketService extends ProfileSocketService {
@@ -26,8 +28,9 @@ public class BalloonRunnerSocketService extends ProfileSocketService {
   @Inject
   BalloonRunnerSocketService(BaseSocketService baseSocketService, StateService stateService,
                              SubmissionStore submissionStore,
-                             BalloonQueueService balloonQueueService) {
-    super(baseSocketService, stateService, submissionStore, Profile.ProfileType.BALLOON_RUNNER);
+                             BalloonQueueService balloonQueueService,
+                             CompetitionController competitionController) {
+    super(baseSocketService, stateService, submissionStore, competitionController, BALLOON_RUNNER);
     this.balloonQueueService = balloonQueueService;
   }
 
@@ -59,7 +62,6 @@ public class BalloonRunnerSocketService extends ProfileSocketService {
       case BALLOONDELIVEREDMESSAGE: {
         Integer tid = b2SMessage.getBalloonDeliveredMessage().getTeamId();
         Integer pid = b2SMessage.getBalloonDeliveredMessage().getProblemId();
-        logger.info("Delivered for {} {}\n", tid, pid);
 
         try {
           BalloonDeliveryStore.setDeliveryStatus(tid, pid, DELIVERED);
@@ -72,11 +74,11 @@ public class BalloonRunnerSocketService extends ProfileSocketService {
             .setTeamId(tid)
             .setProblemId(pid)
             .build());
-        
+
         break;
       }
       default: {
-        logger.error("WS: Backend does not recognize AJ2SMessage: {}", b2SMessage.getValueCase());
+        logger.error("WS: Backend does not recognize B2SMessage: {}", b2SMessage.getValueCase());
       }
     }
   }
