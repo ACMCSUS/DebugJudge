@@ -1,5 +1,6 @@
 package acmcsus.debugjudge.ws;
 
+import acmcsus.debugjudge.ctrl.CompetitionController;
 import acmcsus.debugjudge.ctrl.ScoreboardBroadcaster;
 import acmcsus.debugjudge.proto.Competition;
 import acmcsus.debugjudge.proto.Competition.Profile.ProfileType;
@@ -29,17 +30,22 @@ public abstract class ProfileSocketService {
   protected StateService stateService;
   protected SubmissionStore submissionStore;
 
+  protected CompetitionController competitionController;
+
   @Inject
   ScoreboardBroadcaster scoreboardBroadcaster;
 
   public ProfileSocketService(BaseSocketService baseSocketService, StateService stateService,
-                              SubmissionStore submissionStore, ProfileType profileType) {
+                              SubmissionStore submissionStore,
+                              CompetitionController competitionController,
+                              ProfileType profileType) {
     Predicate<WebSocketContext> filter =
         ctx -> ctx.profile != null && ctx.profile.getProfileType() == profileType;
 
     this.baseSocketService = baseSocketService;
     this.stateService = stateService;
     this.submissionStore = submissionStore;
+    this.competitionController = competitionController;
 
     baseSocketService.connectSubject.filter(filter).subscribe(this::onConnect);
     baseSocketService.disconnectSubject.filter(filter).subscribe(this::onDisconnect);
@@ -53,6 +59,13 @@ public abstract class ProfileSocketService {
                 sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
                     .setScoreboardUpdateMessage(ScoreboardUpdateMessage.newBuilder()
                         .setScoreboard(scoreboard))
+                    .build())));
+
+    baseSocketService.addObserver(ctx.session,
+        competitionController.competitionState.subscribe(
+            state ->
+                sendMessage(ctx.session, WebSocket.S2CMessage.newBuilder()
+                    .setCompetitionStateChangedMessage(state)
                     .build())));
   }
 

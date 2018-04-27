@@ -10,19 +10,18 @@ import org.slf4j.*;
 
 import java.io.*;
 
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.ADMIN;
+
 @Singleton
 public class AdminSocketService extends ProfileSocketService {
 
   private static Logger logger = LoggerFactory.getLogger(AdminSocketService.class);
 
-  private CompetitionController competitionController;
-
   @Inject
   AdminSocketService(BaseSocketService baseSocketService,
                      StateService stateService, SubmissionStore submissionStore,
                      CompetitionController competitionController) {
-    super(baseSocketService, stateService, submissionStore, Profile.ProfileType.ADMIN);
-    this.competitionController = competitionController;
+    super(baseSocketService, stateService, submissionStore, competitionController, ADMIN);
   }
 
   @Override
@@ -45,6 +44,11 @@ public class AdminSocketService extends ProfileSocketService {
       case CHANGECOMPETITIONSTATEMESSAGE: {
         competitionController.changeCompetitionState(
             a2SMessage.getChangeCompetitionStateMessage().getState());
+        break;
+      }
+      case SETSCHEDULINGMESSAGE: {
+        competitionController.updateSchedule(
+            a2SMessage.getSetSchedulingMessage().getEventList());
         break;
       }
       default: {

@@ -1,5 +1,6 @@
 package acmcsus.debugjudge.ws;
 
+import acmcsus.debugjudge.ctrl.CompetitionController;
 import acmcsus.debugjudge.proto.Competition.Profile;
 import acmcsus.debugjudge.proto.Competition.Submission;
 import acmcsus.debugjudge.proto.Competition.SubmissionJudgement;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Map;
 
+import static acmcsus.debugjudge.proto.Competition.Profile.ProfileType.JUDGE;
 import static java.lang.String.format;
 import static spark.Spark.halt;
 
@@ -27,8 +29,9 @@ public class JudgeSocketService extends ProfileSocketService {
 
   @Inject
   JudgeSocketService(BaseSocketService baseSocketService, StateService stateService,
-                     JudgeQueueService judgeQueueService, SubmissionStore submissionStore) {
-    super(baseSocketService, stateService, submissionStore, Profile.ProfileType.JUDGE);
+                     JudgeQueueService judgeQueueService, SubmissionStore submissionStore,
+                     CompetitionController competitionController) {
+    super(baseSocketService, stateService, submissionStore, competitionController, JUDGE);
     this.judgeQueueService = judgeQueueService;
   }
 

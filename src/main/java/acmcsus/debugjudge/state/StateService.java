@@ -5,6 +5,8 @@ import acmcsus.debugjudge.proto.Competition.CompetitionState;
 import acmcsus.debugjudge.proto.Competition.Problem;
 import acmcsus.debugjudge.proto.Competition.Submission;
 import acmcsus.debugjudge.proto.Competition.SubmissionJudgement;
+import acmcsus.debugjudge.proto.WebSocket;
+import acmcsus.debugjudge.proto.WebSocket.S2CMessage.CompetitionStateChangedMessage;
 import acmcsus.debugjudge.store.ProblemStore;
 import acmcsus.debugjudge.store.SubmissionStore;
 import com.google.inject.Inject;
@@ -77,8 +79,9 @@ public class StateService {
     }
   }
 
-  private List<Problem> filterPublicProblemList(List<Problem> secretProblemList, CompetitionState competitionState) {
-    if (competitionState == CompetitionState.WAITING) {
+  private List<Problem> filterPublicProblemList(List<Problem> secretProblemList,
+                                                CompetitionStateChangedMessage competitionState) {
+    if (competitionState.getState() == CompetitionState.WAITING) {
       return emptyList();
     }
     else {
@@ -145,13 +148,16 @@ public class StateService {
     }
   }
 
-  public List<Problem> getSecretProblems() {
-    return secretProblemListSubject.getValue();
-  }
-
-  public List<Problem> getPublicProblems() {
-    return filterPublicProblemList(
-        getPublicProblems(),
-        competitionController.getCompetitionState());
-  }
+////// I should just delete this, but I want to keep it for prosperity.
+////// Just imagine the confusion that could have arisen if you tried using these.
+////// ~merrillm
+//  public List<Problem> getSecretProblems() {
+//    return secretProblemListSubject.getValue();
+//  }
+//
+//  public List<Problem> getPublicProblems() {
+//    return filterPublicProblemList(
+//        getPublicProblems(),
+//        competitionController.getCompetitionStateChange());
+//  }
 }

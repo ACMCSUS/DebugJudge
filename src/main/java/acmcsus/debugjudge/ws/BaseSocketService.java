@@ -1,6 +1,8 @@
 package acmcsus.debugjudge.ws;
 
+import acmcsus.debugjudge.ctrl.CompetitionController;
 import acmcsus.debugjudge.ctrl.SecurityApi;
+import acmcsus.debugjudge.proto.Competition;
 import acmcsus.debugjudge.proto.Competition.Profile;
 import acmcsus.debugjudge.proto.WebSocket.C2SMessage;
 import acmcsus.debugjudge.proto.WebSocket.S2CMessage;

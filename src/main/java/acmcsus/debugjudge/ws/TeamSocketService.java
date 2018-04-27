@@ -30,14 +30,11 @@ public class TeamSocketService extends ProfileSocketService {
 
   private static Logger logger = LoggerFactory.getLogger(TeamSocketService.class);
 
-  private CompetitionController competitionController;
-
   @Inject
   public TeamSocketService(BaseSocketService baseSocketService, StateService stateService,
                            CompetitionController competitionController,
                            SubmissionStore submissionStore) {
-    super(baseSocketService, stateService, submissionStore, Profile.ProfileType.TEAM);
-    this.competitionController = competitionController;
+    super(baseSocketService, stateService, submissionStore, competitionController, Profile.ProfileType.TEAM);
   }
 
   @Override

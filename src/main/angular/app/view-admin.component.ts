@@ -22,9 +22,15 @@ import CompetitionState = acmcsus.debugjudge.CompetitionState;
             <button mat-raised-button [disabled]="!unlock" (click)="stop()" color="primary">
               Stop Competition
             </button>
-            <button mat-raised-button [disabled]="!unlock" (click)="reset()" color="primary">
-              Pause Competition
-            </button>
+            <!--<button mat-raised-button [disabled]="!unlock" (click)="freeze()" color="primary">-->
+              <!--Pause Scoreboard-->
+            <!--</button>-->
+            <!--<button mat-raised-button [disabled]="!unlock" (click)="freezeStop()" color="primary">-->
+              <!--Resume Scoreboard-->
+            <!--</button>-->
+            <!--<button mat-raised-button [disabled]="!unlock" (click)="reset()" color="primary">-->
+              <!--Reset Competition-->
+            <!--</button>-->
           </mat-card>
         </mat-card-content>
       </mat-card>

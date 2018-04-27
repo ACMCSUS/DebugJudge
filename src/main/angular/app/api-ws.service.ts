@@ -138,6 +138,7 @@ export class ApiWebSocketServiceImpl implements ApiWebSocketService {
           // let time = msg.competitionStateChangedMessage.timeMillis;
 
           this.competitionState.next(state);
+          this.s2cMessages.next(msg);
           break;
         }
         case 'notificationMessage': {

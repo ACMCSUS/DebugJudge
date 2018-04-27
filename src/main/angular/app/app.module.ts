@@ -31,6 +31,7 @@ import {DiffComponent} from "./diff.component";
 import {ProblemsViewComponent} from "./view-problems.component";
 import {AlgorithmicJudgeComponent} from "./algorithmicjudge.component";
 import {ResolverViewerComponent} from "./ResolverViewer";
+import {CountdownComponent} from "./countdown.component";
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import {ResolverViewerComponent} from "./ResolverViewer";
     SubmissionsBarComponent,
     ProblemsViewComponent,
     ResolverViewerComponent,
+    CountdownComponent,
   ],
   imports: [
     BrowserModule,
