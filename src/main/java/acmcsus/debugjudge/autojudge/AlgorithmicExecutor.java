@@ -129,7 +129,7 @@ public class AlgorithmicExecutor {
   private static String executeCommandFormat(String command, Submission submission) {
     String fileName = submission.getAlgorithmicSubmission().getFileName();
 
-    if (!fileName.matches("\\w+.\\w+")) {
+    if (!fileName.matches("\\w+\\.\\w+")) {
       throw new IllegalArgumentException("Illegal File Name!");
     }
 

@@ -133,14 +133,30 @@ export class AlgorithmicCardComponent implements OnInit, OnDestroy {
 
   uploaded(files: FileList): void {
     this.uploadedFile = files[0];
-    alert(this.uploadedFile.size);
-
-    let reader = new FileReader();
-    reader.onload = () => {
-      this.sourceCode = reader.result;
-      console.log(this.sourceCode);
-    };
-    reader.readAsText(this.uploadedFile);
+    if (this.uploadedFile.size > 15000) {
+      alert('File size too large. Please clean up your code a bit and try again.\n' +
+          'Max file size is 15K. (15,000 bytes)');
+      this.reset()
+    }
+    else if (!/^\w+\.\w+$/.test(this.uploadedFile.name)) {
+      alert(`File name must match the pattern /\\w+\\.\\w+/.
+      Examples:
+       - my_file.py
+       - ProblemSolver.java
+       - abcdefg.xyz
+       
+       ` + ((this.uploadedFile.name.indexOf(' ') > -1) ?
+          '\nMake sure you do not have spaces in the file name.' : ''));
+      this.reset()
+    }
+    else {
+      let reader = new FileReader();
+      reader.onload = () => {
+        this.sourceCode = reader.result;
+        console.log(this.sourceCode);
+      };
+      reader.readAsText(this.uploadedFile);
+    }
   }
 
   debug(): void {
